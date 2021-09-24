@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>Implementing A UDP-Based Reliable Protocol</h1>
+      <p>This article is about what I learned from a project where my job was to implement a reliable UDP-based RPC-like protocol. Business detail is not covered.</p>
+<p>Assume we accept the job and start to think it through. We might borrow some concepts from TCP. Our first step is to let both sides know when to begin, so we devise the handshakes. TCP uses a three-way handshake to make sure both sides can send data to each other, and as stated in RFC 793, to prevent old duplicate SYNs from confusing the server. But in the project I engaged in, the protocol specified a two-way handshake for connection establishment. The protocol author's intention is unknown. Perhaps a two-way handshake is easier to implement, though it's not reliable at all; think of the situation where the connection initialization from one side gets lost in the network. But reliable establishment does not have to include a three-way handshake; with other approaches, we can also achieve reliability. For example, both ends strike for complete and thorough communication among network delays, packet loss, etc. Or, you make the network so reliable that it doesn't delay or lose packets. In this project, it's acceptable to abort any transaction if unexpected packages arrived. An error-checking, timeout, and recovery mechanism will make sure both sides can finish the transaction. If duplicated SYNs come when the server is not in LISTEN state, the server aborts the communication, returns an error message, and goes back to the LISTEN state.</p>
+<p><img src="implement-a-udp-based-protocol/5cf3b3b51fb34f8b8e15bb2adcc4a6c3_.png" alt=""></p>
+<p>Secondly, build a state machine. Reliable connections are &quot;stateful&quot;. Each time the server receives a message, it looks at the server's current state first and then decides what to do with it. If the message is legal, the server responds with an ACK; otherwise, it returns an error. The client will blocks within a specified timeout until it receives the feedback of the last packet. In our case, we don't have advanced flow control. After the timeout, the client will resend the packet. We can add more control to the process, such as aborting the connection after ten reties.</p>
+<p>Thirdly, maintain a sequence number to keep data in order and avoid duplicates. In fact, I think this is a part of the state machine.</p>
+<p>The final step is to terminate the connection. When the server receives a final signal, it reassembles the data, processes it, then returns the result. On receiving the final result, the client ends the connection.</p>
+<p>Now we have thought it through and wonder why not use TCP in the first place. We might say a custom TCP has fewer states to deal with, thus has better performance. In this case, the protocol did not pursue high performance; instead, it attempted to provides a way for devices to join the system without having to set a particular IP, so it used multicast, a mechanism based on connect-less protocols.</p>
+<p>Here is a snippet of the data structures I designed. The use case of the project was specific and simple: the server serves one single client. With a certain number of clients, we might need a hash table to manage the connections.</p>
+<pre><code class="language-c">struct packet
+{
+    uint8_t islastpkt;
+    uint8_t seq_num;
+    uint16_t len;
+    uint8_t *msg;
+};
+
+struct context
+{
+    uint8_t done;
+    uint8_t seq;
+    struct packet pkts[MAX_SEQ];
+} ctx;
+</code></pre>
+<p>Something interesting and something to do:</p>
+<ol>
+<li>The switch we used in the project truncated packets that passed through it, causing them to lose bytes. TCPdump on the server can receive these truncated packets; UDP sockets can not</li>
+<li>Checksums of the UDP packets received by the server are always empty</li>
+<li>We observed duplicated multicast packets. It might be a switch problem</li>
+<li>Understand the detail of multicast</li>
+<li>Read the TCP implementation of the kernel</li>
+</ol>
+
+    </div>
+  </body>
+</html>

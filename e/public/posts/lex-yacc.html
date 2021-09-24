@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>Introduction to Yacc and Lex</h1>
+      <h2>1</h2>
+<p>由于看不惯一个项目的解析模块, 在 nftables 的启示下, 我就把这模块用 yacc 和 lex 重写了</p>
+<p><img src="lex-yacc/a35db1cf6985408a836b6bb946195c51_.png" alt=""></p>
+<h2>2. yacc 和 lex 的用法</h2>
+<h3>2.1 lex</h3>
+<p>lex 根据  .l  生成 lex.yy.c （名字可以定制）, 用于 tokenize 字符串</p>
+<p>以 <code>ip address add</code> 为例</p>
+<pre><code>ip      RETURN IP
+address RETURN ADDRESS
+</code></pre>
+<p>将这三个词切割开来, 返回给接下来的 yacc 代码使用, yacc 和 lex 两者之间的关系又和 gcc 的编译习惯有关</p>
+<p><img src="lex-yacc/3279942f5b9248649917d400bb7a2dd6_.png" alt=""></p>
+<p>这里面的调用关系太复杂了, 所以需要整理出一套模板.</p>
+<h3>2.2 yacc</h3>
+<p>在 yacc 里面声明 TOKEN, 之后 bison 会生成 TOKEN 的 C 头文件声明, 同时定义语法规则, 规则匹配之后调用 business(如上图所示)代码. 规则的写法很简单, 从一个根节点开始, 构建一颗抽象树, AST. 对命令行解析来说, AST 树很简单, 动作, key-value, flag 等, 结构相对扁平. 写 yacc 的关键步骤：</p>
+<ol>
+<li>
+<p>boilerplate, 后面会给出</p>
+</li>
+<li>
+<p>用 <code>%union</code> 定义 <code>yylval</code></p>
+</li>
+<li>
+<p>用 <code>%token</code> 标记树的叶子, 也即 TERMINATOR</p>
+</li>
+<li>
+<p><code>%token&lt;类型&gt;</code> 标记 terminator</p>
+</li>
+<li>
+<p><code>%type&lt;类型&gt;</code> 标记 non-terminator</p>
+</li>
+</ol>
+<h2>3. 可重入</h2>
+<p>yacc 默认使用全局变量来传递数据, 但也有 reentrant parser 形式. 以可重入的形式存在时, <code>yylval</code> 定义在 <code>yyparse()</code>函数里面.</p>
+<pre><code>int
+yyparse (struct x_ctx* ctx, void * scanner, struct x_state * state)
+{
+	[...]
+	YY_INITIAL_VALUE (static YYSTYPE yyval_default;)
+	// 声明 yylval
+	YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
+	[...]
+}
+</code></pre>
+<p><code>yyparser</code> 的需要格外定义</p>
+<pre><code>// 生成的函数以 x_ 开头
+// 如：
+// #define yyparse         x_parse
+// #define yylex           x_lex
+// #define yyerror         x_error
+// #define yydebug         x_debug
+// #define yynerrs         x_nerrs
+%name-prefix &quot;x_&quot;
+%define api.pure full
+// 指定 lex 的变量名字
+%lex-param   { scanner }
+// 第一个参数, 用来封装业务代码的上下文
+%parse-param { struct x_ctx* ctx }
+// lexer
+%parse-param { void * scanner }
+// 解析状态
+%parse-param { struct x_state * state }
+%locations
+%debug
+</code></pre>
+<p>难点是业务代码的 <code>struct x_str</code>, 影响代码的设计. 我的做法是将在语法规则匹配之后, 填充 <code>struct x_str</code> 对象 <code>ctx</code> 的信息, 最后 <code>ctx</code> 回到业务模块的时候就包含了所有参数信息.</p>
+<p><img src="lex-yacc/dc59870a833349d5b14f892c96ccf4db_.png" alt=""></p>
+<p>这里的上下文其实就是 C 语言的类对象.</p>
+<p>其他的, <code>scanner</code>, <code>x_state</code> 其实都是无关要紧的东西, 用来提高写代码的体验, 提示哪一行解析错误等.</p>
+<h3>3.1 完整模板</h3>
+<p>以解析以下命令为例</p>
+<pre><code>ip address add 192.168.1.0/24 dev eth0
+</code></pre>
+<p>结果：</p>
+<pre><code>➜ ./r address add 192.168.42.254/32 dev enp9s0
+address: 192.168.42.254/32
+interface: enp9s0
+operation: add
+➜ ./r addr del 192.168.42.254/32 dev enp9s0
+address: 192.168.42.254/32
+interface: enp9s0
+operation: del
+</code></pre>
+<p><a href="https://github.com/guxism/Practice/tree/master/yacc-lex/reentrant-parser">代码</a></p>
+<h2>4. 参考</h2>
+<ol>
+<li><a href="https://tldp.org/HOWTO/Lex-YACC-HOWTO-6.html">https://tldp.org/HOWTO/Lex-YACC-HOWTO-6.html</a></li>
+<li>yacc and lex</li>
+<li>bison and flex</li>
+<li>nftables</li>
+<li>nessus</li>
+<li><a href="https://stackoverflow.com/questions/32535097/problems-with-reentrant-flex-and-bison">https://stackoverflow.com/questions/32535097/problems-with-reentrant-flex-and-bison</a></li>
+<li><a href="https://www.cs.virginia.edu/~cr4bd/flex-manual/Reentrant-Overview.html#Reentrant-Overview">https://www.cs.virginia.edu/~cr4bd/flex-manual/Reentrant-Overview.html#Reentrant-Overview</a></li>
+</ol>
+
+    </div>
+  </body>
+</html>

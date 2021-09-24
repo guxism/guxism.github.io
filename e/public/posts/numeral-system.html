@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Numeral System</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>记数系统</h1>
+      <!-- cover: numeral-system/cover.png -->
+<!-- thumbnail: numeral-system/cover.png -->
+<h2>目的: 设计一个纯数字的记数系统</h2>
+<blockquote>
+<p>记数系统<a href="https://zh.wikipedia.org/wiki/%E8%AE%B0%E6%95%B0%E7%B3%BB%E7%BB%9F">^1</a>，或称记数法或数制，是使用一组数字符号来表示数的体系。记数，可以俗称为“写数”。</p>
+</blockquote>
+<p>如何在一个系统里面表达两种类型: 正数和负数? 设正数为 $N$, 它的反面为 $N'$, 则 $N + N' = 0$, 反面是指不同类型的同一个数字. 5 是正数类型的 5, -5 是负数类型的 5.</p>
+<p>如果一个系统有 3 种类型, 某个数在第一个类型的值为 $N$, 在第二个类型为 $N'$, 在第三个类型为 $N''$, 这三种类型作用的性质满足 $f(N, N', N'') = e$, 就好像上面 2 个类型的系统的 $N + N' = 0$. 不过我们不需要研究这种情况. 只需要了解只有 2 种类型的数字系统: 正数的 $N$ 和反面 $N'$, 反面叫补码(?)</p>
+<p>接下来我们考虑如何设计一套正负数记数法.</p>
+<p>首先我们要让正负数相加为 0, 5 的负数为 -5, 5 和 -5 的区别是 -5 有一个负号, 这就完成了正负数的设计.</p>
+<p>假设, 这个数字系统不允许出现特殊符号 <code>-</code>, 不允许写 <code>-5</code>, 只给你 0-9, 或 0-F, 或者 I-IIIXXX(罗马数字). 如何设计负数的表示方法?</p>
+<p>据说古代中国数学甚至没有 0 的概念, 可见设计一套记数系统并不是自然而然的事.</p>
+<h2>把正数拆成两半, 一半给负数</h2>
+<p>在没有负号的 4 进制中, 我们可以让 Z 表示 0, A 表示 1, B: 2, C: 3, H: -1, I: -2</p>
+<table>
+<thead>
+<tr>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>B</td>
+<td>C</td>
+<td>D</td>
+</tr>
+<tr>
+<td>H</td>
+<td>I</td>
+<td>J</td>
+<td>K</td>
+</tr>
+</tbody>
+</table>
+<p>A + H = 0; B + I = 0; ...</p>
+<p>假设这个系统只有 9 个数字, 这样设计好像没什么问题, 两个互成镜像的子系统, 同样的计算方法. 但是 A + J 很难计算, 我知道 A + C = D, J 映射 C, f(A, C) = J, 求 f, 很难想得到答案.</p>
+<p>现在回到计算机的世界, 二进制只有两个数字, 0 和 1. 要用两个数字表达负号, 只能设置符号位, 哪个数字, 哪个位置代表符号都是等价的, 所以假设代表最大值的那个位 (MSB) 为符号位, 1 表示负数, 0 表示正数.</p>
+<p>也可以假设右边第一个位置为符号位, 0 表示负数, 如果非要这样, 那么同样的理由也可以用于解释将 MSB 设置为符号位.</p>
+<p>左边第一个数字用来表示符号之后, 根据二进制的性质, 可以发现, 正数和负数的数量一样, 一半以 0 开头, 一半以 1 开头.</p>
+<p>假设正负数的区别仅在于符号位:</p>
+<p>0000 表示 0, 对应的 1000 也表示 -0, 0000 + 1000 = 1000 也是 -0<br>
+0001 表示 1, 1001 表示 -1, 0001 + 1001 = 1010, 不等于 0, 所以这么设计失败了.</p>
+<p>让 $N + N'$ 恒等于 0, 还有个方法是将负数的 0 设计为 1111. 设计成 1011 可以吗? 0000 + 1011 = 1011 也等于 0, 但是表示其他数字就很困难.</p>
+<h2>Complement</h2>
+<p>不知道谁想出这个方法, 我们假设, 作者是在将 0 从设计成 1000, 到 1011, 最后到 1111, 最终得到完美的验证</p>
+<ul>
+<li>0000 = +0, 1111 = -0</li>
+<li>0001 = +1, 1110 = -1, 0001 + 1110 = 1111 = 0</li>
+<li>0010 = +2, 1101 = -2, 0010 + 1101 = 1111 = 0</li>
+</ul>
+<p>相当于将每个位都翻转过来, 这种做法被称为 1's complement, 意思是将每个位要加上一个 complement 才能等于 1.</p>
+<blockquote>
+<p>complement:</p>
+<ol start="2">
+<li>a number or quantity of something, especially that required to make a group complete</li>
+</ol>
+</blockquote>
+<p>这个解释就很贴切了, N = X's complement C 的每一个位置 i, 都有, <code>N[i] + C[i] = X</code></p>
+<h2>用 10 进制理解 complement</h2>
+<p>举例, 10 进制中,</p>
+<ul>
+<li>4 的 9's complement = 5</li>
+<li>44 的 9's complement = 55</li>
+<li>444 的 9's complement = 5555</li>
+<li>4 的 10's complement = 6</li>
+<li>44 的 10's complement = 56</li>
+</ul>
+<p>可以看出, 9's complement 很容易算, 10 则需要考虑, 因为 0 - 4 需要借位, 不是直观的做法</p>
+<p>那么就归纳出一个结论, 一个记数系统, 最大的数字 M, 让它作为 complement 的标准, 会容易计算, 比如, 9 是 0-9 中最大的数字, 那么 9's complement 容易理解. 二进制中, 1's complement 容易理解. 比如 0000 的 1's complement 为 1111</p>
+<p>基于 9's complement 的加减法也很有意思: 假设一个记述系统, 只有一个位, 内容是 0-9, 现在计算 x - y, 假设 x = 8, y = 5 计算步骤如下:</p>
+<ul>
+<li>8 - 5 = 9 - 9 + 8 - 5</li>
+<li>= 9 - (9 - 8) - 5</li>
+<li>= 9 - ((9 - 8) + 5)</li>
+</ul>
+<p>相当于, 8 的 9's complement + 5, 得出的结果 r, 取 r 的 9's complement</p>
+<p>还有一种算法:</p>
+<ul>
+<li>8 - 5 = 9 - 9 + 8 - 5</li>
+<li>= 9 - 5 + 8 - 9</li>
+<li>= ((9 - 5) + 8) - 10 + 1</li>
+<li>= 12 - 10 + 1</li>
+<li>= 3</li>
+</ul>
+<p>相当于, 取 5 的 9's complement 加上 8, 得出结果 r, r 将它溢出的位去掉(减去 10), 最后 + 1</p>
+<p>问题在于如果将 8 换成 2, 则没有溢出, 用第一种方法, 结果是 9 - ((9-2) + 5) = 9 - 12 = -3</p>
+<p>第二种方法: ((9-5)+2) - 10 + 1 = 6 - 10 + 1 = -3</p>
+<p>这么做对习惯用十进制的我们而言是很自然的事, 但此时我们需要用 complement 的思维来考虑, 假设减法的数学语法是 <code>被减数(minuend) - 减数(subtrahend) = difference</code>, 那么被减数必须是 complement 的目标, 在这就是 10, 不允许 6 或者 7 充当被减数.</p>
+<p>回到第二种方法, 先不考虑丢掉溢出的数字, 那么有 ((9-5)+ 2) = 6, 6 + 1 = 7, 7 恰好是 3 的 10's complement, 如果我们发现结果没有溢出, 取它的 10's complement, 然后加上一个负号</p>
+<p>问题在于, 某些记述系统没有负号. 和刚才在二进制方面的说法一样, 一半数字用来代表正数, 一半用来代表负数, 比如 0 ~ 9 一共 10 种情况, 让 0, 1, 2, 3, 4 表示正数, 5, 6, 7, 8, 9 表示负数, 5 表示什么, 我们暂时不知道.</p>
+<p>接着把加 1 上升到更难以理解的层面: end-around carry. 上面 2 个例子中, 不减去 10(从 0 分裂出来的一部分, 另一部分是正数 10), 因为根本没有 10 这种东西存在, 这个系统只有 1 个数字位.</p>
+<p>考虑 2 种情况:</p>
+<ul>
+<li>x = 8 的时候, ((9 - 5) + 8) - 10 + 1: 丢弃后两个部分, 运算直接变成, 减数的 9's complement + 被减数, 这是一个公式. ((9 - 5) + 8) 取得 12 之后, 看到 12, 1 是溢出位, 作为一种观察结果, 我们发现 -10 已经被溢出实现了, 但是还缺少一个 +1, 这时候, 我们将 +1 从垃圾桶里面拿回来, 加在结果里面, 相当于 2 + 1 = 3</li>
+<li>x = 2 的时候, ((9-5)+2) - 10 + 1, 丢弃 -10 和 +1, 结果是 6, 没有溢出, 所以, $6_? = -3_{10}$, 用问号表示这是一个不知道怎么命名的系统.</li>
+</ul>
+<p>有以下对应关系:</p>
+<p>$$<br>
+\begin{aligned}<br>
+&amp;0_?:  0_{10} \\<br>
+&amp;1_?:  1_{10} \\<br>
+&amp;2_?:  2_{10} \\<br>
+&amp;3_?:  3_{10} \\<br>
+&amp;4_?:  4_{10} \\<br>
+&amp;5_?: -4_{10} \\<br>
+&amp;6_?: -3_{10} \\<br>
+&amp;7_?: -2_{10} \\<br>
+&amp;8_?: -1_{10} \\<br>
+&amp;9_?: -0_{10} \\<br>
+\end{aligned}<br>
+$$</p>
+<p>$5_? + 4_? = -4_{10} + 4_{10} = 9_? = -0_{10}$</p>
+<p>这就是 9' complement, 看起来很合理.</p>
+<h3>End-around borrow</h3>
+<p>为什么要大费周章将 8-5 转换成 9 - 9 + 8 - 5, 原因就是为了避免减法, 或者说, 根本就没有减法的存在, 只有翻转(flip), 4 在 9's complement 的翻转结果是 5, 1 在 1's complemnet 为 0, 二进制的翻转更方便, 因为它只有 2 种状态, 10 进制有 10 种状态. 用翻转将减法转换成加法.</p>
+<p>维基有<a href="https://en.wikipedia.org/wiki/Ones%27_complement#Negative_zero">例子</a></p>
+<p>? 系统的 2 - 8 相当于 10 进制系统的 2 - (-1) 等于 $3_{10}$:</p>
+<pre><code class="language-txt">    2
+-   8
+-----
+1   4   &lt;--- 需要借一个 1 使得 12 - 6 = 6
+-   1   &lt;--- 借了之后要还回去
+-----
+    3   ---&gt; 也刚好等于十进制的 3
+</code></pre>
+<p>? 系统的 7 - 8 相当于 10 进制系统的 (-2) - (-1) 等于 $-1_{10}$:</p>
+<pre><code class="language-txt">    7
+-   8
+-----
+1   9   &lt;--- 需要借一个 1 使得 12 - 6 = 6
+-   1   &lt;--- 借了之后要还回去
+-----
+    8   ---&gt; 等于十进制的 -1
+</code></pre>
+<p>个人认为, 这只是为了照顾我们的数学习惯发明出来的概念, 是一种巧合, 恰好减去 1 等于正确的结果.</p>
+<p>对计算机而言, 只有加法可以用. 汇编的 SUB N1, N2 指令只是将 N2 翻转, 然后加上 N1</p>
+<p>所以:</p>
+<p>$$<br>
+\begin{aligned}<br>
+2_? - 3_? &amp;= 2_{10} - 3_{10} = -1_{10} = 8_? \\<br>
+2_? - 3_? &amp;= 2_? + (-3_?) \\<br>
+&amp;= 2_? + 6_? = 8_? \\<br>
+&amp;= -1_{10}<br>
+\end{aligned}<br>
+$$</p>
+<p>减去 1 的原因可能是:</p>
+<p>$$<br>
+\begin{aligned}<br>
+2_? - 3_? &amp;= 2_? + (-3_?) \\<br>
+&amp;= 2_? + (10_? - 1_? - 3_?) \\<br>
+&amp;= 2_? + 10_? -3_? - 1_? \\<br>
+&amp;= 9_? - 1_? \\<br>
+&amp;= 8_?<br>
+\end{aligned}<br>
+$$</p>
+<p>我们可以说, 所有运算和 10 进制一样, 不管数字的意思是否和原本的意思一样, 不管 8 是否等于 8.</p>
+<h3>X 进制, 用 (X-1)'s complement 的方法总结</h3>
+<ol>
+<li>加法: 当结果溢出的时候, 将 1 从 MSB 放回到 LSB, 这种回环的方式, 来自上面两节的推导: -10 + 1, 我们不需要在意 -10, 因为它溢出了, 计算机直接将它丢弃, 但是要在意 1, 因为丢弃或者不丢弃 -10 对有效位都是一样的.(这里只有 1 个有效位). 所以最后要 +1</li>
+<li>减法: 当结果向溢出的位置借了一个 1 的时候, 要在 LSB 减去 1, 或者, 干脆不用减法, 取减数的 (X-1)'s complement, 加上减数, 执行步骤 1</li>
+</ol>
+<h2>2's Complement</h2>
+<p>二进制的 1's complement: C(N) = 1- N</p>
+<ul>
+<li>N = 0 时 C(N) = 1</li>
+<li>N = 1 时 C(N) = 0</li>
+</ul>
+<p>二进制的 2's complement?</p>
+<ul>
+<li>N = 0, C(N) = 2</li>
+<li>N = 1, C(N) = 1</li>
+</ul>
+<p>由于二进制只有 2 个数字, 所以</p>
+<ul>
+<li>$N=0, C_2(N) = 2 = C_1(N) + 1$</li>
+<li>$N=1, C_2(N) = 1 = C_1(N) + 1$</li>
+</ul>
+<p>所以</p>
+<p>$C_2(N) = C_1(N) + 1$</p>
+<p>二进制的 2's complement 又称为 radix complement, y 的 radix complement = $b^{n} - y$, b 为进制, n 为数字位数., 所以二进制 y 的 2's complement = $2^{n} - y$.</p>
+<p>为什么讨论这个东西? 我们看了 9's complement 实现的 ? 记数系统有 2 个 0, 加减需要 end-around carry/borrow 使得算法变得十分复杂. 只要让 1111 + 1 就可以把 -0 溢出成 0, 这样记数系统就只剩下 1 个 0</p>
+<p>0000 通过 1's complement 翻转成 1111<br>
+0001 通过 1's complement 翻转成 1110</p>
+<p>如果用 2's complement</p>
+<p>0000 通过 2's complement 翻转成 1111 + 1 = 10000<br>
+0001 通过 2's complement 翻转成 1110 + 1 = 1111<br>
+0010 通过 2's complement 翻转成 1101 + 1 = 1110</p>
+<p>$0001_2 + 1111_2 = 1_{10} + -1_{10} = 0{10} = 10000_2 = 0000_2$</p>
+<p>这和 2 + 8 = 10 是一样的. 用 10's complement, 你不需要把 carry 加回去, 你直接把 carry 扔掉即可</p>
+<p>十进制用 9' complement 算负数:</p>
+<ul>
+<li>8 - 5</li>
+<li>= 9 - 9 + 8 - 5</li>
+<li>= 9 - 5 + 8 - 9</li>
+<li>= ((9 - 5) + 8) - 10 + 1</li>
+<li>= 12 - 10 + <strong>1</strong></li>
+<li>= 3</li>
+</ul>
+<p>如果负数不是正数的 9's complement:</p>
+<ul>
+<li>8 - 5</li>
+<li>= 9 - 9 + 8 - 5</li>
+<li>= 9 - 5 + 8 - 9</li>
+<li>= ((9 - 5) + 8) - 10 + 1</li>
+</ul>
+<p>现在, 消灭 1</p>
+<ul>
+<li>= ((9 - 5) + 8) - 10 + 1</li>
+<li>= ((10 - 5) + 8) - 10</li>
+</ul>
+<p>与其让 8 + (-5) 变成 (翻转 5) + 8, 即 -5 等于 9-4, 不如让它变成 10 - 4, 这样就避免了 end-around carry.</p>
+<p>end-around borrow 也一样:</p>
+<p>$$<br>
+\begin{aligned}<br>
+2_? - 3_? &amp;= 2_? + (-3_?) \\<br>
+&amp;= 2_? + (9_? - 3_? + 1) \\<br>
+&amp;= 2_? + (10_? -3_?) \\<br>
+&amp;= 2_? + 7_? \\<br>
+&amp;= 9_? = -1_{10} \\<br>
+&amp;= C_9(1) + 1_? \\<br>
+&amp;= 8_? + 1_? \\<br>
+&amp;= 9_?<br>
+\end{aligned}<br>
+$$</p>
+<h3>Ring Structure</h3>
+<p>2's complement 产生 Ring Structure</p>
+<table>
+<thead>
+<tr>
+<th>radix 2</th>
+<th>radix 10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1101</td>
+<td>-3</td>
+</tr>
+<tr>
+<td>1110</td>
+<td>-2</td>
+</tr>
+<tr>
+<td>1111</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>0000</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0001</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0010</td>
+<td>2</td>
+</tr>
+<tr>
+<td>0011</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>模理论: N 位数字 Y 的反面 = $2^{N} - Y$</p>
+<p>$2^{N}$ 实际上已经溢出. Ring structure 只为描述 2'complement 的一种方便的表达方式.</p>
+<h2>结论</h2>
+<p>这就是现代计算机的记数系统, 使用 2's complement, 取一个数的反面.</p>
+<h2>参考</h2>
+<ul>
+<li><a href="https://www.embeddedrelated.com/showthread/comp.arch.embedded/18957-1.php">Example of subtraction with borrow?</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Signed_number_representations#Ones'_complement">Signed number representations</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Method_of_complements#Numeric_complements">Method of complements</a></li>
+<li><a href="https://www.allaboutcircuits.com/technical-articles/twos-complement-representation-theory-and-examples/#:~:text=to%202k%20.-,In%20the%20modulo%2DM%20arithmetic%2C%20M%E2%88%92b%20acts%20as,adding%201%20to%20the%20result.">Two’s Complement Representation: Theory and Examples</a></li>
+</ul>
+
+    </div>
+  </body>
+</html>

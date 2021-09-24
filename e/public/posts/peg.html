@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>Parsing Expression Grammar in C++</h1>
+      <p>写 C 的时候如果要用解析工具, 首选 yacc 和 lex, 我以前在<a href="/lex-yacc">实际项目中的用过</a>.</p>
+<p>写 C++ 的话, 也能用 yacc &amp; lex, 但这样不够 C++. 最后找到 <a href="https://github.com/yhirose/cpp-peglib">cpp-peglib</a>.</p>
+<p>参考作者的 <a href="https://github.com/yhirose/fizzbuzzlang/blob/master/fzbz.cc">fizzbuzz</a> 的写法, 结构很清晰: <code>source --(parser)--&gt; ast --(interpreter) --&gt; user-data</code></p>
+<p>Playground: <a href="https://yhirose.github.io/cpp-peglib/">https://yhirose.github.io/cpp-peglib/</a></p>
+<p>PEG 是比 CFG(Context-Free grammar) 多一些特性的一种语法, 举个例子, <code>N -&gt; a | b</code> , 如果一个节点为 N , 那么下一步必然先选择 a, 失败了再选 b, 这里面有个优先级. CFG 为什么没有优先级? 我不了解. 我自己手写 parser 的时候用的就是 PEG, 一个可能性失败了, 尝试另一个.</p>
+<p>这个库是用 C++17 写的, 里面使用了些新特征, 比如用 <code>string_view</code> 代替 <code>string</code>, <code>variant</code> 代替 <code>union</code>. Yacc 用 union 来返回每颗子树代表的数据. 所以这些工具的逻辑是一样的. 这个库的缺点是使用 <code>constexpr</code> 计算哈希值, 导致编译时间特别长, 8 秒左右.</p>
+<p>Graphviz 给出了语法: <a href="https://graphviz.org/doc/info/lang.html">https://graphviz.org/doc/info/lang.html</a>, 我发现的时候我已经写完了, 所以就不改了.</p>
+<p>我做这个的目的在于把图算法做得更可视化, 这是最终效果. 也可以做成动图, 不过目前来说这就够了</p>
+<p><img src="peg/7ccd3605c53d46a684a017007afec5f0_.png" alt=""></p>
+<p>代码:</p>
+<pre><code>#include &lt;any&gt;
+#include &lt;fstream&gt;
+#include &lt;map&gt;
+#include &lt;peglib.h&gt;
+#include &lt;regex&gt;
+#include &lt;string&gt;
+#include &lt;string&gt;
+#include &lt;utility&gt;
+#include &lt;variant&gt;
+#include &lt;vector&gt;
+
+using namespace peg;
+using namespace peg::udl;
+using namespace std;
+
+string grammar = R&quot;(
+
+
+DotFile &lt;- Spacing Graph EndOfFile
+Graph &lt;- Keyword Identifier Body
+Body &lt;- LPar Entry* RPar
+Entry &lt;- Node2Node / GeneralNodeAttr / KVs
+
+GeneralNodeAttr &lt;- NodeKeyWord LBox KVs RBox
+Node2Node &lt;- Identifier Connector Identifier NodeAttrs
+
+Connector &lt;- Line / Arrow
+NodeAttrs &lt;- LBox KVs RBox
+
+KVs &lt;- Pair (AttrDelim Pair)*
+
+Pair &lt;- Keyword EQ Value Spacing
+Value &lt;- Char+
+
+Identifier &lt;- Letter Char* Spacing
+
+Char      &lt;- [a-zA-Z_0-9]
+Letter    &lt;- [a-zA-Z_]
+LBox      &lt;- '['      Spacing
+RBox      &lt;- ']'      Spacing
+LPar      &lt;- '{'      Spacing
+RPar      &lt;- '}'      Spacing
+EQ        &lt;- '='      Spacing
+Line      &lt;- '--'     Spacing
+Arrow     &lt;- '-&gt;'     Spacing
+AttrDelim &lt;- ',' Spacing
+
+NodeKeyWord &lt;- 'node' Spacing
+Keyword  &lt;- Reserved (!Char) Spacing
+Reserved &lt;- ('label' / 'color' / 'margin' / 'shape' / 'penwidth' / 'graph' / 'rankdir')
+
+Spacing &lt;- Space*
+Space &lt;- ' ' / '\t' / EndOfLine
+EndOfLine &lt;- '\r\n' / '\n' / '\r'
+EndOfFile &lt;- !.
+
+)&quot;;
+
+struct DestNode
+{
+    string node;
+    int weight;
+};
+
+struct Graph
+{
+    map&lt;string, vector&lt;DestNode&gt;&gt; list;
+    vector&lt;string&gt; attrs;
+    void display() const
+    {
+        for (auto p : list)
+        {
+            cout &lt;&lt; p.first &lt;&lt; &quot; &quot;;
+            for (auto e : p.second) {
+                cout &lt;&lt; e.node &lt;&lt; &quot;:&quot; &lt;&lt; e.weight &lt;&lt; &quot; &quot;;
+            }
+            cout &lt;&lt; endl;
+        }
+    }
+};
+
+struct NodePair
+{
+    string src;
+    DestNode dest;
+};
+
+struct Entry
+{
+    Entry() : tag(0) {}
+    Entry(NodePair n, unsigned int t) : np(n), tag(t) {}
+    NodePair np;
+    unsigned int tag;
+};
+
+using KV = pair&lt;string, string&gt;;
+using Attrs = map&lt;string, string&gt;;
+
+struct Value;
+using Function = function&lt;Value(const Value &amp;)&gt;;
+
+struct Value
+{
+    variant&lt;nullptr_t, string, bool, long, Attrs, Entry, Graph, KV,
+            NodePair&gt;
+        v;
+
+    Value() : v(nullptr) {}
+
+    explicit Value(bool b) : v(b) {}
+    explicit Value(long l) : v(l) {}
+    explicit Value(string s) : v(s) {}
+    explicit Value(Graph g) : v(move(g)) {}
+    explicit Value(Entry e) : v(move(e)) {}
+    explicit Value(NodePair p) : v(move(p)) {}
+    explicit Value(KV kv) : v(move(kv)) {}
+    explicit Value(Attrs a) : v(move(a)) {}
+
+    template &lt;typename T&gt; T get() const
+    {
+        try
+        {
+            return std::get&lt;T&gt;(v);
+        }
+        catch (bad_variant_access &amp;)
+        {
+            throw runtime_error(&quot;type error.&quot;);
+        }
+    }
+};
+
+
+//-----------------------------------------------------------------------------
+// Interpreter
+//-----------------------------------------------------------------------------
+
+Value eval_char(const Ast &amp;ast, size_t start, size_t end)
+{
+    string s;
+    for (size_t i = start; i &lt; end; i += 1)
+    {
+        s += (*ast.nodes[i]).token;
+    }
+    return Value(s);
+}
+
+Value eval_value(const Ast &amp;ast)
+{
+    string s;
+
+    for (size_t i = 0; i &lt; ast.nodes.size(); i += 1)
+    {
+        s += (*ast.nodes[i]).token;
+    }
+    return Value(s);
+}
+
+Value eval_identifier(const Ast &amp;ast)
+{
+    auto s = string((*ast.nodes[0]).token);
+    for (size_t i = 1; i &lt; ast.nodes.size() - 1; i += 1)
+    {
+        s += (*ast.nodes[i]).token;
+    }
+    return Value(s);
+}
+
+#define eval_keyword eval_identifier
+
+Value eval_pair(const Ast &amp;ast)
+{
+    auto key = eval_keyword(*ast.nodes[0]).get&lt;string&gt;();
+    auto value = eval_value(*ast.nodes[2]).get&lt;string&gt;();
+    return Value(KV{key, value});
+}
+
+Value eval_kvs(const Ast &amp;ast)
+{
+    Attrs attrs;
+    for (size_t i = 0; i &lt; ast.nodes.size(); i += 2)
+    {
+        auto p = eval_pair(*ast.nodes[i]).get&lt;KV&gt;();
+        attrs.insert(p);
+    }
+
+    return Value(attrs);
+}
+
+Value eval_nodeattrs(const Ast &amp;ast)
+{
+
+    return eval_kvs(*ast.nodes[1]);
+}
+
+Value eval_node2node(const Ast &amp;ast)
+{
+    NodePair p;
+    p.src = eval_identifier(*ast.nodes[0]).get&lt;string&gt;();
+    p.dest.node = eval_identifier(*ast.nodes[2]).get&lt;string&gt;();
+    // auto conn = eval(*ast.nodes[1]).get&lt;string&gt;();
+
+    auto attrs = eval_nodeattrs(*ast.nodes[3]).get&lt;Attrs&gt;();
+    string w = string(attrs[&quot;label&quot;]);
+    p.dest.weight = atoi(w.c_str());
+
+    return Value(Entry{p, &quot;Node2Node&quot;_});
+}
+
+Value eval_subentry(const Ast &amp;ast)
+{
+    auto tag = &quot;Node2Node&quot;_;
+    if ((*ast.nodes[0]).tag == tag)
+    {
+        return eval_node2node(*ast.nodes[0]);
+    }
+    else
+        return Value(Entry());
+}
+
+Value eval_entry(const Ast &amp;ast)
+{
+    return eval_subentry(ast);
+}
+
+Value eval_body(const Ast &amp;ast)
+{
+    Graph graph;
+    for (size_t i = 1; i &lt; ast.nodes.size() - 1; i += 1)
+    {
+        auto e = eval_entry(*ast.nodes[i]).get&lt;Entry&gt;();
+
+        if (e.tag == &quot;Node2Node&quot;_)
+        {
+            if (graph.list.find(e.np.src) == graph.list.end())
+            {
+                graph.list[e.np.src] = vector&lt;DestNode&gt;{e.np.dest};
+            }
+            else
+            {
+                graph.list[e.np.src].push_back(e.np.dest);
+            }
+        }
+    }
+    return Value(graph);
+}
+
+Value eval_graph(const Ast &amp;ast)
+{
+    return eval_body(*ast.nodes[2]);
+}
+
+Value eval_dotfile(const Ast &amp;ast)
+{
+    return eval_graph(*ast.nodes[1]);
+}
+
+Value interpret(const Ast &amp;ast)
+{
+    return eval_dotfile(ast);
+}
+
+shared_ptr&lt;Ast&gt; parse(const string &amp;grammar, const string &amp;source)
+{
+    parser parser(grammar);
+    parser.enable_ast();
+    std::shared_ptr&lt;Ast&gt; ast;
+    if (parser.parse_n(source.data(), source.size(), ast))
+    {
+        return ast;
+    }
+    return nullptr;
+}
+
+int main(int argc, char **argv)
+{
+    string src = R&quot;(
+    graph A {
+        A -- B [label=2]
+        A -- C [label=5]
+        B -- C [label=6]
+        B -- E [label=3]
+        B -- D [label=1]
+        C -- F [label=8]
+        D -- E [label=4]
+        E -- G [label=9]
+        F -- G [label=7]
+    }
+    )&quot;;
+
+    auto ast = parse(grammar, src);
+    if (!ast)
+    {
+        return 3;
+    }
+
+    auto graph = interpret(*ast).get&lt;Graph&gt;();
+    graph.display();
+}
+
+
+</code></pre>
+<p>结果:</p>
+<pre><code>A B:2 C:5 
+B C:6 E:3 D:1 
+C F:8 
+D E:4 
+E G:9 
+F G:7 
+</code></pre>
+
+    </div>
+  </body>
+</html>

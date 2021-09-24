@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>建一条 IPsec 隧道(A Beginner&#39;s Guide To IPsec)</h1>
+      <p>完成待办事件里面的一件事: 建一条 IPSEC 隧道.</p>
+<p>网络拓扑如封面图所示, 主机 1, 2 之间是交换机, 我想加密它们之间的连接.</p>
+<p>在家做实验: 在树莓派(简称 Pi)和另一台 arm 设备 R2s 之间建立隧道.</p>
+<p>首先了解什么是 IPSEC(IP Security) 是一种用于建立 VPN 的协议,  有 3 个主要概念:</p>
+<ol>
+<li>ESP(Encapsulated Security Payload) 用于封装原报文</li>
+<li>AH(Authentication Header)用于认证</li>
+<li>SA(Security Association)绑定隧道两端</li>
+</ol>
+<p>我们暂时只需了解这些, 在这个实验中, SA 是 Pi 和 R2s, ESP 是加密后的 ping 消息, 为方便期间, 仅给 AH 配置对称加密.</p>
+<h2>搭建环境</h2>
+<p>首先搭建环境, R2s 为 192.168.42.3, 内网是 10.0.3.1, Pi 同理.</p>
+<p><img src="ipsec/5a8257d4f88c435c90de43672bdf0fff_.png" alt=""></p>
+<p>为了制造一个内网的假象, 在 R2s 上加上一个地址</p>
+<pre><code>ip addr add 10.0.3.1/24 dev eth0
+</code></pre>
+<p>Pi 同理</p>
+<h2>安装 StrongSwan</h2>
+<pre><code>$ sudo apt update
+$ sudo apt install strongswan 
+</code></pre>
+<h2>配置</h2>
+<p>开启转发</p>
+<pre><code>$ sudo vim /etc/sysctl.conf
+net.ipv4.ip_forward = 1 
+net.ipv6.conf.all.forwarding = 1 
+net.ipv4.conf.all.accept_redirects = 0 
+net.ipv4.conf.all.send_redirects = 0 
+$ sudo sysctl -p
+</code></pre>
+<p>安装 StrongSwan</p>
+<pre><code>$ sudo apt update
+$ sudo apt install strongswan 
+</code></pre>
+<p>配置两端</p>
+<pre><code>$ sudo cp /etc/ipsec.conf /etc/ipsec.conf.orig
+$ sudo nano /etc/ipsec.conf 
+</code></pre>
+<p>R2s 的配置</p>
+<pre><code># /etc/ipsec.conf
+
+config setup
+        charondebug=&quot;all&quot;
+        uniqueids=yes
+conn devgateway-to-prodgateway
+        type=tunnel
+        auto=start
+        keyexchange=ikev2
+        authby=secret
+        left=192.168.42.3
+        leftsubnet=10.0.3.1/24
+        right=192.168.42.73
+        rightsubnet=10.0.73.1/24
+        ike=aes256-sha1-modp1024!
+        esp=aes256-sha1!
+        aggressive=no
+        keyingtries=%forever
+        ikelifetime=28800s
+        lifetime=3600s
+        dpddelay=30s
+        dpdtimeout=120s
+        dpdaction=restart
+</code></pre>
+<p>Pi 的配置</p>
+<pre><code># /etc/ipsec.conf
+
+config setup
+        charondebug=&quot;all&quot;
+        uniqueids=yes
+conn devgateway-to-prodgateway
+        type=tunnel
+        auto=start
+        keyexchange=ikev2
+        authby=secret
+        left=192.168.42.73
+        leftsubnet=192.168.42.73/24
+        right=192.168.42.3
+        rightsubnet=192.168.42.3/24
+        ike=aes256-sha1-modp1024!
+        esp=aes256-sha1!
+        aggressive=no
+        keyingtries=%forever
+        ikelifetime=28800s
+        lifetime=3600s
+        dpddelay=30s
+        dpdtimeout=120s
+        dpdaction=restart
+</code></pre>
+<p>生成一个密钥</p>
+<pre><code>➜  ~ head -c 24 /dev/urandom | base64
+KRIweyhJwSTMEofiH6IPd2gm8FjB6cGY
+</code></pre>
+<p>分别加入 R2s 和 Pi 的 <code>/etc/ipsec.secrets</code></p>
+<pre><code>❯ cat /etc/ipsec.secrets
+192.168.42.73 192.168.42.3 : PSK &quot;KRIweyhJwSTMEofiH6IPd2gm8FjB6cGY&quot;
+192.168.42.3 192.168.42.73 : PSK &quot;KRIweyhJwSTMEofiH6IPd2gm8FjB6cGY&quot;
+
+</code></pre>
+<p>分别启动</p>
+<pre><code>ipsec restart
+</code></pre>
+<h2>完成</h2>
+<p>测试效果, 在 Pi 上 ping R2s</p>
+<p><img src="ipsec/910688af7ad6465b86b5dee1cf279959_.png" alt=""></p>
+<p>在 R2s 上抓包, 发现了加密后的信息</p>
+<p><img src="ipsec/ac3f739c4a644ec89df81f46c3c4e28b_.png" alt=""></p>
+<p>原来的报文只有 64 字节, 加密和封装后变成 132 字节.</p>
+<p><img src="ipsec/6d8802636b0e435ca0bbf6e29ce9053f_.png" alt=""></p>
+<h2>参考</h2>
+<ol>
+<li><a href="https://www.lartc.org/lartc.html#LARTC.IPSEC">lartc</a></li>
+<li><a href="https://www.tecmint.com/setup-ipsec-vpn-with-strongswan-on-debian-ubuntu/">How to Set Up IPsec-based VPN with Strongswan on Debian and Ubuntu</a></li>
+</ol>
+
+    </div>
+  </body>
+</html>

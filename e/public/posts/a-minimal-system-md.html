@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>A Example of Installing Device Driver Onto A Linux-based System Image And ReExporting It</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>一个系统的驱动注入与镜像制造</h1>
+      <p>处理一个微型系统无法识别 USB 3.0 的问题.</p>
+<ol>
+<li>在内核代码根目录, <code>make menuconfig</code>, 选择 driver 中 USB 相关选项: file system 处的 fat, ntfs, 重新编译 bzImage: <code>make bzImage</code></li>
+<li>把系统 img 文件挂载成 loop 设备, 放入 bzImage, 然后 umount, 压缩成 gz 格式.</li>
+<li>测试反馈用 winhex 刷出来的系统不能启动, 我用 dd 刷出来的可以, 他们坚持要用 Windows 的工具.</li>
+<li>登陆设备, 挂载系统分区 <code>mount /dev/sda /mnt</code>, 将 bzImage 等文件放入, 重新 dd 成 img, 再压缩成 gz 格式, winhex 依然刷不出来</li>
+<li>登陆设备, 挂载系统分区 <code>mount /dev/sda /mnt</code>, 将 bzImage 等文件放入, 直接输出 gz 文件: <code>dd if=/dev/sda bs=4M | gzip &gt; a.img.gz</code>, winhex 刷的系统成功启动.</li>
+<li>验证. 此系统监听到 U 盘插入后, 不会主动将其挂载到 <code>/dev</code> 目录, 所以 <code>fdisk -l</code> 找不到, 估计是缺了某些模块, 导致不支持热插拔. 需要手动执行 <code>mdev -s</code></li>
+</ol>
+<p>Todo:</p>
+<ol>
+<li>第 4, 5 步的区别就是怎么制造 gz 文件, 这种区别的本质是什么?</li>
+<li>了解 hotplug, udev, mdev</li>
+</ol>
+
+    </div>
+  </body>
+</html>

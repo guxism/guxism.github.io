@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>A Kernel Module Crose Compile Example For Raspberry Pi</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>树莓派交叉编译</h1>
+      <p>重新起用树莓派, 为方便起见, 还是将树莓派刷上 ubuntu 20.04.</p>
+<h2>编译应用</h2>
+<p>安装编译工具链</p>
+<pre><code>sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+</code></pre>
+<p>之后用 <code>aarch64-linux-gnu-*</code> 编译代码, 生成的文件拷到树莓派使用.</p>
+<h2>编译内核</h2>
+<p>下载源码</p>
+<pre><code>git clone git://kernel.ubuntu.com/kernel-ppa/mirror/ubuntu-raspi-focal.git
+git checkout Ubuntu-raspi-5.4.0-1015.15
+export CROSS_COMPILE=aarch64-linux-gnu-
+export ARCH=arm64
+</code></pre>
+<p>将 pi 的配置文件拷到编译目录</p>
+<pre><code>scp root@pi:/boot/config-5.4.0-1015-raspi .config
+</code></pre>
+<p>更新配置, 将来自 pi 的 config 与 pi 当前发行版源码的 config 进行校对并更新, 生成新的 .config</p>
+<pre><code>make oldconfig
+</code></pre>
+<p>执行 make 编译所有东西, 但我主要关注的是自定义模块</p>
+<p>编译一个 <a href="https://github.com/guxism/Practice/tree/master/native/kernel/helloworld">demo</a></p>
+<pre><code>make KERNEL=/home/this/ubuntu-raspi-focal
+</code></pre>
+<p>编译出来的 hello.ko 在 pi 上有版本不匹配的问题</p>
+<pre><code>[48134.583658] hello: version magic '5.4.44 SMP mod_unload aarch64' should be '5.4.0-1015-raspi SMP mod_unload aarch64'
+</code></pre>
+<p>解决方法：</p>
+<p>步骤 1：编辑 Makefile</p>
+<p><img src="rapsberry-4b-dev/7351a0d62e21412a9d211fb7576110d2_.png" alt=""></p>
+<p>步骤 2： 编辑 .config</p>
+<p><img src="rapsberry-4b-dev/089c9562aa6d466db551004183de94d1_.png" alt=""></p>
+<p>步骤 3：在源码根目录创建空白文件 <code>touch .scmversion</code>, 否则因为源码有修改而造成版本号出现一个 <code>+</code> 后缀, 为什么会这样, 暂时找不到资料. 也可以改 <code>include/generated/utsrelease.h</code>, 但可以看出, 这个文件是生成的.</p>
+<p><img src="rapsberry-4b-dev/d2669c3ab601483490916a25cb4e4eda_.png" alt=""></p>
+<p>创建 .scmversion 后问题解决：</p>
+<p><img src="rapsberry-4b-dev/b5d68834bac840808bb53ce1e7e93d61_.png" alt=""></p>
+<h2>参考</h2>
+<ol>
+<li><a href="https://ubuntu.com/download/raspberry-pi">https://ubuntu.com/download/raspberry-pi</a></li>
+<li><a href="https://www.raspberrypi.org/documentation/installation/installing-images/">https://www.raspberrypi.org/documentation/installation/installing-images/</a></li>
+<li><a href="https://www.kernel.org/doc/html/latest/kbuild/makefiles.html">https://www.kernel.org/doc/html/latest/kbuild/makefiles.html</a></li>
+<li><a href="https://wiki.ubuntu.com/ARM/RaspberryPi">https://wiki.ubuntu.com/ARM/RaspberryPi</a></li>
+<li><a href="https://wiki.ubuntu.com/Kernel/SourceCode#:~:text=Obtaining%20the%20kernel%20sources%20for%20an%20Ubuntu%20release%20using%20git&amp;text=git%3A%2F%2Fgit.launchpad.net,source%2Flinux%2F%2Bgit%2Fcosmic">https://wiki.ubuntu.com/Kernel/SourceCode#:~:text=Obtaining the kernel sources for an Ubuntu release using git&amp;text=git%3A%2F%2Fgit.launchpad.net,source%2Flinux%2F%2Bgit%2Fcosmic</a></li>
+<li><a href="https://wiki.ubuntu.com/KernelTeam/ARMKernelCrossCompile">https://wiki.ubuntu.com/KernelTeam/ARMKernelCrossCompile</a></li>
+<li><a href="https://stackoverflow.com/questions/19333918/dont-add-to-linux-kernel-version">https://stackoverflow.com/questions/19333918/dont-add-to-linux-kernel-version</a></li>
+<li><a href="https://laptrinhx.com/the-method-of-removing-the-plus-after-the-linux-kernel-version-number-2711418785/amp/">https://laptrinhx.com/the-method-of-removing-the-plus-after-the-linux-kernel-version-number-2711418785/amp/</a></li>
+</ol>
+
+    </div>
+  </body>
+</html>

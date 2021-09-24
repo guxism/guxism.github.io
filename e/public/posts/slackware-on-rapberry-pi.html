@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>Try Slackware on Raspberry Pi</h1>
+      <p><img src="slackware-on-rapberry-pi/0439221e644c4d239aad7fdbd859ba54_.png" alt=""></p>
+<p>材料:</p>
+<ul>
+<li>64 Gb microSD card</li>
+<li>Raspberry Pi 4 Model B</li>
+</ul>
+<p>进官网 Howto, <a href="https://docs.slackware.com/howtos:hardware:arm:raspberrypi4">Slackware ARM on a Raspberry Pi 4</a></p>
+<p>下载 Slackware releases 14.2, -current</p>
+<h2>1. 分区</h2>
+<pre><code>Device         Boot  Start       End   Sectors   Size Id Type
+/dev/mmcblk0p1 *        32    296831    296800 144.9M  c W95 FAT32 (LBA)
+/dev/mmcblk0p2      296960 124735487 124438528  59.3G 83 Linux
+</code></pre>
+<p><code>mkfs.vfat</code> 实际上并没有将第一个分区设置成 W95 FAT32, 不知道原因, 暂时不管了. 这里的 W95 FAT32 (LBA) 是我烧 installer 烧出来的（详情：<a href="https://sarpi.fatdog.eu/index.php?p=sdconfig">sarpi configure a microSD card</a>. 使用 Installer 的方式刷系统会失败, 但分区方法没问题.</p>
+<h2>2. 拷贝文件</h2>
+<p>按 <a href="https://docs.slackware.com/howtos:hardware:arm:raspberrypi4">Slackware ARM on a Raspberry Pi 4</a> 中的步骤进行</p>
+<pre><code>$ git clone https://github.com/raspberrypi/firmware.git
+$ sudo mount /dev/mmcblk0p1 ~/mnt
+$ sudo cp -r firmware/boot/* ~/mnt
+$ sudo umount ~/mnt
+$ sudo mount /dev/mmcblk0p2 ~/mnt
+$ sudo mkdir -p ~/mnt/lib/modules
+$ sudo cp -r firmware/modules/* ~/mnt/lib/modules
+$ sudo umount ~/mnt
+$ wget -c ftp://ftp.arm.slackware.com/slackwarearm/slackwarearm-devtools/minirootfs/roots/slack-14.2-miniroot_01Jul16.tar.xz
+$ sudo mount /dev/mmcblk0p2 ~/mnt
+$ sudo tar -C ~/mnt -xf slack-14.2-miniroot_01Jul16.tar.xz
+</code></pre>
+<h2>3. 设置</h2>
+<p>我的 microSD card 第二分区 为 <code>/dev/sdf2</code></p>
+<pre><code class="language-bash">mount /dev/sdf2 slack
+cd slack
+echo &quot;/dev/mmcblk0p1 /boot vfat defaults 0 0&quot; | sudo tee etc/fstab
+echo &quot;/dev/mmcblk0p2 /     ext4 defaults 0 0&quot; | sudo tee -a etc/fstab
+echo &quot;proc           /proc proc defaults 0 0&quot; | sudo tee -a etc/fstab
+# 使用 dhcp
+sed -i 's|USE_DHCP\[1\]=&quot;&quot;|USE_DHCP\[1\]=&quot;yes&quot;|'  etc/rc.d/rc.inet1.conf
+</code></pre>
+<p>编辑 etc/sshd_config, 开放端口, 允许通过密码和 root 登录.</p>
+<p>设置 root 的密码：</p>
+<pre><code>$ openssl passwd -6 -salt xyz 123456   
+$6$xyz$sM0WfOmn8WNbV4Y2cP8qRjGYXyVCKGtSGDNlsmkwjpu9Xko0ZoR0dBcWoUcjiW9w4d2x62MbCpAkRh6ZoIU7R0
+</code></pre>
+<p>打开自己的系统的 /etc/shadow, 照抄, 但密码段用刚才生成的密文.</p>
+<pre><code>root:$6$xyz$sM0WfOmn8WNbV4Y2cP8qRjGYXyVCKGtSGDNlsmkwjpu9Xko0ZoR0dBcWoUcjiW9w4d2x62MbCpAkRh6ZoIU7R0:16983:0:99999:7:::
+</code></pre>
+<h2>4. 通电</h2>
+<p>将 microSD card 插入 raspberry pi,  通电, 红绿灯开始闪, 最后只剩红灯, 说明系统成功启动了.</p>
+<pre><code class="language-bash">ssh root@&lt;路由器上看到的 raspberry pi 地址&gt;
+root@slackware:~# uname -a
+Linux slackware.localdomain 4.19.118-v7l+ #1311 SMP Mon Apr 27 14:26:42 BST 2020 armv7l BCM2835 GNU/Linux
+</code></pre>
+
+    </div>
+  </body>
+</html>

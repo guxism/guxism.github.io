@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Analyzing The ACPI BIOS Error</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>笔记本安装 Linux 遇到的 ACPI BIOS Error 分析</h1>
+      <h2>刷机过程</h2>
+<p>回家之前把因 ACPI BIOS Error 装不上 Linux, 雪藏半年的 Bleeding Edge HP AMD 笔记本拿了出来, 经过更新 BIOS(实际上是 UEFI), 换内核等操作终于把 Ubuntu 装上了. 本文记录了这次刷机过程和 ACPI 的一些背景知识.</p>
+<p>如果你想在新出的笔记本装 Linux, 那么</p>
+<ol>
+<li>首先到 <a href="https://linux-hardware.org">linux-hardware</a> 这个网站, 看有没有成功按照上 Linux 的案例.</li>
+<li>更新 BIOS/UEFI, 更新内核.</li>
+<li>如果还不行, 就只能坐等更新.</li>
+</ol>
+<p>刷机经历</p>
+<ol>
+<li>我买这笔记本是为了装 Kali, 失败之后, 和 Manjaro, Arch, Fedora 一块在这半年前后一共装了两遍也还是无法启动系统.</li>
+<li>ParrotOS 提供 <code>acpi = off</code> [^1]的 Grub 选项, 但调节不了亮度, 关不了机.</li>
+<li>最后才装 Ubuntu, 是因为我的主力机已经是 Ubuntu. 装上之后, ACPI 正常, 显卡和触摸板仍有问题.</li>
+<li>更新到最新内核 5.10, 必须是带签名版本, 否则不能启动. 我最后装的是 5.10.0-1008-oem. 5.10 要求开启 secure boot, 先在 UEFI/BIOS 上关了 secure boot 装系统, 装完后用旧的内核运行系统, 装 5.10, 然后重进 UEFI, 开启 secure boot. 系统完美运行. 看系统启动日志 ACPI 已经启动.</li>
+</ol>
+<pre><code>[  OK  ] Created slice system-systemd\x2dbacklight.slice.
+         Starting Load/Save Screen Backlight Brightness of backlight:acpi_video0...
+[  OK  ] Finished Load/Save Screen Backlight Brightness of backlight:acpi_video0.
+...
+[  OK  ] Started ACPI Events Check.
+...
+[  OK  ] Listening on ACPID Listen Socket.
+...
+[  OK  ] Started ACPI event daemon.
+</code></pre>
+<p>以下是我提交到 <a href="https://linux-hardware.org">linux-hardware</a> 的记录.</p>
+<ol>
+<li><a href="https://linux-hardware.org/?probe=4149fbf824">https://linux-hardware.org/?probe=4149fbf824</a></li>
+<li><a href="https://linux-hardware.org/?probe=230e0b5182">https://linux-hardware.org/?probe=230e0b5182</a></li>
+<li><a href="https://linux-hardware.org/?probe=1e5e57866d">https://linux-hardware.org/?probe=1e5e57866d</a></li>
+</ol>
+<h2>ACPI 的细节</h2>
+<p>我以前由于工作原因了解过 BIOS, GRUB, 所以自以为能够解释 ACPI. 但写的时候发现我的理解和认识有许多漏洞. 虽然我全力追踪各个细节的因果关系, 历史背景, 但由于缺少实验, 文档也不好理解, 难免有纰漏, 以后有机会再继续更新. 关于 BIOS/UEFI 可以看这本书 <em>Hands-on Booting Learn the Boot Process of Linux, Windows, and Unix</em> by Yogesh Babar, ACPI 看官方文档[^7]</p>
+<ol>
+<li>ACPI(Advanced Configuration and Power Interface) 是用来控制电源设备的一个公开标准[^8], 在固件(BIOS 或 UEFI) 和操作系统之间定义一层抽象. 固件提供功能实现, ACPI 充当中间层, 提供操作系统上的运行时服务, 这样一来操作系统就不需要知道具体的固件指令.</li>
+<li>ACPI 还避免了直接的物理控制. 传统模式中, 你按电源按钮关机就会马上断电(<strong><em>我没试过</em></strong>), ACPI 模式中则是给 CPU 发出中断, CPU 准备好之后向 ACPI 发出关机指令.</li>
+<li>ACPI 提供 2 种数据类型[^8], <em>data table</em> 和 <em>definition blocks</em>. Data table 供设备驱动使用的原始数据(raw data). ACPI Machine Language(AML) 解析器将用 AML 写的 definition blocks 解析成 <em>Objects</em>, objects 是设备的控制方法. ACPI 命名空间是一个 OS 层面的 Objects 集合. 可以定义 APCI 是一个函数 $[ACPINS \to Objects]$</li>
+<li>ACPI 和操作系统启动过程
+<ol>
+<li>固件更新 ACPI tables
+<ol>
+<li>首先更新 XSDT: 指定了其他 ACPI tables 的地址</li>
+<li>FADT: 指向 DSDT, 后者指向 definition blocks</li>
+</ol>
+</li>
+<li>固件将控制交给 bootloader, 随后操作系统启动, 通过 DSDT 创建 ACPI 命名空间.</li>
+<li>操作系统遍历 ACPI 命名空间, 加载命名空间里面的设备的驱动.</li>
+</ol>
+</li>
+<li>例子: 控制温度
+<ol>
+<li>操作系统在 ACPI 命名空间找到 thermal zone, 加载 thermal zone handler .</li>
+<li>温度达到某个目标点的时候, 硬件产生一个 GPE(general purpose event).</li>
+<li>操作系统收到这个事件, 调用 thermal zone handler, 后者在 ACPI 命名空间寻找 object. 找到之后, 让 ACPI 执行在这个 object, 控制电量.</li>
+<li>Thermal zone handler 处理其他事务, 比如开启风扇, 降低设备性能.</li>
+</ol>
+</li>
+<li>关于为何 Linux 出现 ACPI 错误, Askubuntu 有个阴谋论色彩的回答[^3], 说有些主板的 ACPI 是 Windows 用的, Linux 要破解每个主板的 ACPI 才能使用. <a href="https://www.kernel.org/doc/ols/2007/ols2007v1-pages-65-74.pdf">ACPI in Linux – Myths vs. Reality</a> 称不兼容的一个常见原因是 Windows 使用 real-time clock 而 Linux 用 programmable interrupt timer. 我更新了 UEFI, 但半年中, Ubuntu 是否更新了内核, 我不确认, 所以不确定关键因素是什么.</li>
+<li>根据我们对 ACPI 的了解, 再看报错信息
+<ul>
+<li><img src="linux-acpi/260267f3133f4fae9c47a4bcdda356bc_.png" alt=""></li>
+<li>猜想: 是一个越界问题, AML 解释器 definition blocks 解析出来的 object 只有 5 个, Index 0x05 访问越界(<em>AE_AML_PACKAGE_LIMIT</em>). 因为这个问题, 导致 definition blocks 转换 ACPI Namespace 的过程失败. 里面的 method(control method object) 无法转换成对应项, <code>\_TZ.GTTP</code>, <code>\_TZ.CHGZ._TMP</code> 等等 .</li>
+</ul>
+</li>
+<li>Secure Boot 的作用是防止恶意软件<a href="https://wiki.ubuntu.com/UEFI/SecureBoot">^2</a>, 微软首先实践了这个理念, 凡是 UEFI 启动的程序(bootloader, 比如 GRUB), 都必须经过签名验证. 标准规定 UEFI 应提供禁用 Secure Boot 的选项. 如果没有禁用验证的选项, 则 Linux 需要用微软的密钥签名. 最后 Linux 社区和微软达成协议, Linux 可以用微软的密钥, 同时 Linux 也想出 multi state bootloader 的策略, 将一个极少更新的 bootloader(<em>shim.efi</em>) 签名, 用来启动常规 bootloader(grubx64.efi).
+<ul>
+<li><img src="linux-acpi/b073dc7b19aa4469b1836cd162658857_.png" alt=""></li>
+</ul>
+</li>
+</ol>
+<p>[^4]: <a href="https://www.kernel.org/doc/ols/2007/ols2007v1-pages-65-74.pdf">Linux typically uses the 8254 Programmable Interrupt Timer (PIT) for clock ticks. This timer is typically routed to IRQ0 via either IO-APIC pin0 or pin2. But Windows doesn’t always use the PIT; it uses the RTC on IRQ8. So a system vendor that validates their system only with Windows and never even boots Linux before releasing their hardware may not notice that the 8254 PIT used by Linux is not hooked up properly.</a><br>
+[^1]: <a href="https://wiki.ubuntu.com/DebuggingACPI">事实上还有其他参数可以调整</a><br>
+[^6]: <a href="https://www.kernel.org/doc/ols/2005/ols2005v1-pages-59-76.pdf">ACPI IN LINUX</a><br>
+[^3]: <a href="https://askubuntu.com/a/1097335">https://askubuntu.com/a/1097335</a><br>
+[^7]: <a href="https://www.acpica.org/documentation">https://www.acpica.org/documentation</a><br>
+[^8]: <a href="https://acpica.org/sites/acpica/files/ACPI-Introduction.pdf">https://acpica.org/sites/acpica/files/ACPI-Introduction.pdf</a><br>
+[^9]: <a href="https://www.kernel.org/doc/ols/2007/ols2007v1-pages-65-74.pdf">Myth: The Linux community has no influence on the ACPI Specification.</a></p>
+
+    </div>
+  </body>
+</html>

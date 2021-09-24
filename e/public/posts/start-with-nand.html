@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>Build Anything With Only Nand Gates</h1>
+      <p><a href="http://nandgame.com/">http://nandgame.com/</a> 第 3 题, 用 nand, inv, and 实现 or</p>
+<p><img src="start-with-nand/972ec6c816ad46bb96105fe138bca48f_.png" alt=""></p>
+<p>这题也是需要推理的, 推理过程很有趣</p>
+<table>
+<thead>
+<tr>
+<th>a</th>
+<th>b</th>
+<th>out</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>首先定义</p>
+<p>$$<br>
+\begin{equation}<br>
+f(a, b) = 1<br>
+\end{equation}<br>
+$$</p>
+<p>那么 f(a, b) 等于</p>
+<pre><code>(not(a) and b) or
+(a and not(b)) or
+(a and b)
+</code></pre>
+<p>由于不允许使用 or, 所以先关注 (not(a) and b) 看如何调整</p>
+<p>a, b, not 的组合有四种情况</p>
+<ol>
+<li>not(a) and b</li>
+<li>a and not(b)</li>
+<li>a and b</li>
+<li>not(a) and not(b)</li>
+</ol>
+<p>发现前 3 行分别对应 f(a, b) 的三行定义, 所以</p>
+<p>$$<br>
+\begin{multline*}<br>
+f(a, b) = not(not(a)\quad and\quad  not(b))<br>
+= not(a)\quad nand\quad not(b)<br>
+\end{multline*}<br>
+$$</p>
+<p>所以就有了本文第一张图.</p>
+<p>其他函数的推理方式也是这样, 先用 <code>or</code> 将结果为 1 的表达式先罗列出来, 再想办法归约.</p>
+<h2>用 nand, inv, and, or 实现 xor</h2>
+<p><img src="start-with-nand/bc1477c6603445d88de0cd7fedc210a3_.png" alt=""></p>
+<p>结果</p>
+<p><img src="start-with-nand/51ffec53c8694ac796e7c5d21b89c723_.png" alt=""></p>
+<p>改成</p>
+<p><img src="start-with-nand/7386c75d8bc84a8e83de2c411ab7c57f_.png" alt=""></p>
+<p><img src="start-with-nand/a37787ddf0fb4aecad511095924a008c_.png" alt=""></p>
+<p>最优解： <a href="https://cs.stackexchange.com/questions/43342/how-to-construct-xor-gate-using-only-4-nand-gate/43344">https://cs.stackexchange.com/questions/43342/how-to-construct-xor-gate-using-only-4-nand-gate/43344</a></p>
+<p>根据布尔运算法则(Boolean Identities), 推理过程如下：</p>
+<pre><code>f(a, b) = (not(a) and b) or (a and not(b))
+        = not
+        (
+        	not(a) and not(b)
+        	or
+        	a and b
+        )
+        # DeMorgan‘s Laws
+        = not(not(a) and not(b)) and not(a and b)
+        # DeMorgan‘s Laws
+        = not(not(a or b)) and not(a and b)
+        = (a or b) and not(a and b)
+        = not(a and b) and (a or b)
+        # Distributive Laws
+        = (not(a and b) and a) or (not(a and b) and b)
+        # DeMorgan's Laws
+        = not
+        (
+        	not(not(a and b) and a)
+        	and
+        	not(not(a and b) and b))
+        )
+        = not
+        (
+        	((a nand b) nand a)
+        	and
+        	((a and b) nand b)
+        )
+        =
+        (
+        	((a nand b) nand a)
+        	nand
+       	  	((a and b) nand b)
+       	)
+</code></pre>
+<p><img src="start-with-nand/aa48cc8852eb4f03bedd1ab6e78e2dd9_.png" alt=""></p>
+<p>是最优解</p>
+<p><img src="start-with-nand/946b7450ad3046488eb3584dd96bb4bc_.png" alt=""></p>
+<p>上面的推理主要是围绕构造 <code>not(a and b)</code> (也就是 <code>(a nand b)</code>) 进行</p>
+<p>为什么要将 <code>nand</code> 设置为 <a href="https://www.nand2tetris.org/project01">primitive</a>, 难道工艺更简单吗? 可能是, 看了一天 <em>Digital Design and Computer Architecture</em> 第一章和其他入门资料, 我的结论是 NAND/MOR gate 比其他逻辑门花销少</p>
+<p><img src="start-with-nand/bbd4c0de47754d46a00b9a87a472c156_.png" alt=""></p>
+<p>NOT 应该是最简单的构造, 一个 nMOS 一个 pMOS, Input = 0 的时候, 上面的 pMOS 是通的, 所以 Output = 1.</p>
+<p>NAND 比 NOT 要多 2 个 MOSFETs, 但问题是, 把一个输入绑定到 NAND 的 2 个引脚就实现了 NOT, 所以没有必要单独再买一个 NOT.</p>
+<p>引用 <a href="https://www.coursera.org/learn/build-a-computer/lecture/CNo2D/unit-1-8-perspectives">nand2tetris</a> 的 FAQ:</p>
+<blockquote>
+<p>Student: So the first question of the day is : is it possible to build a computer starting with a logic gate other than NAND?</p>
+<p>Professor: Well I'll take this question and the answer is indeed yes, it's possible. For example, you can use another elementary gate called NOR, which stands for not or, and base your entire computer on this atomic building block.</p>
+<p>Likewise, it is quite natural to start with the suite consisting of and, or and not gates and use them to build a system.</p>
+<p>And there are a number of other possibilities. And in fact it's quite similar to the way geometry can be founded on different sets of axioms.</p>
+<p>And each one of them can be yet another point of departure to build, you know, all the power and theorems of geometry.</p>
+<p>This is not such a bad analogy. However, it turns out that NAND gates are very popular in physical implementations of hardware systems. Because there are many integrated circuit technologies in which it is quite cheap or relatively cheap to build NAND gates. As you well know during the course during the first week, we treated these NAND gates as black box abstractions.</p>
+</blockquote>
+<h2>Canonical Form</h2>
+<p>布尔代数运算有一套方法论, 前面说的用 OR 将结果为 1 的表达式联合起来的方法, 被称为 sum of products canonical form, 除此之外还有 product of the sum form, 将所有“结果为 0”的 maxterm 用 AND 联合起来.</p>
+<blockquote>
+<p>A maxterm is a sum involving all of the inputs to the function.</p>
+<p>A minterm is a product involving all of the inputs to the function.</p>
+</blockquote>
+<p>sum 相当于 OR 运算, product 相当于 AND.</p>
+<p>最后, 还有一套 k-map 理论, 详情看教材 Digital Design and Computer Architecure.</p>
+<h2>参考</h2>
+<ol>
+<li><img src="start-with-nand/14ba0bce26e54c0da2866ca8909a90c8_.png" alt=""></li>
+<li><a href="https://www.glassdoor.com/Interview/Which-is-preferred-NAND-or-NOR-And-why-QTN_158815.htm?__cf_chl_captcha_tk__=710d13f6df87e4f9b2430320ec04e40e19fb1e38-1606451332-0-AdOmcsx4bEunC-qEKyMYUyYFeHNgpRL8HgkYT0Zu0GGnxLRpkKxCkmlnEYrJj33qEwuOPZwLws15CepPC__aPLUQRnvLwNXxSOu644PvaAdWtow9gv6w9o_09BgrC5Q2dM9VxncdgGnNx0lYqYPQNl466Sij5lcWVjolwhKI4tWtE1mK0kbgZqWmMK-WHmqQioHZRkBlGJ66tEn-_hDOXrVNMD_nf4PaitsvIekwoMGVVXrmZrMugZF3X9VMMmpCpZLQQb09a8QLys22AJMpY2yKKDaEbFxQtri6e41BzbdNRegc4-yA4Dwp7hxxAYxnqKZft3wApFDXy3kfPS8E_-OZbAeV3pajSYAbl8T_6V2378obUuM8z8Yz2YdDTJnUUsU3klEWQhRWOOapZa5Y8P7yeW0U1pQy9IS6FeukkC__TdeagVgMHiCTsrbljAL59hwfXtrROo_IoMR1iWfGzIvx15KevCdaB3B2tMIiDT43hocrrL8f1ng4g7Pw0ceGYaoUbz6cFarhKHFHmq8vHJQ_iYQKFTxFEFpUP-x2prnktsLcdWnoqlU-D9PWjpojFRHAV8CZk8tY8qe8eDU-OreoW_WkcMPFU46C6t0Dm7aD-Q1Zj5MSq6NLgCNaEqtIU3ALsnNWUuUmFHT1IG-hAHKQnTi2LazP9ItAbmWi7tao"><em>Which is preferred NAND or NOR? And why?</em></a></li>
+<li><a href="https://en.wikipedia.org/wiki/Logical_effort">https://en.wikipedia.org/wiki/Logical_effort</a></li>
+<li><a href="https://www.quora.com/Why-do-we-use-NAND-and-NOR-Gate-for-implementing-any-logic-design">https://www.quora.com/Why-do-we-use-NAND-and-NOR-Gate-for-implementing-any-logic-design</a></li>
+<li><a href="https://www.allaboutcircuits.com/textbook/digital/chpt-3/cmos-gate-circuitry/">https://www.allaboutcircuits.com/textbook/digital/chpt-3/cmos-gate-circuitry/</a></li>
+<li>Digital Design and Computer Architecure</li>
+</ol>
+
+    </div>
+  </body>
+</html>

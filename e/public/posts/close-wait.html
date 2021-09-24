@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Diagnosis Of The Flooding CLOSE_WAIT problem</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>一次关于 CLOSE_WAIT 过多的问题分析</h1>
+      <p>这两天, 我维护的一个项目找我处理 CLOSE-WAIT 过多的问题, 称自从他们的客户将长连接改成短连接, 服务端 CLOSE-WAIT 数量大量增加, 导致服务很慢.</p>
+<p><img src="close-wait/5fbeaf492d6f4500b159db9641b32436_.png" alt=""></p>
+<p>这图显示的是本地主机和一个特定用户 <code>?:30080</code> 的连接情况, 只能看出<code>?:30008</code> 主动断开连接, 而本地服务迟迟关不了 socket.</p>
+<p>另一个场景, 用户使用长连接, 连接数很少.</p>
+<p>下图是应用场景, local 需要和不同客户终端通信, 不同客户的代码自己编写, 比如 R1 用长连接, 那么连接数就可以很少. R2 公司把通信方式改成短连接, 连接数就增加. 用短连接的理由是更安全.</p>
+<p><img src="close-wait/dee589697e614d2fb06eb2abd2fce3ff_.png" alt=""></p>
+<p>怎么实现长短连接? 问了没回复. 我推测, 首先这跟本地服务 socket 是不是 keepalive 无关, 长短连接是客户自己决定的. 也很容易实现：比如 <code>send(msg)</code> 的实现中声明一个 <code>Socket</code> 对象, 离开作用域的时候 <code>close(socket)</code>.</p>
+<p>已知 R 端被动接受连接, 那么所谓长短连接就是它通过主动断开来控制, 收到一条消息就断开一次连接. R 端主动断开了连接之后, L 端 socket 马上进入 CLOSE_WAIT 状态, 直到 L 端把它关闭. 如果这时候 L 端调用 <code>recv()</code>, 返回值就是 0.</p>
+<p>接下来发现他们代码的一个 BUG: 在 <code>recv()</code> 返回状态是 0 的时候, 关掉 <code>sockfd</code>, 然后再次 <code>connect(sockfd)</code>. 这么做的结果就是 <code>connect()</code> 失败, <code>errno</code> 为 <code>EBAF</code>. 看 <code>man connect</code>:</p>
+<ol>
+<li>Generally, connection-based protocol sockets may successfully connect() only once.</li>
+<li>EBADF: sockfd is not a valid open file descriptor.</li>
+</ol>
+<p>正确做法是关掉 socket 之后, 重新创建 socket, 再 <code>connect()</code>.</p>
+<p>但这样也解释不了 <code>close()</code> 之后为什么还处于 <code>CLOSE_WAIT</code> 状态. 只剩下一个可能性: L 端没有机会关掉 socket.</p>
+<p>关于 CLOSE_WAIT 导致性能下降的问题, CLOSE_WAIT 会消耗文件描述符, L 端没有文件描述符之后, 再向 R 端发请求, 由于没有文件描述符可用, 所以创建不了 socket, 导致表面上看性能下降了. 我检查了机器, 远远没到耗尽文件描述符的程度, 排除了这种可能.</p>
+<h2>结论</h2>
+<p>CLOSE_WAIT 过多的根本原因就是不关 socket.</p>
+
+    </div>
+  </body>
+</html>

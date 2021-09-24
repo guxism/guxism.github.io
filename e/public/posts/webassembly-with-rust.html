@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Build A WebAssembly-based Service with Rust</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>用 Rust 写 Wasm 应用</h1>
+      <h2>1. 安装</h2>
+<p>参加了一个<a href="https://www.secondstate.io/articles/raspberry-pi-for-free-20200709/">写 Rust 领树莓派的活动</a>, 打算用 raster 做个简单的图片处理工具</p>
+<p><img src="webassembly-with-rust/d0e26c21f6ff4c1eb243f1eaee40b303_.png" alt=""></p>
+<p>步骤 1： <a href="https://www.secondstate.io/articles/get-started-with-rust-functions-in-node-zh/">在 Node.js 应用中调用 Rust 函数</a></p>
+<pre><code># Get the code
+$ git clone https://github.com/second-state/ssvm-nodejs-starter
+$ cd ssvm-nodejs-starter
+
+# Run Docker container
+$ docker build -t ssvm-nodejs:v1 .
+$ docker run -p 3000:3000 --rm -it -v $(pwd):/app ssvm-nodejs:v1 --env HTTP_PROXY=&quot;http://127.0.0.1:1081&quot;
+root@40b721eb3a3b:/# cd /app
+root@40b721eb3a3b:/app# ssvmup build
+</code></pre>
+<p>执行了很长一段时间</p>
+<pre><code>root@40b721eb3a3b:/app# cat $(which ssvmup)
+#!/usr/bin/env node
+
+const { run } = require(&quot;./binary&quot;);
+run();
+</code></pre>
+<p>后来发现 binary.js 还要下载（需要科学工具）一个 Rust 写的命令行工具, 用来封装 cargo, 实际上执行的是这个命令：</p>
+<pre><code>cargo build --all-targets --release --target wasm32-wasi
+</code></pre>
+<p>完了之后开启服务</p>
+<pre><code>╰─# node node/app.js 
+Server running at http://0.0.0.0:3000/
+</code></pre>
+<p>验证：</p>
+<pre><code>$ curl http://localhost:3000/?name=SSVM
+hello SSVM
+</code></pre>
+<hr>
+<h2>2. 使用</h2>
+<p>将 src/lib.rs 改了改</p>
+<pre><code>use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+pub fn say(s: &amp;str) -&gt; String {
+  println!(&quot;The Rust function say() received {}&quot;, s);
+  let r = String::from(&quot;What's up &quot;);
+  return r + s + &quot;?&quot;;
+}
+</code></pre>
+<p>然后 ssvmup build &amp;&amp;  node node/app.js</p>
+<pre><code>➜  ~ curl http://localhost:3000/\?name\=SSVM
+What's up SSVM ?
+</code></pre>
+<h2>3. 成品</h2>
+<p>这里有很多细节, 都写在<a href="https://github.com/tenheadedlion/ssvm-nodejs-starter">另一个 github 仓库</a>, 折腾了一番 html/js, 最后用 docker 把服务搭了上去</p>
+<p><img src="webassembly-with-rust/6fd8c04404bb4813ad20dd15fc508873_.png" alt=""></p>
+<p>最后拿了个树莓派 Zero.</p>
+
+    </div>
+  </body>
+</html>

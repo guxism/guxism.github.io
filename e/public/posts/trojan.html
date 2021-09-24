@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>Trojan</h1>
+      <p>For the last few days, my scientific network suffered an irritating performance deficiency. As I was searching the latest SS news, I discovered a new tool, Trojan. It took me some effort to deploy the server with its certifications and keys, and the performance turns out to be quite impressive. No doubt SS is under attack, but it's so pleasing to see how scientific toolkits evolve in response to the relentless assault of the man in the middle.</p>
+<p>To my knowledge, this kind of tool is probably about encrypting and encapsulating data from one socket and sending it to another. I have no intention to read the Trojan code to understand its precise detail. But we can get a sense of it by looking at how SS is attacked by the so-called <strong>connection replay:</strong> the man in the middle captures the packets, which by its algorithms is suspicious of being scientific, and then sends those packets to the destination server; if the server responses vacuously, then it is exposed as an outlaw. The man in the middle then breaks down the traffic, and you lose your scientific connection. The way Trojan handles the <strong>connection replay</strong> is to let the malicious packets go through; with the aid of Nginx, the attacking traffic is forwarded to a funny website, which in my case, is <a href="http://ietf.org">ietf.org</a>, rather legitimate. Another advantage that Trojan takes is HTTPS, which dominates the Internet, making it difficult to locate scientific traffics.</p>
+<p>The performance is excellent. See the comparison below:</p>
+<p>SS(under attack):</p>
+<p><img src="trojan/2d2cd4799b5048c092811d4e3dda4e74_.png" alt=""></p>
+<p>Trojan:</p>
+<p><img src="trojan/51b414803b534aafab2fc55e560e66b3_.png" alt=""></p>
+<p>Trojan-go:</p>
+<p><img src="trojan/403413b67b144fbbba1f4cb622980f4a_.png" alt=""></p>
+<p><img src="trojan/8a856a8dc2c0498882dd4dd574f358ad_.png" alt=""></p>
+<p>Trojan-go is a variant of Trojan which outperforms its predecessor.</p>
+<h2>Update 1</h2>
+<p>After using Trojan for a few days, I find Trojan is not that magical. It becomes slower. I guess the GFW has found a way to identify Trojan traffic, or it just noticed that the outgoing traffic to my VPS is unusually active and blocked it. But I can still reach my VPS, so my VPS is not on the IP blacklist.</p>
+<p><img src="trojan/edbc4c24598d47ea9dfc88ff7f07afad_.png" alt=""></p>
+<p>Another thing is that Trojan takes a longer time to establish a connection than SS, probably because of the TLS handshake. The latency is about 5 seconds and is unbearable.<br>
+Here is an analysis based on the Wireshark capture:<br>
+In the beginning, my laptop shook hands with VPS; we can see that both sides support SACK; the MSS is of normal size.</p>
+<p><img src="trojan/7041885dc23c4f5c83733022a8bb81ed_.png" alt=""></p>
+<p>The client said hello to issue a TLS handshake. A 0.5-second timeout occurred, the client resend the hello again. The last ACK of the TCP handshake phase didn't arrive at the server in time, so the server resend its SYNACK. But that doesn't imply anything; the same thing can happen to any TCP-based protocol.</p>
+<p><img src="trojan/4c79544387924b47ae98fb4454855da9_.png" alt=""></p>
+<p>By the time the client sent its application Data at 11.51, 1.57 seconds had elapsed.</p>
+<p><img src="trojan/0d15982cb0294f1aac98c6ae6783a85b_.png" alt=""></p>
+<p>In comparison, SS sent its first application data in about 0.3 seconds, which means Trojan is five times slower. The comparison is not accurate, I only test them once, but there is no doubt that TLS handshake is time-consuming.</p>
+<p><img src="trojan/7ea35bb491684c85acad241952966e0b_.png" alt=""></p>
+<p>In fact, Trojan takes much more time than 1.5 seconds because the requests it issues was redirected many times:</p>
+<p>Wget via SS:</p>
+<p><img src="trojan/78400c7742624d598e0c380de25dfde9_.png" alt=""></p>
+<p>Wget via Trojan:</p>
+<p><img src="trojan/2774b88724e44b5ea1ab4c5d16ee3d8e_.png" alt=""></p>
+<p>In conclusion, a TLS handshake slows the traffic, but the main cause of Trojan latency is 302 redirection. It's probably a DNS problem, as my VPS is in JP, but the requests were redirected to HK. I will tend to it later.</p>
+<h2>Update 2</h2>
+<p>So I set out to see what happened in the DNS querying stage. There are dozens of DNS solutions to the lockdown. I have been using ChinaDNS, the idea of which is simple, that is, to drop any reply that is from domestic DNS but with a foreign-IP answer. After knowing how its works, I lose faith in it, I don't think it is robust enough to resist the powerful and ever-developing wall, so I decide to use something else, for example, overture. But before that, I need to check out what is 302 redirection exactly and why Trojan gives rise to so many 302s while SS does not.</p>
+<h3>302</h3>
+<p>We have seen 302 redirections happened when using wget over Trojan. The same thing happens when I use Chrome to browse 142.250.196.142, the IP address of <a href="http://google.com">google.com</a> replied by ChinaDNS. It is an Indian IP but hosts <a href="http://google.com.hk">google.com.hk</a>.</p>
+<p><img src="trojan/80401618479b474496da6ebfc62567d2_.png" alt=""></p>
+<p><img src="trojan/c2840eb5bcdd4de99820a700abfece9a_.png" alt=""></p>
+<p><img src="trojan/2ed11c9a31394e6191ea012a3e3df879_.png" alt=""></p>
+<p>Now it makes sense: if the request URL is not <a href="https://www.google.com/*">https://www.google.com/*</a>, Google will reply with 301/302/307 to demand the end-user to send another URL as specified in the location field. SS does not cause 302, but it causes 301, which is also one of the redirection instructions.</p>
+<p>The last question is, why redirect my requests to India?</p>
+<p>Let's try another foreign website that is impossible to host services in China(unlike <a href="http://bing.com">bing.com</a>, <a href="http://apple.com">apple.com</a>):</p>
+<p><img src="trojan/114800fabcb1409ca20f42e68b847ef8_.png" alt=""></p>
+<p>No redirection. Does it mean Google decides that I should visit India because India is closed to China? Is my DNS resolver using ECS? Let's say it uses ECS; wouldn't Google recognizes that my requests via SS are also from China?</p>
+<p>I dig <a href="http://google.com">google.com</a> on my Japanese VPS, and the result is a Japanese IP.</p>
+<p><img src="trojan/deb9de97497e47b68f9655f8c0a17297_.png" alt=""></p>
+<p>The next test is embarrassing because requests from Japan to Google are also redirected to Hong kong; 172.217.175.36 is a Japan Address.</p>
+<p><img src="trojan/e0f67368bdf64ba9bbf0660b43b94946_.png" alt=""></p>
+<p>I google around and find a lot of people complain about the redirection. There's nothing we can do about it.</p>
+<p>I forget to write down one thing before all those tests and screenshots: to shorten the time spent establishing a connection, I wrote my Trojan domain in <code>/etc/hosts</code> to get rid of the DNS query and gained a 2-second boost. Another strange thing is now it only takes 1 second to reach <a href="http://google.com">google.com</a> using Trojan(at midnight).</p>
+<p><img src="trojan/f32e72dd47a3409ca794d915cb97509d_.png" alt=""></p>
+<p>Everything suddenly works properly. It's surprisingly fast even there were three redirections which added up to at least 4 RTT but still did not exceed 1 second. A few days ago, it was another way around. It's midnight; maybe the wall is shut down for maintenance.</p>
+<h3>Difference between SS and Trojan</h3>
+<p><img src="trojan/05e1fcdb1aa646bc9c388c851428b424_.png" alt=""></p>
+<p>The figure above shows that both SS and Trojan do not cause 301 redirections because this time the URL is complete; most importantly, SS doesn't cause 302 redirections while Trojan does, which means Trojan has a bug. The reason must be known for the sake of knowledge. In what way? We don't debug their code unless we have no choice. And messages sent to the VPS are encrypted; without adding logs to their codes, there is no way to see what's going on. But on the other side of the proxy, things are not that encrypted, so that we can try our luck there.</p>
+<p>Here is the difference between their DNS queries:</p>
+<p>SS: query both IPV4 and IPV6 addresses, using DNS over IPV4</p>
+<p><img src="trojan/833d7c4b92e849f69ec5b882c1da73d0_.png" alt=""></p>
+<p>Trojan: DNS over IPV6, we can see the VPS was querying for <a href="http://google.com.hk">google.com.hk</a>. The query is undoubtedly caused by a re-sent request after 302 redirections.</p>
+<p><img src="trojan/ad679582f7594a5599bca3f0ec3a2c8e_.png" alt=""></p>
+<p>SS: HTTPS over IPV4</p>
+<p><img src="trojan/9463179c4a4a4a7b8cb3b131069890df_.png" alt=""></p>
+<p>Trojan: HTTPS over IPV6</p>
+<p><img src="trojan/cf10fd3c20b8402dbe66ca43bafdbe54_.png" alt=""></p>
+<p>The redirections are caused by using IPV6. So stupid. Confirm the stupidity using <code>strace</code>, we shall see:</p>
+<p><img src="trojan/5d5ec59ee5594c8e84345be04d73cde3_.png" alt=""></p>
+<p>Trojan-go is using IPV6 behind our back! Luckily, we can change the configuration:</p>
+<p><img src="trojan/b7c360a5a6724da89a2b6cf544c4562c_.png" alt=""></p>
+<p>Restart the proxy server, no more 302 this time:</p>
+<p><img src="trojan/765c29ea25ed41f0b45b07e7b67bce86_.png" alt=""></p>
+<p>What's the point of using IPV6? I am not against the future, but if IPV4 works just fine, there is no need to replace it with this god damned IPV6; what if the server we want to connect with does not support IPV6? For example:</p>
+<p><img src="trojan/2ffaef03daf041c398ff56d0ca716f20_.png" alt=""></p>
+<p>An APP on my phone failed to load its buttons because its server does not support IPV6; it felt like a joke. Here is the funny thing: everybody would blame the wall for packet loss and low speed; it's a lot easier; but hardly someone would suspect it's the developers' fault; even though there are 3.5K stars for the project and the number of developers adds up to almost 20, no one has doubts on 302 redirections, and no one uses an IPV6-incompatible APP. But still, it's a minor mistake compared to the great deeds those developers have made.</p>
+<h2>Final Conclusion</h2>
+<ol>
+<li>Embedded scientific traffic in HTTPS is hard to detect, so GFW may let the answers to scientific queries be shipped inside our country.</li>
+<li>Don't forget to disable IPV6. Results from Google IPV6 DNS bring forth 302 redirections. If the wall is in rage and kills incoming packets randomly, then redirections will make you suffer. In the meantime, not every service is IPV6 compatible. IPV6 is not prepared; do not use it.</li>
+</ol>
+
+    </div>
+  </body>
+</html>

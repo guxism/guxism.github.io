@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>A Failed Attempt to Build A Cross Compile Docker From An Obsolete Environment</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>将开发环境打包成 Docker 的失败尝试</h1>
+      <p>有个远古项目的编译环境还在一个物理机上. 由于我还需要上去编译驱动, 我就打算把编译环境从那台机器上移植出来.</p>
+<h2>是否有方法将本地的默认工具链拷贝出来</h2>
+<p>要这么做, 第一步是收集机器上编译器, 链接器等, 打包成一个工具链.</p>
+<p>先研究 raspberrypi 的工具链</p>
+<pre><code>➜  git clone https://github.com/raspberrypi/tools
+cd tools/arm-bcm2708/arm-linux-gnueabihf
+➜  arm-linux-gnueabihf git:(master) ls
+arm-linux-gnueabihf  bin  include  lib  libexec  share
+</code></pre>
+<p>gcc 等工具在 bin 目录, 除此之外, 还有大量的库, 链接, 肯定有工具能做这样的事, 但没找到, 问我司负责做过交叉编译工具链的大佬, 回答说并没有使用什么工具, 都是手动整合出来的.</p>
+<h2>编译 2.6 内核</h2>
+<p>第一个方案已经被否决, 现在直接找编译 2.6 内核的工具链, 说不定也能编译那远古项目.</p>
+<p>随便找一个</p>
+<pre><code>$ wget https://mirrors.edge.kernel.org/pub/linux/kernel/v2.6/linux-2.6.35.5.tar.xz
+$ make menuconfig
+$ make
+</code></pre>
+<p>报错：</p>
+<pre><code>cc1: error: code model kernel does not support PIC mode
+</code></pre>
+<p>原因是 <a href="https://askubuntu.com/questions/851433/kernel-doesnt-support-pic-mode-for-compiling">gcc 6+ 版本默认开启 PIE 选项</a>,  gcc 不提供补丁, 解决方法是给内核源码打补丁</p>
+<h2>工具链</h2>
+<p>用 crosstool-ng, 但 Ubuntu 20.04 和 18.04 都出现各种编译问题, 最终用 docker(<a href="https://github.com/guxism/_files/blob/master/docker/ct-ng/Dockerfile">Dockerfile</a>) 来封装 ct-ng,  使用 Ubuntu 16.04</p>
+<pre><code>docker build --tag ctng-1604 .
+docker run -it -v $(pwd):/home/ctng/2.6 ctng-u1604:latest
+(docker)&gt;&gt;&gt; ct-ng menuconfig
+</code></pre>
+<p>crosstool-ng 本身并没有我想要的版本, 所以 menuconfig 之后, 手动编辑 .config, 并将下好的源码压缩包放在 .build/tarballs 目录, 然后执行</p>
+<pre><code>(docker)&gt;&gt;&gt; ct-ng build
+</code></pre>
+<p>编译很可能出现各种问题, 各种折腾后编译出一套 gcc 4.8 的工具链, 但编译我司自制的内核时还是失败了, 还是要用更低的版本, 经过各种调制依然没法编译出来, 只能继续在实体机上编译.</p>
+<pre><code>[INFO ]  Installing kernel headers: done in 3.54s (at 02:29)
+[INFO ]  =================================================================
+[INFO ]  Installing C library headers &amp; start files
+[ERROR]   
+[ERROR]  &gt;&gt;
+[ERROR]  &gt;&gt;  Build failed in step 'Installing C library headers &amp; start files'
+[ERROR]  &gt;&gt;        called in step '(top-level)'
+[ERROR]  &gt;&gt;
+[ERROR]  &gt;&gt;  Error happened in: CT_IterateMultilibs[scripts/functions@1680]
+[ERROR]  &gt;&gt;        called from: do_libc_backend[scripts/build/libc/glibc.sh@150]
+[ERROR]  &gt;&gt;        called from: do_libc_start_files[scripts/build/libc/glibc.sh@112]
+[ERROR]  &gt;&gt;        called from: main[scripts/crosstool-NG.sh@653]
+</code></pre>
+<h2>参考</h2>
+<ol>
+<li><a href="https://preshing.com/20141119/how-to-build-a-gcc-cross-compiler/">https://preshing.com/20141119/how-to-build-a-gcc-cross-compiler/</a></li>
+<li><a href="https://ftp.gnu.org/gnu/binutils/">https://ftp.gnu.org/gnu/binutils/</a></li>
+<li><a href="https://ftp.gnu.org/gnu/gcc/">https://ftp.gnu.org/gnu/gcc/</a></li>
+<li><a href="https://mirrors.edge.kernel.org/pub/linux/kernel/v2.6/">https://mirrors.edge.kernel.org/pub/linux/kernel/v2.6/</a></li>
+<li><a href="https://github.com/crosstool-ng/crosstool-ng/tree/master/testing/docker">https://github.com/crosstool-ng/crosstool-ng/tree/master/testing/docker</a></li>
+<li><a href="https://tttapa.github.io/Pages/Raspberry-Pi/C++-Development/Building-The-Toolchain.html">https://tttapa.github.io/Pages/Raspberry-Pi/C++-Development/Building-The-Toolchain.html</a></li>
+<li><a href="http://muroa.org/sites/default/files/raspi.config">http://muroa.org/sites/default/files/raspi.config</a></li>
+</ol>
+
+    </div>
+  </body>
+</html>

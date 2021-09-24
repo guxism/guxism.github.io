@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>aync.cpp</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:none;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1>C++ Asynchrony</h1>
+<p>了解完 pthread 互斥变量, 条件变量等同步原语之后, 就没必要再看它们的 C++ 版本; C++ 做了很多事情, 尤其 <code>std::atomic</code> 会根据类型决定最终到底用
+  atomic memory access 还是 memory fence(锁), 可以查看类型:</p>
+<pre><code class="cpp">std::atomic&lt;T&gt; a;
+cout &lt;&lt; c.is_lock_free() &lt;&lt; endl;
+</code></pre>
+
+<p>如果无锁, 就是 Lock-free. 其中有很多细节, 但完全可以通过查文档解决. </p>
+<p>本文关注的是 C++ 的异步编程. 我是从 Rust 开始才关注异步的<a href="/e/public/posts/asynchrony.html">^1</a>,
+但 Rust 的语法门槛太高, 从 C++ 开始也许更好.</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h2><code>std::aync</code></h2>
+<p><a href="https://en.cppreference.com/w/cpp/thread/async">https://en.cppreference.com/w/cpp/thread/async</a></p>
+<p>运行一个异步函数, 马上返回结果; Promise/Future 某种程度上就和风筝一样, 通过一条通道(线)和放风筝的人通信, 但放风筝的人只能兑现一次 Promise, 完了之后再兑现一次就报错, 相当于线断了(什么比喻?);</p>
+<p>接口:</p>
+<pre><code class="cpp">using T = std::future&lt;std::invoke_result_t&lt;std::decay_t&lt;Function&gt;,
+                                 std::decay_t&lt;Args&gt;...&gt;&gt;;
+T async( Function&amp;&amp; f, Args&amp;&amp;... args );
+T async( std::launch policy, Function&amp;&amp; f, Args&amp;&amp;... args );
+</code></pre>
+
+<p><code>policy</code>:</p>
+<ol>
+<li><code>std::launch::async</code>: 执行起来就和 <code>std::thread</code> 一样</li>
+<li><code>std::launch::deferred</code>: 不开启新线程, 而是 lazy evaluation, 第一次 wait() 的时候才开始运行</li>
+</ol>
+<h2><a href="https://en.cppreference.com/w/cpp/thread/promise">Promise</a>, <a href="https://en.cppreference.com/w/cpp/thread/future">Future</a></h2>
+<p><code>promise</code> 和 <code>future</code> 是管道的两端, <code>future</code> 在 caller 手中; 通过 <code>promise::get_future()</code> 获取 <code>future</code>;
+这两者都是对锁, 和条件变量, 或者信号量的封装, 用 <code>strace</code> 追踪能看到 <code>FUTEX</code> 的调用.
+完全可以把管道视为只有一个生产者一个消费者, 只能使用一次的队列.</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>接下来用 C++ 实现一个计时器, 可惜的是, future/promise 是一次性(one-shot)的同步方法, 如果涉及多个定时任务, 
+就不得不跟 <a href="https://rust-lang.github.io/async-book/">The Rust Aync Book</a> 一样轮询 <code>future</code> 队列, 这种代码写了没什么意义;
+如果不用轮询的方法, 那还有一种方法, 涉及到条件变量:</p>
+<ol>
+<li>主线程, 检查已经完成的工作队列, 如果总数为 0, 进入 <code>pthread_cond_wait()</code></li>
+<li>工作线程, 完成睡眠任务之后, 往队列放入元素, 并 <code>pthread_cond_sign()</code></li>
+<li>主线程醒来, 给用户返回反馈</li>
+</ol>
+<p>然而这就是生产消费者模式, 已经实现过了: <a href="/e/public/code/concurrency/producer-consumer.cpp.html">用条件变量实现生产消费者模式</a></p>
+<p>因此这个例子仅仅用于记载 C++ Promise/Future 的用法</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;thread&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;future&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;numeric&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;chrono&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">sleep</span><span class="p">(</span><span class="kt">int</span> <span class="n">sec</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">promise</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">promise</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="n">sec</span><span class="p">));</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>不需要给 <code>future</code> 返回数据, 所以参数为空, 对应 <code>&lt;void&gt;</code></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">promise</span><span class="p">.</span><span class="n">set_value</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">secs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">stoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">promise</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">sleep_promise</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">sleep_future</span> <span class="o">=</span> <span class="n">sleep_promise</span><span class="p">.</span><span class="n">get_future</span><span class="p">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>移动, 是因为 promise is not copy-assignable <a href="https://en.cppreference.com/w/cpp/thread/promise/operator%3D">https://en.cppreference.com/w/cpp/thread/promise/operator%3D</a>;
+拷贝函数被删除了</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">sleep_thread</span><span class="p">(</span><span class="n">sleep</span><span class="p">,</span> <span class="n">secs</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">sleep_promise</span><span class="p">));</span>
+    <span class="n">sleep_future</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Time&#39;s up: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">secs</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; seconds elapsed&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="n">sleep_thread</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="p">}</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

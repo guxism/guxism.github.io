@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>Introduction to Rust Macro</h1>
+      <p>Rust 宏分两种：declarative macro 和 procedural macro, 前者匹配宏参数, 利用匹配到的变量组合新的 Rust 代码, 后者操作 TokenStream 生成新的 TokenStream, 无论哪种形式都是先捕获后组合, 区别在于后者处理得更好看些, 在代码上加上修饰/标记符比给宏传参数更具扩展性, 也便于阅读. 本文记录了 <a href="https://github.com/dtolnay/proc-macro-workshop">proc-macro-workshop</a> 第一个项目 builder 的解决过程.</p>
+<h2>Declarative Macro</h2>
+<p>定义一个宏用来打印变量</p>
+<pre><code>#[macro_export]
+macro_rules! debug {
+    (@print $a:expr)=&gt;{
+        {
+            eprintln!(&quot;{}::{}::{}: {:#?}&quot;, file!(), line!(), stringify!($a), $a);
+        }
+    };
+    [$a:expr]=&gt;{
+        {
+            $crate::debug!(@print $a);
+        }
+    };
+    [$a:expr,$b:expr]=&gt; {
+        {
+            $crate::debug!(@print $a);
+            $crate::debug!(@print $b);
+        }
+    };
+    [$a:expr,$($b:tt)*]=&gt;{
+        {
+            $crate::debug!($a);
+            $crate::debug!($($b)*);
+        }
+    };
+}
+
+fn main(){
+    let a = 1;
+    let b = &quot;tiempo&quot;;
+    let c = 1.23;
+    debug![a, b, c];
+    debug!(45, 6.78);
+}
+</code></pre>
+<p>要点：</p>
+<ul>
+<li>
+<p>Declarative Macro 的关键在于, 编译器找到匹配宏参数的模式, 按照<code>=&gt;</code>之后的模板生成 Rust 代码</p>
+</li>
+<li>
+<p><code>@</code> 表示一个标签, 用来标记辅助宏</p>
+</li>
+<li>
+<p><code>[]</code> 和 <code>()</code> 似乎是等价的, 但这种细节我们无需在意</p>
+</li>
+<li>
+<p>我这么写是为了模仿 <a href="https://danielkeep.github.io/tlborm/book/pat-incremental-tt-munchers.html">TT Muncher</a>,  简单理解为递归</p>
+</li>
+<li>
+<p><code>$crate</code> 是考虑到卫生(<a href="https://doc.rust-lang.org/reference/macros-by-example.html#hygiene">Hygiene</a>)</p>
+</li>
+</ul>
+<p>基本语法参考 <a href="https://doc.rust-lang.org/reference/macros-by-example.html#macros-by-example">Macros By Example</a></p>
+<h2>Procedural Macro</h2>
+<p>用 proc_macro 库的<code>#[proc_macro_derive]</code> 标记函数之后, Rust 编译器将 tokenized 的 token 封装在 TokenStream 上交给用户, 目前主流上用 syn 处理 TokenStream, 自己组织 AST, 再用 quote 生成新的 TokenStream, 后者最终被编译器转化成 Rust 代码.</p>
+<p>TokenStream 的结构：</p>
+<p><img src="rust-macro/63a9bed3ea56461ba364a9de36061ad6_.png" alt=""></p>
+<p>以第 7 个测试为例, 要将</p>
+<pre><code class="language-rust">#[derive(Builder)]
+pub struct Command {
+    executable: String,
+    #[builder(each = &quot;arg&quot;)]
+    args: Vec&lt;String&gt;,
+    #[builder(each = &quot;env&quot;)]
+    env: Vec&lt;String&gt;,
+    current_dir: Option&lt;String&gt;,
+}
+</code></pre>
+<p>最终展开成：</p>
+<pre><code class="language-rust">pub struct Command {
+    executable: String,
+    #[builder(each = &quot;arg&quot;)]
+    args: Vec&lt;String&gt;,
+    #[builder(each = &quot;env&quot;)]
+    env: Vec&lt;String&gt;,
+    current_dir: Option&lt;String&gt;,
+}
+pub struct CommandBuilder {
+    executable: ::std::option::Option&lt;String&gt;,
+    arg: ::std::option::Option&lt;Vec&lt;String&gt;&gt;,
+    env: ::std::option::Option&lt;Vec&lt;String&gt;&gt;,
+    current_dir: Option&lt;String&gt;,
+}
+impl CommandBuilder {
+    pub fn executable(&amp;mut self, arg: String) -&gt; &amp;mut Self {
+        self.executable = Some(arg);
+        self
+    }
+    fn arg(&amp;mut self, arg: String) -&gt; &amp;mut Self {
+        self.arg.as_mut().unwrap().push(arg);
+        self
+    }
+    fn env(&amp;mut self, arg: String) -&gt; &amp;mut Self {
+        self.env.as_mut().unwrap().push(arg);
+        self
+    }
+    pub fn current_dir(&amp;mut self, arg: String) -&gt; &amp;mut Self {
+        self.current_dir = Some(arg);
+        self
+    }
+    pub fn build(
+        &amp;self,
+    ) -&gt; ::std::result::Result&lt;Command, ::std::boxed::Box&lt;dyn std::error::Error&gt;&gt; {
+        Ok(Command {
+            executable: self.executable.as_ref().unwrap().clone(),
+            args: self.arg.as_ref().unwrap().clone(),
+            env: self.env.as_ref().unwrap().clone(),
+            current_dir: self.current_dir.clone(),
+        })
+    }
+}
+impl Command {
+    pub fn builder() -&gt; CommandBuilder {
+        CommandBuilder {
+            executable: None,
+            arg: Some(::std::vec::Vec::new()),
+            env: Some(::std::vec::Vec::new()),
+            current_dir: None,
+        }
+    }
+}
+</code></pre>
+<p>需要做到：</p>
+<ol>
+<li>理解 <code>syn::parse_macro_input</code> , 阅读 syn 源码</li>
+<li>知道什么是 <code>DeriveInput</code>, 把 input 转化成这个格式, 打印出来, 逐个遍历, 完成测试  1-6</li>
+<li>放弃 <code>DeriveInput</code>, 自定义结构体, 给它实现 <code>syn::parse::Parse</code> trait, 做到直接将 TokenStream 转化为你的数据结构</li>
+<li>学会 <code>quote</code>, 利用你自己定义的数据结构存储的信息重新生成一个 TokenStream</li>
+<li>通过测试 8 理解 <code>span</code></li>
+<li>通过测试 9 理解卫生 Hygiene</li>
+</ol>
+<p>代码：<a href="https://github.com/tenheadedlion/proc-macro-workshop">https://github.com/tenheadedlion/proc-macro-workshop</a></p>
+<h2>补充</h2>
+<p>我发现 syn 作者的另一个库 <a href="https://github.com/dtolnay/thiserror">thiserrror</a> 可以当作 syn 写宏的教材. 参照它的结构：TokenStream -&gt; ast 模块 -&gt; 验证/辅助模块 -&gt; expand 模块 -&gt; TokenStream, 我写了 debug 1-4,  结束练习, 因为 Rust 宏虽然一开始看起来很复杂, 写多了就跟写爬虫一样.</p>
+
+    </div>
+  </body>
+</html>

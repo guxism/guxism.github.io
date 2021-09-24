@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Implementing Iterative Postorder traversal From A Sane Human&#39;s Perspective</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>后序遍历的迭代实现</h1>
+      <p>我用迭代法解树的后序遍历时, 发现它比我想得难得多.</p>
+<p>最初思路</p>
+<pre><code>stack = []
+curr &lt;- 1
+if curr is not NULL
+ 	stack.push(curr)
+ 	curr &lt;- curr.left
+else
+	sth &lt;- stack.peek()
+	if sth has right branch
+		curr &lt;- curr.right
+	else
+		stack.pop()
+		handle(sth)
+</code></pre>
+<p>解释：</p>
+<ul>
+<li>代码 3,4,5 行: 毫无疑问要往下走, 不然不知道要干什么</li>
+<li>L7: 如果 curr 为空则说明到了分支的尽头, 这时候没有什么可处理了, 所以看看栈顶顺理成章</li>
+<li>L8: 如果 sth 有右子树, 按照 postorder 的定义, 必须先处理右子树, sth 保留在栈中</li>
+<li>L9: 焦点放在右子树根节点上</li>
+<li>L11, L12: 如果没有右子树, 那就处理 sth</li>
+</ul>
+<p>需要注意的：</p>
+<ol>
+<li>如果 curr 不能往下走了, 那只能观察栈</li>
+<li>如果你不知道给 curr 设置什么值, 就观察栈</li>
+</ol>
+<p>按照以上流程, 可以进入以下状态</p>
+<ul>
+<li>[1, 2, 4, 5, 6, 7], curr ← NULL</li>
+<li>[1, 2, 4, 5, 6], handle(7), curr = NULL</li>
+<li>[1, 2, 4, 5], handle(6), curr = NULL</li>
+<li>[1, 2, 4, 5], 5 有右子树, 所以 curr ← 6, 进入死循环</li>
+</ul>
+<p>结论：需要用一个变量标记 6 已经处理过了</p>
+<pre><code>stack = []
+curr &lt;- 1
+lastVisited &lt;- NULL
+if curr is not NULL
+	stack.push(curr)
+	curr &lt;- curr.left
+else
+	node &lt;- stack.peek()
+	if node has right branch and the right is not lastVisit
+		curr &lt;- curr.right
+	else
+		lastVisted &lt;- stack.pop()
+		handle(sth)
+</code></pre>
+<p>这就是<a href="https://en.wikipedia.org/wiki/Tree_traversal">维基</a>的解法.</p>
+<pre><code class="language-cpp">void postorder_v2(TreeNode *node, TreeClaimer *claimer)
+{
+    vector&lt;TreeNode *&gt; s;
+    TreeNode* last_visited = nullptr;
+    while (!s.empty() || node)
+    {
+        if (node)
+        {
+            s.push_back(node);
+            node = node-&gt;left;
+        }
+        else
+        {
+            node = s.back();
+            if (node-&gt;right &amp;&amp; node-&gt;right != last_visited)
+            {
+                node = node-&gt;right;
+            }
+            else
+            {
+                s.pop_back();
+                claimer-&gt;handle(node);
+                last_visited = node;
+                node = nullptr;
+            }
+        }
+    }
+} 
+</code></pre>
+<p>在这之前, 我在 GeeksforGeeks 看到<a href="https://www.geeksforgeeks.org/iterative-postorder-traversal-using-stack/">这种解法</a>, 按自己的理解写成这样：</p>
+<pre><code class="language-cpp">
+void postorder_v1(TreeNode *node, TreeClaimer *claimer)
+{
+    vector&lt;TreeNode *&gt; s;
+    while (!s.empty() || node)
+    {
+        if (node)
+        {
+            if (node-&gt;right)
+            {
+                s.push_back(node-&gt;right);
+            }
+            s.push_back(node);
+            node = node-&gt;left;
+        }
+        else
+        {
+            node = s.back();
+            s.pop_back();
+
+            if (node-&gt;right &amp;&amp; !s.empty() &amp;&amp; node-&gt;right == s.back())
+            {
+                s.pop_back();
+                s.push_back(node);
+                node = node-&gt;right;
+            }
+            else
+            {
+                claimer-&gt;handle(node);
+                node = nullptr;
+            }
+        }
+    }
+}
+</code></pre>
+<p>这种做法相当于将右节点放入栈中, 只要右节点还在栈中, 就说明没被访问, 作用和 <code>last_visited</code> 一样, 但理解起来不太直观.</p>
+<h2>更新</h2>
+<p>发现上面的做法过于挣扎, 如果像 &lt;&lt;算法导论&gt;&gt; 那样一开始就引入颜色标记, 很自然就能想出解法. 这进一步说明刷题没*用</p>
+<p>postorder 和 inorder 解法非常相似, preorder 很容易, 和前 2 者比起来不值一提</p>
+<p>最后生成一个 graphviz dot 文件, 看起来是对的</p>
+<p><img src="postorder-traversal/252b03a363f7470fb095515f0d942a34_.png" alt=""></p>
+<pre><code class="language-cpp">void tree_postorder(Graph &amp;g, std::string start)
+{
+    g.cleanup_color();
+
+    vector&lt;string&gt; stack;
+    Vertex &amp;start_vertex = g.get_vertex(start).first;
+    unsigned time = 0;
+
+    ++time;
+    start_vertex.turn_gray(time);
+    stack.push_back(start);
+
+   
+    while (!stack.empty())
+    {
+        std::string name = stack.back();
+        VertexAndNeighbors &amp;vn = g.get_vertex(name);
+        auto &amp;curr = vn.first;
+        auto neighbors = vn.second;
+
+        if (curr.color == color::BLACK)
+        {
+            stack.pop_back();
+            continue;
+        }
+
+        if (
+            neighbors.size() == 0 ||
+            (neighbors[0].dest-&gt;name.starts_with(&quot;NULL-&quot;) &amp;&amp;
+             neighbors[1].dest-&gt;name.starts_with(&quot;NULL-&quot;)))
+        {
+            ++time;
+            curr.turn_black(time);
+            stack.pop_back();
+            continue;
+        }
+
+        if (neighbors[0].dest-&gt;color == color::WHITE &amp;&amp;
+            !neighbors[0].dest-&gt;name.starts_with(&quot;NULL-&quot;))
+        {
+            ++time;
+            neighbors[0].dest-&gt;turn_gray(time);
+            stack.push_back(neighbors[0].dest-&gt;name);
+            continue;
+        }
+
+        if (neighbors[1].dest-&gt;color == color::WHITE &amp;&amp;
+            !neighbors[1].dest-&gt;name.starts_with(&quot;NULL-&quot;))
+        {
+            ++time;
+            neighbors[1].dest-&gt;turn_gray(time);
+            stack.push_back(neighbors[1].dest-&gt;name);
+        }
+        else
+        {
+            ++time;
+            curr.turn_black(time);
+            stack.pop_back();
+        }
+    }
+}
+</code></pre>
+
+    </div>
+  </body>
+</html>

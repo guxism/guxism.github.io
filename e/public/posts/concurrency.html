@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Concurrency</title>
+    <style>.hint{position:relative;display:inline-block}.border-bottom{border-bottom:2px dotted #000}.hint .hint-text{visibility:hidden;width:120px;background-color:#fff;color:#948e8e;text-align:right;border-radius:6px;padding:5px 0;position:absolute;z-index:1;top:-5px;left:110%}.hint .hint-text::after{position:absolute;margin-top:-5px;border-width:5px;border-style:solid;border-color:transparent #000 transparent transparent}.hint:hover .hint-text{visibility:visible}</style>
+  </head>
+  <body>
+    <div>
+      <h1>并发</h1>
+      <h2>Posts</h2>
+      <ul>
+        
+        <li>
+          <a href="/e/public/code/concurrency/mutex.c.html"> Pthread Mutex Variable </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/condition-variable.c.html"> Pthread Condition Variable </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/semaphore.c.html"> Semaphore </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/barrier-sync.c.html"> Barrier Synchronization </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/producer-consumer.cpp.html"> Implementing producer/comsumer with condition varibles </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/rwlock-rp.c.html"> Implementing Read Preferring Readers-Writer Lock </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/rwlock-wp.c.html"> Implementing Write Preferring Readers-Writer Lock </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/pthread-rwlock.c.html"> Pthread Read Write Lock </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/reentrant-mutex.c.html"> Reentrant Mutex </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/rwlock-up-or-down-grade.c.html"> Read-Write Lock Upgrading and Downgrading </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/test-and-set.c.html"> Test-and-set </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/compare-and-swap.c.html"> Compare-and-swap </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/async.cpp.html"> C++ Promise and Future </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/libev-example.c.html"> A libev Example </a>
+        </li>
+        
+        <li>
+          <a href="/e/public/code/concurrency/multithread-file-processing.cpp.html"> A Lock-free Multithreaded File Processor in C++ </a>
+        </li>
+        
+      </ul>
+      <h2>Jargon</h2>
+      <ul>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="/e/public/code/concurrency/producer-consumer.cpp.html#section-16"> Monitor </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="http://localhost:5050/e/public/code/concurrency/test-and-set.c.html#section-3"> Spin Lock </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="https://en.wikipedia.org/wiki/Hazard_pointer"> Hazard Pointer </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="https://en.wikipedia.org/wiki/Lock_convoy"> Lock Convoy </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="https://en.wikipedia.org/wiki/Thundering_herd_problem"> Thundering herd problem </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="https://en.wikipedia.org/wiki/Priority_inversion"> Priority Inversion </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           border-bottom
+          
+           ">
+            <a href="https://en.wikipedia.org/wiki/Non-blocking_algorithm#Wait-freedom"> Wait-freedom </a>
+            
+            <span class="hint-text"> The difference between wait-free and lock-free is that wait-free operation by each process is guaranteed to succeed in a finite number of steps, regardless of the other processors.
+            
+          </div>
+        </li>
+        
+      </ul>
+      <h2>Resource</h2>
+      <ul>
+        
+        <li>
+          <a href="http://concurrencyfreaks.blogspot.com/"> Concurrency Freaks </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://stackoverflow.com/a/7064008"> What is thread contention? </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://library.lol/main/6C3624E5F42AFF98962DDCA0590A3841"> The Art of Multiprocessor Programming </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://library.lol/main/346C21132C0CD11D8A47C43C72264A2B"> Mastering the C++17 STL </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://blog.nelhage.com/post/rwlock-contention/"> Reader/Reader blocking in reader/writer locks </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://www.reddit.com/r/cpp/comments/mzxjwk/experiences_with_concurrent_hash_map_libraries/"> Experiences with Concurrent Hash Map Libraries </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://preshing.com/20120305/implementing-a-recursive-mutex/"> Implementing a Recursive Mutex </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://people.redhat.com/drepper/futex.pdf"> Futexes Are Tricky </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://www.rossbencina.com/code/lockfree?q=~rossb/code/lockfree/"> Some notes on lock-free and wait-free algorithms </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://people.csail.mit.edu/bushl2/rpi/project_web/page5.html"> Lock-Free Linked List </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://github.com/facebook/folly/blob/master/folly/synchronization/Hazptr.h"> Hazard pointers in folly </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.395.378&amp;rep=rep1&amp;type=pdf"> Hazard Pointers, Safe Memory Reclamation for Lock-Free Objects </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://www.cs.technion.ac.il/~erez/Papers/wfquque-ppopp.pdf"> Wait-free queue building on the CAS primitive, generally available on common hardware. </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://scholar.google.com/citations?user=k8F7-kUAAAAJ&amp;hl=en"> Paul McKenney </a>
+          
+          <ul>
+            
+              <li>
+                <a href="https://lwn.net/Articles/262464/"> What is RCU, Really? </a>
+              </li>
+            
+              <li>
+                <a href="https://scholar.google.com/citations?view_op=view_citation&amp;hl=en&amp;user=k8F7-kUAAAAJ&amp;cstart=20&amp;pagesize=80&amp;sortby=pubdate&amp;citation_for_view=k8F7-kUAAAAJ:Wp0gIr-vW9MC"> Is parallel programming hard, and, if so, what can you do about it? </a>
+              </li>
+            
+              <li>
+                <a href="http://www.rdrop.com/~paulmck/RCU/whatisRCU.html#RCU%20OVERVIEW"> Additional viewpoints and information for What is RCU, Really? </a>
+              </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a href="https://bartoszmilewski.com/2008/12/01/c-atomics-and-memory-ordering/"> C++ atomics and memory ordering </a>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </body>
+</html>

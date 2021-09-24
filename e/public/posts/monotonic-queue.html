@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>A Time Wasting Probe for Monotonic Queue Which is Useless except in the Leetcode Universe</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>单调队列</h1>
+      <blockquote>
+<h4><a href="https://leetcode-cn.com/problems/sliding-window-maximum/">239. 滑动窗口最大值</a></h4>
+<p>给你一个整数数组 <code>nums</code>, 有一个大小为 <code>k</code> 的滑动窗口从数组的最左侧移动到数组的最右侧. 你只可以看到在滑动窗口内的 <code>k</code> 个数字. 滑动窗口每次只向右移动一位.</p>
+<p>返回滑动窗口中的最大值.</p>
+<p><strong>示例 1：</strong></p>
+<pre><code>输入：nums = [1,3,-1,-3,5,3,6,7], k = 3
+输出：[3,3,5,5,6,7]
+解释：
+滑动窗口的位置                最大值
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+</code></pre>
+</blockquote>
+<h2>1</h2>
+<p>一开始用暴力的方法：用 <code>max_element</code> 求出每个窗口的最大值.</p>
+<h2>2</h2>
+<p>用一个变量追逐每个窗口的最大值</p>
+<pre><code class="language-cpp">auto win_front = nums.begin();
+auto win_back = nums.begin();
+int max = *win_front;
+FULL_FILL_A_WINDOW();
+while (win_front &lt; nums.end()) {
+	if (*win_back != max);
+        // 窗口移动, 窗口最后一个元素要弹出
+        // 要对比弹出的值是不是最大值, 如果是, 那么就要更新 max
+        // 问题来了, 我怎么知道失去这个最大值之后, 这个窗口第二大值是多少
+        // 因此, 一个变量无法跟踪最大值
+}
+</code></pre>
+<h2>3</h2>
+<p><strong>需要一个这样的结构</strong>： 窗口移动的时候, 仍能保持最大值, 首先想到堆, 堆顶是最大值, 当最大值要弹出的时候, pop 堆顶即可</p>
+<ul>
+<li>问题：如果窗口弹出非最大值, 那 priority_queue 就不能弹出栈顶, 那么弹谁？因为 <code>pop()</code> 的参数为空.</li>
+</ul>
+<h2>4</h2>
+<p>保持“最大值必须放在前面”的前提, 研究这种应用场景, 根据题目的例子</p>
+<ol>
+<li>第一轮, 3 必须在前面, 不知道后面是什么, 用问号表示, <code>tracer: [?, 3]</code></li>
+<li>in: -3, out: 1, <code>tracer: [?, 3]</code>, 至少要在最大值弹出的时候, 还有第二大值的存在, 因此问号是一个 <strong>set</strong>, 于是有 <code>tracer: [set(-3, -1), 3]</code></li>
+<li>in: 5, out: 3, <code>5 &gt; 3</code>, 尝试将 5 替换到 3 位置, 将 3 放进 set, 之后变成 <code>tracer: [set(3, -3, -1), 5]</code>
+<ul>
+<li>弹出 3：<code>tracer: [set(-3, -1), 5]</code></li>
+</ul>
+</li>
+<li>in: 3, out: -1 =&gt; <code>tracer: [set(3, -3), 5]</code></li>
+<li>in: 6, out: -3 =&gt; <code>tracer: [set(3, 5), 6]</code></li>
+<li>in: 7, out: 5 =&gt; <code>tracer: [set(3, 5, 6), 7]</code> =&gt; <code>tracer: [set(3, 6), 7]</code></li>
+</ol>
+<pre><code class="language-cpp">// 代码写出来了：
+// 执行用时：36 ms, 在所有 C++ 提交中击败了25.45% 的用户
+// 内存消耗：20.2 MB, 在所有 C++ 提交中击败了5.00% 的用户
+ struct Tracer
+    {
+        Tracer(): empty(true) {}
+        int max;
+        bool empty;
+        multiset&lt;int&gt; set;
+        void push(int x)
+        {
+            if (empty) {
+                max = x;
+            }
+            else if (x &gt; max)
+            {
+                set.insert(max);
+                max = x;
+            }
+            else
+            {
+                set.insert(x);
+            }
+            empty = false;
+        }
+        void pop(int x)
+        {
+            if (x == max)
+            {
+                if (!set.empty()) {
+                    auto i = set.end();
+                    --i;
+                    max = *i;
+                    set.erase(i);
+                } else {
+                    empty = true;
+                }
+                
+            }
+            else if (!set.empty())
+            {
+                auto i = set.find(x);
+                set.erase(i);
+            }
+        }
+    };
+
+  public:
+    vector&lt;int&gt; maxSlidingWindow(vector&lt;int&gt; &amp;nums, int k)
+    {
+        if (nums.empty() || k &lt;= 0)
+            return {};
+
+        auto front = nums.begin();
+        auto back = nums.begin();
+        Tracer tracer;
+        vector&lt;int&gt; res;
+        tracer.push(*front++);
+
+        while (front - back &lt; k)
+        {
+            tracer.push(*front);
+            ++front;
+        }
+        res.push_back(tracer.max);
+
+        while (front &lt; nums.end())
+        {
+            tracer.pop(*back);
+            ++back;
+
+            tracer.push(*front);
+
+            ++front;
+            res.push_back(tracer.max);
+        }
+        return res;
+    }
+</code></pre>
+<h2>5</h2>
+<p>看哪里还能优化, 首先看这个问题的规律, 第一个问题是： (4) 的 <code>multiset</code> 是否能用更高效的东西来替换？</p>
+<p>进入考智商环节, 这些规律如下：</p>
+<ol>
+<li><code>tracer</code> 的每个元素都有一个生命周期(lifetime)</li>
+<li>lifetime(<code>A[i+1]</code>) &gt; lifetime(<code>A[i]</code>)</li>
+<li>如果 <code>A[i+1]</code> 是新元素且大于 <code>tracer.max</code>, 则可以清空 <code>tracer.max</code>. 因为 <code>A[i+1]</code> 比 <code>tracer</code> 中所有元素 <code>S</code> 都活得久, <code>S &lt; A[i+1]</code> 所以 <code>S</code> 没必要存在</li>
+<li>如果 <code>A[i+1] &lt; A[i]</code>, 由于 2, <code>A[i]</code> 可能先被弹出, 到时候第二大值必须放在 <code>max</code> 位, 这个值是比 <code>A[i]</code> 更新的元素. 因此所有比 <code>A[i]</code> 新且小于 <code>A[i]</code> 的元素, 都放在 <code>A[i]</code> 后面.
+<ul>
+<li>因为, 根据 3, 更老的元素在 <code>A[i]</code> 被确立为最大值的时候被清空.
+<ul>
+<li>如果不清空, 会怎样？
+<ul>
+<li>答：不清空会导致一个已经不在窗口上的元素, 在 <code>tracer.max</code> 被弹出之后, 可能会被选为最大值.</li>
+<li>没人规定我不能清空, 因为清空不影响 <code>tracer</code> 的作用, 所以清空可以减低维护难度</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在 <code>A[i]</code> 被弹出之后, 第 2 大值 <code>X</code> 至少有 1 个迭代的存活时间. 那么在 <code>X</code> 后面的 <code>Y</code> 至少有 2 个迭代存活时间.
+<ul>
+<li>因为第二大值可能是 <code>A[i+1]</code>.</li>
+</ul>
+</li>
+<li>继续 4, 比 <code>A[i]</code> 新且小的元素 X, 放在 <code>A[i]</code> 后面, 那么 X 可以放在第一个比它大的数字后面.
+<ul>
+<li>因为, 对于 <code>X a b c d Y A[i]</code>, 如果 <code>a b c d</code> 都比 X 小, 因为 X 生命周期更长, 所以 <code>a b c d</code> 没有存在的必要.</li>
+<li>二, 因为 <code>Y</code> 可能是下一个最大值, 所以不能删, 根据 5, <code>A[i]</code> 被弹出之前, <code>Y</code> 都是有存在必要的.</li>
+</ul>
+</li>
+</ol>
+<p>最终代码, 我用了环形缓冲, 避免了 <code>vector</code>, 不用 <code>list</code> 是因为我试过了, 占用内存击败 5%, 不用 <code>deque</code> 也是内存问题, 虽然空间复杂度都是 <code>O(k)</code></p>
+<p>代码看起来很丑, 但是思路对就行了, 代码怎么变得好看, 还得看别人怎么用 <code>for</code> 来代替 <code>while</code></p>
+<pre><code class="language-cpp">//执行用时：20 ms, 在所有 C++ 提交中击败了82.21% 的用户
+//内存消耗：15.3 MB, 在所有 C++ 提交中击败了78.43% 的用户
+
+// 执行用时：16 ms, 在所有 C++ 提交中击败了95.39% 的用户
+// 内存消耗：15.3 MB, 在所有 C++ 提交中击败了86.66% 的用户
+struct Tracer
+    {
+        Tracer(int k) : buf(new int[k]), head(0), cap(k), bufsize(0) {}
+        ~Tracer() { delete[] buf; }
+        int *buf;
+        int head;
+        int cap;
+        int bufsize;
+        inline int top() { return buf[head]; }
+        void push(int x)
+        {
+            if (!bufsize || x &gt; buf[head])
+            {
+                buf[head] = x;
+                bufsize = 1;
+            }
+            else
+            {
+                int tail = head + bufsize - 1 + cap;
+                while (tail % cap != head &amp;&amp; buf[tail % cap] &lt; x)
+                {
+                    --bufsize;
+                    --tail;
+                }
+                buf[(tail + 1) % cap] = x;
+                ++bufsize;
+            }
+        }
+        void pop()
+        {
+            if (bufsize)
+            {
+                head = (head + 1) % cap;
+            }
+            --bufsize;
+        }
+    };
+    vector&lt;int&gt; maxSlidingWindow(vector&lt;int&gt; &amp;nums, int k)
+    {
+        if (nums.empty() || k &lt;= 0 || nums.size() &lt; (size_t)k)
+            return {};
+
+        auto front = nums.begin();
+        auto back = nums.begin();
+        Tracer t(k);
+        vector&lt;int&gt; res;
+        t.push(*front++);
+        while (front - back &lt; k)
+        {
+            t.push(*front);
+            ++front;
+        }
+        res.push_back(t.top());
+        while (front &lt; nums.end())
+        {
+            if (t.top() == *back)
+            {
+                t.pop();
+            }
+            ++back;
+
+            t.push(*front);
+            ++front;
+            res.push_back(t.top());
+        }
+        return res;
+    }
+</code></pre>
+<p>这是我第三篇刷题文章, 试图证明再让人意想不到的解题思路也是有逻辑规律. 但我们也看到了, 有些问题你能做出来, 但需要很多时间, 这已经不是智商的问题, 而是经验问题, 正如有本书(可能是&lt;&lt;怎么解题&gt;&gt;)说: 培养解题的能力的关键是不断地解题.</p>
+
+    </div>
+  </body>
+</html>

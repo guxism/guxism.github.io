@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>微服务与 GRPC</h1>
+      <p>最近在构思一个个人项目多个服务之间的通信, 开始了解 GRPC.</p>
+<p><a href="https://github.com/tenheadedlion/grpc-example">grpc-example</a></p>
+<h2>设计</h2>
+<p>两模块 A，B 之间通信，其中 A 用 C++, B 用 Go</p>
+<h2>准备</h2>
+<h3>安装最新的 protoc, protocol buffer</h3>
+<p><a href="https://grpc.io/docs/protoc-installation/">https://grpc.io/docs/protoc-installation/</a><br>
+<a href="https://github.com/protocolbuffers/protobuf/releases/tag/v3.13.0">https://github.com/protocolbuffers/protobuf/releases/tag/v3.13.0</a></p>
+<p>同时也需要更新 cmake 到最新<br>
+<a href="https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz">https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz</a></p>
+<h3>编译 grpc</h3>
+<p><a href="https://www.grpc.io/docs/languages/cpp/quickstart/">https://www.grpc.io/docs/languages/cpp/quickstart/</a></p>
+<pre><code class="language-bash">sudo apt install -y cmake
+sudo apt install -y build-essential autoconf libtool pkg-config
+git clone --recurse-submodules -b v1.32.0 https://github.com/grpc/grpc
+cd grpc
+mkdir -p cmake/build
+pushd cmake/build
+cmake -DgRPC_INSTALL=ON -DgRPC_BUILD_TESTS=OFF -DgRPC_PROTOBUF_PROVIDER=package -DgRPC_ZLIB_PROVIDER=package -DgRPC_CARES_PROVIDER=package -DgRPC_SSL_PROVIDER=package -DCMAKE_BUILD_TYPE=Release ../..
+make -j
+make install
+popd
+</code></pre>
+<h3>编译模块 A</h3>
+<p>模块 A 代码 examples/cpp/helloworld 直接拷自 grpc/examples/cpp/helloworld</p>
+<pre><code class="language-bash">mkdir -p cmake/build
+pushd cmake/build
+cmake ../..
+make -j
+</code></pre>
+<h3>运行 Go</h3>
+<pre><code class="language-bash">
+pushd examples/go_greeter/internal
+protoc --go_out=. --go_opt=paths=source_relative \
+    --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+    helloworld/helloworld.proto
+popd
+pushd example/go_greeter
+go run cmd/helloworld/greeter_server/main.go
+</code></pre>
+<h2>测试</h2>
+<p>模块 A 作为客户端</p>
+<pre><code>➜  build git:(master) ./greeter_client
+Greeter received: Hello world
+</code></pre>
+<p>模块 B 收到消息：</p>
+<pre><code>➜  go_greeter git:(master) ✗ go run cmd/helloworld/greeter_server/main.go 
+go: downloading google.golang.org/grpc v0.0.0-20201014215113-7b167fd6eca1
+go: downloading google.golang.org/protobuf v1.25.0
+go: downloading google.golang.org/genproto v0.0.0-20200806141610-86f49bd18e98
+go: downloading golang.org/x/net v0.0.0-20200707034311-ab3426394381
+go: downloading golang.org/x/sys v0.0.0-20200803210538-64077c9b5642
+go: downloading golang.org/x/text v0.3.3
+2020/10/15 12:53:43 Received: world
+</code></pre>
+<h2>.proto 文件</h2>
+<p>examples/cpp/protos/helloworld.proto 和 examples/go_greeter/internal/helloworld/helloworld.proto 一样, 可以用 git 管理</p>
+<h2>参考</h2>
+<ol>
+<li><a href="https://www.grpc.io/docs/languages/cpp/quickstart/">https://www.grpc.io/docs/languages/cpp/quickstart/</a></li>
+<li><a href="https://getpocket.com/redirect?url=https%3A%2F%2Fbitbucket.org%2Fblog%2Fwriting-a-microservice-in-golang-which-communicates-over-grpc">https://getpocket.com/redirect?url=https%3A%2F%2Fbitbucket.org%2Fblog%2Fwriting-a-microservice-in-golang-which-communicates-over-grpc</a></li>
+</ol>
+
+    </div>
+  </body>
+</html>

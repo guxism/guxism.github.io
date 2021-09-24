@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Practical Makefile(Or Cheatsheet)</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>实用 Makefile</h1>
+      <p>Make 可以用来管理 C/C++ 编译 之外的其他事务, 比如以下例子, 检查版本, 登录到主机编译, 下载二进制. 这种通常用脚本做的事完全可以搬到 makefile.</p>
+<pre><code class="language-makefile">version = $(shell cat VERSION.txt)
+bin: VERSION.txt
+	ssh ${REMOTE_USER}@${REMOTE_IP} &quot;cd ${REMOTE_DIR} &amp;&amp; git checkout tags/${version} &amp;&amp; make release&quot;
+	wget ${REMOTE_IP}/release -O release
+	tar -xzvf -C tmp
+	mv tmp/release/bin .
+	rm tmp -rf
+</code></pre>
+<p>Makefile 提供文件依赖检查机制, 但这不是最关键的优点. 最关键的优点是它语法相对简单(对比 CMake, Gulp), 符合直觉, 方便管理, 可以当备忘录使用(目标就是每一条备忘录的标签).</p>
+<p>本文列举了不常见但实用的语法.</p>
+<h2>场景 1: 把同一目录下的 <code>*.s</code> 编译成 <code>*</code>(批量操作)</h2>
+<pre><code class="language-makefile">asm_src := $(wildcard *.s)
+bins := ${asm_src:%.s=%}
+$(info ${bins})
+$(info ${asm_src})
+
+all: ${bins}
+
+${bins}: %: %.s
+	gcc $^ -no-pie -o $@
+</code></pre>
+<h2>场景 2: 交叉编译(条件变量)</h2>
+<pre><code class="language-makefile">ifeq (${ARCH},arm64)
+OUT_DIR := ${ARCH}/
+CROSS_COMPILE := aarch64-linux-gnu-
+CXX := ${CROSS_COMPILE}g++
+CC := ${CROSS_COMPILE}gcc
+endif
+</code></pre>
+<p>run:</p>
+<pre><code class="language-bash">make ARCH=arm64
+</code></pre>
+<h2>场景 3: .PHONY 目标</h2>
+<pre><code class="language-makefile">.PHONY: config clean run
+clean:
+	@rm out -rf
+</code></pre>
+<h2>场景 4: 抽象(自定义函数)</h2>
+<pre><code class="language-makefile">define MKDIR?
+	$(shell mkdir -p $1)
+endef
+$(call MKDIR?, ${OUT_DIR})
+</code></pre>
+<h2>场景 5: 内置字符串处理函数</h2>
+<pre><code class="language-makefile">run: out/$(basename ${x})
+	@make --silent  &amp;&amp; cd $(dir $&lt;) &amp;&amp; ./$(notdir $&lt;)
+</code></pre>
+<p>run:</p>
+<pre><code class="language-makefil">make run x=test/test_addr.cpp
+</code></pre>
+<h2>场景 6: 搭配 awk</h2>
+<pre><code class="language-makefile">docs/%.c.html: .tmp/docs/%.c
+	pycco $&lt; &gt; .tmp/$@
+	$(eval a=$(shell awk '{print $$4}' .tmp/$@))
+	echo $a
+</code></pre>
+<p>或</p>
+<pre><code class="language-makefile">docs/%.c.html: .tmp/docs/%.c
+	pycco $&lt; &gt; .tmp/$@
+	a=$(shell awk '{print $$4}' .tmp/$@);echo $$a
+</code></pre>
+<ul>
+<li><code>eval</code> 将 <code>a</code> 设置为 makefile 变量.</li>
+<li>没有 <code>eval</code>, <code>a</code> 就是 bash 环境变量, 每一行的环境都不一样, 如果将 <code>echo $$a</code> 放在下一行, a 就是未定义.</li>
+<li><code>$a</code> 是 makefile 变量, <code>$$a</code> 是 bash 变量</li>
+</ul>
+<h2>场景 7: 让中间文件自动消失</h2>
+<pre><code class="language-makefile">.tmp/%.i:
+	mkdir -p .tmp
+	touch $@
+%.txt: .tmp/%.i
+	cp $&lt; $@
+</code></pre>
+<p>运行:</p>
+<pre><code class="language-bash">➜  make a.txt
+mkdir -p .tmp
+touch .tmp/a.i
+cp .tmp/a.i a.txt
+rm .tmp/a.i
+</code></pre>
+<p>带 <code>%</code> 的才叫中间文件</p>
+<p>(想到就补充)</p>
+<h2>参考</h2>
+<ul>
+<li><a href="https://make.mad-scientist.net/">https://make.mad-scientist.net/</a></li>
+<li><a href="https://makefiletutorial.com/">https://makefiletutorial.com/</a></li>
+<li><a href="https://tech.davis-hansson.com/p/make">https://tech.davis-hansson.com/p/make</a></li>
+<li><a href="http://nuclear.mutantstargoat.com/articles/make">http://nuclear.mutantstargoat.com/articles/make</a></li>
+</ul>
+
+    </div>
+  </body>
+</html>

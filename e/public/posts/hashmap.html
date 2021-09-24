@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>Hashmap</h1>
+      <p><a href="https://elixir.bootlin.com/linux/latest/source/tools/lib/bpf/hashmap.h#L37">hashmap 定义</a></p>
+<pre><code class="language-c">struct hashmap_entry {
+	const void *key;
+	void *value;
+	struct hashmap_entry *next;
+};
+
+struct hashmap {
+	hashmap_hash_fn hash_fn;
+	hashmap_equal_fn equal_fn;
+	void *ctx;
+	struct hashmap_entry **buckets;
+	size_t cap;
+	size_t cap_bits;
+	size_t sz;
+};
+</code></pre>
+<p><code>struct hashmap_entry **</code> 表示一个指向“成员类型是 <code>struct hashmap_entry*</code> 的动态数组”的指针.</p>
+<p><img src="hashmap/852a4dd0d0184624842222fbb1faa1ab_.png" alt=""></p>
+<p>操作的实现看起来和 C++ 的标准库的实现（比如 libcxx)很像</p>
+<ol>
+<li>hashmap__add</li>
+<li>hashmap__set</li>
+<li>hashmap__update</li>
+<li>hashmap__append</li>
+<li>hashmap__delete</li>
+<li>hashmap__find</li>
+</ol>
+<p>1,2,3,4 都调用了 hashmap__insert</p>
+<p>hashmap__insert 的逻辑：</p>
+<ol>
+<li>正常操作...</li>
+<li>hashmap_needs_to_grow: grow if empty or more than 75% filled</li>
+<li>hashmap_grow: 2 倍增长</li>
+</ol>
+<pre><code>	new_cap_bits = map-&gt;cap_bits + 1;
+	if (new_cap_bits &lt; HASHMAP_MIN_CAP_BITS)
+		new_cap_bits = HASHMAP_MIN_CAP_BITS;
+
+	new_cap = 1UL &lt;&lt; new_cap_bits;
+/// cap_bits 字段记录 2 的 几次方
+</code></pre>
+<p>查找：</p>
+<pre><code>/// 入参为 map 和 key, 出参为 value, void* 表示泛型
+bool hashmap__find(const struct hashmap *map, const void *key, void **value)
+{
+	struct hashmap_entry *entry;
+	size_t h;
+
+    // 通过 hash_fn 找到 bucket 的索引
+	h = hash_bits(map-&gt;hash_fn(key, map-&gt;ctx), map-&gt;cap_bits);
+    /// 参考 https://elixir.bootlin.com/linux/latest/source/tools/lib/bpf/hashmap.c#L128
+    /// &amp;map-&gt;buckets[hash] 返回索引为 hash 的 struct hashmap_entry, which 是一个单向链表
+    /// 遍历链表的每一个成员,  用 equal_fn 函数（用户自定义）来比较 key, 如果匹配就写入 value
+	if (!hashmap_find_entry(map, key, h, NULL, &amp;entry))
+		return false;
+
+	if (value)
+		*value = entry-&gt;value;
+	return true;
+}
+</code></pre>
+<h2>扩容之后</h2>
+<p>扩容之后, 模的操作数（即容量）已经改变, 原本位置为 i 的节点现在位置无法预测</p>
+<pre><code>hash = N * M + i
+hash = 2N * K + new_i
+new_i = i + N * (M - 2K)
+</code></pre>
+<p>加上注释</p>
+<pre><code>static int hashmap_grow(struct hashmap *map)
+{
+	struct hashmap_entry **new_buckets;
+	struct hashmap_entry *cur, *tmp;
+	size_t new_cap_bits, new_cap;
+	size_t h, bkt;
+
+	new_cap_bits = map-&gt;cap_bits + 1;
+	if (new_cap_bits &lt; HASHMAP_MIN_CAP_BITS)
+		new_cap_bits = HASHMAP_MIN_CAP_BITS;
+
+	/// 2 倍增长
+	new_cap = 1UL &lt;&lt; new_cap_bits;
+	/// 分配新索引数组
+	new_buckets = calloc(new_cap, sizeof(new_buckets[0]));
+	if (!new_buckets)
+		return -ENOMEM;
+	/// 遍历原来哈系表中的所有 hashmap_entry, 包括不同索引的项
+	hashmap__for_each_entry_safe(map, cur, tmp, bkt) {
+		/// 根据每个 hashmap_entry 的 key 字段重新算出新索引
+		h = hash_bits(map-&gt;hash_fn(cur-&gt;key, map-&gt;ctx), new_cap_bits);
+		/// curr 表示一个项, 将它加到索引位置的节点上
+		/// 放在索引节点的下一个位置, 复杂度 O(1)
+		hashmap_add_entry(&amp;new_buckets[h], cur);
+	}
+
+	map-&gt;cap = new_cap;
+	map-&gt;cap_bits = new_cap_bits;
+	/// 释放旧内存
+	free(map-&gt;buckets);
+	/// 替换索引数组
+	map-&gt;buckets = new_buckets;
+
+	return 0;
+}
+</code></pre>
+<p>所以内核里面的哈系表扩容的时候实际上是将旧索引数组一次性迁徙到新索引数组, 复杂度 O(N)</p>
+<h2>优化</h2>
+<p>复杂度不可能小于 O(N), 因为有 N 个节点要调整, 那么优化空间就在 rehash 过程, 要看已经算好的哈系是否能重复利用.</p>
+<p>因为容易看出, <code> hash % 容量1</code> 和 <code>hash % 容量 2</code> 的共同点是 hash, 除非哈系函数将容量也作为计算因素, 否则是不需要重新计算的.</p>
+<pre><code class="language-c">h = hash_bits(map-&gt;hash_fn(key, map-&gt;ctx), map-&gt;cap_bits);
+...
+static inline size_t hash_bits(size_t h, int bits)
+{
+	/* shuffle bits and return requested number of upper bits */
+	return (h * 11400714819323198485llu) &gt;&gt; (__WORDSIZE - bits);
+}
+</code></pre>
+<p>不幸的是, <code>hash_fn</code> 确实将容量(cap_bits 表示 2 的多少次方)作为计算因素.</p>
+<p>据说 JDK1.8 做了优化[2], newIndex = index + oldCap, 具体实现这里就先不展开了(<strong>TODO</strong>).</p>
+<h2>Non thread safe</h2>
+<p>tools/lib/bpf/hashmap.h 定义的是一个 <code>Generic non-thread safe hash map</code>, 所以使用的时候需要自己加锁.</p>
+<p>比如, xt_hashlimit 里面用旋转锁去同步每个索引节点的读写, 不过这里用的并不是 tools/lib/bpf/hashmap.h</p>
+<pre><code>struct xt_hashlimit_htable {
+	...
+	/* used internally */
+	spinlock_t lock;		/* lock for list_head */
+	...
+	struct hlist_head hash[];	/* hashtable itself */
+};
+</code></pre>
+<h2>参考</h2>
+<ol>
+<li><a href="https://www.linuxjournal.com/content/hash-tables%E2%80%94theory-and-practice">https://www.linuxjournal.com/content/hash-tables—theory-and-practice</a></li>
+<li><a href="https://blog.csdn.net/LO_YUN/article/details/104993680">https://blog.csdn.net/LO_YUN/article/details/104993680</a></li>
+<li><a href="https://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/src/share/classes/java/util/Hashtable.java">https://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/src/share/classes/java/util/Hashtable.java</a></li>
+</ol>
+
+    </div>
+  </body>
+</html>

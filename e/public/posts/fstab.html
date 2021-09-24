@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>Understanding fstab</h1>
+      <h2>fstab 被损</h2>
+<p>写 raspberry pi 的时候误编辑了自己系统的 <code>/etc/fstab</code>,  导致没法开机</p>
+<p>于是找另一台机器的 fstab, 结合 <code>blkid</code>, U 盘启动一个新系统, 挂载原系统盘, chroot 挂载目录, 修改 fstab 如下</p>
+<pre><code>UUID=XXXXX       /boot/efi   vfat   umask=0077      0 1
+UUID=XXXXXXXXXXXXXXXXXXXXXX       /       ext4    errors=remount-ro 0 1
+</code></pre>
+<p>重启后可以开机.</p>
+<p>在此之前, 在<code>umake=0077</code> 和 <code>errors=remount-ro</code>的位置我填的是 <code>defaults</code>, 无法启动, 接下来简单探究一下原因.</p>
+<h2>fstab 的作用</h2>
+<p>short for <code>file system table</code></p>
+<p>用于指导系统自动挂载设备, 如将 <code>UUID=XXX</code>的设备挂载到<code>/</code>目录,  <code>ext4</code> 格式.</p>
+<p>用表格显示更易于查看</p>
+<table>
+<thead>
+<tr>
+<th>file system</th>
+<th>mount point</th>
+<th>type</th>
+<th>options</th>
+<th>dump</th>
+<th>pass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UUID=XXXX</td>
+<td>/</td>
+<td>ext4</td>
+<td>errors=remount-ro</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<h3>dump</h3>
+<p>0 for false, 1 for true, 用于 backup, 过时之物, 略过.</p>
+<h3>pass</h3>
+<p>the order in which to perform a file system check(fsck)</p>
+<p>0 表示 skipped, root file system(即 <code>/</code>) 应该标记为 1</p>
+<p>默认状态下 <code>/boot/efi</code> 和 <code>/</code> 的 fsck order 都是 1（装完系统后没动过的 fstab 就是这样）, 是否有违 <a href="https://help.ubuntu.com/community/Fstab">ubuntu manual 的说法</a>?</p>
+<blockquote>
+<p>Controls the order in which <em>fsck</em> checks the device/partition for errors at boot time. The root device should be 1. Other partitions should be 2, or 0 to disable checking.</p>
+</blockquote>
+<h3>options</h3>
+<p><code>defaults</code> 相当于 <code>rw,suid,dev,exec,auto,nouser,async</code></p>
+<p><code>auto</code>表示此文件系统可以被自动加载</p>
+<p><code>exec</code>允许此文件系统的二进制被执行</p>
+<p><code>user</code>允许所有用户挂载此文件系统</p>
+<p><code>errors=remount-ro</code>: 参考 <a href="http://manpages.ubuntu.com/manpages/focal/en/man8/mount.8.html">man page</a>, Specify FAT behavior on critical errors: panic, continue without doing anything, or remount the partition in read-only mode (default behavior). 即当出现致命错误的时候, 将 fs 重新挂载(remount)成 ro 模式</p>
+<p><code>umask=0077</code>： Set the umask (the bitmask of the permissions that are not present).   The  default is the umask of the current process.  The value is given in octal. 参考<code>umask</code>的用法, 设置成 0077, group 和 others 没有任何权限.</p>
+<h2>增加一块硬盘</h2>
+<p>更新系统后, 我的一块 RAID 不再自动挂载, 解决如下：</p>
+<ol>
+<li><code>blkid</code>找到 <code>/dev/md0: UUID=&quot;zzzz&quot; TYPE=&quot;ext4&quot;</code></li>
+<li>由于历史原因, 我把它挂在 <code>/media/me/zzzz</code>, 默认 owner 是 root, 造成开机后 www-data 无法访问,  <code>defaults,uid=33,gid=33</code> 中的 <code>uid</code>和 <code>gid</code>在 ext 文件系统无效(参考<a href="https://unix.stackexchange.com/questions/38309/different-uid-gid-when-using-an-ext4-formatted-usb-drive-with-another-computer">this</a>), 而 <code>umask=0000</code> 仅对 vfat 格式有效, 而<code>defaults</code> 相当与 <code>rw,suid,dev,exec,auto,nouser,async</code>, <code>nouser</code>不符合要求, 用 <code>user</code> 替代</li>
+<li>将 pass 设置为 0 跳过 fsck</li>
+</ol>
+<p>所以最终加入：</p>
+<pre><code>UUID=zzzz /media/me/zzzz ext4 rw,suid,dev,exec,auto,user,async 0 0
+</code></pre>
+<h2>References</h2>
+<ol>
+<li><a href="https://www.howtogeek.com/howto/38125/htg-explains-what-is-the-linux-fstab-and-how-does-it-work/">https://www.howtogeek.com/howto/38125/htg-explains-what-is-the-linux-fstab-and-how-does-it-work/</a></li>
+<li><a href="https://help.ubuntu.com/community/Fstab">https://help.ubuntu.com/community/Fstab</a></li>
+<li><a href="https://www.tldp.org/LDP/sag/html/root-fs.html">https://www.tldp.org/LDP/sag/html/root-fs.html</a></li>
+<li><a href="https://opensource.com/life/16/10/introduction-linux-filesystems">https://opensource.com/life/16/10/introduction-linux-filesystems</a></li>
+<li><a href="https://www.cyberciti.biz/tips/understanding-linux-unix-umask-value-usage.html">https://www.cyberciti.biz/tips/understanding-linux-unix-umask-value-usage.html</a></li>
+<li><a href="https://unix.stackexchange.com/questions/38309/different-uid-gid-when-using-an-ext4-formatted-usb-drive-with-another-computer">https://unix.stackexchange.com/questions/38309/different-uid-gid-when-using-an-ext4-formatted-usb-drive-with-another-computer</a></li>
+</ol>
+
+    </div>
+  </body>
+</html>

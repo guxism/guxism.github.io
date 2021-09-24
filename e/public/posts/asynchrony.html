@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Asynchrony</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>异步</h1>
+      <p>异步是一种并发模式, 是指程序在主线程之外处理一些事件, 举个例子, 主界面加载的同时, 通过异步加载数据, 加载完之后, 更改主界面的内容. 本文的目的在于整理这种模式的使用方法.</p>
+<h2>形式(1)</h2>
+<p>大部分编程语言, 除了 C/C++(C++20 除外), 都原生地支持这种并发模式, 甚至 HTML 也支持 async 加载 js, 不同语言的异步形式其实一样.</p>
+<p><code>async</code> 标注异步函数的声明, <code>await</code> 标注异步函数的使用</p>
+<blockquote>
+<p><strong>await</strong>, 及物动词<br>
+wait for (an event).</p>
+</blockquote>
+<h2>异步原理</h2>
+<p>异步的目的是不堵塞, 不一定非要线程. 小型任务使用线程是一种浪费[^1], 但不用线程怎么做到多个任务并发? 实在难以想象.</p>
+<p>[^1]: <a href="https://rust-lang.github.io/async-book/01_getting_started/02_why_async.html">creating a thread for such a small amount of work is quite wasteful.</a></p>
+<p>这一节用来探索异步的实现细节</p>
+<h3>Blocking Paradigm</h3>
+<h4>O_NONBLOCK</h4>
+<pre><code class="language-c">int setNonblocking(int fd)
+{
+    int flags;
+    if (-1 == (flags = fcntl(fd, F_GETFL, 0)))
+        flags = 0;
+    return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+}   
+</code></pre>
+<h4>4 种阻塞范式</h4>
+<p>不阻塞是否等于异步? 不是, 来看 IO 的同步和阻塞的组合<a href="https://developer.ibm.com/articles/l-async/">^2</a>, 又称阻塞范式(blocking paradigm)</p>
+<ol>
+<li>Synchronous  blocking I/O
+<ul>
+<li>用户程序堵塞到系统调用返回</li>
+</ul>
+</li>
+<li>Synchronous non-blocking I/O
+<ul>
+<li>系统调用返回错误(EAGAIN 或 EWOULDBLOCK), 表示任务还没完成</li>
+<li>之后用户程序需要重新检查任务完成与否, 这种做法导致效率低</li>
+<li>造成延迟, 因为从内核完成 IO 到用户察觉之间存在一条鸿沟(gap)</li>
+</ul>
+</li>
+<li>Asynchronous blocking I/O
+<ul>
+<li>= (non-blocking I/O with blocking notification)</li>
+<li>= (non-blocking I/O + blocking <code>select</code>)</li>
+<li>缺点是 <code>select</code> 性能不好, 不过可以用 <code>epoll</code></li>
+</ul>
+</li>
+<li>Asynchronous non-blocking I/O
+<ul>
+<li>non-blocking I/O, 通过接受信号, 或者 a thread-based callback(?), 完成 I/O</li>
+<li>重叠(overlap computation and I/O process)</li>
+<li>可以运行在单一线程</li>
+</ul>
+</li>
+</ol>
+<p>仔细辨别, 可以看出为什么这么命名, 有点反直觉, 异步与否和文件描述符的属性有关, 阻塞与否和对待文件描述符的方式有关, 如果你将文件描述符设置为 <code>O_NONBLOCK</code> , 所在范式就叫 Asynchronous; 如果你检查文件描述符的方式是阻塞的, 所在范式就叫 blocking, select 是阻塞的, 因为你需要检查它的返回结果, 这个过程阻塞了同线程的其他操作, 信号是非阻塞的, 因为如果收到信号, 不管当前线程在干什么, 都要停下来(被中断), 信号是一种异步通知机制[^11]</p>
+<p>[^11]: <a href="https://en.wikipedia.org/wiki/Signal_(IPC)">https://en.wikipedia.org/wiki/Signal_(IPC)</a> : A signal is an <a href="https://en.wiktionary.org/wiki/asynchronous">asynchronous</a> notification</p>
+<h3>Linux AIO<a href="http://davmac.org/davpage/linux/async-io.html?utm_source=pocket_mylist">^3</a></h3>
+<p>概念:</p>
+<ol>
+<li>I/O readiness event</li>
+</ol>
+<p>处理异步事件的方法:</p>
+<ol>
+<li><s>threading</s>(效率太差)</li>
+<li>signals</li>
+<li>SIGIO
+<ul>
+<li>可以设置文件描述符, 让它在完成读写之后发出一个信号, 这样就可以通过 sleep(), pause() 或者 sigsupend() 来等待异步事件发生, 或者继续使用 CPU, 而不需要用 select/epoll, 根据上一节, select/epoll 是阻塞的, 用于 synchronuous non-blocking, 这自然不是不用 select 的理由, 但可以看到 select 之外的选项</li>
+<li>SIGIO 是 edge-triggered, 意味着你需要排空 I/O</li>
+</ul>
+</li>
+<li>select/poll
+<ul>
+<li>select 有效率问题</li>
+<li>select 可能会被信号打断</li>
+<li>pselect 会屏蔽 (umask) 信号的接收</li>
+<li>select 可以在接受到信号的时候将信号转化成一个 I/O readiness event</li>
+</ul>
+</li>
+<li>epoll()</li>
+<li><s>posix asynchronous I/O(又称 AIO)</s>
+<ul>
+<li>一个失败的项目</li>
+</ul>
+</li>
+</ol>
+<h3>libuv<a href="http://docs.libuv.org/en/v1.x/design.html">^4</a></h3>
+<p>异步 I/O 库, 用于 node.js, 在 Linux 上基于 <code>epoll()</code>, 使用线程池. 异步虽然反对一个任务开启一个线程, 但实际上并不排除线程. 线程池是更经济的做法.</p>
+<h3>小结</h3>
+<p>异步提供了一层不阻塞的多任务接口, 具体实现</p>
+<ol>
+<li>asynchronous blocking, 使用 select/poll/epoll 或者更上层的封装 libuv</li>
+<li>asynchronous non-blocking: SIGIO, signals</li>
+</ol>
+<h2>形式 (2)</h2>
+<p>Javascript 是异步编程的代表, 为什么? 暂且不论到底是不是 js 导致异步的出现. JS 只有一条线程, 但又不能让 I/O 阻塞, 所以它把任务交给浏览器<a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Concepts">^7</a>, 浏览器完成任务后执行回调函数. 或者让浏览器执行回调函数.回调函数有个缺点, 就是造成回调地狱, 遇到参数包含回调函数的接口, 你可能要写一层又一层的回调函数.</p>
+<p>2015 年 js 有了 async/await 语法, 用 Promises 表示异步任务, 异步任务处于 2 种状态: 完成和未完成. Promise 和 Rust 的 Future 一样. 不同的是, 对 Future, 你需要手动写 Poll 方法, 即轮询检查. Promise 不需要 Poll, 一切交给浏览器.</p>
+<h3>Javascript Promise<a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await">^5</a></h3>
+<p>js async 函数返回一个 promise:</p>
+<pre><code class="language-js">async function foo() { return 1; }
+</code></pre>
+<p>解析器将 1 封装成 Promise, 相当于</p>
+<pre><code class="language-js">async function foo() { return Promise.resolve(1); }
+</code></pre>
+<p>Promise 如果就绪, 则通过 <code>then()</code> 使用返回值, 在这个例子里也就是 <code>1</code></p>
+<pre><code class="language-js">foo().then(
+	function(value) {
+        console.log(value);
+    },
+    function(error) {
+        console.log(value);
+    }
+)
+</code></pre>
+<p><code>foo()</code> 返回的 <code>Promise.resolve(1)</code> 被 <code>then</code> 解封后得出 1, 作为 <code>value</code> 的形参传入第一个函数</p>
+<p>另外一个例子: 下载一张图片</p>
+<pre><code class="language-js">fetch(
+    &quot;https://i0.wp.com/acoup.blog/wp-content/uploads/2021/08/20210813000543_1.jpg?resize=1024%2C576&amp;ssl=1&quot;
+  )
+    .then((response) =&gt; {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      } else {
+        return response.blob();
+      }
+    })
+    .then((myBlob) =&gt; {
+      let objectURL = URL.createObjectURL(myBlob);
+      let image = document.createElement(&quot;img&quot;);
+      image.src = objectURL;
+      document.body.appendChild(image);
+    })
+    .catch((e) =&gt; {
+      console.log(
+        &quot;There has been a problem with your fetch operation: &quot; + e.message
+      );
+    });
+</code></pre>
+<ul>
+<li>下载图片
+<ul>
+<li>如果下载失败, <code>throw</code><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/throw">^8</a></li>
+<li>否则传给下一个 <code>then</code></li>
+</ul>
+</li>
+<li>增加 <code>&lt;img&gt;</code> 节点</li>
+</ul>
+<p>可以看出, <code>then()</code> 有两种语法, 实际上是一种<a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Concepts">^7</a></p>
+<pre><code class="language-js">p.then(onFulfilled[, onRejected]);
+
+p.then(value =&gt; {
+  // fulfillment
+}, reason =&gt; {
+  // rejection
+});
+</code></pre>
+<h4>术语</h4>
+<ol>
+<li>Pending: 处于没完成状态</li>
+<li>Resolved: Promise 已完成并返回, 但不知道是否成功</li>
+<li>结果
+<ol>
+<li>Fulfilled: 成功</li>
+<li>Rejected: 失败</li>
+</ol>
+</li>
+</ol>
+<p>上面有一句 <code>Promise.resolve(1)</code>, 上述术语表明 <code>resolve()</code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve">^9</a> 是一个 Promise 主动解析的过程</p>
+<p>单从 Javascript 的语法分不清 Promise 是像 window 那样的全局变量还是类. <code>Promise.resolve()</code> 实际上相当于 C++ 的 <code>Promise::resolve()</code></p>
+<h4>async/await<a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await">^10</a></h4>
+<p>上述例子中, 我们没看到 <code>fetch()</code> 是如何实现, 只有知道怎么使用 <code>async/await</code> 才算了解现代异步</p>
+<p>第一原则:</p>
+<ul>
+<li>用 <code>async function</code> 声明返回 Promise 的函数</li>
+<li>用 <code>await</code> 等待 Promise, await 所在函数所有语句是同步的, <code>await</code> 起到阻塞作用</li>
+<li><code>await</code> 阻塞当前作用域, 不阻塞外部调用者, 调用者在 <code>await</code> 触发瞬间切换到其他任务</li>
+</ul>
+<p>上一节的下载图片并创建 <code>&lt;img&gt;</code> 的代码可以写成这样</p>
+<pre><code class="language-js">async function myFetch() {
+  let response = await fetch('coffee.jpg');
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  let myBlob = await response.blob();
+
+  let objectURL = URL.createObjectURL(myBlob);
+  let image = document.createElement('img');
+  image.src = objectURL;
+  document.body.appendChild(image);
+}
+
+myFetch()
+.catch(e =&gt; {
+  console.log('There has been a problem with your fetch operation: ' + e.message);
+});
+</code></pre>
+<p>意图, 含义都很明显</p>
+<h3>Rust Future</h3>
+<p>先看 Future 的定义</p>
+<pre><code class="language-rust">#[must_use = &quot;futures do nothing unless you `.await` or poll them&quot;]
+#[lang = &quot;future_trait&quot;]
+pub trait Future {
+    type Output;
+    #[lang = &quot;poll&quot;]
+    pub fn poll(
+        self: Pin&lt;&amp;mut Self&gt;, 
+        cx: &amp;mut Context&lt;'_&gt;
+    ) -&gt; Poll&lt;Self::Output&gt;;
+}
+</code></pre>
+<blockquote>
+<p>Attempt to resolve the future to a final value, registering the current task for wakeup if the value is not yet available. <strong><em>(还没说注册到哪去)</em></strong></p>
+<p><strong>This function returns:</strong></p>
+<ul>
+<li>Poll::Pending if the future is not ready yet</li>
+<li>Poll::Ready(val) with the result val of this future if it finished successfully.</li>
+</ul>
+<p>Once a future has finished, clients should not poll it again.</p>
+<p>When a future is not ready yet, <code>poll</code> returns <code>Poll::Pending</code> and stores a clone of the <code>Waker</code> copied from the current Context.<strong><em>(Future 是一个 trait, <code>poll</code> 没有实现, 这就意味着, 在实现 <code>poll</code> 的时候需要手动做这件事)</em></strong> This <code>Waker</code> is then woken once the future can make progress <strong><em>(make progress? 是指操作系统把控制权返回给 Future 所在线程?)</em></strong>. For example, a future waiting for a socket to become readable would call .clone() on the <code>Waker</code> and store it. When a signal arrives elsewhere indicating that the socket is readable, <code>Waker::wake</code> is called and the socket future’s task is awoken. <strong><em>(<code>Waker::wake()</code> 之后唤醒 Future 的任务, Future 只是一个适配器, 重点还是任务)</em></strong> Once a task has been woken up, it should attempt to poll the future again, which may or may not produce a final value.</p>
+<p>Note that on multiple calls to poll, only the Waker from the Context passed to the most recent call should be scheduled to receive a wakeup. <strong><em>(不知道在说什么)</em></strong></p>
+</blockquote>
+<p>文档十分抽象, 大意是, 如果你检查 Future, 如果它处于未完成状态, 则将它注册为待唤醒事件. 又说, 如果它处于未完成状态, 你要将 <code>waker</code> 函数从当前 <code>Context</code> 中克隆一份给它. 当 Future 有进展的时候, 调用 <code>waker</code>, 在 <code>waker</code> 里面操作 Future 封装的事务.</p>
+<h2>用 Rust 实现一个异步计时器</h2>
+<p>例子来自 <a href="https://rust-lang.github.io/async-book/">The Rust Async Book</a></p>
+<h3>结构</h3>
+<ol>
+<li>从 sync_channel 生成一条管道, Sender 给 Spawner, Receiver 给 Executor</li>
+<li>Spawner 通过 Sender 将任务放入管道中</li>
+<li>同时, 每个任务都有一个单独的线程在执行任务(睡眠), 执行完之后, 将任务状态标记为完成</li>
+<li>Executor 不断从 Receiver 中获取任务 Task, 如果处于任务没完成, 就将任务放回管道</li>
+</ol>
+<p>这个过程看起来相当简单, 采用了 Reactor 模式. 但用 Rust 实现起来很难.</p>
+<h3>Reactor  设计模式</h3>
+<p>关键点:</p>
+<ul>
+<li>multiple inputs</li>
+<li>demultiplexing</li>
+<li>is an implementation of event-driven architecture</li>
+<li>dispatching synchronously</li>
+</ul>
+<p>从上面几点, 结合上面的 4 种阻塞模式可以看出 reactor 设计模式属于 asynchronous blocking I/O, asynchronous 是因为不用阻塞型文件描述符(反证法: 用阻塞的文件描述符有性能问题). blocking 是因为 event 不是 signal.</p>
+<h4>机制[^13]</h4>
+<ul>
+<li>对每个服务, 提供一个 Event Handler, 处理特定类型的 Event</li>
+<li>所有 Event Handler 提供相同的接口</li>
+<li>Initiation Dispatcher 通过 Synchronous Event De-multiplexer 等待事件发生</li>
+<li>事件发生之后, Synchronous Event De-multiplexer 通知 Initiation Dispatcher, 后者同步地调用相应的 Event handler</li>
+</ul>
+<h4>什么是 Reactor? 准确定义</h4>
+<p>Reactor = dispatcher, notifier[^13]</p>
+<p>[^13]: 据说是 Reactor 的最初出处, <a href="http://www.dre.vanderbilt.edu/~schmidt/PDF/reactor-siemens.pdf">http://www.dre.vanderbilt.edu/~schmidt/PDF/reactor-siemens.pdf</a></p>
+<p>没有准确定义, 个人认为, 工程上的东西不需要准确定义, reactor 不如 dispatcher 准确. Reactor 只是一个头脑发热的命名, 当别人说反应堆的时候, 你第一反应认为那是事务进行的地方, 但没想到就是一个分发器.</p>
+<p>####　小结</p>
+<p>一言概之, reactor 模式就是分发器将任务分发给执行者, 执行者完成之后, 将反馈作为事件发送到事件队列的的一种事件驱动模式,</p>
+<h3>细节</h3>
+<p>The Rust Async Book 用 Reactor 模式实现了异步计时器, 但与其说是在实现计时器, 不如说是在和 Rust 语法搏斗. 最后 Reactor 的 busy polling 也有浪费资源之嫌. 往后可以用更成熟的异步运行时取代自己写的 Poll, 现在我们只需体会这本书提供的实现逻辑.</p>
+<p>关键代码我用 <code>&gt;&gt;&gt;</code> 和 <code>&lt;&lt;&lt;</code> 标注</p>
+<pre><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+        关键代码
+&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+</code></pre>
+<h4>Spawner 将任务放入管道</h4>
+<pre><code class="language-rust">    // Spawn a task to print before and after waiting on a timer.
+    spawner.spawn(async {
+        println!(&quot;howdy!&quot;);
+        // Wait for our timer future to complete after two seconds.
+        &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+        TimerFuture::new(Duration::new(2, 0)).await;
+        &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+        println!(&quot;done!&quot;);
+    });
+</code></pre>
+<p>用一个 async 匿名函数封装打印函数和 Future, <code>.await</code> 返回一个 Future.</p>
+<h4>工作线程进入睡眠, 在睡眠状态下获取 <code>waker</code></h4>
+<p><code>TimeFuture::new</code> 开启了一个线程, 睡眠特定时间.</p>
+<pre><code class="language-rust">impl TimerFuture {
+    pub fn new(duration: Duration) -&gt; Self {
+        let shared_state = Arc::new(Mutex::new(SharedState {
+            completed: false,
+            waker: None,
+        }));
+
+        let thread_shared_state = shared_state.clone();
+        // https://doc.rust-lang.org/book/ch16-01-threads.html
+        // move 使你可以将数据从一个线程移入另一个线程
+        thread::spawn(move || {
+   &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+            // 注意: 线程创建函数立即返回
+            thread::sleep(duration);
+   &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+            let mut shared_state = thread_shared_state.lock().unwrap();
+            // 线程还在睡眠的时候, Executor 可能检查了 shared_state 的状态
+            shared_state.completed = true;
+            if let Some(waker) = shared_state.waker.take() {
+                waker.wake()
+            }
+        });
+
+        TimerFuture { shared_state }
+    }
+}
+</code></pre>
+<p>在上面代码中, 有一段注释说了</p>
+<blockquote>
+<p>// 线程还在睡眠的时候, Executor 可能检查了 shared_state 的状态</p>
+</blockquote>
+<pre><code class="language-mermaid">sequenceDiagram
+    autonumber
+    participant main thread
+    participant executor
+    participant working thread
+    main thread-&gt;&gt;working thread: spawn that thread
+    activate working thread
+    executor-&gt;&gt;working thread: check shared_state
+    working thread-&gt;&gt;main thread: timeout
+    deactivate working thread
+</code></pre>
+<p>如果检查到 <code>shared_state</code> 还没完成, 就给它克隆一个 <code>waker</code></p>
+<pre><code class="language-rust">impl Future for TimerFuture {
+    type Output = ();
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt; {
+        // Look at the shared state to see if the timer has already completed.
+        let mut shared_state = self.shared_state.lock().unwrap();
+        if shared_state.completed {
+            Poll::Ready(())
+        } else {
+            // Set waker so that the thread can wake up the current task
+            // when the timer has completed, ensuring that the future is polled
+            // again and sees that `completed = true`.
+            //
+            // It's tempting to do this once rather than repeatedly cloning
+            // the waker each time. However, the `TimerFuture` can move between
+            // tasks on the executor, which could cause a stale waker pointing
+            // to the wrong task, preventing `TimerFuture` from waking up
+            // correctly.
+            //
+            // N.B. it's possible to check for this using the `Waker::will_wake`
+            // function, but we omit that here to keep things simple.
+   &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+            shared_state.waker = Some(cx.waker().clone());
+            Poll::Pending
+   &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+        }
+    }
+}
+</code></pre>
+<p>再看一遍代码, <code>sleep -&gt; completed -&gt; waker.wake()</code>.</p>
+<pre><code class="language-rust">impl TimerFuture {
+    pub fn new(duration: Duration) -&gt; Self {
+        let shared_state = Arc::new(Mutex::new(SharedState {
+            completed: false,
+            waker: None,
+        }));
+
+        let thread_shared_state = shared_state.clone();
+        thread::spawn(move || {
+            thread::sleep(duration);
+            let mut shared_state = thread_shared_state.lock().unwrap();
+            shared_state.completed = true;
+   &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+            // 醒来之后执行 waker(), 后者是在 poll 的时候安装上去的
+            if let Some(waker) = shared_state.waker.take() {
+                waker.wake()
+            }
+    &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+        });
+
+        TimerFuture { shared_state }
+    }
+}
+</code></pre>
+<h4><code>waker</code> 的由来</h4>
+<p>接下来是一种回环的赋值, 不知道是不是使用 Rust 的代价, 为了&quot;安全编码&quot;绕了一圈.</p>
+<pre><code># 伪代码
+future.waker = task -&gt; context -&gt; waker;
+task.future = future;
+</code></pre>
+<pre><code class="language-rust">impl Executor {
+    fn run(&amp;self) {
+        while let Ok(task) = self.ready_queue.recv() {
+            // Take the future, and if it has not yet completed (is still Some),
+            // poll it in an attempt to complete it.
+            let mut future_slot = task.future.lock().unwrap();
+            if let Some(mut future) = future_slot.take() {
+                // Create a `LocalWaker` from the task itself
+   &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+                let waker = waker_ref(&amp;task);
+                let context = &amp;mut Context::from_waker(&amp;*waker);
+   &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+                // `BoxFuture&lt;T&gt;` is a type alias for
+                // `Pin&lt;Box&lt;dyn Future&lt;Output = T&gt; + Send + 'static&gt;&gt;`.
+                // We can get a `Pin&lt;&amp;mut dyn Future + Send + 'static&gt;`
+                // from it by calling the `Pin::as_mut` method.
+                // I: 就在这个此处传入 context
+                if let Poll::Pending = future.as_mut().poll(context) {
+                    // We're not done processing the future, so put it
+                    // back in its task to be run again in the future.
+                    *future_slot = Some(future);
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>关于 <code>context</code></p>
+<pre><code class="language-rust">let waker = waker_ref(&amp;task);
+let context = &amp;mut Context::from_waker(&amp;*waker);
+</code></pre>
+<p><code>waker_ref</code> 的作用是将从 <code>Arc&lt;impl ArcWake&gt;</code> 中返回一个 <code>Waker</code></p>
+<p>注意到 <code>Task</code> 实现了 <code>ArcWake</code></p>
+<pre><code class="language-rust">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+impl ArcWake for Task {
+    fn wake_by_ref(arc_self: &amp;Arc&lt;Self&gt;) {
+        // Implement `wake` by sending this task back onto the task channel
+        // so that it will be polled again by the executor.
+        let cloned = arc_self.clone();
+        arc_self
+            .task_sender
+            .send(cloned)
+            .expect(&quot;too many tasks queued&quot;);
+    }
+}
+&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+</code></pre>
+<p><code>Context::from_waker()</code></p>
+<blockquote>
+<p>Currently,<code>Context</code> only serves to provide access to a <code>&amp;Waker</code> which can be used to wake the current task.</p>
+</blockquote>
+<p>只是适配接口. 现在的问题是, 什么时候调用 Task 的 <code>wake_by_ref()</code>? 查看文档, <code>wake_by_ref()</code> 相当于 C/C++ 的 <code>p_waker-&gt;wake()</code></p>
+<p>工作线程从睡眠中醒来之后, 执行 <code>waker.wake()</code>, 也就是调用了 <code>wake_by_ref()</code>, 这时, <code>Task</code> 又将自己发送到管道中去. 下一次 Executor 拿到这个 <code>Task</code> , 把 <code>Future</code> 提取出来 <code>poll</code> 的时候, 会发现与之关联的业务已经完成.</p>
+<pre><code class="language-rust">impl Future for TimerFuture {
+    type Output = ();
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt; {
+        let mut shared_state = self.shared_state.lock().unwrap();
+ &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+        if shared_state.completed {
+            println!(&quot;{} is done&quot;, shared_state.name);
+            Poll::Ready(())
+ &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+        } else {
+            println!(&quot;{} is pending&quot;, shared_state.name);
+            shared_state.waker = Some(cx.waker().clone());
+            Poll::Pending
+        }
+    }
+}
+</code></pre>
+<p><code>future.as_mut().poll(context)</code> 的时候如果遇到 <code>Poll::Pending</code>, 就会更新 <code>future</code> 本身的状态, 注意 <code>future.poll</code> 的第一个参数是 <code>self</code>, 那么确实需要将 <code>future</code> 放回到原来的 <code>Task</code> 中. 另外还可以看到 <code>future_slot.take()</code> 返回的不是引用, 而是直接将 <code>future</code> 从 <code>future_slot</code> 中移出来了.</p>
+<pre><code class="language-rust">if let Some(mut future) = future_slot.take() {
+    // Create a `LocalWaker` from the task itself
+    let waker = waker_ref(&amp;task);
+    let context = &amp;mut Context::from_waker(&amp;*waker);
+    // `BoxFuture&lt;T&gt;` is a type alias for
+    // `Pin&lt;Box&lt;dyn Future&lt;Output = T&gt; + Send + 'static&gt;&gt;`.
+    // We can get a `Pin&lt;&amp;mut dyn Future + Send + 'static&gt;`
+    // from it by calling the `Pin::as_mut` method.
+   &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+    if let Poll::Pending = future.as_mut().poll(context) {
+        // We're not done processing the future, so put it
+        // back in its task to be run again in the future.
+        *future_slot = Some(future);
+    }
+  &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+}
+</code></pre>
+<blockquote>
+<p><code>pub fn take(&amp;mut self) -&gt; Option&lt;T&gt;</code></p>
+<p>Takes the value out of the option, leaving a None in its place.</p>
+</blockquote>
+<h4><code>Pin</code></h4>
+<p>看这本书的<a href="https://rust-lang.github.io/async-book/04_pinning/01_chapter.html">第四章</a>, 结论: <code>Pin</code> 是为了防止移动数据, 有一些数据结构有自引用的特征, 移动它们会导致引用失效.</p>
+<p>那为什么要 Pin <code>Future</code>?</p>
+<blockquote>
+<p>The first change you'll notice is that our <code>self</code> type is no longer <code>&amp;mut Self</code> , but has changed to<code>Pin&lt;&amp;mut Self&gt;</code>.  We'll talk more about pinning in <a href="https://rust-lang.github.io/async-book/04_pinning/01_chapter.html">a later section</a>, but for now know that it allows us to create futures that are immovable. Immovable objects can store pointers between their fields, e.g. <code>struct MyFut { a: i32, ptr_to_a: *const i32 }</code>. Pinning is necessary to enable async/await.</p>
+</blockquote>
+<p>对, 我们知道了 Pin 防止移动, 但是为什么 <code>Future</code> 不可移动, 不是用管道发送 <code>Future</code> 了吗? 当然我们很容易就想到, 不是非要发送 <code>Future</code> 实体, 可以发送引用.</p>
+<p>首先我们看 <code>Future</code> 在什么位置:</p>
+<pre><code class="language-rust">    // Spawn a task to print before and after waiting on a timer.
+    spawner.spawn(async {
+        println!(&quot;howdy!&quot;);
+        // Wait for our timer future to complete after two seconds.
+        TimerFuture::new(Duration::new(2, 0)).await;
+        println!(&quot;done!&quot;);
+    });
+</code></pre>
+<p>在栈上. 但在 <code>Spawner::spawn()</code> 中, 它被 <code>boxed()</code> 到堆上, 接着, 被放入 <code>Task</code> 中. 借助 rust-analyzer 可以看到类型.</p>
+<p><img src="asynchrony/9a26d5543fc646b19db593c18d08a6c1_.png" alt=""></p>
+<p><code>Arc&lt;Task&gt;</code> 也是堆上的类型, 但没人在堆上移动它们, <code>task_sender.send()</code> 只是发送了它的指针, 指针可以随便拷贝, 移动. 没人移动 <code>Task</code>, 也没人移动 <code>Future</code>, 一切安然无恙, 因此, 在这个场景里面, Pin 很大程度上是为了满足 <code>poll</code> 接口的要求.</p>
+<h4>结论</h4>
+<p>如果要写自己的异步应用, 可能需要这些步骤</p>
+<ol>
+<li>创建工作线程, 在工作线程的末尾挂上钩子函数 <code>waker()</code></li>
+<li>创建 <code>Future</code>, 通过共享变量关联业务的工作线程, 同时启动工作线程, 并记住以后要通过共享变量来观察工作线程的状态, 记住 <code>Future</code> 就是观察者</li>
+<li>创建 Spawner, <code>boxed()</code> Future, 封装一层 <code>Arc</code>, 封装成观察任务 Task, 用管道实现生产消费者模式</li>
+<li>创建 Executor, 从管道中获取 Task, 通过 <code>poll</code> 观察工作线程是否结束, 如果结束, 则观察结束. 否则, 用 <code>Context</code> 封装 <code>waker</code>, 并将 <code>waker</code> 传给共享变量, 工作线程在结束之后, 会提取此函数并执行.</li>
+</ol>
+
+    </div>
+  </body>
+</html>

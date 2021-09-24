@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Understanding Formal Python Project Structure</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>严肃 Python 项目结构指南</h1>
+      <p>带有 <a href="http://setup.py">setup.py</a> 的 Python 项目跟我们平时写的脚本不一样, 它们有严格的文件结构, 在开发之前, 我们需要知道如何调试和测试代码.</p>
+<h2>虚拟环境和安装依赖</h2>
+<p>拿到代码之后, 第一步就是启动虚拟环境</p>
+<h3>Tox</h3>
+<p>Tox 是 Virtualenv 的上层应用, tox 在不同的版本环境下运行 pytest(或其他命令).</p>
+<p>先安装 tox</p>
+<pre><code class="language-bash">$ pip3 install tox
+</code></pre>
+<p>直接在根目录执行</p>
+<pre><code class="language-bash">$ tox
+...
+=========================== 316 passed in 3.22s ===========================
+_________________________________ summary _________________________________
+ERROR:  py37: InterpreterNotFound: python3.7
+  py38: commands succeeded
+ERROR:  py39: InterpreterNotFound: python3.9
+</code></pre>
+<p>我主机只有 3.8 版本的 python, 所以报了 3.7, 3.9 的错误. Tox 用于运行单元测试.</p>
+<p>除单元测试之外, 我们还需要配置其他调试方式, 比如断点, 打印.</p>
+<h3>Pipenv</h3>
+<p>同样也是基于 Virtualenv 的虚拟环境管理器. 和原生的 Virtualenv 相比, 省了 activate 和 deactivate 操作. 缺点是它生成的虚拟环境目录不可预测, 不适合 VSCode 的调试器配置, 只适合简单地运行程序.</p>
+<pre><code class="language-bash">$ pip install --user pipenv
+$ pipenv install -r requirements.txt
+$ pipenv shell
+(project) $
+</code></pre>
+<p>或者</p>
+<pre><code class="language-bash">$ pinenv run python3 -m xxx
+</code></pre>
+<h3>Virtualenv</h3>
+<p>用于在 VSCode Debug, 详情看 VSCode 调试配置</p>
+<h2>测试结构和工具</h2>
+<h3>Pytest 是什么?</h3>
+<p><a href="https://docs.pytest.org/en/latest/explanation/anatomy.html#test-anatomy">Anatomy of a test</a> 解释了 Pytest 的结构, 大意是:</p>
+<ol>
+<li>Test -&gt; Behavior, 测试是为了观察某种行为
+<ul>
+<li>Behavior: system acts to situation/stimuli, 行为是应激反应</li>
+</ul>
+</li>
+<li>测试分为 4 个步骤, 就跟打开文件, 写入/读取, 关闭文件一样
+<ul>
+<li>Arrange: prepare everything</li>
+<li>Act: singular, <strong>state-changing</strong>, 将能在 Arrange 阶段做的事都排除在外</li>
+<li>Assert: 测试的目的</li>
+<li>Cleanup: 清理 Arrange 的结果</li>
+</ul>
+</li>
+<li>Fixture, 提供测试的上下文, 属于 Arrange 阶段, 它之所以叫做 fixture 是因为它是一种静态的东西, 文档描述为 defined, reliable, consistent.</li>
+<li>Pytest 检查各函数签名, 如果函数的参数在字面上和 fixtures 一样, 则将 fixture 作为参数传进去</li>
+</ol>
+<p>Fixture 的例子:</p>
+<pre><code class="language-python">import pytest
+
+@pytest.fixture
+def f():
+    return &quot;fixture&quot;
+
+def test_func1(f):
+    assert f == &quot;fixture&quot;
+
+def test_func2(f):
+    assert f != &quot;fixture!&quot;
+</code></pre>
+<p>为了验证这个例子能用, 我们参考 <a href="https://docs.python-guide.org/writing/structure/">Structuring Your Project</a>, 下载 <a href="https://kennethreitz.org/essays/2013/01/27/repository-structure-and-python">Kenneth Reitz recommended in 2013</a></p>
+<p>在 tests 目录创建 test_fixture.py, 粘贴上面代码, 在根目录运行 pytest, 可以看到函数可以执行.</p>
+<h2>程序入口</h2>
+<p>这种项目的函数入口已经不用 <code>if __name == __main__</code> 来标注, 你需要找 <a href="http://setup.py">setup.py</a> 的 <code>entry_points</code>.</p>
+<p>举个例子:</p>
+<pre><code class="language-python">package_dir={&quot;&quot;: &quot;r&quot;},
+entry_points={
+    &quot;console_scripts&quot;: [&quot;m=a.b:c&quot;]
+},
+</code></pre>
+<p>上面的代码意思是, 模块 <code>m</code> 的入口函数为 <code>r</code> 目录中 <code>a/b.py</code> 文件的 <code>c</code> 函数.</p>
+<h2>VSCode 中调试</h2>
+<p>调试的时候也需要用虚拟环境.</p>
+<pre><code class="language-bash">$ virtualenv venv
+$ source venv/bin/activate
+$ which pip3
+$ which python3
+$ pip3 install -r requirements.txt
+$ deactivate
+</code></pre>
+<pre><code class="language-json">// .vscode/launch.json
+{
+  &quot;version&quot;: &quot;0.2.0&quot;,
+  &quot;configurations&quot;: [
+    {
+      &quot;name&quot;: &quot;Debug&quot;,
+      &quot;type&quot;: &quot;python&quot;,
+      &quot;request&quot;: &quot;launch&quot;,
+      &quot;cwd&quot;: &quot;${workspaceFolder}/foo_dir/&quot;,
+      &quot;args&quot;: [&quot;arg1&quot;, &quot;arg2&quot;, &quot;arg3&quot;],
+      &quot;module&quot;: &quot;bar_module&quot;,
+      &quot;console&quot;: &quot;integratedTerminal&quot;
+    }
+  ]
+}
+</code></pre>
+<p>注意此配置和项目文件目录有关, 上面配置对应的目录结构为:</p>
+<pre><code class="language-txt">.
+├── README.md
+├── requirements.txt
+├── setup.cfg
+├── setup.py
+├── foo_dir
+│   ├── bar_module
+│   │   ├── a.py
+│   │   ├── b.ini
+│   │   ├── c.py
+│   │   └── d_dir
+├── tests
+</code></pre>
+<p>在根目录 .vscode/settings.json 设置 python 的路径(相对或绝对), 这里将它设置为虚拟环境目录的 python 路径, 等效于 <code>source venv/bin/activate &amp;&amp; python</code><a href="%60%60%60">^1</a>.</p>
+<pre><code class="language-json">{
+  &quot;python.pythonPath&quot;: &quot;venv/bin/python3&quot;
+}
+</code></pre>
+<p>通过以上设置, 就能实现断点调试. 只要能跑起来, 就成功了一半, 项目结构方面, 还可以参考 <a href="https://github.com/ytdl-org/youtube-dl">youtube-dl</a>.</p>
+<h2>打包和发布</h2>
+<pre><code class="language-bash">python3 -m pip install --upgrade build
+python3 -m build
+</code></pre>
+<p>在 dist 目录生成 2 个文件, 但本文也不涉及发布, 所以不展开说明.</p>
+<h2>参考</h2>
+<ul>
+<li><a href="https://docs.python-guide.org/dev/virtualenvs/">Pipenv &amp; Virtual Environments</a></li>
+<li><a href="https://pipenv-fork.readthedocs.io/en/latest/basics.html">Basic Usage of Pipenv</a></li>
+<li><a href="https://realpython.com/pipenv-guide/">Pipenv Guide</a></li>
+<li><a href="https://docs.python-guide.org/dev/virtualenvs/#lower-level-virtualenv">Virtualenv</a></li>
+<li><a href="https://packaging.python.org/tutorials/packaging-projects/">Packaging Python Projects</a></li>
+<li><a href="https://code.visualstudio.com/docs/python/debugging">VSCode Debugging</a></li>
+<li><a href="https://docs.pytest.org/en/latest/how-to/usage.html">How to invoke pytest</a></li>
+<li><a href="https://docs.python.org/3/distutils/setupscript.html">Writing the Setup Script</a></li>
+</ul>
+<pre><code>➜  bin git:(main) ✗ ./python3
+Python 3.8.5 (default, May 27 2021, 13:30:53)
+[GCC 9.3.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; for p in sys.path: print(p)
+...
+
+/usr/lib/python38.zip
+/usr/lib/python3.8
+/usr/lib/python3.8/lib-dynload
+/home/user/Workspace/project/venv/lib/python3.8/site-packages
+&gt;&gt;&gt;
+➜  bin git:(main) ✗ source ./activate
+(venv) ➜  bin git:(main) ✗ python3
+Python 3.8.5 (default, May 27 2021, 13:30:53)
+[GCC 9.3.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; for p in sys.path: print(p)
+...
+
+/usr/lib/python38.zip
+/usr/lib/python3.8
+/usr/lib/python3.8/lib-dynload
+/home/user/Workspace/project/venv/lib/python3.8/site-packages
+```
+</code></pre>
+
+    </div>
+  </body>
+</html>

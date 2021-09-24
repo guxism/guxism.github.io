@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Understanding Network Device Driver</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>网络接口设备驱动</h1>
+      <p>驱动是内核模块, 模块是抽象接口的实现, 驱动是某个接口的实现. 操作系统启动的时候通过 modprobe 加载驱动, 加载的时候调用驱动的注册函数, 把驱动里面相关的函数指针注册到某些钩子的观察者队列中去. 事件（中断）发生之后这些函数被调用.</p>
+<p>从 ldd3 或 <a href="https://blog.packagecloud.io/eng/2016/06/22/monitoring-tuning-linux-networking-stack-receiving-data/">Monitoring and Tuning the Linux Networking Stack: Receiving Data</a> 的描述来看, 接收数据是非常复杂的过程, 太多分支, 但如果只看网口到协议栈的过程就简单许多.</p>
+<p>NIC 收到数据, 通过 DMA（如果 NIC 支持）将数据写入特定的地址空间</p>
+<p><img src="device-driver/5736fcd23c2843bea2cf2b28c201c804_.png" alt=""></p>
+<p>NIC 发出硬件中断, 告诉 CPU 数据已经准备好了, 与此硬件中断对应的 handler 检查驱动是否支持 NAPI, 如果支持, 唤醒 NAPI , NAPI 将自己注册到 CPU 的 softnet_data, 发出一个 <code>NET_RX_SOFTIRQ</code>, 并屏蔽硬件中断, 之后 NIC 的硬件中断再发过来也不会打断 CPU, 从而缓解 CPU 的压力.</p>
+<pre><code>/* Called with irq disabled */
+static inline void ____napi_schedule(struct softnet_data *sd,
+                                     struct napi_struct *napi)
+{
+  list_add_tail(&amp;napi-&gt;poll_list, &amp;sd-&gt;poll_list);
+  __raise_softirq_irqoff(NET_RX_SOFTIRQ);
+}
+</code></pre>
+<p>如果驱动不支持 NAPI, 则直接调用驱动的 poll 函数.</p>
+<p>以 igb 驱动为例,  新的 igb 支持 NAPI,  igb_main.c <code>igb_poll()</code>就是 poll 接口的实现.</p>
+<pre><code>/* initialize NAPI */
+/// 将 igb_poll 注册到 NAPI
+netif_napi_add(adapter-&gt;netdev, &amp;q_vector-&gt;napi,
+		       igb_poll, 64);
+</code></pre>
+<p>推荐阅读 <a href="https://blog.packagecloud.io/eng/2016/06/22/monitoring-tuning-linux-networking-stack-receiving-data/">Monitoring and Tuning the Linux Networking Stack: Receiving Data</a>  了解之后的细节.</p>
+<p>题外话: 我的工作和设备驱动有些相关, 虽然我们没改过驱动, 但对某些问题需要提供一点驱动层面的解释. 所以这也是我研究设备驱动的原因之一, 后续将持续更新.</p>
+<h2>参考</h2>
+<ol>
+<li><a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.27.5031&amp;rep=rep1&amp;type=pdf">https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.27.5031&amp;rep=rep1&amp;type=pdf</a></li>
+<li><a href="https://stackoverflow.com/questions/47450231/what-is-the-relationship-of-dma-ring-buffer-and-tx-rx-ring-for-a-network-card">https://stackoverflow.com/questions/47450231/what-is-the-relationship-of-dma-ring-buffer-and-tx-rx-ring-for-a-network-card</a></li>
+<li><a href="https://lwn.net/Articles/244640/">https://lwn.net/Articles/244640/</a></li>
+<li><a href="https://courses.engr.illinois.edu/cs423/sp2014/Lectures/LinuxDriver.pdf">https://courses.engr.illinois.edu/cs423/sp2014/Lectures/LinuxDriver.pdf</a></li>
+</ol>
+
+    </div>
+  </body>
+</html>

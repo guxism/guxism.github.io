@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Transplanting Cron and Configure It on An Isolated Server</title>
+    <style>
+      #page{max-width:600px;margin:15px;word-wrap:break-word;font-family:sans-serif;font-size:.938rem}h1{display:flex;align-items:baseline}h1 span{display:inline-block;margin:0 0 0 10px}img{max-width:600px}input{width:60%}ol,ul{padding-left:1em}dd{margin:1em}p{display:block;margin-block-start:1em;margin-block-end:1em;margin-inline-start:0;margin-inline-end:0}a{text-decoration:underline}div.code{margin-left:580px;padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>在断网服务器上移植 Cron 并配置</h1>
+      <p>最近帮别人看一个 C++ 项目, 顺带解决一些部署问题. 这个项目的 docker 镜像基于一个定制 Centos, 项目需要用到 Cron, 但上不了网, 装不了, 提供系统的正也是他们甲方, 甲方不同意提供软件源. 他们希望我把 Cron 装上去, 因为他们有很多 Cron 任务.</p>
+<p>第一次尝试：把 rpm 拉到 docker 里面  rpm -i 失败, dailyjobs 找不到 rpm,  cronie 依赖 dailyjobs, dailyjobs 在 cronie.rpm 里面, 无法解决这种依赖关系.</p>
+<p>第二次尝试：把 cronie 源码拖到 docker 上编译, 缺少 automake.rpm, autoconf.rpm, 再去看后者的依赖, 有一页长, 于是放弃了.</p>
+<p>第三次尝试：把 CentOS.iso 当作源, 却发现 docker 没有 loop 内核模块, 没法挂载 iso.</p>
+<p>第四次尝试：用 systemd timer, 报 D-Bus 错误, 缺少 systemd-sysv, 进而缺 systemd 本身.</p>
+<p>第五次尝试：pull 了一个内核版本差不多的 centos 镜像, 用 ldd 查看 crond 的依赖, 把 crontab, crond 拷了出来, 放在目标容器里面, 发现可以执行, 但 crond 有些设置问题, 在前台运行 crond, 查看日志, 与 PAM 认证有关, 根据 <a href="https://bugzilla.redhat.com/show_bug.cgi?id=869574">这条说明</a>, 添加 <code>/etc/pam.d/crond</code></p>
+<pre><code>auth       sufficient pam_env.so
+auth       required   pam_rootok.so
+auth       include    system-auth
+account    required   pam_access.so
+account    include    system-auth
+session    required   pam_loginuid.so
+session    include    system-auth
+</code></pre>
+<p>最后修改 Dockerfile</p>
+<pre><code>RUN cd /xxx/sys_patch/bin &amp;&amp; chmod +x crond &amp;&amp; chmod +x crontab
+RUN cp /xxx/sys_patch/bin/crond /usr/sbin/crond
+RUN cp /xxx/sys_patch/bin/crontab /usr/bin/crontab
+RUN cp /xxx/sys_patch/etc/pam.d/crond /etc/pam.d/crond
+RUN sed -i '1 i \+ALL\:cron crond' /etc/security/access.conf
+</code></pre>
+<p>问题解决</p>
+
+    </div>
+  </body>
+</html>
