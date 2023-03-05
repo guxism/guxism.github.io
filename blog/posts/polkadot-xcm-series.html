@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Polkadot Xcm 系列函数/类型探究</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Polkadot Xcm 系列函数/类型探究</h1>
+        <p>关于 XcmV1MultiLocation 的资料几乎是 0，本文将从它入手讲讲什么是 <code>XcmV1Multi*</code></p>
+<p>出现场景：</p>
+<p><img src="images/Pasted%20image%2020221010154916.png" alt=""></p>
+<p>源码在 <a href="https://github.com/polkadot-js/api.git">https://github.com/polkadot-js/api.git</a></p>
+<p>奇怪的是，定义是生成的，不过我们暂时不管</p>
+<p>packages/types-augment/src/lookup/types-polkadot.ts 第 374 行左右</p>
+<pre class="one-piece"><code>  /** @name XcmV1MultiLocation (123) */
+  interface XcmV1MultiLocation extends Struct {
+    readonly parents: u8;
+    readonly interior: XcmV1MultilocationJunctions;
+  }
+
+  /** @name XcmV1MultilocationJunctions (124) */
+  interface XcmV1MultilocationJunctions extends Enum {
+    readonly isHere: boolean;
+    readonly isX1: boolean;
+    readonly asX1: XcmV1Junction;
+    readonly isX2: boolean;
+    readonly asX2: ITuple&lt;[XcmV1Junction, XcmV1Junction]&gt;;
+    readonly isX3: boolean;
+    readonly asX3: ITuple&lt;[XcmV1Junction, XcmV1Junction, XcmV1Junction]&gt;;
+    readonly isX4: boolean;
+    readonly asX4: ITuple&lt;[XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction]&gt;;
+    readonly isX5: boolean;
+    readonly asX5: ITuple&lt;[XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction]&gt;;
+    readonly isX6: boolean;
+    readonly asX6: ITuple&lt;[XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction]&gt;;
+    readonly isX7: boolean;
+    readonly asX7: ITuple&lt;[XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction]&gt;;
+    readonly isX8: boolean;
+    readonly asX8: ITuple&lt;[XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction, XcmV1Junction]&gt;;
+    readonly type: 'Here' | 'X1' | 'X2' | 'X3' | 'X4' | 'X5' | 'X6' | 'X7' | 'X8';
+  }
+</code></pre>
+<p>当然我们关心的是 parents 和 interior, 注意到 interior 是 XcmV1MultilocationJunctions 类型，上图显示 dest 的 parents 是 1，interior 是 X2，那么可以知道此时的 interior 是 <code>ITuple&lt;[XcmV1Junction, XcmV1Junction]&gt;;</code></p>
+<p><img src="images/Pasted%20image%2020221010161420.png" alt=""></p>
+<p>在看看 <code>XcmV1Junction</code> 的定义：</p>
+<pre class="one-piece"><code>  /** @name XcmV1Junction (125) */
+  interface XcmV1Junction extends Enum {
+    readonly isParachain: boolean;
+    readonly asParachain: Compact&lt;u32&gt;;
+    readonly isAccountId32: boolean;
+    readonly asAccountId32: {
+      readonly network: XcmV0JunctionNetworkId;
+      readonly id: U8aFixed;
+    } &amp; Struct;
+    readonly isAccountIndex64: boolean;
+    readonly asAccountIndex64: {
+      readonly network: XcmV0JunctionNetworkId;
+      readonly index: Compact&lt;u64&gt;;
+    } &amp; Struct;
+    readonly isAccountKey20: boolean;
+    readonly asAccountKey20: {
+      readonly network: XcmV0JunctionNetworkId;
+      readonly key: U8aFixed;
+    } &amp; Struct;
+    readonly isPalletInstance: boolean;
+    readonly asPalletInstance: u8;
+    readonly isGeneralIndex: boolean;
+    readonly asGeneralIndex: Compact&lt;u128&gt;;
+    readonly isGeneralKey: boolean;
+    readonly asGeneralKey: Bytes;
+    readonly isOnlyChild: boolean;
+    readonly isPlurality: boolean;
+    readonly asPlurality: {
+      readonly id: XcmV0JunctionBodyId;
+      readonly part: XcmV0JunctionBodyPart;
+    } &amp; Struct;
+    readonly type: 'Parachain' | 'AccountId32' | 'AccountIndex64' | 'AccountKey20' | 'PalletInstance' | 'GeneralIndex' | 'GeneralKey' | 'OnlyChild' | 'Plurality';
+  }
+</code></pre>
+<p>是一个 <code>Enum</code>, 这就解释了为什么有下拉选项框，而且可以看出，选 <code>Parachain</code> 为 <code>2000</code>, 以及选 <code>AccountId</code> 为转帐的目的，这两者其实都是定语</p>
+<p>那么 parents 为 0 或者 1 表示什么？等于 0 的时候表示 asset，等于 1 时表示 dest, 而 xTransfer 总而言之即是将 asset 发送到 dest.</p>
+<p>但是我们不能直接在 api 代码中搜索 xTransfer, 我们直接看 Decode 的结果，XCM 是一种 RPC，里面的信息按照一定的协议序列化（我们也暂不关心用了什么序列化协议）</p>
+<p><img src="images/Pasted%20image%2020221010163506.png" alt=""></p>
+<p>我们可以看到 encoded call hash, 你觉得这么几个字符可以包括以上内容？所以这只是 hash, 真正内容看右下角</p>
+<p><img src="images/Pasted%20image%2020221010163616.png" alt=""></p>
+<p>事实上就是第一行的内容：</p>
+<p><img src="images/Pasted%20image%2020221010163703.png" alt=""></p>
+<p>回到正题，我们要去找 parents == 1 是啥意思，我们看到（猜测到） xTransfer 实际上是一个 label, 而实际调用的接口是 <code>transfer(asset, dest, destWeight)</code>，那么 callIndex = 5200 某种程度上类似于系统调用，我在 api 代码中找不到 <code>transfer</code> 函数的定义，那么我猜想，也许这就是 rpc 的目的地执行的，我要去目的地代码中找</p>
+<p>问了同事之后，得到的回复是，5200 对应的 handle 是 pallet 定义的，而 substrate 框架帮我们解决了从 5200 到所定义的接口的映射问题，看了一下 pallet 接口定义，感觉有些东西对不上，比如，这根本就没有 parents 参数，不过我们看到这是被宏包装的接口</p>
+<pre class="one-piece"><code>#[pallet::call]
+	impl&lt;T: Config&gt; Pallet&lt;T&gt;
+	where
+		T::AccountId: Into&lt;[u8; 32]&gt; + From&lt;[u8; 32]&gt;,
+	{
+		#[pallet::weight(195_000_000)]
+		#[transactional]
+		pub fn transfer(
+			origin: OriginFor&lt;T&gt;,
+			asset: Box&lt;MultiAsset&gt;,
+			dest: Box&lt;MultiLocation&gt;,
+			dest_weight: Option&lt;XCMWeight&gt;,
+		) -&gt; DispatchResult {
+			let sender = ensure_signed(origin)?;
+			Self::do_transfer(sender, *asset, *dest, dest_weight)?;
+			Ok(())
+		}
+
+		#[pallet::weight(195_000_000)]
+		#[transactional]
+		pub fn transfer_generic(
+			origin: OriginFor&lt;T&gt;,
+			data: Box&lt;Vec&lt;u8&gt;&gt;,
+			dest: Box&lt;MultiLocation&gt;,
+			dest_weight: Option&lt;XCMWeight&gt;,
+		) -&gt; DispatchResult {
+			let sender = ensure_signed(origin)?;
+			Self::do_transfer_generic(sender, data.to_vec(), *dest, dest_weight)?;
+			Ok(())
+		}
+	}
+</code></pre>
+<p>下一步，head to the substrate code? or just stop? 我们的目标是知道 parents = 1 到底做了什么。</p>
+<p>到 substrate 代码 frame/support/procedural/src/pallet/parse/call.rs:68~73</p>
+<pre class="one-piece"><code>/// Attributes for functions in call impl block.
+/// Parse for `#[pallet::weight(expr)]` or `#[pallet::call_index(expr)]
+pub enum FunctionAttr {
+	CallIndex(u8),
+	Weight(syn::Expr),
+}
+</code></pre>
+<p>看看 pallet 代码做了什么：</p>
+<pre class="one-piece"><code>#[pallet::weight(195_000_000)]
+</code></pre>
+<p>substrate 如何解析这串代码：</p>
+<ol>
+<li>去掉 <code>#</code></li>
+<li>找关键字 <code>weight</code></li>
+<li>找到 <code>195_000_000</code></li>
+</ol>
+<p>我关心的是 <code>#[pallet::call_index(expr)]</code>, 但我们写的 pallet 并不使用这一标志，那么我猜想也许 <code>#[pallet::call]</code> 做了 <code>call_index</code> 的事</p>
+<p>看文档：</p>
+<ul>
+<li><a href="https://docs.substrate.io/reference/frame-macros/">https://docs.substrate.io/reference/frame-macros/</a></li>
+<li><a href="https://paritytech.github.io/substrate/master/frame_support/attr.pallet.html#call-palletcall-optional">https://paritytech.github.io/substrate/master/frame_support/attr.pallet.html#call-palletcall-optional</a></li>
+<li><a href="https://paritytech.github.io/substrate/master/frame_support/pallet_macros/attr.call_index.html">https://paritytech.github.io/substrate/master/frame_support/pallet_macros/attr.call_index.html</a></li>
+</ul>
+<p>分析：</p>
+<ol>
+<li>首先 <code>#[pallet::call]</code> 是 implementation of pallet dispatchables</li>
+<li>dispatchable 是指可分配/调度，是 dispatcher 的目标</li>
+<li>每一个 dispatchable 必须定义 weight, 这个我们不关心</li>
+<li>每一个 dispatchable 可以定义 call_index: 如果定义了，则 explicitly 定义 codec index in the <code>Call</code> enum, explicitly 暗示了 inexplicitly, 默认从 0 开始</li>
+</ol>
+<p>OK, 我就接受了这种设定：<code>transfer</code> 这一 pallet dispatchable 位于 index 5200, 前端会从后端拉取一个 dispatchables 列表，这是必须的，但是怎么实现我们也不关心。</p>
+<p>我们可以取 subscan 看参数：</p>
+<p><img src="images/Pasted%20image%2020221010181253.png" alt=""></p>
+<pre class="one-piece"><code>[
+  {
+    name: "asset",
+    type: "xcm:v1:multiasset:MultiAsset",
+    type_name: "Box&lt;MultiAsset&gt;",
+    value: {
+      fun: {
+        Fungible: "10000000000000"
+      },
+      id: {
+        Concrete: {
+          interior: {
+            Here: null
+          },
+          parents: 0
+        }
+      }
+    }
+  },
+  {
+    name: "dest",
+    type: "xcm:v1:multilocation:MultiLocation",
+    type_name: "Box&lt;MultiLocation&gt;",
+    value: {
+      interior: {
+        X2: {
+          col0: {
+            Parachain: 2023
+          },
+          col1: {
+            AccountKey20: {
+              key: "0x71c63778c9031aa8271f8cbf3bf6db0f3f1502f8",
+              network: {
+                Any: null
+              }
+            }
+          }
+        }
+      },
+      parents: 1
+    }
+  },
+  {
+    name: "dest_weight",
+    type: "option&lt;U64&gt;",
+    type_name: "Option&lt;XCMWeight&gt;",
+    value: 6000000000
+  }
+]
+</code></pre>
+<p>这肯定是解析出来的，anyway, 我们依然不知道 parents 是干什么用的</p>
+<p>这是在业务代码全局搜索 parents 可解决问题，我找到 <code>MultiLocation</code> 的定义: /home/root_/.cargo/git/checkouts/polkadot-4038f27d5e4ea2e8/94078b4/xcm/src/v1/multilocation.rs:24~56</p>
+<p>是 Polkadot 的代码</p>
+<pre class="one-piece"><code>pub struct MultiLocation {
+	/// The number of parent junctions at the beginning of this `MultiLocation`.
+	pub parents: u8,
+	/// The interior (i.e. non-parent) junctions that this `MultiLocation` contains.
+	pub interior: Junctions,
+}
+</code></pre>
+<p>还有一大段注释我就不贴了，大意是这是一个 relative path between state-bearing consensus systems, 我觉得最后几个单词可以去掉，就叫 relative path. 注意到为什么叫做 Location =&gt; 联想到 URL 的 L</p>
+<p>可以看到 parents 的注释：在这个 L(URL/Location) 前面的 parent junctions, 根据我们的经验，junction 就是 Enum 的一个 variant, 也就是一个参数，我之前称它为定语.</p>
+<p><img src="images/Pasted%20image%2020221010183109.png" alt=""></p>
+<p><code>transfer</code> 函数中，第一个参数，asset 的 parents 是 0，第二个参数 address 的 parents 是 1, coincidence? don't think so</p>
+<p>看 Junction 定义：</p>
+<pre class="one-piece"><code>/// Non-parent junctions that can be constructed, up to the length of 8. This specific `Junctions`
+/// implementation uses a Rust `enum` in order to make pattern matching easier.
+///
+/// Parent junctions cannot be constructed with this type. Refer to `MultiLocation` for
+/// instructions on constructing parent junctions.
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Encode, Decode, Debug, TypeInfo, MaxEncodedLen)]
+pub enum Junctions {
+	/// The interpreting consensus system.
+	Here,
+	/// A relative path comprising 1 junction.
+	X1(Junction),
+	/// A relative path comprising 2 junctions.
+	X2(Junction, Junction),
+	/// A relative path comprising 3 junctions.
+	X3(Junction, Junction, Junction),
+	/// A relative path comprising 4 junctions.
+	X4(Junction, Junction, Junction, Junction),
+	/// A relative path comprising 5 junctions.
+	X5(Junction, Junction, Junction, Junction, Junction),
+	/// A relative path comprising 6 junctions.
+	X6(Junction, Junction, Junction, Junction, Junction, Junction),
+	/// A relative path comprising 7 junctions.
+	X7(Junction, Junction, Junction, Junction, Junction, Junction, Junction),
+	/// A relative path comprising 8 junctions.
+	X8(Junction, Junction, Junction, Junction, Junction, Junction, Junction, Junction),
+}
+</code></pre>
+<p>X2 就是我们选的 dest, 但 parents = 1，意味着 MultiLocation 是最后一个 Junction, 而 <code>Junctions::Here</code> 则表示不需要任何一个定语：那么就是 local network? 或者 local network 的自己，因为还有一种可能: local network, peer</p>
+<p>仅凭注释是看不出什么问题，而代码如果跑不动也没有意义：最后找到一篇波卡的官方文档：<a href="https://polkadot.network/blog/xcm-the-cross-consensus-message-format/">https://polkadot.network/blog/xcm-the-cross-consensus-message-format/</a></p>
+<p><a href="https://polkadot.network/blog/xcm-the-cross-consensus-message-format/#-locations-in-xcm">https://polkadot.network/blog/xcm-the-cross-consensus-message-format/#-locations-in-xcm</a> 解释了 XCM 的 Location, 我用 LInux 的文件系统来做个比喻</p>
+<ol>
+<li><code>Here</code> 表示 <code>.</code>，表示当前路径, 在波卡生态中表示当前的链</li>
+<li>在当前的 parachain 中， Here 表示当前的 parachain，parents 表示 <code>..</code>, 对应 LInux 文件系统的上一目录，parents 等于几就相当于有几个 <code>..</code></li>
+<li>在当前的 Parachain 中，parents = 1 表示相对路径从 <code>../</code>开始</li>
+<li><code>parents = 1, interiors = { parachain(2023), address: 0x123.. }</code> 表示 <code>../parachain(2023)/0x123...4</code></li>
+<li>反过来，代码注释中：The number of parent junctions at the beginning of this <code>MultiLocation</code>. 的 parent junctions 原来就是指 <code>..</code>, 如果不经代码作者（相关人员）解释，我觉得无法从这句话中得出什么。</li>
+</ol>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

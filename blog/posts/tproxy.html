@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Transparent Proxy</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Transparent Proxy</h1>
+        <p>这篇文章通过实验探究 transparent proxy 的实现.</p>
+<h2 id="定义" tabindex="-1">定义</h2>
+<p>维基百科:</p>
+<blockquote>
+<p>Transparent proxy, Also known as an <strong>intercepting proxy</strong>, <strong>inline proxy</strong>, or <strong>forced proxy</strong></p>
+</blockquote>
+<p><a href="https://tools.ietf.org/html/rfc2616">RFC 2616: Hypertext Transfer Protocol—HTTP/1.1</a>:</p>
+<blockquote>
+<p>"A 'transparent proxy' is a proxy that does not modify the request or response beyond what is required for proxy authentication and identification". "A 'non-transparent proxy' is a proxy that modifies the request or response in order to provide some added service to the user agent, such as group annotation services, media type transformation, protocol reduction, or anonymity filtering".</p>
+</blockquote>
+<p>上面的定义有些反直觉, 因为我们通常认为透明是指人感知不到. 这里的透明是指不修改报文信息, 包的一切信息对本机软件来说都是透明的. Linux 提供了包信息的接口和方法论.</p>
+<h2 id="redirect-dnat--non-transparent-proxy" tabindex="-1">REDIRECT, DNAT : Non-Transparent Proxy</h2>
+<p>又称为端口转发.</p>
+<p>DNAT 用于 Remote Port Forwarding</p>
+<pre class="one-piece"><code>iptables -A PREROUTING -t nat -i eth1 -d 172.11.22.1/32 -j DNAT --to-destination 192.168.42.23:8000
+</code></pre>
+<p>REDIRECT 用于 Local Port Forwarding</p>
+<pre class="one-piece"><code>iptables -A PREROUTING -t nat -i eth1 -d 172.11.22.0/24 -p tcp --dport 80 -j REDIRECT --to-port 8000
+</code></pre>
+<p>REDIRECT 是 DNAT 的特殊形式, 不需要指定地址.</p>
+<p>上面例子中, 我使用了一个不存在的 <code>172.11.22.1</code> 网段, 但给它配置了路由, 当目标实际上不存在的包到达网关的时候, 网关修改可它的 IP Header, DNAT 改成 <code>192.168.42.23</code>, REDIRECT 改成 <code>127.0.0.1</code></p>
+<p>在 <code>PREROUTING</code> 链表上改的原因是, 改完首部信息之后, 还可以被路由到目的地, 且 nat table 只存在于 <code>PREROUTING</code>, <code>FORWARD</code>, <code>POSTROUTING</code> 这三个表中, 放在其他 table 中无效.</p>
+<p>下面是 REDIRECT 的例子, 主机访问不存在的主机, 网关将其流量导向本地的 HTTP 服务, 回来的包的地址是 <code>172.11.22.33</code>, 访问者根本不知道服务器是什么. 这种操作可应用于反向代理.</p>
+<p><img src="tproxy/0xfeff_b57aa05451d142e58cf94e6305ad48dc.png" alt=""></p>
+<h3 id="original-destination-的问题" tabindex="-1">Original Destination 的问题</h3>
+<p>Remote Port Forwarding 中的远端服务不在乎包原来的目标地址, 它只需要把包发回即可, 知道与之对应的客户端是谁.</p>
+<p>Local Port Forwarding 中, REDIRECT 在内核里面修改了包的目标地址, 导致用户态应用收到包之后, 不知道包原来的目的是什么.</p>
+<p>为什么要需要一个用户态应用? 因为可能需要可能需要经过更高层协议的过滤或处理, 比如加密包的负载, 或者多套一个 IP Header.</p>
+<p>REDIRECT 需要在路由之前修改包的目标地址, 才能让包经历路由系统, 路由系统判断包地址 <code>127.0.0.1</code>, 将包发给 local 应用.</p>
+<p>解决方法: 在调 <code>getsockopt()</code> 时加上一个 <code>SO_ORIGINAL_DST</code> 选项, 但这个选项没有任何正式的文档记录, <a href="http://lkml.iu.edu/hypermail/linux/kernel/9910.0/0221.html">这封内核开发者邮件</a>可能比较权威:</p>
+<pre class="one-piece"><code>int nf_getsockname(int fd, struct sockaddr *sa, int *salen)
+{
+	if (*salen != sizeof(struct sockaddr_in)) {
+		errno = EINVAL;
+		return -1;
+	}
+	if (0 == getsockopt(fd, SOL_IP, SO_ORIGINAL_DST, sa, salen)) {
+		return 0;
+	}
+	return getsockname(fd, sa, salen);
+}
+</code></pre>
+<p>为什么还能拿到 original destination? 因为 netfilter 有一个连接跟踪模块 conntrack , 记录连接的所有信息.你可以安装它的用户态应用 <code>apt install conntrack</code>.</p>
+<p><img src="tproxy/0xfeff_ab49eacb54204ceb9290407e991dbf02.png" alt=""></p>
+<p>上图中我 wget 一个不存在的地址, 连接跟踪信息显示了包在内核中的涉及的所有地址.</p>
+<p>回去的包的源地址会被地址转换</p>
+<p><img src="tproxy/0xfeff_a54ea12eee5a40a78855777769507804.png" alt=""></p>
+<p>UDP 同理:</p>
+<p><img src="tproxy/0xfeff_a5d054fe5ec14b22a5fb53ba7ee98982.png" alt=""></p>
+<p>问题在于 <code>SO_ORIGINAL_DST</code> 不适用于UDP, 有两个原因</p>
+<ol>
+<li>实际上: 内核不支持</li>
+</ol>
+<p><img src="tproxy/0xfeff_e7cb686167f24082ae3f97409be099e3.png" alt=""></p>
+<ol start="2">
+<li>
+<p>理论上: UDP 不像 TCP  <code>accept()</code> 一次就返回一条只属于 2 个 socket 的连接, UDP 每一次 <code>recvfrom(sockfd, ...)</code> 时的对端都可能不一样. 就算内核允许你获取原来的目标地址, 你在 <code>recvfrom</code> 之后马上去读 <code>sockfd</code> 的 ORIGINAL DESTINATION, 就在 <code>recvfrom</code> 到 <code>getsockopt()</code> 之间, 一个新的报文过来, 系统收到硬中断, 将内容写入 <code>sockfd</code> 对应的缓存中, 改变了 <code>sockfd</code> 的状态, 等服务端重新获得控制, 去 <code>getsockopt()</code> 的时候, 提取的就是新包的 ORIGINAL DESTINATION. 这里面存在 race condition. 可以参考<a href="https://www.jianshu.com/p/5393fb5e2c87">这篇文章</a>的说法.</p>
+<p>TPROXY 的作者是这么论证<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>的: 你可以收到一个包就马上创建一个 UDP socket, 马上绑定 这样你就可以避免其他包的干扰(实际上 socket 不能绑定已经被占用的地址, 作者的意思是假设内核允许). 但如果紧接着还有多个同一源地址的包, 内核会第一时间将包发给原来的 <code>sockfd</code> 而不是你刚创建的 socket, 这样一来, 你就要重复创建大量的 socket;也可能在调用 <code>getsockopt</code> 的时候 contrack 超时了.而且这很麻烦, 花销也很大.</p>
+</li>
+</ol>
+<p>由于无法获取 UDP 的原目标地址, 所以 UDP 代理不能使用 REDIRECT.</p>
+<h2 id="不依赖-nat-的透明代理" tabindex="-1">不依赖 NAT 的透明代理</h2>
+<blockquote>
+<p>The ‘TPROXY’ target provides similar functionality without relying on NAT.<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup></p>
+</blockquote>
+<p>以下三个例子取自这篇文章 <a href="https://gsoc-blog.ecklm.com/iptables-redirect-vs.-dnat-vs.-tproxy/">Iptables REDIRECT vs. DNAT vs. TPROXY</a>, 讲述了如何不依赖 NAT 的实现透明代理.</p>
+<p>我补充了完整的命令行操作. 作者使用了 nf_tables 作者的调试工具: <a href="https://git.breakpoint.cc/cgit/fw/tcprdr.git/">https://git.breakpoint.cc/cgit/fw/tcprdr.git/</a>, 同时这也是用户态应用的一个示例, 编译后可用.</p>
+<p>网络拓扑:</p>
+<pre class="one-piece"><code>         +-----+ .3             .23 +-----+
+ (proxy) | R2S |------------------- | WIN | (server)
+         +-----+   192.168.4.0/24   +-----+
+           | .1
+           |
+           | 10.2.3.0/24
+           |
+           | .4
+         +-----+
+         | LNX | (client)
+         +-----+
+</code></pre>
+<h3 id="不依赖内核支持的纯用户态透明代理" tabindex="-1">不依赖内核支持的纯用户态透明代理</h3>
+<pre class="one-piece"><code>[R2S]$ tcprdr 50080 192.168.42.23 8000
+binding address 0.0.0.0
+Handling connection from 10.2.3.4 to 192.168.42.23
+
+[WIN]$ ncat.exe -l 0.0.0.0 8000
+
+[LNX]$ telnet 10.2.3.1 50080
+Trying 10.2.3.1...
+Connected to 10.2.3.1.
+Escape character is '^]'.
+
+[R2S]$ ss -an4pt |grep tcprdr
+LISTEN  0         20                  0.0.0.0:50080             0.0.0.0:*        users:(("tcprdr",pid=18486,fd=3))                                              
+ESTAB   0         0                  10.2.3.1:50080            10.2.3.4:38140    users:(("tcprdr",pid=18486,fd=4))                                              
+ESTAB   0         0              192.168.42.3:34214       192.168.42.23:8000     users:(("tcprdr",pid=18486,fd=5)) 
+</code></pre>
+<p>注意到 tcprdr 不使用 -T(即不设置 <code>IP_TRANSPARENT</code> socket 选项) 或 -t(TPROXY 模块).</p>
+<p><code>IP_TRANSPARENT</code> 用来绑定非本机地址, TPROXY 扩展的作用和 socket 扩展类似, 后面会解释.</p>
+<p>结果显示, tcprdr 分别建立了两条分别在不同网段的连接, 逻辑是这样的: R2S 收到 LNX 的包之后, 在本地创建一个 socket, 连接到 WIN, 你可以用 strace 查看 tcprdr 的系统调用.这个过程不依赖 netfilter.</p>
+<h3 id="使用策略路由将包发给本地应用" tabindex="-1">使用策略路由将包发给本地应用</h3>
+<p>在 R2S 下发以下命令, 理由在后面会解释.</p>
+<pre class="one-piece"><code>iptables -t mangle -N DIVERT
+iptables -t mangle -A PREROUTING -s 10.2.3.4,192.168.42.23 -d 10.2.3.4,192.168.42.23 -p tcp -m socket -j DIVERT
+iptables -t mangle -A DIVERT -j MARK --set-mark 1
+iptables -t mangle -A DIVERT -j LOG --log-prefix='[tproxy-test]'
+iptables -t mangle -A DIVERT -j ACCEPT
+ip rule add fwmark 1 lookup 100
+ip route add local 0.0.0.0/0 dev lo table 100
+</code></pre>
+<p>在 Windows 上加一条路由, 服务端才知道往哪回包.</p>
+<p>tcprdr 加上一个选项 <code>-T</code> 表示收到 LNX 的包之后创建的 socket 将带 <code>IP_TRANSPARENT</code> 属性, 使得 R2S 可以绑定非本地的地址 <code>10.2.3.4</code> , 这个地址原本属于 LNX</p>
+<pre class="one-piece"><code>[WIN]$ route add 10.2.3.0/24 mask 255.255.255.0 192.168.42.3
+ 操作完成!
+
+[R2S]$ tcprdr -T 50080 192.168.42.23 8000
+binding address 0.0.0.0
+binding address 10.2.3.4
+Handling connection from 10.2.3.4 to 192.168.42.23
+
+[LNX]$ nc 10.2.3.1 50080
+
+[R2S]$ ss -an4pt |grep tcprdr
+LISTEN  0         20                  0.0.0.0:50080             0.0.0.0:*        users:(("tcprdr",pid=18945,fd=3))                                              
+ESTAB   0         0                  10.2.3.1:50080            10.2.3.4:57966    users:(("tcprdr",pid=18945,fd=4))                                              
+ESTAB   0         0                  10.2.3.4:57966       192.168.42.23:8000     users:(("tcprdr",pid=18945,fd=5)) 
+</code></pre>
+<p>从 ss 结果可以看出, 192.168.42.23 的对端是 10.2.3.4</p>
+<h4 id="iptables-的-socket-扩展" tabindex="-1">Iptables 的 socket 扩展<sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup></h4>
+<p>使用这个匹配条件的时候(<code>-m socket</code>), 系统将检查所有 socket, 看是否由有与包的目标地址和端口一样的 socket, 如果有, 则匹配. 这个例子中, <code>10.2.3.4:36144</code>  确实是 R2S 某个 socket 的地址.</p>
+<p><img src="tproxy/0xfeff_102196f01b074a30b1c596c2978d8cc7.png" alt=""></p>
+<p>从上图可以看出 <code>192.168.42.23 -&gt; 10.2.3.4</code>被 <code>-m socket</code> 捕获了. 同时, 作为对比, 在 LNX 开启一个 8000 端口的服务, 在 WIN 上 <code>wget 10.2.3.4:8000</code> 会看到包被转发, 继而到达 LNX. 并且 dmesg 上没有任何打印, 表明了流量没有通过 <code>-m socket</code> 规则.</p>
+<pre class="one-piece"><code>PS C:\Users\User&gt; wget 10.2.3.4:8000
+
+
+StatusCode        : 200
+StatusDescription : OK
+</code></pre>
+<p>理由很简单, <code>10.2.3.4:8000</code> 不匹配 R2S 上的任何 socket.</p>
+<h4 id="策略路由的作用" tabindex="-1">策略路由的作用</h4>
+<p>现在来解释上面的 iptables 操作, 首先删掉策略路由</p>
+<pre class="one-piece"><code>ip route del local 0.0.0.0/0 dev lo table 100
+ip rule del fwmark 1 lookup 100
+</code></pre>
+<p>LNX 发包, WIN 收不到.  R2S 的 ss 结果:</p>
+<pre class="one-piece"><code>SYN-SENT  0        1                 10.2.3.4:37158       192.168.42.23:8000     users:(("tcprdr",pid=19749,fd=5))
+</code></pre>
+<p>10.2.3.4(R2S) 发出包 SYN, 但无法建立连接. 在 R2S 用 tcpdump 查看通信情况.</p>
+<pre class="one-piece"><code>[R2S]:~# tcpdump host 192.168.42.23 or host 10.2.3.4 or host 10.2.3.1 and tcp -nv
+    10.2.3.4.36144 &gt; 192.168.42.23.8000: Flags [S]
+    192.168.42.23.8000 &gt; 10.2.3.4.36144: Flags [S.]
+    192.168.42.23.8000 &gt; 10.2.3.4.36144: Flags [S.]
+    10.2.3.4.36144 &gt; 192.168.42.23.8000: Flags [S]
+    192.168.42.23.8000 &gt; 10.2.3.4.36144: Flags [S.]
+    10.2.3.4.36144 &gt; 192.168.42.23.8000: Flags [S]
+    192.168.42.23.8000 &gt; 10.2.3.4.36144: Flags [S.]
+    10.2.3.4.36144 &gt; 192.168.42.23.8000: Flags [S]
+</code></pre>
+<p>10.2.3.4 根本没回 192.168.42.23 的 SYN+ACK . 我曾怀疑 <code>[S.]</code> 是否发到真实的 10.2.3.4 去了, 但通过抓包发现 LNX 没收到任何 192.168.42.23 的包. 用 <code>ip route get</code> 查询, 包确实应该发到 eth1, 对端是 LNX. 可能是因为 <code>-m socket</code> 识别到包属于本机, 所以往外转发的时候出错. 这个问题需要更强的追踪技术, 不在本文讨论范围.</p>
+<p><img src="tproxy/0xfeff_fb6edf929fda4e489c55f3e3350a7f3d.png" alt=""></p>
+<p>把路由加回去.</p>
+<pre class="one-piece"><code>ip rule add fwmark 1 lookup 100
+ip route add local 0.0.0.0/0 dev lo table 100
+</code></pre>
+<p>这条策略的意思是, 对于带有 0x1 标记的包, 在 table 100 找路由规则, table 100 只有一条规则, 那就是所有流量都通过 loopback 设备发出.</p>
+<p><img src="tproxy/0xfeff_09f7355e460d480f8e3a3afdb8aa72fa.png" alt=""></p>
+<p>也可以打印出内核的路由信息, 但没什么用</p>
+<p><img src="tproxy/0xfeff_fb37f1272cb04c33879c417724ca7996.png" alt=""></p>
+<p>以上说明 <code>192.168.42.23 -&gt; 10.2.3.4</code> 被 loopback 设备发出之后, 包的首部信息不变. 如果没有 mark, 则从 eth1 发出, 到达真实的 10.2.3.4 (LNX), 这一点和实际相符.</p>
+<h3 id="tproxy-替代-iptables-socket-扩展" tabindex="-1">TPROXY: 替代 iptables socket 扩展</h3>
+<p>清空 Iptables 规则, 保留策略路由</p>
+<pre class="one-piece"><code># R2S
+iptables -t mangle -F DIVERT
+iptables -t mangle -X DIVERT
+</code></pre>
+<p>加上新的规则</p>
+<pre class="one-piece"><code># R2S
+iptables -t mangle -A PREROUTING -p tcp --dport 8000 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 50080
+
+iptables -t mangle -A PREROUTING -s 192.168.42.23 -p tcp --sport 8000 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 50080
+</code></pre>
+<p>分别表示:</p>
+<ol>
+<li>目标端口是 8000 的包被打上标记 0x01 并发往 50080 端口</li>
+<li>源地址为 192.168.42.23:8000 的包被打上标记 0x01 并发往 50080 端口</li>
+</ol>
+<pre class="one-piece"><code>[WIN]$ nc -l 0.0.0.0 8000
+[R2S]$ tcprdr -t -T 50080 192.168.42.23 8000
+[LNX]$ nc 10.2.3.1 8000
+</code></pre>
+<p>R2S(10.2.3.1) 并未监听 8000 端口, 它监听的是 50080 端口, 但可以将 <code>10.2.3.1:8000</code> 的请求转发出去.</p>
+<p><img src="tproxy/0xfeff_60a597f45a1f4f52ab64e699ef442b3a.png" alt=""></p>
+<p><img src="tproxy/0xfeff_20c542e8372b45bba940df6d617218c9.png" alt=""></p>
+<p>给监听 socket 加上 <code>IP_TRANSPARENT</code> 选项, 那么 <code>accept()</code> 返回的 socket 端口和请求报文的目标端口的一样. 返回 LNX 的包并没有暴露真实的服务器地址.</p>
+<p><img src="tproxy/0xfeff_00845f70162042d89c1dde331a4ae6c8.png" alt=""></p>
+<h3 id="实际应用" tabindex="-1">实际应用</h3>
+<p>上一节重现了 <a href="https://gsoc-blog.ecklm.com/iptables-redirect-vs.-dnat-vs.-tproxy/">Iptables REDIRECT vs. DNAT vs. TPROXY</a> 的最后一个例子, 其中我们用 <code>nc 10.2.3.1 8000</code>, 依然指定了地址.</p>
+<p>现在测试直接连接服务器, 看流量是否被定向到 tcprdr.</p>
+<pre class="one-piece"><code>[WIN]$ nc -l 0.0.0.0 8000
+[R2S]$ strace tcprdr -t -T 50080 192.168.42.23 8000
+[LNX]$ nc 192.168.3.1 8000
+</code></pre>
+<p>用 strace 观察 tcprdr 的动态.</p>
+<p>可以看到服务端可以收到 LNX 发出的信息, tcprdr 有反应, LNX 与 R2S 在用户不知情的情况下建立了连接, 同时 LNX 收到的回复源地址正是服务端的地址.</p>
+<p><img src="tproxy/0xfeff_69d5777859d34180a74305458b3ae446.png" alt=""></p>
+<p><img src="tproxy/0xfeff_78a4e8ae11b346d9a3da23ea31803edf.png" alt=""></p>
+<p>实际应用中, 代理直接读取目标端口, 不需要指定, 这里指定是因为 tcprdr 是一个测试工具.</p>
+<h2 id="总结" tabindex="-1">总结</h2>
+<p>DNAT 在修改目标地址的同时, 也丢失了原来的目标地址, 影响上层应用的开发, TPROXY 相当于减少内核的干预, 给上层应用更多决定权. 以上例子展示了透明的行为模式, 具体实现可参考 tcprdr.</p>
+<h2 id="参考" tabindex="-1">参考</h2>
+<ol>
+<li><a href="https://gsoc-blog.ecklm.com/iptables-redirect-vs.-dnat-vs.-tproxy/">https://gsoc-blog.ecklm.com/iptables-redirect-vs.-dnat-vs.-tproxy/</a></li>
+<li><a href="https://www.kernel.org/doc/html/latest/networking/tproxy.html">https://www.kernel.org/doc/html/latest/networking/tproxy.html</a></li>
+<li><a href="https://linux.die.net/man/8/iptables">https://linux.die.net/man/8/iptables</a></li>
+<li><a href="https://ipset.netfilter.org/iptables-extensions.man.html">https://ipset.netfilter.org/iptables-extensions.man.html</a></li>
+<li><a href="http://linux-ip.net/html/index.html">http://linux-ip.net/html/index.html</a></li>
+<li><a href="https://stackoverflow.com/a/5814636">https://stackoverflow.com/a/5814636</a></li>
+<li><a href="https://news.ycombinator.com/item?id=16821807">https://news.ycombinator.com/item?id=16821807</a></li>
+<li><a href="http://blog.zorinaq.com/65k-open-tcp-ports-on-openzorinaqcom/">http://blog.zorinaq.com/65k-open-tcp-ports-on-openzorinaqcom/</a></li>
+<li><a href="http://lkml.iu.edu/hypermail/linux/kernel/9910.0/0221.html">http://lkml.iu.edu/hypermail/linux/kernel/9910.0/0221.html</a></li>
+<li><a href="http://lkml.iu.edu/hypermail/linux/kernel/9910.0/0251.html">http://lkml.iu.edu/hypermail/linux/kernel/9910.0/0251.html</a></li>
+<li><a href="https://powerdns.org/tproxydoc/tproxy.md.html">https://powerdns.org/tproxydoc/tproxy.md.html</a></li>
+<li><a href="https://github.com/moxie0/sslsniff/blob/master/util/Destination.cpp">https://github.com/moxie0/sslsniff/blob/master/util/Destination.cpp</a></li>
+<li><a href="https://stackoverflow.com/questions/49798234/how-to-redirect-tcp-packages-to-a-proxy-without-losing-the-original-destination/49800079#49800079">https://stackoverflow.com/questions/49798234/how-to-redirect-tcp-packages-to-a-proxy-without-losing-the-original-destination/49800079#49800079</a></li>
+<li><a href="https://www.systutorials.com/port-forwarding-using-iptables/#:~:text=Linux%20port%20forwarding%20is%20simple,packet%20filter%20rules%20in%20iptables">https://www.systutorials.com/port-forwarding-using-iptables/#:~:text=Linux port forwarding is simple,packet filter rules in iptables</a>.</li>
+<li><a href="https://www.kernel.org/doc/Documentation/networking/tproxy.txt">https://www.kernel.org/doc/Documentation/networking/tproxy.txt</a></li>
+</ol>
+<blockquote>
+<p>As an example implementation, tcprdr is available here: <a href="https://git.breakpoint.cc/cgit/fw/tcprdr.git/">https://git.breakpoint.cc/cgit/fw/tcprdr.git/</a> This tool is written by Florian Westphal and it was used for testing during the nf_tables implementation.</p>
+</blockquote>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p><a href="https://stackoverflow.com/a/5814636">https://stackoverflow.com/a/5814636</a> <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p><a href="https://www.kernel.org/doc/html/latest/networking/tproxy.html">https://www.kernel.org/doc/html/latest/networking/tproxy.html</a> <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p><a href="https://ipset.netfilter.org/iptables-extensions.man.html">https://ipset.netfilter.org/iptables-extensions.man.html</a> <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>monotonic-queue.cpp</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      <h1>单调队列</h1>
+<h4><a href="https://leetcode-cn.com/problems/sliding-window-maximum/">239. 滑动窗口最大值</a></h4>
+<p>给你一个整数数组 <code>nums</code>, 有一个大小为 <code>k</code> 的滑动窗口从数组的最左侧移动到数组的最右侧. 你只可以看到在滑动窗口内的 <code>k</code> 个数字. 滑动窗口每次只向右移动一位.</p>
+<p>返回滑动窗口中的最大值.</p>
+<p><strong>示例 1：</strong></p>
+<pre><code>输入：nums = [1,3,-1,-3,5,3,6,7], k = 3
+输出：[3,3,5,5,6,7]
+解释：
+滑动窗口的位置                最大值
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+</code></pre>
+<h2>1</h2>
+<p>一开始用暴力的方法：用 <code>max_element</code> 求出每个窗口的最大值.</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      <h2>2</h2>
+<p>用一个变量追逐每个窗口的最大值</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">auto</span><span class="w"> </span><span class="n">win_front</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nums</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">win_back</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nums</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">win_front</span><span class="p">;</span><span class="w"></span>
+<span class="n">FULL_FILL_A_WINDOW</span><span class="p">();</span><span class="w"></span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">win_front</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">nums</span><span class="p">.</span><span class="n">end</span><span class="p">())</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">win_back</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">max</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>窗口移动, 窗口最后一个元素要弹出
+要对比弹出的值是不是最大值, 如果是, 那么就要更新 max
+问题来了, 我怎么知道失去这个最大值之后, 这个窗口第二大值是多少
+因此, 一个变量无法跟踪最大值</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      <h2>3</h2>
+<p><strong>需要一个这样的结构</strong>： 窗口移动的时候, 仍能保持最大值, 首先想到堆, 堆顶是最大值, 当最大值要弹出的时候, pop 堆顶即可</p>
+<ul>
+<li>问题：如果窗口弹出非最大值, 那 priority_queue 就不能弹出栈顶, 那么弹谁？因为 <code>pop()</code> 的参数为空.</li>
+</ul>
+<h2>4</h2>
+<p>保持“最大值必须放在前面”的前提, 研究这种应用场景, 根据题目的例子</p>
+<ol>
+<li>第一轮, 3 必须在前面, 不知道后面是什么, 用问号表示, <code>tracer: [?, 3]</code></li>
+<li>in: -3, out: 1, <code>tracer: [?, 3]</code>, 至少要在最大值弹出的时候, 还有第二大值的存在, 因此问号是一个 <strong>set</strong>, 于是有 <code>tracer: [set(-3, -1), 3]</code></li>
+<li>in: 5, out: 3, <code>5 &gt; 3</code>, 尝试将 5 替换到 3 位置, 将 3 放进 set, 之后变成 <code>tracer: [set(3, -3, -1), 5]</code></li>
+<li>弹出 3：<code>tracer: [set(-3, -1), 5]</code></li>
+<li>in: 3, out: -1 =&gt; <code>tracer: [set(3, -3), 5]</code></li>
+<li>in: 6, out: -3 =&gt; <code>tracer: [set(3, 5), 6]</code></li>
+<li>in: 7, out: 5 =&gt; <code>tracer: [set(3, 5, 6), 7]</code> =&gt; <code>tracer: [set(3, 6), 7]</code></li>
+</ol>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      <p>代码写出来了：</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-5">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-5">#</a>
+      </div>
+      <p>执行用时：36 ms, 在所有 C++ 提交中击败了25.45% 的用户
+内存消耗：20.2 MB, 在所有 C++ 提交中击败了5.00% 的用户</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">struct</span><span class="w"> </span><span class="nc">Tracer</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">Tracer</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">empty</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">max</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">empty</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">multiset</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">set</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">empty</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">max</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">set</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">max</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">set</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">empty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">max</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">set</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">set</span><span class="p">.</span><span class="n">end</span><span class="p">();</span><span class="w"></span>
+<span class="w">                </span><span class="o">--</span><span class="n">i</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="n">set</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="k">else</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">empty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">set</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">set</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="n">set</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">maxSlidingWindow</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">nums</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">nums</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">front</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nums</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">back</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nums</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="n">Tracer</span><span class="w"> </span><span class="n">tracer</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">res</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">tracer</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="o">*</span><span class="n">front</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">front</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">back</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">tracer</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="o">*</span><span class="n">front</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="o">++</span><span class="n">front</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">res</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">tracer</span><span class="p">.</span><span class="n">max</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">front</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">nums</span><span class="p">.</span><span class="n">end</span><span class="p">())</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">tracer</span><span class="p">.</span><span class="n">pop</span><span class="p">(</span><span class="o">*</span><span class="n">back</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="o">++</span><span class="n">back</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">tracer</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="o">*</span><span class="n">front</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="o">++</span><span class="n">front</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">res</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">tracer</span><span class="p">.</span><span class="n">max</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-6">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-6">#</a>
+      </div>
+      <h2>5</h2>
+<p>看哪里还能优化, 首先看这个问题的规律, 第一个问题是： (4) 的 <code>multiset</code> 是否能用更高效的东西来替换？</p>
+<p>进入考智商环节, 这些规律如下：</p>
+<ol>
+<li><code>tracer</code> 的每个元素都有一个生命周期(lifetime)</li>
+<li>lifetime(<code>A[i+1]</code>) &gt; lifetime(<code>A[i]</code>)</li>
+<li>如果 <code>A[i+1]</code> 是新元素且大于 <code>tracer.max</code>, 则可以清空 <code>tracer.max</code>. 因为 <code>A[i+1]</code> 比 <code>tracer</code> 中所有元素 <code>S</code> 都活得久, <code>S &lt; A[i+1]</code> 所以 <code>S</code> 没必要存在</li>
+<li>如果 <code>A[i+1] &lt; A[i]</code>, 由于 2, <code>A[i]</code> 可能先被弹出, 到时候第二大值必须放在 <code>max</code> 位, 这个值是比 <code>A[i]</code> 更新的元素. 因此所有比 <code>A[i]</code> 新且小于 <code>A[i]</code> 的元素, 都放在 <code>A[i]</code> 后面.</li>
+<li>因为, 根据 3, 更老的元素在 <code>A[i]</code> 被确立为最大值的时候被清空.<ul>
+<li>如果不清空, 会怎样？</li>
+<li>答：不清空会导致一个已经不在窗口上的元素, 在 <code>tracer.max</code> 被弹出之后, 可能会被选为最大值.</li>
+<li>没人规定我不能清空, 因为清空不影响 <code>tracer</code> 的作用, 所以清空可以减低维护难度</li>
+</ul>
+</li>
+<li>在 <code>A[i]</code> 被弹出之后, 第 2 大值 <code>X</code> 至少有 1 个迭代的存活时间. 那么在 <code>X</code> 后面的 <code>Y</code> 至少有 2 个迭代存活时间.</li>
+<li>因为第二大值可能是 <code>A[i+1]</code>.</li>
+<li>继续 4, 比 <code>A[i]</code> 新且小的元素 X, 放在 <code>A[i]</code> 后面, 那么 X 可以放在第一个比它大的数字后面.</li>
+<li>因为, 对于 <code>X a b c d Y A[i]</code>, 如果 <code>a b c d</code> 都比 X 小, 因为 X 生命周期更长, 所以 <code>a b c d</code> 没有存在的必要.</li>
+<li>二, 因为 <code>Y</code> 可能是下一个最大值, 所以不能删, 根据 5, <code>A[i]</code> 被弹出之前, <code>Y</code> 都是有存在必要的.</li>
+</ol>
+<p>最终代码, 我用了环形缓冲, 避免了 <code>vector</code>, 不用 <code>list</code> 是因为我试过了, 占用内存击败 5%, 不用 <code>deque</code> 也是内存问题, 虽然空间复杂度都是 <code>O(k)</code></p>
+<p>代码看起来很丑, 但是思路对就行了, 代码怎么变得好看, 还得看别人怎么用 <code>for</code> 来代替 <code>while</code></p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-7">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-7">#</a>
+      </div>
+      <p>执行用时：20 ms, 在所有 C++ 提交中击败了82.21% 的用户
+内存消耗：15.3 MB, 在所有 C++ 提交中击败了78.43% 的用户</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-8">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-8">#</a>
+      </div>
+      <p>执行用时：16 ms, 在所有 C++ 提交中击败了95.39% 的用户
+内存消耗：15.3 MB, 在所有 C++ 提交中击败了86.66% 的用户</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">struct</span><span class="w"> </span><span class="nc">Tracer</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">Tracer</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">buf</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="kt">int</span><span class="p">[</span><span class="n">k</span><span class="p">]),</span><span class="w"> </span><span class="n">head</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="n">cap</span><span class="p">(</span><span class="n">k</span><span class="p">),</span><span class="w"> </span><span class="n">bufsize</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="w">    </span><span class="o">~</span><span class="n">Tracer</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">delete</span><span class="p">[]</span><span class="w"> </span><span class="n">buf</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">head</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">cap</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">bufsize</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">top</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">buf</span><span class="p">[</span><span class="n">head</span><span class="p">];</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">bufsize</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">buf</span><span class="p">[</span><span class="n">head</span><span class="p">])</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">buf</span><span class="p">[</span><span class="n">head</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="n">bufsize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">bufsize</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">cap</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">tail</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">cap</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">buf</span><span class="p">[</span><span class="n">tail</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">cap</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="o">--</span><span class="n">bufsize</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="o">--</span><span class="n">tail</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="n">buf</span><span class="p">[(</span><span class="n">tail</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">cap</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="o">++</span><span class="n">bufsize</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">pop</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bufsize</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">head</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">cap</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="o">--</span><span class="n">bufsize</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+<span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">maxSlidingWindow</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">nums</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">nums</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">nums</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">front</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nums</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">back</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nums</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="n">Tracer</span><span class="w"> </span><span class="nf">t</span><span class="p">(</span><span class="n">k</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">res</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">t</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="o">*</span><span class="n">front</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">front</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">back</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">t</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="o">*</span><span class="n">front</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="o">++</span><span class="n">front</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">res</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">top</span><span class="p">());</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">front</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">nums</span><span class="p">.</span><span class="n">end</span><span class="p">())</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">top</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">*</span><span class="n">back</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">t</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="o">++</span><span class="n">back</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">t</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="o">*</span><span class="n">front</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="o">++</span><span class="n">front</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">res</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">top</span><span class="p">());</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-9">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-9">#</a>
+      </div>
+      <p>没什么意义</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+
+                    <div class="section" id="section-links">
+                        <div class="docs">
+                            <div class="octowrap">
+                                <a class="octothorpe" href="#section-links">#</a>
+                            </div>
+                            <p><a href="raw/monotonic-queue.cpp">raw source</a></p>
+                        </div>
+                    </div>
+                    <div class="clearall"></div>
+                </div>
+            
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+            
+</html>

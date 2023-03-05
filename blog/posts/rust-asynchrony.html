@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Rust 异步编程</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Rust 异步编程</h1>
+        <nav class="table-of-contents"><ol><li><a href="#前言">前言</a></li><li><a href="#形式1">形式(1)</a></li><li><a href="#异步原理">异步原理</a><ol><li><a href="#blocking-paradigm">Blocking Paradigm</a><ol><li><a href="#o_nonblock">O_NONBLOCK</a></li><li><a href="#4-种阻塞范式">4 种阻塞范式</a></li></ol></li><li><a href="#linux-aio">Linux AIO</a></li><li><a href="#libuv">libuv</a></li><li><a href="#小结">小结</a></li></ol></li><li><a href="#形式-2">形式 (2)</a><ol><li><a href="#javascript-promise">Javascript Promise</a><ol><li><a href="#术语">术语</a></li><li><a href="#asyncawait">async/await</a></li></ol></li><li><a href="#rust-future">Rust Future</a></li></ol></li><li><a href="#用-rust-实现一个异步计时器">用 Rust 实现一个异步计时器</a><ol><li><a href="#结构">结构</a></li><li><a href="#reactor-设计模式">Reactor  设计模式</a><ol><li><a href="#机制">机制</a></li><li><a href="#什么是-reactor-准确定义">什么是 Reactor? 准确定义</a></li><li><a href="#小结-1">小结</a></li></ol></li><li><a href="#细节">细节</a><ol><li><a href="#spawner-将任务放入管道">Spawner 将任务放入管道</a></li><li><a href="#工作线程进入睡眠-在睡眠状态下获取-waker">工作线程进入睡眠, 在睡眠状态下获取 waker</a></li><li><a href="#waker-的由来">waker 的由来</a></li><li><a href="#pin">Pin</a></li><li><a href="#结论">结论</a></li></ol></li></ol></li><li><a href="#参考">参考</a></li></ol></nav><h2 id="前言" tabindex="-1">前言</h2>
+<p>时至今日，我们需要重新思考并发的几个概念。并发，并行，同步，异步，都是什么？由于这些词都是外来词汇，我们还要避免只看字面去猜测它们的本质。parallell<s>ism</s>, concurrent<s>cy</s>, synchron<s>y</s>ous, asynchon<s>y</s>ous.</p>
+<p>并行(parallelism)是指多个任务在多个物理 CPU 上同时进行(simultaneously)，通常是指硬件意义上的多任务运行机制，如果计算机只有一个处理器，那就没法并行。并行是指不同的任务在不同的处理上同时运行。并发是指计算机可以同时管理多个任务，但它有多个运行方案，比如在一个失败的方案中，8 个处理器，只有一个在工作，其他在看戏，所有任务在一个处理器上以分时 (time-sharing) 的方式轮流进行。我的理解是，并发是一种抽象，它接受多个任务并承诺以最好的方式执行他们，如果计算机是多处理器，就将任务分摊到多个处理器，如果计算机只有一个处理器，则执行一个任务到一定的时间之后(timeslice), 将当前任务停掉，切换到另一个任务。而并行是一种更严格的定义，要求多个任务在任意时刻 t 必须同时处于运行状态，而且它并不只有多核并行的形式，bit parallelism 是多字节寄存器读少字节指令时发生的并行。在多任务的语境下，并行在意的是多任务是否同时处于“运行”状态，而并发在意的是多任务是否同时处于“已经运行起来”的状态。</p>
+<p>但奇怪的是，并行是一个更广泛的概念，有本书叫 <em>Is Parallel Programming that hard, And, If So, What can you do about it?</em>, 用了 <em>Parallel</em> 而不是 <em>Concurrent</em>。另外，有说 <em>a degree of parallelism</em> 的, 却没有说 <em>a degree of concurrency</em> 的。对此我的理解是，parallelism 某些时候已经超越了细节，parallel == simultaneous</p>
+<p>异步是指程序可以在运行主流程的时候同时处理其他事件。可以看出异步和并行之间存在一些关系。并行是异步的实现手段。异步是一种要求，主程序必须及时响应任何事件，因为处理其中一个事件，而导致其他事件被搁置，也是不能接受的，所有事件都必须得到无差别对待。</p>
+<p>明确这些概念，或至少有些理解之后，接下来详细研究异步。</p>
+<h2 id="形式1" tabindex="-1">形式(1)</h2>
+<p>大部分编程语言, 除了 C/C++(C++20 除外), 都原生地支持这种并发模式, 甚至 HTML 也支持 async 加载 js, 不同语言的异步形式其实一样.</p>
+<p><code>async</code> 标注异步函数的声明, <code>await</code> 标注异步函数的使用</p>
+<blockquote>
+<p><strong>await</strong>, 及物动词<br>
+wait for (an event).</p>
+</blockquote>
+<h2 id="异步原理" tabindex="-1">异步原理</h2>
+<p>异步的目的是不堵塞, 不一定非要线程. 小型任务使用线程是一种浪费<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>, 但不用线程怎么做到多个任务并发?</p>
+<p>有三种方法：</p>
+<ol>
+<li>Stackful coroutine</li>
+<li>Combinator: 比如想 Javascript 的 Promise</li>
+<li>Stackless coroutine: 也就是 Rust 的 Future</li>
+</ol>
+<p>这篇文章先不探讨这些方法的实现和差异，而是从 Linux 的异步出发，最后到达 Rust 的 Future</p>
+<h3 id="blocking-paradigm" tabindex="-1">Blocking Paradigm</h3>
+<h4 id="o_nonblock" tabindex="-1">O_NONBLOCK</h4>
+<pre class="one-piece"><code>int setNonblocking(int fd)
+{
+    int flags;
+    if (-1 == (flags = fcntl(fd, F_GETFL, 0)))
+        flags = 0;
+    return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+}   
+</code></pre>
+<h4 id="4-种阻塞范式" tabindex="-1">4 种阻塞范式</h4>
+<p>不阻塞是否等于异步? 不是, 来看 IO 的同步和阻塞的组合<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>, 又称阻塞范式(blocking paradigm)</p>
+<ol>
+<li>Synchronous  blocking I/O
+<ul>
+<li>用户程序堵塞到系统调用返回</li>
+</ul>
+</li>
+<li>Synchronous non-blocking I/O
+<ul>
+<li>系统调用返回错误(EAGAIN 或 EWOULDBLOCK), 表示任务还没完成</li>
+<li>之后用户程序需要重新检查任务完成与否, 这种做法导致效率低</li>
+<li>造成延迟, 因为从内核完成 IO 到用户察觉之间存在一条鸿沟(gap)</li>
+</ul>
+</li>
+<li>Asynchronous blocking I/O
+<ul>
+<li>= (non-blocking I/O with blocking notification)</li>
+<li>= (non-blocking I/O + blocking <code>select</code>)</li>
+<li>缺点是 <code>select</code> 性能不好, 不过可以用 <code>epoll</code></li>
+</ul>
+</li>
+<li>Asynchronous non-blocking I/O
+<ul>
+<li>non-blocking I/O, 通过接受信号, 或者 a thread-based callback(?), 完成 I/O</li>
+<li>重叠(overlap computation and I/O process)</li>
+<li>可以运行在单一线程</li>
+</ul>
+</li>
+</ol>
+<p>仔细辨别, 可以看出为什么这么命名, 异步与否和文件描述符的属性有关, 阻塞与否和对待文件描述符的方式有关, <strong>如果将文件描述符设置为 <code>O_NONBLOCK</code> , 所在范式就叫 Asynchronous</strong>; <strong>如果检查文件描述符的方式是阻塞的, 所在范式就叫 blocking</strong>, select 是阻塞的, 因为你需要检查它的返回结果, 这个过程阻塞了同线程的其他操作, 信号是非阻塞的, 因为如果收到信号, 不管当前线程在干什么, 都要停下来(被中断), 信号是一种异步通知机制<sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup></p>
+<h3 id="linux-aio" tabindex="-1">Linux AIO<sup class="footnote-ref"><a href="#fn4" id="fnref4">[4]</a></sup></h3>
+<p>概念:</p>
+<ol>
+<li>I/O readiness event</li>
+</ol>
+<p>处理异步事件的方法:</p>
+<ol>
+<li><s>threading</s>(效率太差)</li>
+<li>signals</li>
+<li>SIGIO
+<ul>
+<li>可以设置文件描述符, 让它在完成读写之后发出一个信号, 这样就可以通过 sleep(), pause() 或者 sigsupend() 来等待异步事件发生, 或者继续使用 CPU, 而不需要用 select/epoll, 根据上一节, select/epoll 是阻塞的, 用于 synchronuous non-blocking, 这自然不是不用 select 的理由, 但可以看到 select 之外的选项</li>
+<li>SIGIO 是 edge-triggered, 意味着你需要排空 I/O</li>
+</ul>
+</li>
+<li>select/poll
+<ul>
+<li>select 有效率问题</li>
+<li>select 可能会被信号打断</li>
+<li>pselect 会屏蔽 (umask) 信号的接收</li>
+<li>select 可以在接受到信号的时候将信号转化成一个 I/O readiness event</li>
+</ul>
+</li>
+<li>epoll()</li>
+<li><s>posix asynchronous I/O(又称 AIO)</s>
+<ul>
+<li>一个失败的项目</li>
+</ul>
+</li>
+</ol>
+<h3 id="libuv" tabindex="-1">libuv<sup class="footnote-ref"><a href="#fn5" id="fnref5">[5]</a></sup></h3>
+<p>异步 I/O 库, 用于 node.js, 在 Linux 上基于 <code>epoll()</code>, 使用线程池. 异步虽然反对一个任务开启一个线程, 但实际上并不排除线程. 线程池是更经济的做法.</p>
+<h3 id="小结" tabindex="-1">小结</h3>
+<p>异步提供了一层不阻塞的多任务接口, 具体实现</p>
+<ol>
+<li>asynchronous blocking, 使用 select/poll/epoll 或者更上层的封装 libuv</li>
+<li>asynchronous non-blocking: SIGIO, signals</li>
+</ol>
+<h2 id="形式-2" tabindex="-1">形式 (2)</h2>
+<p>Javascript 是异步编程的代表, 为什么? 暂且不论到底是不是 js 导致异步的出现. JS 只有一条线程, 但又不能让 I/O 阻塞, 所以它把任务交给浏览器<sup class="footnote-ref"><a href="#fn6" id="fnref6">[6]</a></sup>, 浏览器完成任务后执行回调函数. 或者让浏览器执行回调函数.回调函数有个缺点, 就是造成回调地狱, 遇到参数包含回调函数的接口, 你可能要写一层又一层的回调函数.</p>
+<p>2015 年 js 有了 async/await 语法, 用 Promises 表示异步任务, 异步任务处于 2 种状态: 完成和未完成. Promise 和 Rust 的 Future 一样. 不同的是, 对 Future, 你需要手动写 Poll 方法, 即轮询检查. Promise 不需要 Poll, 一切交给浏览器.</p>
+<h3 id="javascript-promise" tabindex="-1">Javascript Promise<sup class="footnote-ref"><a href="#fn7" id="fnref7">[7]</a></sup><sup class="footnote-ref"><a href="#fn8" id="fnref8">[8]</a></sup></h3>
+<p>js async 函数返回一个 promise:</p>
+<pre class="one-piece"><code>async function foo() { return 1; }
+</code></pre>
+<p>解析器将 1 封装成 Promise, 相当于</p>
+<pre class="one-piece"><code>async function foo() { return Promise.resolve(1); }
+</code></pre>
+<p>Promise 如果就绪, 则通过 <code>then()</code> 使用返回值, 在这个例子里也就是 <code>1</code></p>
+<pre class="one-piece"><code>foo().then(
+	function(value) {
+        console.log(value);
+    },
+    function(error) {
+        console.log(value);
+    }
+)
+</code></pre>
+<p><code>foo()</code> 返回的 <code>Promise.resolve(1)</code> 被 <code>then</code> 解封后得出 1, 作为 <code>value</code> 的形参传入第一个函数</p>
+<p>另外一个例子: 下载一张图片</p>
+<pre class="one-piece"><code>fetch(
+    "https://i0.wp.com/acoup.blog/wp-content/uploads/2021/08/20210813000543_1.jpg?resize=1024%2C576&amp;ssl=1"
+  )
+    .then((response) =&gt; {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      } else {
+        return response.blob();
+      }
+    })
+    .then((myBlob) =&gt; {
+      let objectURL = URL.createObjectURL(myBlob);
+      let image = document.createElement("img");
+      image.src = objectURL;
+      document.body.appendChild(image);
+    })
+    .catch((e) =&gt; {
+      console.log(
+        "There has been a problem with your fetch operation: " + e.message
+      );
+    });
+</code></pre>
+<ul>
+<li>下载图片
+<ul>
+<li>如果下载失败, <code>throw</code><sup class="footnote-ref"><a href="#fn9" id="fnref9">[9]</a></sup></li>
+<li>否则传给下一个 <code>then</code></li>
+</ul>
+</li>
+<li>增加 <code>&lt;img&gt;</code> 节点</li>
+</ul>
+<p>可以看出, <code>then()</code> 有两种语法, 实际上是一种<sup class="footnote-ref"><a href="#fn6" id="fnref6:1">[6:1]</a></sup></p>
+<pre class="one-piece"><code>p.then(onFulfilled[, onRejected]);
+
+p.then(value =&gt; {
+  // fulfillment
+}, reason =&gt; {
+  // rejection
+});
+</code></pre>
+<h4 id="术语" tabindex="-1">术语</h4>
+<ol>
+<li>Pending: 处于没完成状态</li>
+<li>Resolved: Promise 已完成并返回, 但不知道是否成功</li>
+<li>结果
+<ol>
+<li>Fulfilled: 成功</li>
+<li>Rejected: 失败</li>
+</ol>
+</li>
+</ol>
+<p>上面有一句 <code>Promise.resolve(1)</code>, 上述术语表明 <code>resolve()</code><sup class="footnote-ref"><a href="#fn10" id="fnref10">[10]</a></sup> 是一个 Promise 主动解析的过程</p>
+<p>单从 Javascript 的语法分不清 Promise 是像 window 那样的全局变量还是类. <code>Promise.resolve()</code> 实际上相当于 C++ 的 <code>Promise::resolve()</code></p>
+<h4 id="async-await" tabindex="-1">async/await<sup class="footnote-ref"><a href="#fn11" id="fnref11">[11]</a></sup></h4>
+<p>上述例子中, 我们没看到 <code>fetch()</code> 是如何实现, 只有知道怎么使用 <code>async/await</code> 才算了解现代异步</p>
+<p>第一原则:</p>
+<ul>
+<li>用 <code>async function</code> 声明返回 Promise 的函数</li>
+<li>用 <code>await</code> 等待 Promise, await 所在函数所有语句是同步的, <code>await</code> 起到阻塞作用</li>
+<li><code>await</code> 阻塞当前指令, 虚拟机或者 CPU 执行到 <code>await</code> 的时候，马上让出控制权</li>
+</ul>
+<p>上一节的下载图片并创建 <code>&lt;img&gt;</code> 的代码可以写成这样</p>
+<pre class="one-piece"><code>async function myFetch() {
+  let response = await fetch('coffee.jpg');
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  let myBlob = await response.blob();
+
+  let objectURL = URL.createObjectURL(myBlob);
+  let image = document.createElement('img');
+  image.src = objectURL;
+  document.body.appendChild(image);
+}
+
+myFetch()
+.catch(e =&gt; {
+  console.log('There has been a problem with your fetch operation: ' + e.message);
+});
+</code></pre>
+<p>意图含义都很明显</p>
+<h3 id="rust-future" tabindex="-1">Rust Future</h3>
+<p>先看 Future 的定义</p>
+<pre class="one-piece"><code>#[must_use = "futures do nothing unless you `.await` or poll them"]
+#[lang = "future_trait"]
+pub trait Future {
+    type Output;
+    #[lang = "poll"]
+    pub fn poll(
+        self: Pin&lt;&amp;mut Self&gt;, 
+        cx: &amp;mut Context&lt;'_&gt;
+    ) -&gt; Poll&lt;Self::Output&gt;;
+}
+</code></pre>
+<blockquote>
+<p>Attempt to resolve the future to a final value, registering the current task for wakeup if the value is not yet available. <strong><em>(还没说注册到哪去)</em></strong></p>
+<p><strong>This function returns:</strong></p>
+<ul>
+<li>Poll::Pending if the future is not ready yet</li>
+<li>Poll::Ready(val) with the result val of this future if it finished successfully.</li>
+</ul>
+<p>Once a future has finished, clients should not poll it again.</p>
+<p>When a future is not ready yet, <code>poll</code> returns <code>Poll::Pending</code> and stores a clone of the <code>Waker</code> copied from the current Context.<strong><em>(Future 是一个 trait, 需要手动实现 <code>poll</code> 函数)</em></strong> This <code>Waker</code> is then woken once the future can make progress. For example, a future waiting for a socket to become readable would call .clone() on the <code>Waker</code> and store it. When a signal arrives elsewhere indicating that the socket is readable, <code>Waker::wake</code> is called and the socket future’s task is awoken. <strong><em>(<code>Waker::wake()</code> 之后唤醒 Future 任务，可以认为 <code>Waker</code> 是观察者)</em></strong> Once a task has been woken up, it should attempt to poll the future again, which may or may not produce a final value.</p>
+<p>Note that on multiple calls to poll, only the Waker from the Context passed to the most recent call should be scheduled to receive a wakeup. <strong><em>(？)</em></strong></p>
+</blockquote>
+<p>大意是, 如果你检查 Future, 如果它处于未完成状态, 则将它注册为待唤醒事件. 又说, 如果它处于未完成状态, 你要将 <code>waker</code> 函数从当前 <code>Context</code> 中克隆一份给它. 当 Future 有进展的时候, 调用 <code>waker</code>, 在 <code>waker</code> 里面操作 Future 封装的事务.</p>
+<h2 id="用-rust-实现一个异步计时器" tabindex="-1">用 Rust 实现一个异步计时器</h2>
+<p>例子来自 <a href="https://rust-lang.github.io/async-book/">The Rust Async Book</a></p>
+<h3 id="结构" tabindex="-1">结构</h3>
+<ol>
+<li>用 <code>sync_channel()</code> 接口生成一条管道，通道有两头，入口叫 <code>SynSender</code> , 出口叫 <code>Receiver</code>, <code>SynSender</code> 给 Spawner(顾名思义是生成任务的角色), <code>Receiver</code> 给 Executor</li>
+<li>Spawner 通过 <code>SynSender</code> 将任务放入管道中</li>
+<li>同时, 每个任务都有一个单独的线程在执行任务(睡眠), 执行完之后, 将任务状态标记为完成</li>
+<li>Executor 不断从 Receiver 中获取任务 Task, 发现任务没完成, 就将任务放回管道，如果完成，就不需要放回管道</li>
+</ol>
+<h3 id="reactor--设计模式" tabindex="-1">Reactor  设计模式</h3>
+<p>关键点:</p>
+<ul>
+<li>multiple inputs</li>
+<li>demultiplexing</li>
+<li>is an implementation of event-driven architecture</li>
+<li>dispatching synchronously</li>
+</ul>
+<p>从上面几点, 结合上面的 4 种阻塞模式可以看出 reactor 设计模式属于 asynchronous blocking I/O, asynchronous 是因为不用阻塞型文件描述符， blocking 是因为 event 不是 signal.</p>
+<h4 id="机制" tabindex="-1">机制<sup class="footnote-ref"><a href="#fn12" id="fnref12">[12]</a></sup></h4>
+<ul>
+<li>对每个服务, 提供一个 Event Handler, 处理特定类型的 Event</li>
+<li>所有 Event Handler 提供相同的接口</li>
+<li>Initiation Dispatcher 通过 Synchronous Event De-multiplexer 等待事件发生</li>
+<li>事件发生之后, Synchronous Event De-multiplexer 通知 Initiation Dispatcher, 后者同步地调用相应的 Event handler</li>
+</ul>
+<h4 id="什么是-reactor-准确定义" tabindex="-1">什么是 Reactor? 准确定义</h4>
+<p>Reactor = dispatcher, notifier<sup class="footnote-ref"><a href="#fn12" id="fnref12:1">[12:1]</a></sup></p>
+<p>Reactor 实际上是 the source of IO Events</p>
+<h4 id="小结-1" tabindex="-1">小结</h4>
+<p>一言概之, reactor 模式就是分发器将任务分发给执行者, 执行者完成之后, 将反馈作为事件发送到事件队列的的一种事件驱动模式,</p>
+<h3 id="细节" tabindex="-1">细节</h3>
+<p>The Rust Async Book 用 Reactor 模式实现了异步计时器</p>
+<h4 id="spawner-将任务放入管道" tabindex="-1">Spawner 将任务放入管道</h4>
+<pre class="insert-before"><code>    // Spawn a task to print before and after waiting on a timer.
+    spawner.spawn(async {
+        println!("howdy!");
+        // Wait for our timer future to complete after two seconds.
+</code></pre><pre class="insert"><code>        TimerFuture::new(Duration::new(2, 0)).await;
+</code></pre><pre class="insert-after"><code>        println!("done!");
+    });
+</code></pre>
+<p>用一个 async 匿名函数封装打印函数和实际 timer,  <code>async</code>  返回一个 <code>Future</code></p>
+<pre class="one-piece"><code>impl Spawner {
+    fn spawn(&amp;self, future: impl Future&lt;Output = ()&gt; + 'static + Send) {
+        let future = future.boxed();
+        let task = Arc::new(Task {
+            future: Mutex::new(Some(future)),
+            task_sender: self.task_sender.clone(),
+        });
+        self.task_sender.send(task).expect("too many tasks queued");
+    }
+}
+</code></pre>
+<ul>
+<li>future 随即被固定(<code>boxed</code>)到堆里面</li>
+<li>生成一个 <code>task</code>
+<ul>
+<li><code>future</code> 被锁保护</li>
+<li>每个 <code>task</code> 里面有一个 <code>task_sender</code>, 是用来把自己发送到任务队列里面去的。</li>
+</ul>
+</li>
+<li><code>Arc</code> 是指 <code>Atomic reference counting</code>，将 task 放入堆中并启用 shared ownership</li>
+<li>spawner 将 <code>task</code>  发送到任务队列</li>
+</ul>
+<h4 id="工作线程进入睡眠-在睡眠状态下获取-waker" tabindex="-1">工作线程进入睡眠, 在睡眠状态下获取 <code>waker</code></h4>
+<p><code>TimeFuture::new</code> 开启了一个线程 A，睡眠特定时间，A 从睡眠中醒来之后，将 <code>TimeFuture</code> 的状态改成 <code>completed = true</code>，并调用 <code>waker</code> 的 <code>wake()</code>，但一开始的时候 <code>waker</code> 为空，后续可以看到它的作用。</p>
+<pre class="insert-before"><code>impl TimerFuture {
+    pub fn new(duration: Duration) -&gt; Self {
+        let shared_state = Arc::new(Mutex::new(SharedState {
+            completed: false,
+            waker: None,
+        }));
+
+        let thread_shared_state = shared_state.clone();
+        // https://doc.rust-lang.org/book/ch16-01-threads.html
+        // move 使你可以将数据从一个线程移入另一个线程
+        thread::spawn(move || {
+</code></pre><pre class="insert"><code>            // 注意: 线程创建函数立即返回
+            thread::sleep(duration);
+</code></pre><pre class="insert-after"><code>            let mut shared_state = thread_shared_state.lock().unwrap();
+            // 线程还在睡眠的时候, Executor 可能检查了 shared_state 的状态
+            shared_state.completed = true;
+            if let Some(waker) = shared_state.waker.take() {
+                waker.wake()
+            }
+        });
+
+        TimerFuture { shared_state }
+    }
+}
+</code></pre>
+<p>图：</p>
+<pre class="one-piece"><code>sequenceDiagram
+    autonumber
+    participant main thread
+    participant executor
+    participant working thread
+    main thread-&gt;&gt;working thread: spawn that thread
+    activate working thread
+    executor-&gt;&gt;working thread: check shared_state
+    working thread-&gt;&gt;main thread: timeout
+    deactivate working thread
+</code></pre>
+<p>线程还在睡眠的时候, Executor 可能检查了 shared_state 的状态, 如果检查到 <code>shared_state</code> 还没完成, 就给它克隆一个 <code>waker</code></p>
+<pre class="insert-before"><code>impl Future for TimerFuture {
+    type Output = ();
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt; {
+        // Look at the shared state to see if the timer has already completed.
+        let mut shared_state = self.shared_state.lock().unwrap();
+        if shared_state.completed {
+            Poll::Ready(())
+        } else {
+            // Set waker so that the thread can wake up the current task
+            // when the timer has completed, ensuring that the future is polled
+            // again and sees that `completed = true`.
+            //
+            // It's tempting to do this once rather than repeatedly cloning
+            // the waker each time. However, the `TimerFuture` can move between
+            // tasks on the executor, which could cause a stale waker pointing
+            // to the wrong task, preventing `TimerFuture` from waking up
+            // correctly.
+            //
+            // N.B. it's possible to check for this using the `Waker::will_wake`
+            // function, but we omit that here to keep things simple.
+</code></pre><pre class="insert"><code>            shared_state.waker = Some(cx.waker().clone());
+            Poll::Pending
+</code></pre><pre class="insert-after"><code>        }
+    }
+}
+</code></pre>
+<p>再看一遍代码, <code>sleep -&gt; completed -&gt; waker.wake()</code>.</p>
+<pre class="insert-before"><code>impl TimerFuture {
+    pub fn new(duration: Duration) -&gt; Self {
+        let shared_state = Arc::new(Mutex::new(SharedState {
+            completed: false,
+            waker: None,
+        }));
+
+        let thread_shared_state = shared_state.clone();
+        thread::spawn(move || {
+            thread::sleep(duration);
+            let mut shared_state = thread_shared_state.lock().unwrap();
+            shared_state.completed = true;
+</code></pre><pre class="insert"><code>            // 醒来之后执行 waker(), 后者是在 poll 的时候安装上去的
+            if let Some(waker) = shared_state.waker.take() {
+                waker.wake()
+            }
+</code></pre><pre class="insert-after"><code>        });
+
+        TimerFuture { shared_state }
+    }
+}
+</code></pre>
+<h4 id="waker-的由来" tabindex="-1"><code>waker</code> 的由来</h4>
+<pre class="one-piece"><code># 伪代码
+future.waker = task -&gt; context -&gt; waker;
+task.future = future;
+</code></pre>
+<pre class="one-piece"><code>impl Executor {
+    fn run(&amp;self) {
+	    // 从 ready_queue 中取出一个任务
+        while let Ok(task) = self.ready_queue.recv() {
+	        // 从任务队列中取出 future
+            let mut future_slot = task.future.lock().unwrap();
+            if let Some(mut future) = future_slot.take() {
+                let waker = waker_ref(&amp;task);
+                let context = &amp;mut Context::from_waker(&amp;*waker);
+                // 根据 context 调用 TaskFuture 的 poll
+                // 如果任务完成，则返回 Ready
+                // 否则将当前的 waker 安装到 TaskFuture 中并返回 Pending
+                if future.as_mut().poll(context).is_pending() {
+                    *future_slot = Some(future);
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>关于 <code>context</code></p>
+<pre class="one-piece"><code>let waker = waker_ref(&amp;task);
+let context = &amp;mut Context::from_waker(&amp;*waker);
+</code></pre>
+<p><code>waker_ref</code> 的作用是将从 <code>Arc&lt;impl ArcWake&gt;</code> 中返回一个 <code>Waker</code></p>
+<p>注意到 <code>Task</code> 实现了 <code>ArcWake</code></p>
+<pre class="one-piece"><code>impl ArcWake for Task {
+    fn wake_by_ref(arc_self: &amp;Arc&lt;Self&gt;) {
+        // Implement `wake` by sending this task back onto the task channel
+        // so that it will be polled again by the executor.
+        let cloned = arc_self.clone();
+        arc_self
+            .task_sender
+            .send(cloned)
+            .expect("too many tasks queued");
+    }
+}
+</code></pre>
+<p><code>Context::from_waker()</code></p>
+<blockquote>
+<p>Currently,<code>Context</code> only serves to provide access to a <code>&amp;Waker</code> which can be used to wake the current task.</p>
+</blockquote>
+<p>只是适配接口. 现在的问题是, 什么时候调用 Task 的 <code>wake_by_ref()</code>? 查看文档, <code>wake_by_ref()</code> 相当于 C/C++ 的 <code>p_waker-&gt;wake()</code></p>
+<p>工作线程从睡眠中醒来之后, 执行 <code>waker.wake()</code>, 也就是调用了 <code>wake_by_ref()</code>,  <code>Task</code> 又将自己发送到管道中去. 下一次 Executor 拿到这个 <code>Task</code> , 把 <code>Future</code> 提取出来 <code>poll</code> 的时候, 会发现与之关联的业务已经完成.</p>
+<pre class="insert-before"><code>impl Future for TimerFuture {
+    type Output = ();
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt; {
+        let mut shared_state = self.shared_state.lock().unwrap();
+</code></pre><pre class="insert"><code>        if shared_state.completed {
+            println!("{} is done", shared_state.name);
+            Poll::Ready(())
+        } else {
+</code></pre><pre class="insert-after"><code>            println!("{} is pending", shared_state.name);
+            shared_state.waker = Some(cx.waker().clone());
+            Poll::Pending
+        }
+    }
+}
+</code></pre>
+<p><code>future.as_mut().poll(context)</code> 的时候如果遇到 <code>Poll::Pending</code>, 就会更新 <code>future</code> 本身的状态, 注意 <code>future.poll</code> 的第一个参数是 <code>self</code>, 那么确实需要将 <code>future</code> 放回到原来的 <code>Task</code> 中. 另外还可以看到 <code>future_slot.take()</code> 返回的不是引用, 而是直接将 <code>future</code> 从 <code>future_slot</code> 中移出来了.</p>
+<pre class="insert-before"><code>if let Some(mut future) = future_slot.take() {
+    // Create a `LocalWaker` from the task itself
+    let waker = waker_ref(&amp;task);
+    let context = &amp;mut Context::from_waker(&amp;*waker);
+    // `BoxFuture&lt;T&gt;` is a type alias for
+    // `Pin&lt;Box&lt;dyn Future&lt;Output = T&gt; + Send + 'static&gt;&gt;`.
+    // We can get a `Pin&lt;&amp;mut dyn Future + Send + 'static&gt;`
+    // from it by calling the `Pin::as_mut` method.
+</code></pre><pre class="insert"><code>    if let Poll::Pending = future.as_mut().poll(context) {
+        // We're not done processing the future, so put it
+        // back in its task to be run again in the future.
+        *future_slot = Some(future);
+    }
+</code></pre><pre class="insert-after"><code>}
+</code></pre>
+<blockquote>
+<p><code>pub fn take(&amp;mut self) -&gt; Option&lt;T&gt;</code></p>
+<p>Takes the value out of the option, leaving a None in its place.</p>
+</blockquote>
+<h4 id="pin" tabindex="-1"><code>Pin</code></h4>
+<p>看这本书的<a href="https://rust-lang.github.io/async-book/04_pinning/01_chapter.html">第四章</a>, 结论: <code>Pin</code> 是为了防止移动数据, 有一些数据结构有自引用的特征, 移动它们会导致引用失效.</p>
+<p>那为什么要 Pin <code>Future</code>?</p>
+<blockquote>
+<p>The first change you'll notice is that our <code>self</code> type is no longer <code>&amp;mut Self</code> , but has changed to<code>Pin&lt;&amp;mut Self&gt;</code>.  We'll talk more about pinning in <a href="https://rust-lang.github.io/async-book/04_pinning/01_chapter.html">a later section</a>, but for now know that it allows us to create futures that are immovable. Immovable objects can store pointers between their fields, e.g. <code>struct MyFut { a: i32, ptr_to_a: *const i32 }</code>. Pinning is necessary to enable async/await.</p>
+</blockquote>
+<p>我们知道了 Pin 防止移动, 但是为什么 <code>Future</code> 不可移动, 不是用管道发送 <code>Future</code> 了吗? 当然我们很容易就想到, <strong>不是非要发送 <code>Future</code> 实体, 可以发送引用</strong>.</p>
+<p>首先我们看 <code>Future</code> 在什么位置:</p>
+<pre class="one-piece"><code>    // Spawn a task to print before and after waiting on a timer.
+    spawner.spawn(async {
+        println!("howdy!");
+        // Wait for our timer future to complete after two seconds.
+        TimerFuture::new(Duration::new(2, 0)).await;
+        println!("done!");
+    });
+</code></pre>
+<p>在栈上. 但在 <code>Spawner::spawn()</code> 中, 它被 <code>boxed()</code> 到堆上, 接着, 被放入 <code>Task</code> 中. 借助 rust-analyzer 可以看到类型.</p>
+<p><img src="asynchrony/0xfeff_daf5759ebe0f4b8798b77aa2577f5109.png" alt=""></p>
+<p><code>Arc&lt;Task&gt;</code> 也是堆上的类型, <code>task_sender.send()</code> 只是发送了它的指针, 指针可以随便拷贝, 移动. 没人移动 <code>Task</code>, 也没人移动 <code>Future</code>, 一切安然无恙</p>
+<h4 id="结论" tabindex="-1">结论</h4>
+<p>Rust 异步编程逻辑：</p>
+<ol>
+<li>创建工作线程, 在工作线程的末尾挂上钩子函数 <code>waker()</code></li>
+<li>创建 <code>Future</code>, 通过共享变量关联业务的工作线程, 同时启动工作线程, 并记住以后要通过共享变量来观察工作线程的状态, <code>Future</code> 就是观察者</li>
+<li>创建 <code>Spawner</code>, 生成 <code>Task</code>, 将 <code>Task</code> 发送到消费队列</li>
+<li>创建 Executor, 从管道中获取 Task, 通过 <code>poll</code> 观察工作线程是否结束, 如果结束, 则观察结束. 否则, 用 <code>Context</code> 封装 <code>waker</code>, 并将 <code>waker</code> 传给共享变量, 工作线程在结束之后, 会提取此函数并执行.</li>
+</ol>
+<h2 id="参考" tabindex="-1">参考</h2>
+<ul>
+<li><a href="https://v8.dev/blog/fast-async">Faster async functions and promises</a></li>
+<li><a href="https://blog.risingstack.com/node-hero-async-programming-in-node-js/?utm_source=pocket_mylist">Node Hero – Understanding Async Programming in Node.js</a></li>
+<li><a href="https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/">Tasks, microtasks, queues and schedules</a></li>
+</ul>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p><a href="https://rust-lang.github.io/async-book/01_getting_started/02_why_async.html">creating a thread for such a small amount of work is quite wasteful.</a> <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p><a href="https://developer.ibm.com/articles/l-async/">https://developer.ibm.com/articles/l-async/</a> <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p><a href="https://en.wikipedia.org/wiki/Signal_(IPC)">https://en.wikipedia.org/wiki/Signal_(IPC)</a> : A signal is an <a href="https://en.wiktionary.org/wiki/asynchronous">asynchronous</a> notification <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn4" class="footnote-item"><p><a href="http://davmac.org/davpage/linux/async-io.html?utm_source=pocket_mylist">http://davmac.org/davpage/linux/async-io.html?utm_source=pocket_mylist</a> <a href="#fnref4" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn5" class="footnote-item"><p><a href="http://docs.libuv.org/en/v1.x/design.html">http://docs.libuv.org/en/v1.x/design.html</a> <a href="#fnref5" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn6" class="footnote-item"><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/then</a> <a href="#fnref6" class="footnote-backref">↩︎</a> <a href="#fnref6:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn7" class="footnote-item"><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function</a> <a href="#fnref7" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn8" class="footnote-item"><p><a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await">https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await</a> <a href="#fnref8" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn9" class="footnote-item"><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/throw">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/throw</a> <a href="#fnref9" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn10" class="footnote-item"><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve</a> <a href="#fnref10" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn11" class="footnote-item"><p><a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await">https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await</a> <a href="#fnref11" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn12" class="footnote-item"><p>据说是 Reactor 的最初出处, <a href="http://www.dre.vanderbilt.edu/~schmidt/PDF/reactor-siemens.pdf">http://www.dre.vanderbilt.edu/~schmidt/PDF/reactor-siemens.pdf</a> <a href="#fnref12" class="footnote-backref">↩︎</a> <a href="#fnref12:1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>design-pattern.rs</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      <h1>设计模式</h1>
+<p>设计模式是有用的, 只是如果你并不经常从头开始写项目, 你根本不需要去记.
+如果你非要记, 达到能默写的程度, 那可能你在准备面老牌大厂的没落部门.</p>
+<h2>RAII(Resource Acquisition Is Initialization)</h2>
+<p>RAII 也是一种模式</p>
+<h2>单例</h2>
+<p>用途: 部署只需要初始化一次的全局变量</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      <p>Go 版本</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">var</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">	</span><span class="n">once</span><span class="w"> </span><span class="n">sync</span><span class="p">.</span><span class="n">Once</span><span class="w"></span>
+<span class="w">	</span><span class="n">db_</span><span class="w">  </span><span class="o">*</span><span class="n">pg</span><span class="p">.</span><span class="n">DB</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span>
+
+<span class="n">func</span><span class="w"> </span><span class="n">GetDB</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="n">pg</span><span class="p">.</span><span class="n">DB</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">	</span><span class="n">once</span><span class="p">.</span><span class="n">Do</span><span class="p">(</span><span class="n">func</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="n">db_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newPostgres</span><span class="p">(</span><span class="n">cfg_</span><span class="p">)</span><span class="w"></span>
+<span class="w">	</span><span class="p">})</span><span class="w"></span>
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">db_</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>C++ 版本</p>
+<p><a href="https://stackoverflow.com/a/1008289">https://stackoverflow.com/a/1008289</a></p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">S</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">public</span>:
+        <span class="nc">static</span><span class="w"> </span><span class="n">S</span><span class="o">&amp;</span><span class="w"> </span><span class="n">getInstance</span><span class="p">()</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">static</span><span class="w"> </span><span class="n">S</span><span class="w">    </span><span class="n">instance</span><span class="p">;</span><span class="w"> </span><span class="c1">// Guaranteed to be destroyed.</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      <p>Instantiated on first use.</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">instance</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">private</span>:
+        <span class="nc">S</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w">                    </span><span class="c1">// Constructor? (the {} brackets) are needed here.</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-5">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-5">#</a>
+      </div>
+      <p>C++ 03:<br>
+Don’t forget to declare these two. You want to make sure they
+are inaccessible(especially from outside), otherwise, you may accidentally get copies of
+your singleton appearing.</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="n">S</span><span class="p">(</span><span class="n">S</span><span class="w"> </span><span class="k">const</span><span class="o">&amp;</span><span class="p">);</span><span class="w">              </span><span class="c1">// Don't Implement</span>
+<span class="w">        </span><span class="n">void</span><span class="w"> </span><span class="n">operator</span><span class="o">=</span><span class="p">(</span><span class="n">S</span><span class="w"> </span><span class="k">const</span><span class="o">&amp;</span><span class="p">);</span><span class="w"> </span><span class="c1">// Don't implement</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-6">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-6">#</a>
+      </div>
+      <p>C++ 11: 
+We can use the better technique of deleting the methods
+we don’t want.</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">public</span>:
+        <span class="nc">S</span><span class="p">(</span><span class="n">S</span><span class="w"> </span><span class="k">const</span><span class="o">&amp;</span><span class="p">)</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="n">delete</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">void</span><span class="w"> </span><span class="n">operator</span><span class="o">=</span><span class="p">(</span><span class="n">S</span><span class="w"> </span><span class="k">const</span><span class="o">&amp;</span><span class="p">)</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">delete</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-7">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-7">#</a>
+      </div>
+      <p>Note: Scott Meyers mentions in his Effective Modern
+      C++ book, that deleted functions should generally
+      be public as it results in better error messages
+      due to the compilers behavior to check accessibility
+      before deleted status</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-8">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-8">#</a>
+      </div>
+      <p>一言概之: 满足只初始化一次的前提就行, 不同的场景不同语言不同的写法, 背诵真 TM 是滑天下之大稽.
+但写 C++ 的时候, 要记住使用 static, 绝对是高光时刻.</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-9">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-9">#</a>
+      </div>
+      <h2>Builder 模式</h2>
+<p><a href="https://doc.rust-lang.org/1.0.0/style/ownership/builders.html">https://doc.rust-lang.org/1.0.0/style/ownership/builders.html</a></p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-10">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-10">#</a>
+      </div>
+      <p>Rust 版本</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">Command</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">program</span>: <span class="nb">String</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">args</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">cwd</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="p">,</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">Command</span><span class="w"> </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-11">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-11">#</a>
+      </div>
+      <p>这可能是 Build 的精髓, 用”静态方法”创建一个原始对象, 再调用配置函数装配该对象</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">new</span><span class="p">(</span><span class="n">program</span>: <span class="nb">String</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Command</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">Command</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">program</span>: <span class="nc">program</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">args</span>: <span class="nb">Vec</span>::<span class="n">new</span><span class="p">(),</span><span class="w"></span>
+<span class="w">            </span><span class="n">cwd</span>: <span class="nb">None</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-12">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-12">#</a>
+      </div>
+      <p>配置一个或者多个参数</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">arg</span><span class="o">&lt;'</span><span class="na">a</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;'</span><span class="na">a</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">arg</span>: <span class="nb">String</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kp">&amp;</span><span class="o">'</span><span class="na">a</span> <span class="nc">mut</span><span class="w"> </span><span class="n">Command</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">arg</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="bp">self</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">args</span><span class="o">&lt;'</span><span class="na">a</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;'</span><span class="na">a</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">args</span>: <span class="kp">&amp;</span><span class="p">[</span><span class="nb">String</span><span class="p">])</span><span class="w"></span>
+<span class="w">                    </span>-&gt; <span class="kp">&amp;</span><span class="o">'</span><span class="na">a</span> <span class="nc">mut</span><span class="w"> </span><span class="n">Command</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">push_all</span><span class="p">(</span><span class="n">args</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="bp">self</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-13">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-13">#</a>
+      </div>
+      <p>设置子进程的工作目录</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">cwd</span><span class="o">&lt;'</span><span class="na">a</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;'</span><span class="na">a</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span>: <span class="nb">String</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kp">&amp;</span><span class="o">'</span><span class="na">a</span> <span class="nc">mut</span><span class="w"> </span><span class="n">Command</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="bp">self</span><span class="p">.</span><span class="n">cwd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">dir</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="bp">self</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-14">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-14">#</a>
+      </div>
+      <p>运行子进程</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">spawn</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">IoResult</span><span class="o">&lt;</span><span class="n">Process</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-15">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-15">#</a>
+      </div>
+      <p>使用方法 1: one-liners</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">Command</span>::<span class="n">new</span><span class="p">(</span><span class="s">"/bin/cat"</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="s">"file.txt"</span><span class="p">).</span><span class="n">spawn</span><span class="p">();</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-16">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-16">#</a>
+      </div>
+      <p>使用方法 2: 复杂配置</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">cmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Command</span>::<span class="n">new</span><span class="p">(</span><span class="s">"/bin/ls"</span><span class="p">);</span><span class="w"></span>
+<span class="n">cmd</span><span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="s">"."</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">if</span><span class="w"> </span><span class="n">size_sorted</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">cmd</span><span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="s">"-S"</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="n">cmd</span><span class="p">.</span><span class="n">spawn</span><span class="p">();</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-17">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-17">#</a>
+      </div>
+      <h2>工厂模式</h2>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-18">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-18">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">Abstract</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">public</span>:
+      <span class="nc">virtual</span><span class="w"> </span><span class="n">void</span><span class="w"> </span><span class="kr">do</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-19">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-19">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">Factory</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">public</span>:
+      <span class="nc">Abstract</span><span class="w"> </span><span class="o">*</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-20">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-20">#</a>
+      </div>
+      <p>使用方法: 创建一个工厂, 工厂产出基类指针</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">Factory</span><span class="w"> </span><span class="n">f</span><span class="p">;</span><span class="w"></span>
+<span class="n">Abstract</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
+<span class="n">a</span>-&gt;<span class="nc">do</span><span class="p">();</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-21">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-21">#</a>
+      </div>
+      <h2>访问者模式</h2>
+<p><a href="https://en.wikipedia.org/wiki/Visitor_pattern">https://en.wikipedia.org/wiki/Visitor_pattern</a></p>
+<p>The Gang of Four defines the Visitor as:</p>
+<blockquote>
+<p>Represent[ing] an operation to be performed on elements of an object structure. Visitor lets you define a new operation without changing the classes of the elements on which it operates.</p>
+</blockquote>
+<p>The nature of the Visitor makes it an ideal pattern to plug into public APIs, thus allowing its clients to perform operations on a class using a “visiting” class without having to modify the source.[3]</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-22">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-22">#</a>
+      </div>
+      <h3>定义:</h3>
+<ul>
+<li>两个对象, 一个叫 <em>element</em>, 一个叫 <em>visitor</em></li>
+<li>Vistor 有一个 <code>visit</code> 方法, 参数是 element</li>
+<li>Element 有一个 <code>accept</code> 方法, 参数是 visitor</li>
+<li>使用者调用 element 的 <code>accept</code> 方法, 内部调用 <code>visit</code> 方法</li>
+<li>这一切都通过基类操作完成, 编程语言需要有动态绑定的能力</li>
+</ul>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-23">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-23">#</a>
+      </div>
+      <p>AbstractDispatcher 是 visitor 的基类</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">AbstractDispatcher</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-24">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-24">#</a>
+      </div>
+      <p>File 是 element 基类</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">File</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="n">public</span>:
+    <span class="nc">virtual</span><span class="w"> </span><span class="n">void</span><span class="w"> </span><span class="n">Accept</span><span class="p">(</span><span class="n">AbstractDispatcher</span><span class="o">&amp;</span><span class="w"> </span><span class="n">dispatcher</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-25">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-25">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">ArchivedFile</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-26">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-26">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">SplitFile</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-27">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-27">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">ExtractedFile</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-28">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-28">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">AbstractDispatcher</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="n">public</span>:
+  <span class="nc">virtual</span><span class="w"> </span><span class="n">void</span><span class="w"> </span><span class="n">Dispatch</span><span class="p">(</span><span class="n">ArchivedFile</span><span class="o">&amp;</span><span class="w"> </span><span class="n">file</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kr">virtual</span><span class="w"> </span><span class="n">void</span><span class="w"> </span><span class="n">Dispatch</span><span class="p">(</span><span class="n">SplitFile</span><span class="o">&amp;</span><span class="w"> </span><span class="n">file</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kr">virtual</span><span class="w"> </span><span class="n">void</span><span class="w"> </span><span class="n">Dispatch</span><span class="p">(</span><span class="n">ExtractedFile</span><span class="o">&amp;</span><span class="w"> </span><span class="n">file</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-29">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-29">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">ArchivedFile</span><span class="w"> </span>: <span class="nc">public</span><span class="w"> </span><span class="n">File</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="n">public</span>:
+  <span class="nc">void</span><span class="w"> </span><span class="n">Accept</span><span class="p">(</span><span class="n">AbstractDispatcher</span><span class="o">&amp;</span><span class="w"> </span><span class="n">dispatcher</span><span class="p">)</span><span class="w"> </span><span class="kr">override</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">dispatcher</span><span class="p">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="o">*</span><span class="n">this</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-30">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-30">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">SplitFile</span><span class="w"> </span>: <span class="nc">public</span><span class="w"> </span><span class="n">File</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="n">public</span>:
+  <span class="nc">void</span><span class="w"> </span><span class="n">Accept</span><span class="p">(</span><span class="n">AbstractDispatcher</span><span class="o">&amp;</span><span class="w"> </span><span class="n">dispatcher</span><span class="p">)</span><span class="w"> </span><span class="kr">override</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">dispatcher</span><span class="p">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="o">*</span><span class="n">this</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-31">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-31">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">ExtractedFile</span><span class="w"> </span>: <span class="nc">public</span><span class="w"> </span><span class="n">File</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="n">public</span>:
+  <span class="nc">void</span><span class="w"> </span><span class="n">Accept</span><span class="p">(</span><span class="n">AbstractDispatcher</span><span class="o">&amp;</span><span class="w"> </span><span class="n">dispatcher</span><span class="p">)</span><span class="w"> </span><span class="kr">override</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">dispatcher</span><span class="p">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="o">*</span><span class="n">this</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-32">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-32">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">class</span><span class="w"> </span><span class="n">Dispatcher</span><span class="w"> </span>: <span class="nc">public</span><span class="w"> </span><span class="n">AbstractDispatcher</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="n">public</span>:
+  <span class="nc">void</span><span class="w"> </span><span class="n">Dispatch</span><span class="p">(</span><span class="n">ArchivedFile</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="kr">override</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span>::<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"dispatching ArchivedFile"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span>::<span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">void</span><span class="w"> </span><span class="n">Dispatch</span><span class="p">(</span><span class="n">SplitFile</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="kr">override</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span>::<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"dispatching SplitFile"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span>::<span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">void</span><span class="w"> </span><span class="n">Dispatch</span><span class="p">(</span><span class="n">ExtractedFile</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="kr">override</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span>::<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"dispatching ExtractedFile"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span>::<span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="n">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">ArchivedFile</span><span class="w"> </span><span class="n">archived_file</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">SplitFile</span><span class="w"> </span><span class="n">split_file</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">ExtractedFile</span><span class="w"> </span><span class="n">extracted_file</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">std</span>::<span class="n">vector</span><span class="o">&lt;</span><span class="n">File</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="o">&amp;</span><span class="n">archived_file</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="o">&amp;</span><span class="n">split_file</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="o">&amp;</span><span class="n">extracted_file</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">Dispatcher</span><span class="w"> </span><span class="n">dispatcher</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">File</span><span class="o">*</span><span class="w"> </span><span class="n">file</span><span class="w"> </span>: <span class="nc">files</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">file</span>-&gt;<span class="nc">Accept</span><span class="p">(</span><span class="n">dispatcher</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-33">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-33">#</a>
+      </div>
+      <h2>观察者模式</h2>
+<p><a href="https://en.wikipedia.org/wiki/Observer_pattern">https://en.wikipedia.org/wiki/Observer_pattern</a></p>
+<p>概要:</p>
+<ul>
+<li>注册观察者</li>
+<li>通知 (notify, signal) 观察者</li>
+</ul>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kd">let</span><span class="w"> </span><span class="n">Subject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">_state</span>: <span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">_observers</span>: <span class="p">[],</span><span class="w"></span>
+<span class="w">    </span><span class="n">add</span>: <span class="nc">function</span><span class="p">(</span><span class="n">observer</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">this</span><span class="p">.</span><span class="n">_observers</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">observer</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="n">getState</span>: <span class="nc">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">_state</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="n">setState</span>: <span class="nc">function</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">this</span><span class="p">.</span><span class="n">_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">_observers</span><span class="p">.</span><span class="n">length</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">this</span><span class="p">.</span><span class="n">_observers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">signal</span><span class="p">(</span><span class="n">this</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">Observer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">signal</span>: <span class="nc">function</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">currentValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subject</span><span class="p">.</span><span class="n">getState</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="n">currentValue</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="n">Subject</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">Observer</span><span class="p">);</span><span class="w"></span>
+<span class="n">Subject</span><span class="p">.</span><span class="n">setState</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-34">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-34">#</a>
+      </div>
+      <h2>参考</h2>
+<ul>
+<li><a href="https://refactoring.guru/design-patterns/cpp">https://refactoring.guru/design-patterns/cpp</a></li>
+<li><a href="https://www.quora.com/What-are-very-regular-C++-design-patterns-used-in-your-C++-code">https://www.quora.com/What-are-very-regular-C++-design-patterns-used-in-your-C++-code</a></li>
+<li><a href="https://docs.microsoft.com/en-us/archive/blogs/scottdensmore/why-singletons-are-evil">Why Singletons are Evil</a></li>
+</ul>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+
+                    <div class="section" id="section-links">
+                        <div class="docs">
+                            <div class="octowrap">
+                                <a class="octothorpe" href="#section-links">#</a>
+                            </div>
+                            <p><a href="raw/design-pattern.rs">raw source</a></p>
+                        </div>
+                    </div>
+                    <div class="clearall"></div>
+                </div>
+            
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+            
+</html>

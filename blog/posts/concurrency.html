@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Concurrency</title>
+    <style>.hint{position:relative;display:inline-block}.border-bottom{border-bottom:2px dotted #000}.hint .hint-text{visibility:hidden;width:120px;background-color:#fff;color:#948e8e;text-align:right;border-radius:6px;padding:5px 0;position:absolute;z-index:1;top:-5px;left:110%}.hint .hint-text::after{position:absolute;margin-top:-5px;border-width:5px;border-style:solid;border-color:transparent #000 transparent transparent}.hint:hover .hint-text{visibility:visible}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}@font-face{font-family:imfell;src:url(/fonts/IMFellEnglish-Regular.ttf)}@font-face{font-family:"Oswald Regular";src:url(/fonts/Oswald/static/Oswald-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:"OpenSans Regular";src:url(/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:"Fira Code";src:url(/fonts/Fira_Code/woff2/FiraCode-Regular.woff2) format("woff2"),url(/fonts/Fira_Code/woff/FiraCode-Regular.woff) format("woff");font-weight:400;font-style:normal}body{font-family:Oswald-Regular,sans-serif;font-size:14px}</style>
+        <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    <div class="navi">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+    </div>
+    <div>
+      <h1>并发</h1>
+      
+
+      <h2>Posts</h2>
+      <ul>
+        
+        <li>
+          <a href="/blog/code/concurrency/mutex.c.html"> Pthread Mutex Variable </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/condition-variable.c.html"> Pthread Condition Variable </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/semaphore.c.html"> Semaphore </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/barrier-sync.c.html"> Barrier Synchronization </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/producer-consumer.cpp.html"> Implementing producer/comsumer with condition varibles </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/rwlock-rp.c.html"> Implementing Read Preferring Readers-Writer Lock </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/rwlock-wp.c.html"> Implementing Write Preferring Readers-Writer Lock </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/pthread-rwlock.c.html"> Pthread Read Write Lock </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/reentrant-mutex.c.html"> Reentrant Mutex </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/rwlock-up-or-down-grade.c.html"> Read-Write Lock Upgrading and Downgrading </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/test-and-set.c.html"> Test-and-set </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/compare-and-swap.c.html"> Compare-and-swap </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/async.cpp.html"> C++ Promise and Future </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/multithread-file-processing.cpp.html"> A Lock-free Multithreaded File Processor in C++ </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/select.c.html"> Select </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/libev-example.c.html"> A libev Example </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/libuv-example.c.html"> A libuv Example </a>
+        </li>
+        
+        <li>
+          <a href="/blog/code/concurrency/go-concurrency.go.html"> Go Concurrency Patterns </a>
+        </li>
+        
+      </ul>
+
+      
+      <h2>Jargon</h2>
+      <ul>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="/blog/code/concurrency/producer-consumer.cpp.html#section-16"> Monitor </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="http://localhost:5050/blog/code/concurrency/test-and-set.c.html#section-3"> Spin Lock </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="https://en.wikipedia.org/wiki/Hazard_pointer"> Hazard Pointer </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="https://en.wikipedia.org/wiki/Lock_convoy"> Lock Convoy </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="https://en.wikipedia.org/wiki/Thundering_herd_problem"> Thundering herd problem </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="https://en.wikipedia.org/wiki/Priority_inversion"> Priority Inversion </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           border-bottom
+          
+           ">
+            <a href="https://en.wikipedia.org/wiki/Non-blocking_algorithm#Wait-freedom"> Wait-freedom </a>
+            
+            <span class="hint-text"> The difference between wait-free and lock-free is that wait-free operation by each process is guaranteed to succeed in a finite number of steps, regardless of the other processors.
+            
+          </span></div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           ">
+            <a href="http://www.kegel.com/c10k.html"> C10K </a>
+            
+          </div>
+        </li>
+        
+        <li>
+          <div class="hint
+          
+           border-bottom
+          
+           ">
+            <a href="https://people.freebsd.org/~jlemon/papers/kqueue.pdf"> level-triggered and edge-triggered </a>
+            
+            <span class="hint-text"> Events will normally considered to be "level-triggered", as opposed to "edge-triggered". Another way of putting this is to say that an event is be reported as along as a specified condition holds, rather than when activity is actually detected from the event source. The given condition could be as simple as "there is unread data in the buffer", or it could be more complex.
+            
+          </span></div>
+        </li>
+        
+      </ul>
+      
+
+      
+      <h2>Resource</h2>
+      <ul>
+        
+        <li>
+          <a href="http://concurrencyfreaks.blogspot.com/"> Concurrency Freaks </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://stackoverflow.com/a/7064008"> What is thread contention? </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://library.lol/main/6C3624E5F42AFF98962DDCA0590A3841"> The Art of Multiprocessor Programming </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://library.lol/main/346C21132C0CD11D8A47C43C72264A2B"> Mastering the C++17 STL </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://blog.nelhage.com/post/rwlock-contention/"> Reader/Reader blocking in reader/writer locks </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://www.reddit.com/r/cpp/comments/mzxjwk/experiences_with_concurrent_hash_map_libraries/"> Experiences with Concurrent Hash Map Libraries </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://preshing.com/20120305/implementing-a-recursive-mutex/"> Implementing a Recursive Mutex </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://people.redhat.com/drepper/futex.pdf"> Futexes Are Tricky </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://www.rossbencina.com/code/lockfree?q=~rossb/code/lockfree/"> Some notes on lock-free and wait-free algorithms </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://people.csail.mit.edu/bushl2/rpi/project_web/page5.html"> Lock-Free Linked List </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://github.com/facebook/folly/blob/master/folly/synchronization/Hazptr.h"> Hazard pointers in folly </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.395.378&amp;rep=rep1&amp;type=pdf"> Hazard Pointers, Safe Memory Reclamation for Lock-Free Objects </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://www.cs.technion.ac.il/~erez/Papers/wfquque-ppopp.pdf"> Wait-free queue building on the CAS primitive, generally available on common hardware. </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://scholar.google.com/citations?user=k8F7-kUAAAAJ&amp;hl=en"> Paul McKenney </a>
+          
+          <ul>
+            
+              <li>
+                <a href="https://lwn.net/Articles/262464/"> What is RCU, Really? </a>
+              </li>
+            
+              <li>
+                <a href="https://scholar.google.com/citations?view_op=view_citation&amp;hl=en&amp;user=k8F7-kUAAAAJ&amp;cstart=20&amp;pagesize=80&amp;sortby=pubdate&amp;citation_for_view=k8F7-kUAAAAJ:Wp0gIr-vW9MC"> Is parallel programming hard, and, if so, what can you do about it? </a>
+              </li>
+            
+              <li>
+                <a href="http://www.rdrop.com/~paulmck/RCU/whatisRCU.html#RCU%20OVERVIEW"> Additional viewpoints and information for What is RCU, Really? </a>
+              </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a href="https://bartoszmilewski.com/2008/12/01/c-atomics-and-memory-ordering/"> C++ atomics and memory ordering </a>
+          
+        </li>
+        
+        <li>
+          <a href="https://eli.thegreenplace.net/2017/concurrent-servers-part-1-introduction/"> Concurrent Servers </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://www.kegel.com/c10k.html"> C10K </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://pl.atyp.us/content/tech/servers.html"> Jeff Darcy's notes on high-performance server design </a>
+          
+        </li>
+        
+        <li>
+          <a href="http://dwise1.net/pgm/sockets/blocking.html"> Dealing With and Getting Around Blocking Sockets </a>
+          
+        </li>
+        
+      </ul>
+      
+
+
+    </div>
+    <hr>
+<p>©2022</p>
+
+
+
+  </body>
+</html>

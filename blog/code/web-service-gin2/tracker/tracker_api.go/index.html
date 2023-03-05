@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tracker_api.go</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nx">tracker</span><span class="w"></span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">	</span><span class="s">"errors"</span><span class="w"></span>
+<span class="w">	</span><span class="s">"fmt"</span><span class="w"></span>
+<span class="w">	</span><span class="s">"lyfjaberg/rwe"</span><span class="w"></span>
+<span class="w">	</span><span class="s">"net"</span><span class="w"></span>
+<span class="w">	</span><span class="s">"net/url"</span><span class="w"></span>
+
+<span class="w">	</span><span class="s">"github.com/gin-gonic/gin"</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">createTrack</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">	</span><span class="nx">ctx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">Request</span><span class="p">.</span><span class="nx">Context</span><span class="p">()</span><span class="w"></span>
+
+<span class="w">	</span><span class="kd">var</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      <p>必须大写, 写成 trackin *Trackin 都不行, 垃圾语言 🤮🤮🤮</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w"></span>
+<span class="w">		</span><span class="nx">Trackin</span><span class="w"> </span><span class="o">*</span><span class="nx">Trackin</span><span class="w"> </span><span class="s">`json:"track"`</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">BindJSON</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">in</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span><span class="w"></span>
+<span class="w">		</span><span class="k">return</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">in</span><span class="p">.</span><span class="nx">Trackin</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">`JSON field "track" is required`</span><span class="p">))</span><span class="w"></span>
+<span class="w">		</span><span class="k">return</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+
+<span class="w">	</span><span class="kd">var</span><span class="w"> </span><span class="nx">track</span><span class="w"> </span><span class="nx">Track</span><span class="w"></span>
+
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">ShouldBindHeader</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">track</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nx">JSON</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+
+<span class="w">	</span><span class="nx">track</span><span class="p">.</span><span class="nx">IP</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">net</span><span class="p">.</span><span class="nx">ParseIP</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">ClientIP</span><span class="p">())</span><span class="w"></span>
+
+<span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">ig</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">rwe</span><span class="p">.</span><span class="nx">GetCfg</span><span class="p">().</span><span class="nx">IgnoredIP</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">track</span><span class="p">.</span><span class="nx">IP</span><span class="p">.</span><span class="nx">Equal</span><span class="p">(</span><span class="nx">ig</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">			</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"The track is ignored."</span><span class="p">)</span><span class="w"></span>
+<span class="w">			</span><span class="nx">c</span><span class="p">.</span><span class="nx">JSON</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="p">})</span><span class="w"></span>
+<span class="w">		</span><span class="p">}</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+
+<span class="w">	</span><span class="nx">u</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">url</span><span class="p">.</span><span class="nx">Parse</span><span class="p">(</span><span class="nx">track</span><span class="p">.</span><span class="nx">Referer</span><span class="p">)</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>如果不是一个合法的连接, 就放弃</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w"></span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"Not worth tracking."</span><span class="p">)</span><span class="w"></span>
+<span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nx">JSON</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="p">})</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+
+<span class="w">	</span><span class="nx">host</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">net</span><span class="p">.</span><span class="nx">SplitHostPort</span><span class="p">(</span><span class="nx">u</span><span class="p">.</span><span class="nx">Host</span><span class="p">)</span><span class="w"></span>
+<span class="w">	</span><span class="nx">addr</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">net</span><span class="p">.</span><span class="nx">ParseIP</span><span class="p">(</span><span class="nx">host</span><span class="p">)</span><span class="w"></span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">addr</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      <p>检查 IP 是否在 private network space, 免得调试浪费数据库;</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w"></span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">addr</span><span class="p">.</span><span class="nx">IsPrivate</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">			</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"Hello, debugger!"</span><span class="p">)</span><span class="w"></span>
+<span class="w">			</span><span class="nx">c</span><span class="p">.</span><span class="nx">JSON</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="p">})</span><span class="w"></span>
+<span class="w">		</span><span class="p">}</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+
+<span class="w">	</span><span class="nx">track</span><span class="p">.</span><span class="nx">CreatedAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">rwe</span><span class="p">.</span><span class="nx">Clock</span><span class="p">.</span><span class="nx">Now</span><span class="p">()</span><span class="w"></span>
+<span class="w">	</span><span class="nx">track</span><span class="p">.</span><span class="nx">FromUrl</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">in</span><span class="p">.</span><span class="nx">Trackin</span><span class="p">.</span><span class="nx">FromUrl</span><span class="w"></span>
+<span class="w">	</span><span class="nx">track</span><span class="p">.</span><span class="nx">Method</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">"POST"</span><span class="w"></span>
+
+<span class="w">	</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">track</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">rwe</span><span class="p">.</span><span class="nx">GetDB</span><span class="p">().</span><span class="w"></span>
+<span class="w">		</span><span class="nx">ModelContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">track</span><span class="p">).</span><span class="w"></span>
+<span class="w">		</span><span class="nx">Insert</span><span class="p">();</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span><span class="w"></span>
+<span class="w">		</span><span class="k">return</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+
+<span class="w">	</span><span class="nx">c</span><span class="p">.</span><span class="nx">JSON</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="p">})</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">createTrackFromGet</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">	</span><span class="nx">ctx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">Request</span><span class="p">.</span><span class="nx">Context</span><span class="p">()</span><span class="w"></span>
+
+<span class="w">	</span><span class="kd">var</span><span class="w"> </span><span class="nx">track</span><span class="w"> </span><span class="nx">Track</span><span class="w"></span>
+
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">ShouldBindHeader</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">track</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nx">JSON</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+
+<span class="w">	</span><span class="nx">track</span><span class="p">.</span><span class="nx">IP</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">net</span><span class="p">.</span><span class="nx">ParseIP</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">ClientIP</span><span class="p">())</span><span class="w"></span>
+
+<span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">ig</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">rwe</span><span class="p">.</span><span class="nx">GetCfg</span><span class="p">().</span><span class="nx">IgnoredIP</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">track</span><span class="p">.</span><span class="nx">IP</span><span class="p">.</span><span class="nx">Equal</span><span class="p">(</span><span class="nx">ig</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">			</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"The track is ignored."</span><span class="p">)</span><span class="w"></span>
+<span class="w">			</span><span class="nx">c</span><span class="p">.</span><span class="nx">JSON</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="p">})</span><span class="w"></span>
+<span class="w">		</span><span class="p">}</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+
+<span class="w">	</span><span class="nx">u</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">url</span><span class="p">.</span><span class="nx">Parse</span><span class="p">(</span><span class="nx">track</span><span class="p">.</span><span class="nx">Referer</span><span class="p">)</span><span class="w"></span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"Not worth tracking."</span><span class="p">)</span><span class="w"></span>
+<span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nx">JSON</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="p">})</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+
+<span class="w">	</span><span class="nx">host</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">net</span><span class="p">.</span><span class="nx">SplitHostPort</span><span class="p">(</span><span class="nx">u</span><span class="p">.</span><span class="nx">Host</span><span class="p">)</span><span class="w"></span>
+<span class="w">	</span><span class="nx">addr</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">net</span><span class="p">.</span><span class="nx">ParseIP</span><span class="p">(</span><span class="nx">host</span><span class="p">)</span><span class="w"></span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">addr</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">addr</span><span class="p">.</span><span class="nx">IsPrivate</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">			</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"Hello, debugger!"</span><span class="p">)</span><span class="w"></span>
+<span class="w">			</span><span class="nx">c</span><span class="p">.</span><span class="nx">JSON</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="p">})</span><span class="w"></span>
+<span class="w">		</span><span class="p">}</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+
+<span class="w">	</span><span class="nx">track</span><span class="p">.</span><span class="nx">CreatedAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">rwe</span><span class="p">.</span><span class="nx">Clock</span><span class="p">.</span><span class="nx">Now</span><span class="p">()</span><span class="w"></span>
+<span class="w">	</span><span class="nx">track</span><span class="p">.</span><span class="nx">Method</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">"Get"</span><span class="w"></span>
+<span class="w">	</span><span class="nx">track</span><span class="p">.</span><span class="nx">FromUrl</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">"NULL"</span><span class="w"></span>
+
+<span class="w">	</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">track</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">rwe</span><span class="p">.</span><span class="nx">GetDB</span><span class="p">().</span><span class="w"></span>
+<span class="w">		</span><span class="nx">ModelContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">track</span><span class="p">).</span><span class="w"></span>
+<span class="w">		</span><span class="nx">Insert</span><span class="p">();</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span><span class="w"></span>
+<span class="w">		</span><span class="k">return</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      <p>c.JSON(200, gin.H{“msg”: “”})</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w"></span>
+<span class="w">	</span><span class="nx">c</span><span class="p">.</span><span class="nx">File</span><span class="p">(</span><span class="s">"3.png"</span><span class="p">)</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+
+                    <div class="section" id="section-links">
+                        <div class="docs">
+                            <div class="octowrap">
+                                <a class="octothorpe" href="#section-links">#</a>
+                            </div>
+                            <p><a href="raw/tracker_api.go">raw source</a></p>
+                        </div>
+                    </div>
+                    <div class="clearall"></div>
+                </div>
+            
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+            
+</html>

@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>C++ Exception Handling</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>C++ Exception Handling</h1>
+        <p>Notes taken when reading the chapter about exception handling of <em>the C++ Language</em> by Bjarne Stroustrup.</p>
+<h2 id="table-of-contents" tabindex="-1"><strong>Table of Contents</strong></h2>
+<ul>
+<li><a href="#table-of-contents"><strong>Table of Contents</strong></a></li>
+<li><a href="#buzz-words">Buzz Words</a></li>
+<li><a href="#concepts">Concepts</a>
+<ul>
+<li><a href="#exception-safe">Exception-safe</a>
+<ul>
+<li><a href="#exception-guarantees">Exception Guarantees</a></li>
+</ul>
+</li>
+<li><a href="#resources">Resources</a></li>
+<li><a href="#invariants">Invariants</a></li>
+<li><a href="#stack-unwinding">Stack Unwinding</a></li>
+</ul>
+</li>
+<li><a href="#good-practices">Good Practices</a>
+<ul>
+<li><a href="#resource-management">Resource Management</a></li>
+</ul>
+</li>
+<li><a href="#when-you-cant-use-exceptions">When You Can't Use Exceptions</a></li>
+<li><a href="#noexcept">noexcept</a></li>
+<li><a href="#catch">catch</a></li>
+<li><a href="#function-try-blocks">Function <code>try</code> blocks</a></li>
+<li><a href="#when-terminate-occurs">When terminate() occurs</a></li>
+<li><a href="#a-vector-implementation">A <code>vector</code> implementation</a></li>
+</ul>
+<h2 id="buzz-words" tabindex="-1">Buzz Words</h2>
+<ul>
+<li>try-block</li>
+<li>catch-clause</li>
+<li>throw-expression</li>
+<li>error recovery</li>
+</ul>
+<h2 id="concepts" tabindex="-1">Concepts</h2>
+<h3 id="exception-safe" tabindex="-1">Exception-safe</h3>
+<p>an operation leaves the program in a valid state when the operation is terminated by throwing an exception.</p>
+<h4 id="exception-guarantees" tabindex="-1">Exception Guarantees</h4>
+<ul>
+<li>basic guarantee for all operations</li>
+<li>strong guarantee for key operations, eg., <code>push_back</code>, <code>insert</code></li>
+<li>nothrow guarantee for some operations, eg., <code>swap</code>, <code>pop_back</code></li>
+</ul>
+<p>Differences between basic and strong guarantees:</p>
+<ul>
+<li>basic guarantee only guarantess to prevent memory leak</li>
+<li>strong gurantee in addition preserves the state program</li>
+</ul>
+<p>Besides, there is no really good way to protect against exceptions thrown from destructors, so the library makes no guarantees if an element destructor throws.</p>
+<h3 id="resources" tabindex="-1">Resources</h3>
+<p>Resource is anything that has to be acquired from another part of the system and (explicitly or implicitly) given back.</p>
+<ul>
+<li>memory</li>
+<li>files</li>
+<li>network connections</li>
+<li>threads</li>
+</ul>
+<h3 id="invariants" tabindex="-1">Invariants</h3>
+<p>A constructor's job is to initialize an object of its class. Often, that initialization must establish a class invariant, that is, something that must hold whenever a menber function is called.(from outside the class)</p>
+<pre class="one-piece"><code>class Vector {
+private:
+   double *elem;
+   int sz;
+};
+</code></pre>
+<p>Invariant here is stated as comments: "elem points to an array of sz doubles" and "sz is non-negative"</p>
+<pre class="one-piece"><code>Vector::Vector(int s) {
+   if (s &lt; 0) throw Bad_size(s);
+}
+</code></pre>
+<p><code>s &lt; 0</code> violates the invariant and thus should be destroyed.</p>
+<h3 id="stack-unwinding" tabindex="-1">Stack Unwinding</h3>
+<p>The process of passing the exception <em>up the stack</em> from the point of throw to a handler.</p>
+<p>In each scoped exited, the destructors are invoked so that every fully constructed object is properly destroyed.</p>
+<h2 id="good-practices" tabindex="-1">Good Practices</h2>
+<ul>
+<li>Think of an exception as meaning ‘‘some part of the system couldn’t do what it was asked to do (§13.1.1, §13.2).</li>
+<li>stick to the "exception handling is error handling" view</li>
+<li>for projects that can't use exceptions
+<ul>
+<li>provide a status code like that of <code>fstream</code>, for example, <code>ifstream_object.good()</code></li>
+<li>return a pair like <em>golang</em></li>
+</ul>
+</li>
+<li>must agree on how exceptions are used and where errors are dealt with</li>
+<li><code>noexcept</code> for situations where recovery is infeasible</li>
+<li>convertion between C errno and exception</li>
+<li>most C functions can be declared <code>noexcept</code>(except for those that call C++ functions)</li>
+<li>Don't put huge amount of data in an exception, because it is potentially copied several times before it is caught.</li>
+<li>std provides many type predicates, that are useful for you to decide whether your functions which uses the std will throw or not.</li>
+</ul>
+<h3 id="resource-management" tabindex="-1">Resource Management</h3>
+<ul>
+<li>RAII</li>
+<li><code>finally</code> technique is inferior.</li>
+</ul>
+<h2 id="when-you-cant-use-exceptions" tabindex="-1">When You Can't Use Exceptions</h2>
+<ul>
+<li>embedded system</li>
+<li>large old programs that use news and deletes unsystematically to manage memory</li>
+</ul>
+<h2 id="noexcept" tabindex="-1">noexcept</h2>
+<ul>
+<li>plain <code>noexcept</code> is <code>noexcept(true)</code></li>
+<li>is an operator</li>
+</ul>
+<pre class="one-piece"><code>void call_f() noexcept(noexcept(f)) {}
+</code></pre>
+<ul>
+<li>is equivalent to <code>throw</code> in old C++</li>
+<li>exception specification</li>
+</ul>
+<h2 id="catch" tabindex="-1">catch</h2>
+<p>let' say the clause behind <code>catch</code> is a handler</p>
+<pre class="one-piece"><code>try {
+   throw E{};
+} catch (H) {
+   
+};
+</code></pre>
+<p>the handler is invoked, when</p>
+<ol>
+<li>H is the same type as E</li>
+<li>if H is an unambiguous public base of E(<strong>what is unambiguous public base?</strong>)</li>
+<li>H and E are pointer types when 1 or 2 holds</li>
+<li>H is a reference and 1or 2 holds for the type H refers to</li>
+</ol>
+<p>Is the relationship between E and H being that E will be cast to H?</p>
+<p>An exception is <strong>copied</strong> when it is thrown.</p>
+<p>Catch an exception by reference?</p>
+<p>Exception types and class hierarchies.</p>
+<p><code>try</code>-block and <code>catch</code>-clause are different scopes</p>
+<p>Beware:</p>
+<ul>
+<li>catch and rethrow: simply <code>throw</code></li>
+<li>multiple handlers are tried in order</li>
+</ul>
+<h2 id="function-try-blocks" tabindex="-1">Function <code>try</code> blocks</h2>
+<p>the body of a function can be a try block</p>
+<p>normal looking function:</p>
+<pre class="one-piece"><code>void f() {}
+</code></pre>
+<p>function with a try block as body</p>
+<pre class="one-piece"><code>void f() try {} catch(...) {}
+</code></pre>
+<h2 id="when-terminate-occurs" tabindex="-1">When terminate() occurs</h2>
+<ul>
+<li>no suitable handler</li>
+<li>a function specified with <code>nothrow</code> exists with <code>throw</code></li>
+<li>when you throw in places where you shouldn't throw</li>
+<li>when an exception is not caught on a thread</li>
+</ul>
+<h2 id="a-vector-implementation" tabindex="-1">A <code>vector</code> implementation</h2>
+<p>Of course what should most concerned about how the author applied exception.</p>
+<p>use <code>allocator</code> to allocate</p>
+<p>potential sources of exception</p>
+<ul>
+<li>allocate()</li>
+<li>copy constructor(when it can't copy a value)</li>
+</ul>
+<p>make vector transparent to exceptions by rethrowing</p>
+<p>provide an auxiliary class <code>vector_base</code> to represent the notion of memory used by a vector(if you look at the gcc implementation, you will see <code>_M</code>)</p>
+<p><code>vector_base</code> is not copyable</p>
+<p>...</p>
+<p>Read through the final chapter in a haste. I saw no <code>try</code> block in the implementation. The potential sources of exception are copying and constructing. Destructors should never throw, so to dispose of an old object, it is best to swap it with a temperary object, leaving it to its self-destruction. Auxiliary functions are used to construct objects. <code>try</code> blocks are hidden in them. Also, the ordering of operations must be careful, when a exception is thrown, actions should be taken to restore the program's state. Or leave it to RAII, when stack unwinds, resource bearers's destructors will be called automatically.</p>
+<h1 id="error-handling" tabindex="-1">Error Handling</h1>
+<p><a href="https://benkay86.github.io/rust-error-tutorial.html">https://benkay86.github.io/rust-error-tutorial.html</a></p>
+<p>提到哪些问题</p>
+<ol>
+<li>不要 panic， 否则场面不好收拾，特别是内存泄漏，比如打开文件之后，出错，导致无法调用 drop</li>
+<li>各种各样的 error ，用 box 解决</li>
+<li>caveat：Error trait 没有实现 thread safe</li>
+</ol>
+<p>处理这个问题：</p>
+<pre class="one-piece"><code>fn count(filename: &amp;std::path::Path)
+	-&gt; Result&lt;
+		i32,
+		std::boxed::Box&lt;dyn
+			std::error::Error
+			+ std::marker::Send
+			+ std::marker::Sync
+		&gt;
+	&gt;
+</code></pre>
+<p>如何在错误发生后处理问题：<br>
+while let Err(e) = {<br>
+// code block<br>
+} {<br>
+// handler function<br>
+}</p>
+<h2 id="downcast" tabindex="-1">downcast</h2>
+<p>理由：</p>
+<ol>
+<li>从一个具体 Error，当作 dyn error 抛出来</li>
+<li>跑出来之后，希望还原到原来的 具体 Error</li>
+</ol>
+<p>Rust 有机制，在 runtime，保持原来的 error<br>
+this technique is called downcasting</p>
+<p><code>downcast_ref</code></p>
+<h2 id="chain-errors" tabindex="-1">Chain errors</h2>
+<p>Fortunately, Rust allows us to chain errors together in this way using <a href="https://doc.rust-lang.org/std/error/trait.Error.html#method.source">Error::source()</a>.</p>
+<p>By storing errors within errors and implementing<code>[Error::source()](https://doc.rust-lang.org/std/error/trait.Error.html#method.source)</code>we can chain errors together_ad infinitum_, effectively creating a backtrace. You could imagine output like</p>
+<pre class="one-piece"><code>impl std::error::Error for SomeError {
+	fn source(&amp;self) -&gt; Option&lt;&amp;(dyn std::error::Error + 'static)&gt; {
+		match &amp;self {
+			SomeError::IOError(e) =&gt; e.source(),
+			SomeError::NumParseIntError(e) =&gt; e.source()
+		}
+	}
+}
+</code></pre>
+<p>返回 source 的时候，根据不同类型，返回不同的 source</p>
+<h2 id="dyn-error-&-boxerror" tabindex="-1">dyn Error &amp; BoxError</h2>
+<p>disadvantage:</p>
+<ol>
+<li>Creating the<code>BoxError</code>involves extra memory allocation on the heap.</li>
+<li>The caller cannot discern from our function definition what types of error it might return because a<code>BoxError</code>can be any object that implements the<code>Error</code>trait.</li>
+</ol>
+<p>创建 BoxError 需要更多的 heap 内存<br>
+创建者从函数签名中无法获知到底是什么错误，BoxError 只是一个 Base 指针</p>
+<p>解决方案： enum</p>
+<h2 id="enum" tabindex="-1">enum</h2>
+<pre class="one-piece"><code>enum SomeError {
+	IOError(std::io::Error),
+	NumParseIntError(std::num::ParseIntError)
+}
+</code></pre>
+<p>实现 IOError 和 NumParseIntError 到 SomeError 的转换</p>
+<p>impl TRAIT for SomeStruct {<br>
+fn trait-function -&gt; Self {</p>
+<p>}<br>
+}</p>
+<pre class="one-piece"><code>impl From&lt;OriginType&gt; for TargetType {
+    fn from(ot: OriginType) -&gt; Self {
+    TargetType(ot)
+}
+}
+</code></pre>
+<p>Error enumerations might have niche applications in embedded code, but most of the time you should just use<code>BoxError</code></p>
+<p>问题： 为什么  enum Error 有 performace penalties?</p>
+<p>缺点：</p>
+<ol>
+<li>需要许多垃圾代码来实现 enumeration, 如果非要这么做那应该写宏</li>
+<li>如果你要写库，你亲手写所有的 error 类型？</li>
+<li>如果用 error chaining, 你需要调 source(), 也就意味着需要 heap allocation</li>
+<li>rust enum 和 C union 类似，它的大小取决于最大的类型，如果你使用其中一个大的，那么每次函数调用的时候，你都需要将非常大的 Result 放在 stack 上，但用 box 你每次只需要一点点额外的花销</li>
+</ol>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

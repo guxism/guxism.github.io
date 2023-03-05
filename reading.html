@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <style>
+      .reading {
+  font-family: "opensansregular";
+}
+.reading code {
+  font-family: "firacode";
+}
+.reading article {
+  margin-right: auto;
+  margin-left: auto;
+}
+@media (min-width: 640px) {
+  .reading article {
+    width: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .reading article {
+    width: 100%;
+  }
+}
+@media (min-width: 1024px) {
+  .reading article {
+    width: 90%;
+  }
+}
+@media (min-width: 1280px) {
+  .reading article {
+    width: 85%;
+  }
+}
+@media (min-width: 1536px) {
+  .reading article {
+    width: 80%;
+  }
+}
+.reading article img {
+  width: 70%;
+}
+.reading em {
+  color: gray;
+}
+.reading summary {
+  cursor: pointer;
+}
+.reading summary:hover {
+  background-color: black;
+  color: white;
+}
+.reading summary:hover a {
+  color: white;
+}
+.reading strong {
+  background-color: yellow;
+}
+
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+    </style>
+    <title>Reading</title>
+  </head>
+  <body class="reading">
+    <article>
+        <a href="/">Home</a>
+        <h1>Summary of Reading</h1>
+        <details id="c6382b81-56f8-46a0-a454-7a209480a6f7"><summary>A Graduate Course in Applied Cryptography</summary><div class="list"><ul>
+<li><a href="(https://toc.cryptobook.us/)">Source</a><ul>
+<li>Secret key cryptography</li>
+</ul>
+</li>
+<li>encryption<ul>
+<li>one-time pad<ul>
+<li>is not very practical<ul>
+<li>in the sense that the keys must be as long as the messages<ul>
+<li>1 GB file: 1GB key</li>
+<li>can not be avoided</li>
+<li>any perfect cipher must have a key space at least as large as its message space</li>
+<li>k should be chosen at random from a large key space</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>in shannon&#39;s theorem, the only way to achieve perfect security is to have keys that are as long as messages</li>
+</ul>
+</li>
+<li>the only way around shannon&#39;s theorem is to relax our security requirements</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="216a8a40-73cd-48fc-8666-b6536ee6a5fe"><summary>If you own BTC, you should be using PGP</summary><div class="list"><ul>
+<li><a href="(https://medium.com/@noahruderman/if-you-own-btc-you-should-be-using-pgp-efcd440f0adf)">Source</a><ul>
+<li>my friends were compromised</li>
+</ul>
+</li>
+<li>was tricked into thinking the person over the phone is a friend<ul>
+<li>Cryptocurrencies actually use public-key cryptography</li>
+<li>The interesting applications of public-key cryptography are</li>
+</ul>
+</li>
+<li>Digital signatures</li>
+<li>Asymmetric encryption<ul>
+<li>How you can use PGP to stay secure</li>
+</ul>
+</li>
+<li>Had they asked for the request for the 1 BTC to be digitally signed, then they could have had a safe way of verifying that the request was really made by their friend and not someone else.<ul>
+<li><em>taht is, someone pretends to be your friend and ask you to give him/her money, but you can verify whether that information is coming from the real person</em></li>
+</ul>
+</li>
+<li>When sending sensitive data only meant for someone else to see<ul>
+<li>How to use it:</li>
+</ul>
+</li>
+<li>When sending someone an invoice it could be encrypted with the public key. That way this sensitive information is only for their eyes even into the future.</li>
+<li><strong>When sending someone your Bitcoin address it can be encrypted with their public key and signed with your private key</strong></li>
+<li>When sending someone your Monero address it can just be signed with your private key. Since all transactions in Monero are private, nobody is going to be able to see your balance anyway with your address.</li>
+<li>Making requests for money.</li>
+<li>Non-repudiation<ul>
+<li>I never said that</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="9f7e630b-566a-49e2-9055-8909ecbb668c"><summary>Introduction to Cryptography</summary><div class="list"><ul>
+<li><a href="(https://www.cs.stonybrook.edu/sites/default/files/PGP70IntroToCrypto.pdf)">Source</a><ul>
+<li>PGP, Pretty Good, and Pretty Good Privacy</li>
+<li>How PGP works</li>
+</ul>
+</li>
+<li>hybrid cryptosystem</li>
+<li>first compresses the plaintext<ul>
+<li>compression is good -- reduces the pattern in the plaintext, thereby greatly enchancing resistance to <strong>cryptanalysis</strong></li>
+</ul>
+</li>
+<li>then create <strong>a session key</strong><ul>
+<li>which is a one-time-only secret key</li>
+<li>the result is ciphertext</li>
+</ul>
+</li>
+<li>the session key is then encrypted to the recipient&#39;s public key<ul>
+<li>and then transmitted along with the ciphertext to the recipient</li>
+<li>Digital signatures</li>
+</ul>
+</li>
+<li>let the recipient of information <strong>verify the authenticity</strong> of the information&#39;s origin<ul>
+<li>and also verify that the information was not altered while in transit</li>
+</ul>
+</li>
+<li>thus publick key digital signatures provide <strong>authentication and data integrity</strong><ul>
+<li>also provides <strong>non-repudiation</strong><ul>
+<li>meaning the sender can&#39;t deny the fact that he/she sent the msg</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>a handwritten signature is easy to <strong>counterfeit</strong></li>
+<li><strong>Some people tend to use signatures more than they use encryption</strong><ul>
+<li>Instead of encrypting information using someone else’s public key, you encrypt it with your private key. If the information can be decrypted with your public key, then it must have originated with you.</li>
+</ul>
+</li>
+<li>one-way hash<ul>
+<li>take: a message of any length</li>
+<li>produce: a fixed-length output<ul>
+<li>also known as <strong>message digest</strong></li>
+<li>PGP use the digest and the private key to create the signature</li>
+<li>PGP transmit the signature and the plaintext together.</li>
+<li>Upon receipt of the message, the recipient uses PGP to recomputer the digest, thus verifying the signature</li>
+<li>plaintext --(hash function)--&gt;  message digest --(signed with private key)--&gt; signature</li>
+</ul>
+</li>
+<li>Digital certificates</li>
+</ul>
+</li>
+<li>man-in-the-middle attacks<ul>
+<li>someone posts a phony key with the name and the user id of the user&#39;s intended recipient</li>
+<li>data is encrypted to, and intercepted by, the true owner of this bogus key is now in the wrong hands.</li>
+</ul>
+</li>
+<li>it&#39;s vital to know for certain that the public key to which you are encrypting data is in fact the public key of the intended recipient, and not a <strong>forgery</strong></li>
+<li>a certificate is a form of credential</li>
+<li>certificiate formats<ul>
+<li>PGP certificates</li>
+<li>X.509 certificates</li>
+<li><em>doen&#39;t matter, why should I care... the important things are the public key, validity period, information about the certificate holder, something else that make this certificate unique and the reason why people just don&#39;t use one kind of certificates</em></li>
+<li>validity and trust</li>
+</ul>
+</li>
+<li>validity: to make sure that a public key certificate belongs to its <strong>purported</strong> owner</li>
+<li>sign the copy on your keyring to attest to the fact taht you&#39;ve checked it and that it&#39;s an authentic one</li>
+<li><strong>fingerprint</strong><ul>
+<li>each PGP certificate&#39;s fingerprint is unique</li>
+<li><em>uuid?</em></li>
+<li>A key&#39;s fingerprint is verified with the key&#39;s owner. This may be done in person or over the phone or through any other means as long as you can guarantee that you are communicating with the key&#39;s true owner.</li>
+<li>Since key verification is a weak point in public-key cryptography, you should be extremely careful and always check a key&#39;s fingerprint with the owner before signing the key.</li>
+</ul>
+</li>
+<li>anyone who trusts the CA will automatically consider any certificates signed by the CA to be valid<ul>
+<li>Trust models</li>
+</ul>
+</li>
+<li>Direct trust</li>
+<li>hierarchical trust<ul>
+<li>meta-introducer</li>
+<li>trusted introducers</li>
+<li>users</li>
+</ul>
+</li>
+<li>a web of trust<ul>
+<li>passphrase</li>
+</ul>
+</li>
+<li>a longer version of a password<ul>
+<li>PGP uses a passphrase to encrypt your private key on your machine</li>
+<li><strong>PGP is cryptography that will keep major governments out of your files</strong></li>
+<li>Why Phil Zimmermann wrote PGP?</li>
+</ul>
+</li>
+<li>Two hundred years ago, all conversations were private</li>
+<li>But with the coming of the information age, starting with the invention of the telephone, all that has changed</li>
+<li>Until recently, if the government wanted to violate the privacy of ordinary citizens, they had to expend a certain amount of expense and labor to intercept and steam open and read paper mail</li>
+<li>Perhaps you think your email is legitimate enough that encryption is unwarranted. If you really are a law-abiding citizen with nothing to hide, then why don&#39;t you always send your paper mail on postcards? Why not submit to drug testing on demand? Why require a warrant for police searches of your house? Are you trying to hide something? If you hide your mail inside envelopes, does that mean you must be a subversive or a drug dealer, or maybe a paranoid nut? Do law-abiding citizens have any need to encrypt their email?</li>
+</ul>
+</div></details><details id="08186eff-f64e-47c3-8afa-2231ca482411"><summary>High School Mathematics Extensions/Discrete Probability</summary><div class="list"><ul>
+<li><a href="(https://en.wikibooks.org/wiki/High_School_Mathematics_Extensions/Discrete_Probability)">Source</a><ul>
+<li>Probability</li>
+<li>the chances are 50%-50%</li>
+<li>Putting a bar over a variable means the opposite of that event</li>
+<li>combining independent probabilities</li>
+</ul>
+</li>
+<li>adding</li>
+<li>multiplying<ul>
+<li>Random variables</li>
+</ul>
+</li>
+<li>Captical letter</li>
+<li>observed value: lowercase letter<ul>
+<li>Expectations</li>
+</ul>
+</li>
+<li>E = rP + r2 * P2 + ...<ul>
+<li>r = possible value</li>
+<li>P = probability</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="f4f31faa-e547-4d9d-84c8-a8039eec3fec"><summary>Blockchain basics</summary><div class="list"><ul>
+<li><a href="(https://docs.substrate.io/fundamentals/blockchain-basics/)">Source</a><ul>
+<li>In a blockchain network, individual computers—called nodes—communicate with each other to form a decentralized peer-to-peer (P2P) network</li>
+<li>In most cases, users interact with a blockchain by submitting a request that might result in <strong>a change in state</strong></li>
+<li><strong>A blockchain is essentially a state machine.</strong></li>
+<li>The method that a blockchain uses to batch transactions into blocks and to select which node can submit a block to the chain is called the blockchain&#39;s <strong>consensus model or consensus algorithm</strong></li>
+<li><strong>most blockchains require users to pay for the network resources they use in the form of transaction fees.</strong></li>
+<li>Blockchain governance</li>
+</ul>
+</li>
+<li>Some blockchains allow network participants to <strong>submit and vote on proposals</strong> that affect network operations or the blockchain community.<ul>
+<li>On-chain governance is relatively rare, however, and to participate, <strong>a blockchain might require users to maintain a significant stake of tokens in an account or to be selected as a representative for other users.</strong></li>
+<li>Applications running on a blockchain</li>
+</ul>
+</li>
+<li>Applications that run on a blockchain — often referred to as <strong>decentralized applications or dApps</strong> — <strong>are typically web applications that are written using front-end frameworks but with backend smart contracts for changing the blockchain state.</strong></li>
+<li><strong>A smart contract is a program that runs on a blockchain and executes transactions on behalf of users under specific conditions.</strong></li>
+<li>Substrate is a blockchain builders&#39; toolkit with a modular framework of components to create a custom blockchain</li>
+</ul>
+</div></details><details id="fcd68f7c-ac66-4cc5-992b-1e83698e6a03"><summary>Simulate a network</summary><div class="list"><ul>
+<li><a href="(https://docs.substrate.io/tutorials/get-started/simulate-network/)">Source</a><ul>
+<li>specifies the port number used for peer-to-peer communication</li>
+<li>12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp identifies the running node to communicate with for this network. In this case, the identifier for the node started using the alice account.</li>
+</ul>
+</li>
+<li><em>in this case, bob connects to alice</em></li>
+</ul>
+</div></details><details id="c609a1de-3d38-427c-a654-7fa03b4e7869"><summary>SecureBoot</summary><div class="list"><ul>
+<li><a href="(https://wiki.debian.org/SecureBoot)">Source</a><ul>
+<li>SB works using cryptographic checksums and signatures. <strong>Each program that is loaded by the firmware includes a signature and a checksum</strong>, and before allowing execution the firmware will verify that the program is trusted by validating the checksum and the signature.</li>
+<li><strong>Most</strong> of the programs that are expected to run in the UEFI environment are boot loaders</li>
+<li><strong>UEFI Secure Boot is not an attempt by Microsoft to lock Linux out of the PC market here;</strong></li>
+<li>Microsoft act as a Certification Authority (<strong>CA</strong>) for SB</li>
+<li>Users can enrol extra keys into the system, allowing them to sign programs for their own systems. Many SB-enabled systems also allow users to remove the platform-provided keys altogether, forcing the firmware to only trust user-signed binaries.</li>
+<li><strong>shim</strong> is a simple software package that is designed to work as a first-stage bootloader on UEFI systems.</li>
+</ul>
+</li>
+<li>It is a common piece of code that is safe, well-understood and audited so that it can be trusted and signed using platform keys</li>
+<li>it becomes <strong>the root of trust</strong> for all the other distro-provided UEFI programs</li>
+</ul>
+</div></details><details id="ae07b422-2f97-4d8b-85c0-63c8417fd98f"><summary>Completely disabling Touchpad</summary><div class="list"><ul>
+<li><a href="(https://help.ubuntu.com/community/SynapticsTouchpad)">Source</a><ul>
+<li>xinput list</li>
+<li>xinput set-prop 13 &quot;Device Enabled&quot; 0</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="fe24f0d9-04ae-421b-aa0f-246fcf0d924d"><summary>Overview of Intel SGX - Part 1, SGX Internals</summary><div class="list"><ul>
+<li><a href="(https://blog.quarkslab.com/overview-of-intel-sgx-part-1-sgx-internals.html)">Source</a><ul>
+<li>It allows user-land code to create <strong>private memory regions, called enclaves</strong>, that are isolated from other processes running at the same or higher privilege levels</li>
+<li><strong>To be able to use SGX, it must have been enabled by the BIOS, and only a few BIOSes actually support this technology. That is one of the reasons it is not widely used.</strong></li>
+<li>SGX support can be checked by executing the CPUID instruction with the Structured Extended Feature Leaf flag set, and checking if the second bit of the <strong>EBX</strong> register is set.</li>
+<li>summary</li>
+</ul>
+</li>
+<li>an application is split into two parts: a secure one and a non-secure one;</li>
+<li>the application launches the enclave, which is placed in protected memory;</li>
+<li>when an enclave function is called, <strong>only the code within the enclave can see its data</strong>, external accesses are always denied; when it returns, enclave data stays in the protected memory.<ul>
+<li><em>if the code within the enclave can see the data, perhaps it can copy the data and send them away?</em></li>
+</ul>
+</li>
+<li><img src="https://blog.quarkslab.com/resources/2018-intel-sgx/view_process.png" alt=""><ul>
+<li><em>features?</em></li>
+</ul>
+</li>
+<li>multi-threading is supported (but** not trivial** to implement properly);</li>
+<li>an enclave can access its application&#39;s memory, but not the other way around.<ul>
+<li><em>how does the other way go?</em></li>
+<li>Instructions</li>
+</ul>
+</li>
+<li>18 new instructions<ul>
+<li>13 for supervisors</li>
+<li>5 for users<ul>
+<li>enter an enclave</li>
+<li>exist an enclave</li>
+<li>create a cryptographic key</li>
+<li>create a cryptographic report</li>
+<li>re-enter an enclave</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="a08f83f9-be3b-420f-802c-893ced86f70d"><summary>Async: What is blocking?</summary><div class="list"><ul>
+<li><a href="(https://ryhl.io/blog/async-what-is-blocking/)">Source</a><ul>
+<li><em>if you don&#39;t await, you won&#39;t get the tokio runtime to swap one task for another, which means the futures never yield, resulting in blocking</em></li>
+<li><em>I thought the word blocking is about IO, which is bound to be blocking</em></li>
+<li><em>any special treats for IO?</em></li>
+<li>The rayon crate is a well known library that provides a thread pool specifically intended for expensive CPU-bound computations, and you can use it for this purpose together with Tokio</li>
+<li>Spawn a dedicated thread with std::thread::spawn</li>
+</ul>
+</li>
+<li><em>OS thread</em></li>
+<li>For example consider a thread that manages a database connection using a channel to receive database operations to perform</li>
+<li><em>yeah, sometime I should use OS threads directly</em><ul>
+<li><code>spawn_blocking</code></li>
+</ul>
+</li>
+<li>Since the thread pool has so many threads, it is best suited for blocking IO such as interacting with the file system or using a blocking database library such as diesel.</li>
+<li><em>not convincing</em></li>
+<li><em>it means the task in a spawn blocking thread won&#39;t be swapped away</em></li>
+<li><a href="https://docs.rs/tokio/latest/tokio/task/fn.spawn_blocking.html">https://docs.rs/tokio/latest/tokio/task/fn.spawn_blocking.html</a><ul>
+<li>Runs the provided closure on a thread where blocking is acceptable.<ul>
+<li><em>first we should be wondering, why said the word acceptable, which leads to the questions about what is unacceptable</em></li>
+<li>the problem is, <strong>issuing a blocking call or performing a lot of compute in a future without yielding is problematic</strong></li>
+<li><em>sure, that is why, in the official async book, the slumbering(what a word) is not performed in the future, rather, it&#39;s performed in the OS threads, you can do anything in an OS thread, blocking or not, but future is a special mechanism that is best not be blocked</em></li>
+<li><em>then, why not use OS threads directly?</em><ul>
+<li><em>because <code>spawn_blocking</code> is implemented with thread pools consisting of OS threads</em></li>
+</ul>
+</li>
+<li>&quot;the function is intended for non-async operations that eventually finish on their own&quot;<ul>
+<li><em>wtf does it mean??</em></li>
+<li><em>you might as well say the <code>spawn_blocking</code> is yielding a future taht is finished by the active polling of executors</em></li>
+<li><em>wtf</em></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="78a0e59b-abcb-43de-9df2-85383edc862f"><summary>Implementing io_uring based asynchronous random file reading in Rust</summary><div class="list"><ul>
+<li><a href="(https://www.sobyte.net/post/2022-04/rust-io-uring/)">Source</a></li>
+</ul>
+</div></details><details id="802b0ec4-d2e3-4094-9b8e-3542f7df3542"><summary>Is using a crate::prelude::\* good practice?</summary><div class="list"><ul>
+<li><a href="(https://www.reddit.com/r/rust/comments/a7pcp2/is_using_a_crateprelude_good_practice/)">Source</a><ul>
+<li><code>use goose::prelude::*;</code> -- <a href="https://book.goose.rs/getting-started/creating.html">https://book.goose.rs/getting-started/creating.html</a></li>
+</ul>
+</li>
+<li><a href="https://github.com/tag1consulting/goose/blob/main/src/prelude.rs">https://github.com/tag1consulting/goose/blob/main/src/prelude.rs</a><ul>
+<li><code>pub use *</code></li>
+<li>what things are in <code>lib.rs</code>?<ul>
+<li><em>mod, use(not pub), const</em></li>
+</ul>
+</li>
+<li><code>use rayon::prelude::*;</code>: <a href="https://lib.rs/crates/rayon">https://lib.rs/crates/rayon</a></li>
+<li>This module contains all the consts and re-exports so I can just put use crate::prelude::*</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="213c6175-16b0-41d1-898f-1e746ba76b41"><summary>There is nothing in Rust that would ease solving hard problems.</summary><div class="list"><ul>
+<li><a href="(https://news.ycombinator.com/item?id=10192663)">Source</a><ul>
+<li>Interesting. How does Rust prevent the cyclic reference counting issues that led Chrome to adopt Oilpan?</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="eb1bccc1-fc8d-4b26-a07d-7582bdfecd59"><summary>Cow in std::borrow - Rust</summary><div class="list"><ul>
+<li><a href="(https://doc.rust-lang.org/std/borrow/enum.Cow.html)">Source</a><ul>
+<li>A clone-on-write smart pointer. The type Cow is a smart pointer providing clone-on-write functionality</li>
+</ul>
+</li>
+<li><strong>it can enclose and provide immutable access to borrowed data, and clone the data lazily when mutation or ownership is required</strong><ul>
+<li><em>pass a reference/slice to the initializer that yields a struct</em></li>
+<li><code>Cow&lt;&#39;a, B&gt;</code></li>
+</ul>
+</li>
+<li>is an enum</li>
+<li>variants:<ul>
+<li><code>Borrowed</code>: not mutatated</li>
+<li><code>Owned</code>: mutated: copied on write</li>
+<li><em>why copy on write?</em></li>
+</ul>
+</li>
+<li><em>to save unnecessary copy of course!</em></li>
+<li><em>an optimization strategy</em></li>
+<li><a href="https://stackoverflow.com/questions/628938/what-is-copy-on-write">https://stackoverflow.com/questions/628938/what-is-copy-on-write</a><ul>
+<li>used in maintainance of instant snapshot on database servers, INstant snapshots perserve a static view of a database by storing a pre-modification copy of data when underlying data are updated instandt snapshot are use for testing user ...</li>
+<li>usually used to resolve concurrency sorts of problems.</li>
+<li><code>fork()</code> or <code>vfork()</code>, <code>vfork()</code> follows the concepts of copy-on-write<ul>
+<li>speeds up the forking time</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="9ef51dce-bc5c-47a1-adc5-348662c73328"><summary>Trait std::ops::FromResidual</summary><div class="list"><ul>
+<li><a href="(https://doc.rust-lang.org/std/ops/trait.FromResidual.html)">Source</a><ul>
+<li><code>pub trait FromResidual&lt;R = &lt;Self as Try&gt;::Residual&gt; fn from_residual(residual: R) -&gt; Self; }</code></li>
+<li>Used to specify which residuals can be converted into which <code>crate::ops::Try</code> types.</li>
+</ul>
+</li>
+<li><em>ok, step by step, first, <code>FromResidual</code> is a trait</em></li>
+<li><em>what is Residual?</em><ul>
+<li>remaining after the greater part or quantity has gone</li>
+<li><em>in another words: what that is left</em></li>
+</ul>
+</li>
+<li>Official definition of Residual: <a href="https://doc.rust-lang.org/std/ops/trait.Residual.html">https://doc.rust-lang.org/std/ops/trait.Residual.html</a><ul>
+<li>Allows retrieving the <strong>canonical</strong> type implementing Try that has this type as its residual and allows it to hold an O as its output.</li>
+<li><code>Result&lt;T, E&gt;: Try&lt;Output = T, Residual = Result&lt;Infallible, E&gt;&gt;</code></li>
+</ul>
+</li>
+<li><em>From the source, the source is <code>&lt;Self as Try&gt;::Residual</code></em><ul>
+<li><em>may be Residual is an associated type?</em><ul>
+<li><em>of course it is</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><em>what is Try?</em><ul>
+<li><a href="https://doc.rust-lang.org/std/ops/trait.Try.html">https://doc.rust-lang.org/std/ops/trait.Try.html</a></li>
+<li>The ? operator and try {} blocks.</li>
+<li><code>Result</code> is a <code>try</code> type, as does <code>Option</code></li>
+<li><em>take a look at std::convert::From</em></li>
+</ul>
+</li>
+<li><code>String</code> implements <code>From&lt;&amp;Str&gt;</code></li>
+<li>so a <code>&amp;str</code> can be converted into <code>String</code></li>
+<li>call the convertion with <code>TargetType::from(SrcTypeInstance)</code><ul>
+<li>Examples</li>
+</ul>
+</li>
+<li><code>Option::&lt;String&gt;::from_residual(None)</code><ul>
+<li><em>R is of type <code>None</code></em></li>
+<li><em><code>Option::&lt;String&gt;</code> implements <code>FromResidual&lt;Option::&lt;String&gt;&gt;</code></em></li>
+<li><em>is None a try type? Yes it is, because you can apply the ? operator on it</em></li>
+<li>convert a <code>None</code> to <code>Option::&lt;String&gt;</code>, and <code>None</code> is the associated type of <code>Option::&lt;String&gt;</code></li>
+</ul>
+</li>
+<li>the trait <code>FromResidual&lt;std::result::Result&lt;Infallible, some_crate::error::Error&gt;&gt;</code> is not implemented for <code>()</code><ul>
+<li><em>explain: can&#39;t convert <code>std::result::Result&lt;Infallible, some_crate::error::Error&gt;</code> to <code>()</code></em></li>
+<li><em>in short: can&#39;t append an ? to an expression that yields <code>Result&lt;a, b&gt;</code> in a function that returns <code>Result&lt;()&gt;</code></em></li>
+</ul>
+</li>
+</ul>
+</div></details><details id="c79ced79-b41e-41ed-b6d7-480d7ec8d383"><summary>POAP</summary><div class="list"><ul>
+<li>POAP is a new way of keeping a reliable record of life experiences. Each time they take part on an event, POAP collectors get a unique badge that is supported by a cryptographic record. These badges are Non Fungible Tokens (NFT) and open a whole new world of possibilities.</li>
+</ul>
+</div></details><details id="f3d2bd6a-f826-4b13-b831-90d1b2461fba"><summary>Oracle</summary><div class="list"><ul>
+<li><a href="https://chain.link/education/blockchain-oracles">What Is a Blockchain Oracle?</a></li>
+<li>Blockchain oracles are entities that <strong>connect blockchains to external systems</strong>, thereby enabling smart contracts to execute based upon inputs and outputs from the real world.<ul>
+<li><em>pipeline, gateway? local network -&gt; internet?</em></li>
+</ul>
+</li>
+<li>the Betting example<ul>
+<li>Alice and Bob want to bet on the outcome of a sports match<ul>
+<li>Alice bets 20 on team A</li>
+<li>Bob 20 team B</li>
+<li>40 held in escrow by a <strong>smart contract</strong></li>
+<li>the game ends<ul>
+<li>problem: how does the smart contract know <em>who wins the bet?</em></li>
+<li>solutionL requires an oracle mechanism to fetch accurate match outcomes off-chain and deliver it to the blockchain in a secure and reliable manner</li>
+<li><em>match outcomes -&gt; smart contract</em></li>
+<li><em>smart contract -&gt; Alice/Bob</em></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>off-chain:<ul>
+<li>Resources <strong>external</strong> to the blockchain are considered “off-chain,” while data already stored on the blockchain is considered on-chain</li>
+<li>Securely interoperating with off-chain systems from a blockchain requires <strong>an additional piece of infrastructure known as an “oracle”</strong> to bridge the two environments.</li>
+</ul>
+</li>
+<li>Thus, oracles expand the types of digital agreements that blockchains can support by offering <strong>a universal gateway</strong> to off-chain resources while still upholding the valuable security properties of blockchains.</li>
+<li>corrupted oracle<ul>
+<li>Additionally, because blockchain transactions are automated and immutable, <strong>a smart contract outcome based on faulty data cannot be reversed, meaning user funds can be permanently lost</strong>.</li>
+<li>-&gt; Truly overcoming the oracle problem necessitates <strong>decentralized oracles</strong> to prevent data manipulation, inaccuracy, and downtime. A Decentralized Oracle Network, or DON for short,</li>
+</ul>
+</li>
+<li>many Chainlink DONs, such as Chainlink Price Feeds, incorporate three layers of decentralization to eliminate any single point of failure.<ul>
+<li>at the data source</li>
+<li>individual node operator</li>
+<li>and oracle network levels</li>
+</ul>
+</li>
+<li><em>so, oracle is a kind of gateway, and is vital to keep input and output authentical and not faulty -- but can&#39;t control how smart contract behavior</em></li>
+</ul>
+</div></details><details id="49e5be89-e6bb-4028-a5b5-5fc2c23f71c9"><summary>OnceCell</summary><div class="list"><ul>
+<li><a href="(https://github.com/matklad/once_cell)">Source</a><ul>
+<li>store arbitrary non-copy types, can be assigned to at most <strong>once</strong>(<em>singleton</em>), and provide access to the stored contents</li>
+<li><em>What are problems it is meant to solve?</em></li>
+</ul>
+</li>
+<li><em>writing singletion with ease</em></li>
+</ul>
+</div></details><details id="8675ba70-9590-4a16-b2a8-ebd535d96578"><summary>What is React?</summary><div class="list"><ul>
+<li><a href="(https://reactjs.org/tutorial/tutorial.html)">Source</a><ul>
+<li>React is a declarative, efficient, and flexible JavaScript library for building user interfaces. It lets you compose complex UIs from <strong>small and isolated pieces</strong> of code called <strong>“components”</strong>.</li>
+<li><em>to create a component: <code>extends React.Component</code></em></li>
+</ul>
+</li>
+<li><em>return a html page in string representation.</em><ul>
+<li><em>where are views and templates?</em><ul>
+<li><em>in fact they are templates with &quot;<strong>props</strong>&quot;</em><ul>
+<li><em>interpolation/placeholder</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><em>return a <code>&lt;div&gt;</code></em></li>
+</ul>
+</li>
+<li><strong>built-in DOM components</strong></li>
+<li>or <strong>custom React components</strong><ul>
+<li><code>&lt;tag props&gt;</code>, refer to the props in <code>tag</code> class using <code>this.props.some_specific_prop</code></li>
+<li><em>renderer</em></li>
+</ul>
+</li>
+<li><code>React.createElement(tag, args)</code><ul>
+<li>JSX: a special syntax</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="e994bedd-20b4-4604-928e-d27ac87b3a6c"><summary>Decorators</summary><div class="list"><ul>
+<li><a href="(https://www.typescriptlang.org/docs/handbook/decorators.html)">Source</a><ul>
+<li>Decorators use the form <code>@expression</code>, where <code>expression</code> must evaluate to a function that will be called at runtime with information about the decorated declaration.</li>
+<li>When multiple decorators apply to a single declaration, their evaluation is similar to function composition in mathematics. In this model, when composing functions f and g, the resulting composite <code>(f ∘ g)(x)</code> is equivalent to <code>f(g(x))</code>.</li>
+</ul>
+</li>
+<li>written as <code>@f @g x</code> or multiple-lined.<ul>
+<li>the following steps are performed when evaluating multiple decorators on a single declaration in TypeScript:</li>
+</ul>
+</li>
+<li>The expressions for each decorator are evaluated top-to-bottom.</li>
+<li>The results are then called as functions from bottom-to-top.</li>
+<li><em>wtf does it mean?</em></li>
+<li><em>to my understanding, the decorator will generate a function on the fly</em><ul>
+<li><em>you can&#39;t attach a decorator to a normal function</em></li>
+<li><em>this is something similar to Rust procedural macros, except that Rust generates the code in compile time</em></li>
+<li><em>by decorating something, you are changing its content/structure</em></li>
+<li><em>get the name of the method/class by <code>descriptor.value</code></em></li>
+</ul>
+</li>
+<li><em>then reassign a new function to it</em><ul>
+<li><em>the typescript document is crap, can anyone get any useful information from it?</em></li>
+<li><em>checkout this <a href="https://www.typescriptlang.org/play?#code/GYVwdgxgLglg9mABAcwE4FN2zMgzgCgHcALAQygBU4BlUgTwC5FcpUYcBKRAbwChFEGKCFRJQkWAkT4opVMixNSYOgBpEAB1RwN6VFDoBpdI2at2ydQBN0uCGw1Q4qJgAVtu-XQAit+zEdnLj4BAQgEFkRnGGR2UgAbAFksYjgrRABeRBs7BydUADoANwSQdABuflCc-0DCkviyzMRxaHgwfAKuuTwlFWCq0MRwsFw4ePQC+LhkGR6sAqdqcxx8LgBqRAAiZnpcbcRNknIqWjoOSqGBIREkaNiwBOSoVKsC0g0NeLoZYhhcdQ9XAXQaIAC+VTBlQhvF4EHipFw+wAogAPUgAWy+6AAwgikTwqgABNCYbB4fBbYjoeLTRCEZzxKxbDhVDEpNJrHgQmEjSLoZpgdCERBozHYvGIgggybsl6ci5AA">demo</a></em></li>
+<li><em>hot take: when you apply a decorator to a method, or a class, you are in fact changing the method or class, next time you use those decorated entities, just remember they are not the same as their definitions suggest. Think about Rust procedural macros</em></li>
+<li><em>too much sugar</em></li>
+</ul>
+</li>
+</ul>
+</div></details><details id="be52b8be-9eba-44ad-a7bc-a4340d6dc42d"><summary>Containerd</summary><div class="list"><ul>
+<li><a href="(https://containerd.io/)">Source</a><ul>
+<li><img src="https://containerd.io/img/architecture.png" alt=""></li>
+</ul>
+</li>
+</ul>
+</div></details><details id="b96c5b71-d92c-40d1-b08c-75a2fe0df692"><summary>2592-futures</summary><div class="list"><ul>
+<li><a href="(https://github.com/rust-lang/rfcs/blob/master/text/2592-futures.md#waking-up)">Source</a><ul>
+<li>Why Futures in std?</li>
+</ul>
+</li>
+<li><em>to make async code looks more like sync code</em><ul>
+<li>Guide-level explanation</li>
+</ul>
+</li>
+<li><strong>Futures can be constructed through async blocks or async functions</strong></li>
+<li>This RFC does not include any definition of an executor. It merely defines the interaction between executors, tasks and Futures, in the form of APIs that allow tasks to request getting scheduled again.<ul>
+<li>Reference-level explanation</li>
+</ul>
+</li>
+<li>The fundamental mechanism for asynchronous computation in Rust is tasks, which are lightweight threads of execution;</li>
+<li>To perform this cooperative scheduling we use a technique sometimes referred to as a &quot;<strong>trampoline</strong>&quot;.<ul>
+<li>a piece of equipment consisting of a strong fabric sheet connected by springs to a frame, used as a springboard and landing area in doing acrobatic or gymnastic exercises.</li>
+</ul>
+</li>
+<li>When a task would otherwise need to block waiting for some event, instead it <strong>saves an object that allows it to get scheduled again later</strong> and returns to the executor running it, which can then run another task.<ul>
+<li><em>what object?</em></li>
+</ul>
+</li>
+<li>Subsequent wakeups place the task back on the <strong>executors queue</strong> of ready tasks, much like a thread scheduler in an operating system.<ul>
+<li>Waking up</li>
+</ul>
+</li>
+<li>If a future cannot be directly fulfilled during execution and returns Pending, it needs a way to later on inform the executor that it needs to get polled again to make progress.</li>
+<li>This functionality is provided through a set of Waker types.</li>
+<li>Wakers are objects which are passed as a parameter to the Future::poll call, and which can be stored by the implementation of those Futuress. <strong>Whenever a Future has the need to get polled again, it can use the wake method of the waker</strong> in order to inform the executor that the task which owns the Future should get scheduled and executed again</li>
+<li>Possible ways of waking up an executor include:<ul>
+<li>If the executor is blocked on a condition variable, the condition variable needs to get notified</li>
+<li>If the executor is blocked on a system call like select, it might need to get woken up by a syscall like write to a pipe.</li>
+<li>If the executor&#39;s thread is <strong>parked</strong>, the wakeup call needs to unpark it.<ul>
+<li><em>this is important</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>A <code>RawWaker</code> allows the implementor of a task executor to create a <code>Waker</code> which provides customized wakeup behavior.<ul>
+<li>It consists of a data pointer and a virtual function pointer table (vtable) that customizes the behavior of the <code>RawWaker</code>.</li>
+</ul>
+</li>
+<li>A <code>Waker</code> is a handle for waking up a task by notifying its executor that it is ready to be run.<ul>
+<li><code>wake(&amp;self)</code><ul>
+<li>Wake up the task associated with this <code>Waker</code>.</li>
+</ul>
+</li>
+<li><code>will_wake(&amp;self, other: &amp;Waker) -&gt; bool</code><ul>
+<li>Returns whether or not this <code>Waker</code> and other <code>Waker</code> have awaken the same task.</li>
+</ul>
+</li>
+<li><code>fn new_unchecked(waker: RawWaker) -&gt; Waker</code><ul>
+<li>Creates a new <code>Waker</code> from <code>RawWaker</code>.</li>
+</ul>
+</li>
+<li>Most of the explanation here follows what we&#39;ve already said about the task system. The one twist is the use of Pin, <strong>which makes it possible to keep data borrowed across separate calls to poll (i.e., &quot;borrowing over yield points&quot;).</strong></li>
+<li>Relation to futures 0.1</li>
+</ul>
+</li>
+<li>there are three major shifts<ul>
+<li>The use of Pin&lt;&amp;mut self&gt; rather than just &amp;mut self</li>
+</ul>
+</li>
+<li>Dropping built in errors from Future, in favor of futures returning a Result when they can fail.</li>
+<li>Passing a Waker explicitly, rather than stashing it in thread-local storage<ul>
+<li>In our experience, the callback approach suffered from several drawbacks in Rust:</li>
+</ul>
+</li>
+<li>It forced allocation almost everywhere, and hence was not compatible with no_std</li>
+<li>It made cancellation extremely difficult to get right, whereas with the proposed model it&#39;s just &quot;drop&quot;.</li>
+<li>Subjectively, the combinator code was quite hairy, while with the task-based model things fell into place quickly and easily.</li>
+</ul>
+</div></details><details id="bec5b8a5-58bb-4c7a-9fdf-2e678c3aec63"><summary>SurrealDB</summary><div class="list"><ul>
+<li>thiserror, reqwest, base64</li>
+<li>place the macros in <code>mac</code> directory</li>
+<li>network -&gt; net</li>
+<li>socket: websocket, rpc, session<ul>
+<li>a lot of unwrap(), they don&#39;t care, sometimes you shouldn&#39;t care</li>
+<li><code>pub static DB: OnceCell&lt;Datastore&gt; = OnceCell::new();</code></li>
+<li>project architecture: workspace with <code>members = [&quot;lib&quot;]</code></li>
+<li>they use a log library: <code>info!</code> -&gt; <code>log-0.4.17</code></li>
+<li>take a look at <code>kvs</code></li>
+</ul>
+</li>
+<li>transaction<ul>
+<li>props<ul>
+<li>is the transaction complete?</li>
+<li>is the transaction r+w?</li>
+<li>the distributed database transaction</li>
+</ul>
+</li>
+<li>the transaction is everywhere</li>
+<li>they use<a href="https://github.com/surrealdb/echodb"><strong>eachdb</strong></a> underneath- but that is their work too<ul>
+<li><code>Arc&lt;ArcSwap&lt;OrdMap&lt;K, V&gt;&gt;&gt;</code><ul>
+<li><code>OrdMap</code>: sorted string table</li>
+</ul>
+</li>
+<li><code>#[tokio::test]</code></li>
+<li>no persistence</li>
+</ul>
+</li>
+<li>lk == lock</li>
+<li>the idea of using one transaction to supervise even one operation makes the concept generic<ul>
+<li>from the wiki: a transaction is a single unit of logic or work, sometimes made up of multiple operations.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="5e2d6084-be82-4572-9bf5-c0a22206bc70"><summary>N4286 Resumable Functions (revision 3)</summary><div class="list"><ul>
+<li>stackless vs stackful</li>
+<li>Stackful<ul>
+<li>general purpose stackful coroutines taht reserve default stack for every coroutine(2MB on Linux) will exhaust all avaible virtual memory in 32-bit address space with only a few thousand coroutines.</li>
+<li>stackful coroutines lead to memory fragmentation</li>
+<li>resumable function</li>
+</ul>
+</li>
+<li>a function or a lambda is called resumable function or resumable lambda if a body of the function or lambda constains at lease one suspend/resume point</li>
+<li>suspend/resume poitns are epxressions with one or more await operations, yield statements or await-for statements</li>
+</ul>
+</div></details><details id="95220f3b-a7c6-4ebb-b9b2-e20291507f98"><summary>[Stabilization] Pin APIs #55766</summary><div class="list"><ul>
+<li><a href="(https://github.com/rust-lang/rust/issues/55766)">Source</a><ul>
+<li>The Pin wrapper modifies the pointer to &quot;pin&quot; the memory it refers to in place, preventing the user from moving objects out of that memory.</li>
+<li>Pinned pointers can deref, giving you back &amp;T, but cannot safely mutably deref: this is only possible using the unsafe get_mut function.</li>
+<li>As a result, anyone mutating data through a pin will be required to uphold the <strong>invariant</strong> that they never move out of that data.</li>
+<li>a pin projection: that is, to go from a <code>Pin&lt;P&lt;Target = Foo&gt;&gt;</code> to a <code>Pin&lt;P&lt;Target = Bar&gt;&gt;</code></li>
+<li>Unpin is an auto trait like Send or Sync, so most types implement it automatically</li>
+<li>Generators and the types of async functions are <code>!Unpin</code></li>
+<li>given a pointer type P, <code>Pin&lt;P&gt;</code> acts like <code>P</code> except that unless <code>P::Target</code> implements <code>Unpin</code>, it is unsafe to mutably dereference <code>Pin&lt;P&gt;</code>. Second, there are two basic invariants unsafe code related to Pin has to maintain:</li>
+</ul>
+</li>
+<li>If you unsafely get an <code>&amp;mut P::Target</code> from a <code>Pin&lt;P&gt;</code>, you must never move <code>P::Target</code>.</li>
+<li>If you can construct a <code>Pin&lt;P&gt;</code>, it must be guaranteed that you&#39;ll never be able to get an unpinned pointer to the data that pointer points to until the destructor runs.<ul>
+<li><em>I am lost here. if a reference is pinned, then the data it points to must not be moved, but in fact we can move the data, but the calling convention is that we shouldn&#39;t, to make sure we will never move the data, we must agree to shadow the original data type, that is, we don&#39;t expose the handle of the data directly, instead, we let the data be handled by a reference. In this way we never have to move the data, this is no magic at all, this is what things should be, moving a reference doesn&#39;t move the data</em></li>
+</ul>
+</li>
+<li><em>then why bother inventing the Pin?</em><ul>
+<li><em>it alerts, when you want to mutate a Pinned data, you are alarmed by the unsafe syntax which reminds you of the danger you are going into</em></li>
+</ul>
+</li>
+</ul>
+</div></details><details id="acffafb3-9d54-416d-919a-a2db1d367711"><summary>Designing futures for Rust</summary><div class="list"><ul>
+<li><a href="(https://aturon.github.io/tech/2016/09/07/futures-design/)">Source</a><ul>
+<li>Design the core Future abstraction to be demand-driven, rather than callback-oriented.</li>
+<li>Provide a task abstraction, similar to a green thread, that drives a future to completion.</li>
+<li>Background: traits in Rust</li>
+</ul>
+</li>
+<li>Clearly, we’ll want futures to be some kind of trait, since there will be many different kinds of “values that aren’t ready yet”<ul>
+<li>False start: the callback (aka completion-based) approach</li>
+</ul>
+</li>
+<li>In the async I/O world, this kind of interface is sometimes referred to as** completion-based**, because <strong>events are signaled on completion of operations</strong>; Windows’s IOCP is based on this model.</li>
+<li>Unfortunately, <strong>this approach nevertheless forces allocation at almost every point of future composition</strong>, and often imposes dynamic dispatch, despite our best efforts to avoid such overhead.</li>
+<li>TL;DR, we were unable to make the “standard” future abstraction provide zero-cost composition of futures, and we know of no “standard” implementation that does so.</li>
+<li><strong>join</strong>:<ul>
+<li>construct f_done and g_done -&gt; both_done -&gt; synchronization</li>
+<li>What worked: the demand-driven (aka readiness-based) approach</li>
+</ul>
+</li>
+<li>an external party must poll the future to drive it to completion</li>
+<li>In the async I/O world, this kind of interface is sometimes referred to as readiness-based, because events are signaled based on “readiness” of operations (e.g. bytes on a socket being ready) followed by an attempt to complete an operation; <strong>Linux’s epoll is based on this model</strong>.</li>
+<li>But now we need some way to connect the signal at the event loop back to continuing to poll the future.<ul>
+<li>A task is a future that is being executed.</li>
+<li>functions that execute futures</li>
+</ul>
+</li>
+<li>The wait method, which simply runs the future as a task pinned to the current thread, blocking that thread until a result is produced and returned.</li>
+<li>The spawn method on a thread pool, which launches a future as an independent task on the pool.<ul>
+<li>if any of the interior futures produced a NotReady result</li>
+</ul>
+</li>
+<li>In synchronous I/O, this is where a thread would block.<ul>
+<li>Tasks provide an equivalent to this model: the task “blocks” by yielding back to its executor, <strong>after installing itself as a callback for the events it’s waiting on</strong>.</li>
+<li>Crucially, though, <strong>the task instance stays fixed for the lifetime of the future</strong> it is executing—so no allocation is needed to create or install this callback.</li>
+<li><strong>Completing the analogy with threads, tasks provide a park/unpark API for “blocking” and wakeup:</strong></li>
+<li><strong>tasks do not require their own stack. In fact, all of the data needed by a task is contained within its future</strong></li>
+<li>the future within a task compiles down to a state machine</li>
+<li>Join:</li>
+</ul>
+</li>
+<li>The two subtasks can then race to wake up the Task, but that’s fine: the unpark method for waking a task is threadsafe, and guarantees that the task will poll its future at least once after any unpark call<ul>
+<li>You may have noticed that poll takes <code>&amp;mut self</code>, <strong>which means that a given future cannot be polled concurrently</strong>—the future has unique access to its contents while polling. The unpark synchronization guarantees it.</li>
+<li>you want some form of cancellation: the ability to tell a future to stop executing because you’re no longer interested in its result.</li>
+</ul>
+</li>
+<li><strong>All you have to do is stop polling the future, instead “dropping” it</strong><ul>
+<li><strong>If you’re familiar with interfaces like epoll, you may have noticed something missing from the park/unpark model: it provides no way for a task to know why it was woken up.</strong></li>
+<li>To deal with this problem, the library offers a kind of “epoll for everyone”: <strong>the ability to associate “unpark events” with a given Task handle.</strong> That is, there may be various handles to the same task floating around, all of which can be used to wake the task up, but each of which carries different unpark events. When woken, the future within the task can inspect these unpark events to determine what happened. See the docs for more detail.</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="170be45d-ff5e-4e87-8369-55822c445a1c"><summary>Lockless Programming Considerations for Xbox 360 and Microsoft Windows</summary><div class="list"><ul>
+<li><a href="(https://docs.microsoft.com/en-au/windows/win32/dxtecharts/lockless-programming?redirectedfrom=MSDN)">Source</a><ul>
+<li>Reordering</li>
+</ul>
+</li>
+<li>Reads and writes do not always happen in the order that you have written them in your code<ul>
+<li>write-release</li>
+</ul>
+</li>
+<li>a thread writes some data and then writes to a flag that tells other threads that the data is ready<ul>
+<li>If the writes are reordered, <strong>other threads may see that the flag is set before they can see the written data.</strong></li>
+<li>read-acquire</li>
+</ul>
+</li>
+<li>a thread reads from a flag and then reads some shared data if the flag says that the thread has acquired access to the shared data<ul>
+<li>If reads are reordered, then <strong>the data may be read from shared storage before the flag, and the values seen might not be up to date.</strong></li>
+</ul>
+</li>
+</ul>
+</div></details><details id="078bcc9a-832e-493e-a1cf-155230cb6f3c"><summary>Advanced Synchronization: Memory Ordering from _IF PARALLEL HARD?_</summary><div class="list"><ul>
+<li>Why hardware misordering?</li>
+<li>main memory cannot keep up with modern CPUs<ul>
+<li>the time required to fetch a single variable from memory <em>can be used to execute hundreds of instructions</em></li>
+<li>CPUs therefore sport increasingly large caches</li>
+</ul>
+</li>
+<li><em>the above is aboutt reading/loading</em></li>
+<li><em>writing/storing</em><ul>
+<li>in cache-coherent systems, if the caches hold multiple copies of a given variable, all the copies of that variable must have the same value</li>
+<li>each store must do something about all copies of the old value<ul>
+<li><em>the process is slow</em></li>
+</ul>
+</li>
+<li>CPUs therefore come equipped with <strong>store buffers</strong><ul>
+<li>when a given CPU Stores to a variable no present in that CPU&#39;s cache, then the new value is instead placed in that CPU&#39;s store buffer</li>
+<li>this causes instructions and memory references to execute out of order</li>
+<li>CPU should <strong>flush</strong> its store buffer into the corresponding cache line</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="733c0d35-72f9-435d-8528-34e9cf40b4c2"><summary>std::memory_order_relaxed atomicity with respect to the same atomic variable</summary><div class="list"><ul>
+<li><a href="(https://stackoverflow.com/questions/48124031/stdmemory-order-relaxed-atomicity-with-respect-to-the-same-atomic-variable)">Source</a><ul>
+<li>a typical shared_ptr implementation</li>
+<li>The following are 2 typical scenario&#39;s whereby ordering constraints on an atomic operation can be omitted (i.e. by using std::memory_order_relaxed):</li>
+</ul>
+</li>
+<li>Memory ordering is not necessary <strong>because there are no dependencies on other operations</strong>, or as a commenter puts it, (..) is not part of an invariant involving other memory locations.<ul>
+<li>A common example is an atomic counter<ul>
+<li>The increment operation (fetch_add) can be relaxed if <strong>the counter represents a value that has no dependency on other operations</strong>.</li>
+<li>A better example is a web server keeping track of the number of incoming requests only for reporting purposes.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Memory ordering is necessary, but there is no need to use ordering constraints <strong>because the required synchronization has already passed</strong><ul>
+<li>The shared_ptr copy/move constructor can only be called while it has a synchronized view of the (reference to the) copied/moved-from instance (or it would be undefined behavior) and as such, no additional ordering is necessary.</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="3a70ef35-f6a3-4101-8b26-48775f116d17"><summary>Chapter 5 The C++ memory model and operations on atomic types, C++ concurrency in Action, 2nd Edition</summary><div class="list"><ul>
+<li>Sequentially consistent ordering</li>
+<li>the behavior of the program is <strong>consistent with a simple sequential view of the world</strong></li>
+<li>this is by far the easist memory ordering to understand, which is why it&#39;s the default: <strong>all threads must see the same order of operatiosn</strong></li>
+<li>if your code has one operation before another in one thread, that ordering must be seen by all other threads</li>
+<li><strong>on a weakly-order machine with processors, it can impose a noticeable performance penalty</strong></li>
+<li>if you&#39;r concerned about the performance implications of using Sequentially consistent ordering, check the documentation for your target processor architectures</li>
+<li><strong>sequential consistency is the most straightforward and intuitive ordering, but it&#39;s also the most expensive memory ordering because it requires global synchronization between all threads</strong></li>
+</ul>
+</div></details><details id="e0708eb4-5ca1-428d-8e76-b6eff5ee42f9"><summary>std::atomic<T>::compare_exchange_strong</summary><div class="list"><ul>
+<li><a href="(https://en.cppreference.com/w/cpp/atomic/atomic/compare_exchange)">Source</a><ul>
+<li>Atomically <strong>compares</strong> the object representation (until C++20)value representation (since C++20) of <strong>*this with that of expected, and if those are bitwise-equal, replaces the former with desired</strong> (performs read-modify-write operation). Otherwise, loads the actual value stored in *this into expected (performs load operation).</li>
+<li>success</li>
+</ul>
+</li>
+<li>the memory synchronization ordering for the read-modify-write operation if the comparison succeeds. All values are permitted.</li>
+<li><em>for example, <code>std::memory_order_release</code> means the current thread will let other threads loading the atomic value loose, it can&#39;t be <code>std::memory_order_acquire</code> because it&#39;s not loading anything</em><ul>
+<li>failure</li>
+</ul>
+</li>
+<li>the memory synchronization ordering for the load operation if the comparison fails.<ul>
+<li><strong>Compare-and-exchange operations are often used as basic building blocks of lockfree data structures</strong></li>
+</ul>
+</li>
+<li><a href="https://stackoverflow.com/a/14011948/19406298">That is, a lock-free program will usually get less done than a corresponding locking program if there is not too much contention (since atomic operations are slow and affect a lot of the rest of the system), but it guarantees to never produce unpredictably large latencies.</a><ul>
+<li>The weak forms (1-2) of the functions are <strong>allowed to fail spuriously</strong>, that is, act as if *this != expected even if they are equal.</li>
+<li>When a weak compare-and-exchange would require a loop and <strong>a strong one would not</strong>, the strong one is preferable <strong>unless the object representation of T may include padding bits, (until C++20) trap bits, or offers multiple object representations for the same value (e.g. floating-point NaN)</strong>.</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="7f482a83-e52d-481d-a669-d52b4e5c39a3"><summary>Atomics - The Rustonomicon</summary><div class="list"><ul>
+<li><a href="(https://doc.rust-lang.org/nomicon/atomics.html)">Source</a><ul>
+<li>Rust pretty blatantly just inherits the memory model for atomics from C++20</li>
+</ul>
+</li>
+<li>Indeed, this model is quite complex and known to have several flaws. Rather, it is a pragmatic concession to the fact that everyone is pretty bad at modeling atomics.</li>
+<li>At very least, we can benefit from existing tooling and research around the C/C++ memory model. (You&#39;ll often see this model referred to as &quot;C/C++11&quot; or just &quot;C11&quot;. <strong>C just copies the C++ memory model</strong>; and C++11 was the first version of the model but it has received some bugfixes since then.)<ul>
+<li>Compiler Reordering</li>
+</ul>
+</li>
+<li><em>the compiler might remove some operation due to optimization, think of volatile</em><ul>
+<li>Hardware Reordering</li>
+</ul>
+</li>
+<li>Each CPU would rather work with its local cache of the data and only go through all the anguish of talking to shared memory only when it doesn&#39;t actually have that memory in cache.</li>
+<li><em>CPU is lazy</em><ul>
+<li><em>but that&#39;s the whole point of the cache</em><ul>
+<li><em>you put a lot of trust in cache, it save you the time of checking the origin of the data</em></li>
+<li><em>but that trust can lead to problems, if the cache hasn&#39;t expired and the origin of the data has changed, then your information about the data is stale</em></li>
+</ul>
+</li>
+<li>Data Accesses</li>
+</ul>
+</li>
+<li>The C++ memory model attempts to bridge the gap by allowing us to talk about the <strong>causality</strong> of our program.<ul>
+<li>this is by establishing <strong>a happens before relationship</strong> between parts of the program and the threads that are running them</li>
+<li>This gives the hardware and compiler room to optimize the program more aggressively where a strict happens-before relationship isn&#39;t established, but <strong>forces them to be more careful where one is established</strong></li>
+<li>The way we communicate these relationships are through <strong>data accesses and atomic accesses</strong>.</li>
+<li>Data accesses<ul>
+<li>fundamentally unsynchronized and compilers are free to aggressively optimize them.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Atomic accesses<ul>
+<li>are how we tell the hardware and compiler** that our program is multi-threaded**</li>
+<li>Sequentially Consistent is the most powerful of all</li>
+<li>Acquire-Release<ul>
+<li>Acquire and Release are largely intended to be paired.<ul>
+<li><strong>they&#39;re perfectly suited for acquiring and releasing locks, and ensuring that critical sections don&#39;t overlap.</strong></li>
+<li>Intuitively, <strong>an acquire access ensures that every access after it stays after it</strong></li>
+<li><strong>a release access ensures that every access before it stays before it.</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="d9727755-3ab8-4502-821c-64ffc0bd54c5"><summary>Zero-cost futures in Rust</summary><div class="list"><ul>
+<li><a href="(https://aturon.github.io/tech/2016/08/11/futures/)">Source</a><ul>
+<li>We’ve wanted something higher level, with better <strong>ergonomics</strong>, but also better composability, supporting an ecosystem of asynchronous abstractions that all work together.</li>
+<li>A major tenet of Rust is the ability to build <strong>zero-cost abstractions</strong></li>
+</ul>
+</li>
+<li>ideally, an abstraction like futures should compile down to something equivalent to the state-machine-and-callback-juggling code we’re writing today (<strong>with no additional runtime overhead</strong>).<ul>
+<li>Early on, Rust had a “green threading” model</li>
+</ul>
+</li>
+<li>not unlike Go’s.</li>
+<li>You could spin up a large number of lightweight tasks, which were then scheduled onto real OS threads (sometimes called “M:N threading”).</li>
+<li>The problem is that green threads were at odds with Rust’s ambitions to be a true C replacement, with no imposed runtime system or FFI costs</li>
+<li>You can read more <a href="https://github.com/aturon/rfcs/blob/remove-runtime/active/0000-remove-runtime.md">in the RFC that removed green threading</a>.<ul>
+<li><strong>The problem is that there’s a lot of painful work tracking all of the I/O events</strong> you’re interested in, and dispatching those to the right callbacks (not to mention programming in a purely callback-driven way). <strong>That’s one of the key problems that futures solve.</strong></li>
+<li>So what is a future?</li>
+</ul>
+</li>
+<li>In essence, a future represents a value that might not be ready yet</li>
+</ul>
+</div></details><details id="4db9fde9-2b92-4e54-ba61-033a4b7d1e06"><summary>Function std::thread::park</summary><div class="list"><ul>
+<li><a href="(https://doc.rust-lang.org/std/thread/fn.park.html)">Source</a><ul>
+<li><code>pub fn park()</code></li>
+<li>Blocks unless or until the current thread’s token is made available.</li>
+<li>In other words, each Thread acts a bit like a spinlock that can be locked and unlocked using park and unpark.</li>
+<li>park blocks the current thread, which <strong>can then be resumed from another thread by calling the unpark method on the blocked thread’s handle</strong>.</li>
+</ul>
+</li>
+<li><code>parked_thread.thread().unpark();</code><ul>
+<li>The API is typically used by acquiring a handle to the current thread, placing that handle in a shared data structure so that other threads can find it, and then parking in a loop. When some desired condition is met, another thread calls unpark on the handle.</li>
+</ul>
+</li>
+<li>The motivation for this design is twofold:<ul>
+<li>It avoids the need to allocate mutexes and condvars when building new synchronization primitives; the threads already provide basic blocking/signaling.</li>
+<li>It can be implemented very efficiently on many platforms.</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="50c3aa9d-8b18-4ab1-afa8-29d7d4fa30e0"><summary>Borrowing in async code</summary><div class="list"><ul>
+<li><a href="(https://aturon.github.io/tech/2018/04/24/async-borrowing/)">Source</a><ul>
+<li>In particular, async/await is not just about avoiding <strong>combinators</strong>; it completely changes the game for borrowing</li>
+<li>example: <code>cursor += socket.read(&amp;mut buf[cursor..])?;</code></li>
+</ul>
+</li>
+<li>repeatedly take mutable borrows within a loop<ul>
+<li>async version</li>
+</ul>
+</li>
+<li><code>fn read&lt;T: AsMut&lt;[u8]&gt;&gt;(self, buf: T) -&gt; impl Future&lt;Item = (Self, T, usize), Error = (Self, T, io::Error)&gt;</code><ul>
+<li><em>there is no references</em></li>
+<li><em>you have to move data in and move data out, too bad?</em></li>
+</ul>
+</li>
+<li>why not <code>fn read&lt;&#39;a&gt;(&amp;&#39;a mut self, buf: &amp;&#39;a mut [u8]) -&gt; impl Future&lt;Item = usize, Error = io::Error&gt; + &#39;a</code> ?<ul>
+<li><em>because this is theoretically fine but the Rust team hadn&#39;t implement that yet</em></li>
+<li>This is where the async/await plan comes in: you can await a future with borrowed data, while still being &#39;static overall!. This is what it means to support “borrowing across yield points”, as explained in @withoutboats’s <a href="https://boats.gitlab.io/blog/post/2018-01-25-async-i-self-referential-structs/">post</a>.</li>
+<li><em>if you want the reference to be static, you must place it outside all scopes</em></li>
+<li><em>this article was critizing the fact async code can&#39;t use references as synchronous code does, it&#39;s all about semantics, we have it today, but back there, there is no such thing</em></li>
+<li><em>think, why use self-referential struct?</em></li>
+</ul>
+</li>
+<li><em>because it happens, it&#39;s legal to use references, even if they refer to their siblings, or itself</em></li>
+<li><em>if such cases exist, the language must handle it, by inventing lots of semantics</em></li>
+<li><em>another thing, why move the future? because future will be sent between threads?</em><ul>
+<li><em>the thing is, if you send futures by reference, or place them in somewhere like .bss or .data, in another word, make it static, then there should be no worries</em></li>
+</ul>
+</li>
+<li><em><a href="https://rust-lang.github.io/async-book/04_pinning/01_chapter.html">the async book</a> is crap</em><ul>
+<li>its rationale:<ul>
+<li>However, if AsyncFuture is moved, the location of x will move as well, invalidating the pointer stored in read_into_buf_fut.buf</li>
+</ul>
+</li>
+<li><em>check the book again</em><ul>
+<li><code>impl Future for TimerFuture</code></li>
+<li><code>let task = Arc::new(Task { future: Mutex::new(Some(future)), task_sender: self.task_sender.clone(),});</code></li>
+<li><code>self.task_sender.send(task)</code></li>
+<li><em>the task is in the heap, no one wants to move somthing in a heap, only something that contains a heap data gets moved</em></li>
+<li>in <code>Executor::run</code>:<ul>
+<li><code>let mut future_slot = task.future.lock().unwrap();</code><ul>
+<li><code>let Some(mut future) = future_slot.take()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>in Spawner::spawn<ul>
+<li><code>fn spawn(&amp;self, future: impl Future&lt;Output = ()&gt; + &#39;static + Send)</code></li>
+<li>why ``static`?<ul>
+<li><em>the first came to my mind is that if <code>Future</code> is a closure, a closure is always `static because it need somewhere to store the variable it captures, unless the closure is only used in a scope(I don&#39;t know if the data part of a closure can fit in behind %rbp), but that is not the case for Future</em></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="01d9662b-630b-49d4-a153-8eea1934e76a"><summary>The Async Book</summary><div class="list"><ul>
+<li><a href="(https://rust-lang.github.io/async-book/01_getting_started/02_why_async.html)">Source</a><ul>
+<li>Async vs other concurrency models</li>
+</ul>
+</li>
+<li>OS threads<ul>
+<li>easy to express concurrency</li>
+<li>synchronization between threads can be difficult</li>
+<li>performance overhead is large</li>
+<li>thread pools can mitigrate some of the cost but not enough to support massive IO-bound workloads</li>
+</ul>
+</li>
+<li>Event-driven programming:<ul>
+<li><strong>in conjunction will callbacks, can be very performance</strong></li>
+<li>result in a verbose, &quot;non-linear&quot; control flow</li>
+</ul>
+</li>
+<li>coroutines<ul>
+<li><strong>like threads</strong></li>
+<li>drawback: abstract away low-level details that are important for systems programming and custom runtime implementors</li>
+</ul>
+</li>
+<li>actor model<ul>
+<li>can be efficiently implemented</li>
+<li>leaves practical issues unanswered: such as flow control and retry logic</li>
+<li>Async vs threads in Rust</li>
+</ul>
+</li>
+<li>OS threads are suitable for a small number of tasks, since threads come with CPU and memory overhead.</li>
+<li>Async provides <strong>significantly reduced CPU and memory overhead</strong>, especially for workloads with a large amount of IO-bound tasks, such as <strong>servers and databases</strong></li>
+<li>On a last note, asynchronous programming is not better than threads, but different. <strong>If you don&#39;t need async for performance reasons, threads can often be the simpler alternative.</strong><ul>
+<li>In short, async Rust is more difficult to use and can result in a higher maintenance burden than synchronous Rust, but gives you best-in-class performance in return.</li>
+<li>most of the async ecosystem assumes a multi-threaded runtime. This makes it difficult to enjoy the theoretical performance benefits of <strong>single-threaded async applications</strong>, namely cheaper synchronization.</li>
+<li><strong>async transforms a block of code into a state machine that implements a trait called Future</strong></li>
+<li><strong>blocked Futures will yield control of the thread, allowing other Futures to run.</strong></li>
+<li><em><code>futures::executor::block_on</code></em></li>
+</ul>
+</li>
+<li><code>block_on(future)</code><ul>
+<li>Under the hood</li>
+</ul>
+</li>
+<li>A simplified version:<ul>
+<li>Future is a trait<ul>
+<li>associate type: <code>type Output</code></li>
+<li><code>poll</code> function: <code>fn poll(&amp;mut self, wake: fn()) -&gt; Poll&lt;Self::output&gt;</code><ul>
+<li><code>Poll</code> is a enum type<ul>
+<li><code>Ready</code></li>
+<li><code>Pending</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>futures can be <strong>advanced</strong> by calling <code>poll</code> function<ul>
+<li>called by <code>executors</code> other than itself</li>
+<li>if the future completes, it returns <code>Poll::Ready(result)</code></li>
+<li>else returns <code>Poll::Pending</code>, and arranges for the <code>wake()</code> function to be called<ul>
+<li><em>you can get way from not calling <code>wake()</code>, but if you really want to use <code>Future</code> then you should abide by the <code>Future</code> contract</em></li>
+<li>when <code>wake()</code> is called, the executor will <code>poll</code> the future again<ul>
+<li><em>this is part of the contract, don&#39;t bargin</em></li>
+<li><em>I suspect that the <code>wake()</code> is called by a character called reactor, but the book doesn&#39;t say so</em></li>
+<li><em>wake() is invented as a means of asynchronous notification, without that, the executor would have to constantly poll the future, which would burn the CPU</em></li>
+<li><em>later, when you see the executor is getting tasks from a queue, you can trust that the implementation is not based on constantly checking on the queue, but based on more passive methods, for example, the executor can wait on a conditional variable, if the queue has obtained a task from the reactors, the schedule will wake up the executor</em></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>&amp;mut context&lt;&#39;_&gt;</code><ul>
+<li>in <code>SimpleFuture</code>, <code>fn()</code> is just a function pointer, it can&#39;t store any data about which <code>Future</code> called <code>wake</code><ul>
+<li><em>yeah, we need a context to wrap a lot of parameters to call a waker function</em></li>
+</ul>
+</li>
+<li>in a real world scenario, a complex application like a web server may have thousands of different connections whose wakeups should all be managed separately<ul>
+<li><em>for example, the executor finds the future it&#39;s currently handling is a AFuture, then it installs an AWaker to it, and a BWaker to a BFuture</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Task Wakeups with Waker<ul>
+<li><strong>It&#39;s common that futures aren&#39;t able to complete the first time they are polled</strong></li>
+<li>Applied: Build a Timer<ul>
+<li>Our future needs a way for the thread to communicate that the timer has elapsed and the future should complete.<ul>
+<li><em>the timer is sleeping alone in a thread, when it wakes up from the sleep, it should find a way to notify the future</em><ul>
+<li>by a shared state<ul>
+<li>therefore the mechanism needs <code>Arc&lt;Mutex&lt;SharedState&gt;&gt;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><em>Waker is a higher level of <code>wake()</code> function, think about closure, which basically is a struct with a function</em><ul>
+<li><em>passing a Wake is equivalent to passing a wake() function</em></li>
+</ul>
+</li>
+<li><strong>The easiest way to create a new Waker is by implementing the ArcWake trait and then using the waker_ref or .into_waker() functions to turn an <code>Arc&lt;impl ArcWake&gt;</code> into a Waker</strong></li>
+</ul>
+</li>
+<li>Executors<ul>
+<li><em>the only thing I want to know is why it&#39;s executors that install the waker on a task?</em><ul>
+<li><em>the goddamnded book doesn&#39;t say</em></li>
+<li>It&#39;s tempting to do this once rather than repeatedly cloning the waker each time. However, the <code>TimerFuture</code> can move between tasks on the executor, which could cause a <strong>stale waker pointing to the wrong task</strong>, preventing <code>TimerFuture</code> from waking up correctly.<ul>
+<li><em>first, we don&#39;t know waker is pointing to a task</em></li>
+<li><em>secondly, the task itself is a waker, that said the waker has something to refer to as paramters, in the case of the book, the parameter is <code>self</code></em></li>
+<li><em>ok, then, tell me why waker can pointing to the wrong task?</em></li>
+<li><em>let</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Rust&#39;s Futures are lazy: they won&#39;t do anything unless actively driven to completion.</strong></li>
+<li>async/.await</li>
+</ul>
+</li>
+<li>async/.await are special pieces of Rust syntax that make it possible to <strong>yield control of the current thread</strong> rather than blocking, allowing other code to make progress while waiting on an operation to complete.</li>
+<li>lifetimes<ul>
+<li>async fns which take references or other non-&#39;static arguments return a Future which is bounded by the lifetime of the arguments:</li>
+</ul>
+</li>
+<li>Note that, when using a multithreaded Future executor, <strong>a Future may move between threads</strong>, so any variables used in async bodies must be able to travel between threads, as any .await can potentially result in a switch to a new thread.</li>
+</ul>
+</div></details><details id="8f9c7c81-c9a1-420b-9861-c647378d579c"><summary>Fat Pointers in Rust</summary><div class="list"><ul>
+<li>The 16 byte size pointers are called &quot;fat pointers&quot; since they <strong>carry extra information</strong></li>
+<li><code>&amp;[i32]</code><ul>
+<li>The first 8 bytes is the actual pointer</li>
+<li>the second 8 bytes is the length of the slice</li>
+</ul>
+</li>
+<li><code>dyn SomeTRait</code><ul>
+<li>the first 8 bytes points to the data for the trait object</li>
+<li>the second 8 bytes points to the vtable for the trait object</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="c879349f-239b-47aa-a31f-17f61e3c5431"><summary>Stars and Snowflakes: Schemas for Analytics</summary><div class="list"><ul>
+<li>Fact table</li>
+<li>each row represents an event that occurred at a particular time<ul>
+<li>other columns in the fact table are foreign key references to other table, called dimension tables</li>
+<li>the name star scheme comes from the fact that when the table relationships are visualized, the fact table is in the middle, surrounded by its dimension tables, the connection to these tables are like the rays of a star</li>
+<li>a variation of this template is known as the Snowflake schema, where dimensions are further broken down into subdimensions.</li>
+<li>star schemas are often preferred because they are simpler for analysts to work with.</li>
+<li>Column-Oriented Storage</li>
+</ul>
+</li>
+<li>reason:<ul>
+<li>although fact tables are often over 100 columns wide, a typical data warehouse query only accesses 4 or 5 of them at one time</li>
+</ul>
+</li>
+<li>idea:<ul>
+<li>don&#39;t store all the values from one row together, but store all the values from each column together instead</li>
+</ul>
+</li>
+<li>column compression<ul>
+<li>they often look quite repetitive, which is a good sign for compression</li>
+<li>one technique that is particularly effective in data warehousees is bitmap encoding<ul>
+<li>often, the number of distinct values in a column is small compared to the number of rows.(for example, a country column may have approxiamately 200 distinct values)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>sorted order in column storage<ul>
+<li>we can choose to impose an order, and use that as an indexing mechanism</li>
+<li>it wouldn&#39;t make sense to sort each column independently</li>
+<li>the administrator of the database can choose the columns by which the table should be sorted</li>
+<li>a second column can detemine the sort order of any rows that have the same value in the first column</li>
+</ul>
+</li>
+<li>writing to column-oriented storage<ul>
+<li>solution: LSM-trees<ul>
+<li>all writes first go to an in-memory store, where they are added to a sorted structure and prepared for writing to disk</li>
+<li>when enough writes have accumulated, they are merged with the column files on disk and written to new files in bulk</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="1c3b644b-a465-46cf-9258-756783bef10c"><summary>Extern crate declarations</summary><div class="list"><ul>
+<li><a href="(https://doc.rust-lang.org/reference/items/extern-crates.html)">Source</a><ul>
+<li><strong>An extern crate declaration specifies a dependency on an external crate</strong>.</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="7272efd9-3c59-4167-80b7-2ee970abb7ba"><summary>ETHEREUM DEVELOPMENT DOCUMENTATION</summary><div class="list"><ul>
+<li><a href="(https://ethereum.org/en/developers/docs/)">Source</a><ul>
+<li>INTRO TO ETHEREUM</li>
+</ul>
+</li>
+<li>WHAT IS A BLOCKCHAIN?<ul>
+<li>&quot;Block&quot; refers to data and state being stored in consecutive groups known as &quot;blocks&quot;</li>
+<li>&quot;Chain&quot; refers to the fact that each block cryptographically references its parent.</li>
+<li>Every computer in the network must agree upon each new block and the chain as a whole. <strong>These computers are known as &quot;nodes&quot;.</strong></li>
+<li><strong>consensus mechanism</strong><ul>
+<li>Nodes ensure everyone interacting with the blockchain <strong>has the same data</strong></li>
+<li>Ethereum currently uses a <strong>proof-of-work</strong> consensus mechanism.</li>
+<li>This means that <strong>anyone who wants to add new blocks to the chain must solve a difficult puzzle that requires a lot of computing power.</strong><ul>
+<li>Doing this is known as <strong>mining</strong></li>
+<li>successfully adding a block is rewarded in ETH.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>WHAT IS ETHEREUM?</li>
+</ul>
+</li>
+<li><strong>In the Ethereum universe, there is a single, canonical computer (called the Ethereum Virtual Machine, or EVM) whose state everyone on the Ethereum network agrees on. Everyone who participates in the Ethereum network (every Ethereum node) keeps a copy of the state of this computer.</strong></li>
+<li>Additionally, any participant can broadcast a request for this computer to perform arbitrary computation. <strong>Whenever such a request is broadcast, other participants on the network verify, validate, and carry out (&quot;execute&quot;) the computation.</strong> This execution causes a state change in the EVM, which is committed and propagated throughout the entire network.<ul>
+<li><em>it is not the VM that carries out the computation, but the computation will change the state of the VM</em></li>
+<li>WHAT IS ETHER?</li>
+</ul>
+</li>
+<li>Ether (ETH) is the native cryptocurrency of Ethereum. <strong>The purpose of ether is to allow for a market for computation</strong></li>
+</ul>
+</div></details><details id="d76171c9-0fbb-4814-9327-449929f9535c"><summary>Time-of-check to time-of-use</summary><div class="list"><ul>
+<li><a href="(https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use)">Source</a><ul>
+<li>an attacker can exploit the race condition between the access and open to trick the setuid victim into overwriting an entry in the system password database.</li>
+<li>the fundamental challenge is ensuring that the file system cannot be changed between two system calls</li>
+</ul>
+</li>
+<li>In 2004, an impossibility result was published, showing that <strong>there was no portable, deterministic technique for avoiding TOCTOU race conditions</strong>.<ul>
+<li>An alternative solution proposed in the research community is for UNIX systems to adopt transactions in the file system or the OS kernel.</li>
+<li>For setuid binaries a possible solution is to use the seteuid() system call to change the effective user and then perform the open()</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="2873eb4c-9a21-4a44-9829-4f3526819cf6"><summary>Intel® C++ Compiler Classic Developer Guide and Reference</summary><div class="list"><ul>
+<li><a href="(https://www.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top/compiler-reference/libraries/intel-c-class-libraries/capabilities-of-c-simd-classes.html)">Source</a><ul>
+<li>Intrinsic function</li>
+</ul>
+</li>
+<li>belonging to the essential nature or constitution of a thing</li>
+<li>an intrinsic function is a function available for use in a given programming language <strong>whose implementation is handled specially by the compiler</strong><ul>
+<li>The SIMD C++ classes contain vertical operator support for most arithmetic operations, including shifting and saturation.</li>
+<li>Computation operations include: +, -, *, /, reciprocal ( rcp and rcp_nr ), square root (sqrt), and reciprocal square root ( rsqrt and rsqrt_nr ).</li>
+</ul>
+</li>
+<li>Operations rcp_nr and rsqrt_nr use software refining techniques to enhance the accuracy of the approximations, with a minimal impact on performance.<ul>
+<li>Horizontal Data Support</li>
+</ul>
+</li>
+<li>The term &quot;horizontal&quot; indicates computation across the elements of one vector, as opposed to the <strong>vertical, element-by-element operations on two different vectors</strong>.</li>
+<li><code>F32vec4 fveca, fvecb, fvecd;</code></li>
+<li><em>special type keyword <code>F32vec4</code>, support loading 4 integers into a vector in a time</em><ul>
+<li>Branch Compression/Elimination</li>
+</ul>
+</li>
+<li>Branching in SIMD architectures can be complicated and expensive<ul>
+<li><em>if...else..., conditionals, jumps</em></li>
+</ul>
+</li>
+<li><em>it says iterating through an array with an increasing index i is in fact independent of i, instead we should use special functions called intrinsic functions, within which optimization has been made to reduce unnecessary branching</em><ul>
+<li>Caching Hints</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="803227b7-83e8-4015-b0cd-418a7fe09fc6"><summary>Getting Started with the LLVM System</summary><div class="list"><ul>
+<li><a href="(https://llvm.org/docs/GettingStarted.html)">Source</a><ul>
+<li>C-like languages use the Clang front end. This component compiles C, C++, Objective C, and Objective C++ code into LLVM bitcode – and from there into object files, using LLVM.</li>
+<li>LLVM is written using the subset of C++ documented in <a href="https://llvm.org/docs/CodingStandards.html">coding standards</a>.</li>
+</ul>
+</li>
+<li>Do not use RTTI or Exceptions</li>
+<li>Do not use Static Constructors<ul>
+<li><a href="https://stackoverflow.com/a/5804024/19406298">C++ doesn’t have static constructors but you can emulate them using a static instance of a nested class.</a></li>
+</ul>
+</li>
+<li>Do not use Braced Initializer Lists to Call a Constructor</li>
+<li>Use auto Type Deduction to Make Code More Readable</li>
+<li>Beware unnecessary copies with auto</li>
+<li>Beware of non-determinism due to ordering of pointers</li>
+<li>Beware of non-deterministic sorting order of equal elements</li>
+</ul>
+</div></details><details id="00b4381e-d3ef-4fc1-8cee-7538075930dc"><summary>Yes, I created a bcc tutorial, which is a good starting point for beginners to eBPF tracing</summary><div class="list"><ul>
+<li><a href="(https://github.com/iovisor/bcc/blob/master/docs/tutorial.md)">Source</a></li>
+</ul>
+</div></details><details id="913705a7-c5bf-4bee-8eb2-453afcb3f2d1"><summary>Fixing Challenging Words in Programming</summary><div class="list"><ul>
+<li><a href="(https://sebastiancarlos.medium.com/fixing-challenging-words-in-programming-50c981f208b7)">Source</a><ul>
+<li>webshit: derogatorily refer to web developers</li>
+<li>master</li>
+</ul>
+</li>
+<li><em>overreacting</em><ul>
+<li>Code monkey, code ape</li>
+<li>boolean</li>
+</ul>
+</li>
+<li>However, the word “boolean” is derived from the Latin “bool,” meaning “bull,” which is an offensive term.<ul>
+<li>Null</li>
+<li>Script kiddie</li>
+<li>Legacy code: use ancestor code instead</li>
+<li>Software engineer -&gt; software developer</li>
+<li>free software -&gt; libre software</li>
+<li>C# -&gt; 277.183Hz</li>
+<li>Bug -&gt; Oh shit, who code this?</li>
+<li><em>Seriously, we don&#39;t cares about that, our culture has its own political correctness, which already fucks us hard so there is no room in our nerve system for another one</em></li>
+<li>reading some other things instead</li>
+</ul>
+</li>
+<li><a href="https://medium.com/swlh/naming-conventions-101-for-developers-8997bb96fd60">https://medium.com/swlh/naming-conventions-101-for-developers-8997bb96fd60</a></li>
+</ul>
+</div></details><details id="73bcf3f6-5032-48a1-b969-5c6261fda524"><summary>Trait std::error::Error</summary><div class="list"><ul>
+<li><a href="(https://doc.rust-lang.org/std/error/trait.Error.html)">Source</a><ul>
+<li>Errors <strong>must describe themselves through the <code>Display</code> and <code>Debug</code> traits</strong></li>
+<li>Error messages are typically concise <strong>lowercase</strong> sentences without trailing punctuation</li>
+<li><code>Error::source()</code> is generally used when errors cross <strong>“abstraction boundaries”</strong></li>
+</ul>
+</li>
+<li>If one module must report an error that is caused by an error from a lower-level module, it can allow accessing that error via <code>Error::source()</code><ul>
+<li><a href="https://stevedonovan.github.io/rust-gentle-intro/6-error-handling.html">https://stevedonovan.github.io/rust-gentle-intro/6-error-handling.html</a></li>
+</ul>
+</li>
+</ul>
+</div></details><details id="6e8850ec-e740-427c-9441-77539532c149"><summary>BNF Grammars for SQL-92, SQL-99 and SQL-2003</summary><div class="list"><ul>
+<li><a href="(https://ronsavage.github.io/SQL/)">Source</a><ul>
+<li><em>Each time you want to write a parser, go search the BNFs, learn their naming convention, don&#39;t invent your own</em></li>
+</ul>
+</li>
+</ul>
+</div></details><details id="e9b224b3-18dc-4e57-b0d8-da616bb69d78"><summary>How to perform fuzz testing for software written in Rust</summary><div class="list"><ul>
+<li><a href="(https://rust-fuzz.github.io/book/introduction.html)">Source</a><ul>
+<li>cargo-fuzz is the recommended tool for fuzz testing Rust code.</li>
+<li>cargo-fuzz is itself not a fuzzer, but a tool to invoke a fuzzer. Currently, the only fuzzer it supports is <strong>libFuzzer</strong> (through the libfuzzer-sys crate), but it could be extended to support other fuzzers in the future.</li>
+<li>libFuzzer needs LLVM sanitizer support, so this only works on x86-64 Linux, x86-64 macOS and Apple-Silicon (aarch64) macOS for now.</li>
+<li>libFuzzer is going to repeatedly call the body of <code>fuzz_target!()</code> with a slice of pseudo-random bytes, until your program hits an error condition (segfault, panic, etc). Write your <code>fuzz_target!()</code> body to hit the entry point you need.</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="674857a0-ea21-45a9-ade6-c5cc6853224f"><summary>Error Handling - The Rust Programming Language</summary><div class="list"><ul>
+<li><a href="(https://doc.rust-lang.org/book/ch09-00-error-handling.html)">Source</a><ul>
+<li>Rust groups errors into two major categories: recoverable and unrecoverable errors.</li>
+</ul>
+</li>
+<li>recoverable error<ul>
+<li>a file not found error</li>
+<li><code>Result&lt;T, E&gt;</code></li>
+</ul>
+</li>
+<li>Unrecoverable errors<ul>
+<li>trying to access a location beyond the end of an array</li>
+<li><code>panic!</code></li>
+<li>Most languages don’t distinguish between these two kinds of errors and handle both in the same way, using mechanisms such as exceptions</li>
+</ul>
+</li>
+<li><strong>Rust doesn’t have exceptions</strong><ul>
+<li>Unwinding the Stack or Aborting in Response to a Panic</li>
+</ul>
+</li>
+<li><em>unwinding the stack and aborting are <strong>not</strong> the same thing</em></li>
+<li>By default, when a panic occurs, the program starts unwinding</li>
+<li>Rust, allows you to choose the alternative of <strong>immediately aborting</strong><ul>
+<li>If in your project you need to <strong>make the resulting binary as small as possible</strong>, you can switch from unwinding to aborting upon a panic by adding <code>panic = &#39;abort&#39;</code></li>
+<li><strong>crash and burn</strong></li>
+</ul>
+</li>
+<li>try getting a backtrace by setting the <code>RUST_BACKTRACE</code>: <code>RUST_BACKTRACE=1 cargo run</code></li>
+<li>shortcuts<ul>
+<li><code>unwrap</code></li>
+<li><code>expect</code></li>
+<li>recoverable error</li>
+</ul>
+</li>
+<li>Matching on Different Errors:<ul>
+<li><code>error.kind()</code><ul>
+<li><code>std::io::ErrorKind</code></li>
+</ul>
+</li>
+<li><em>match is not idiomatic</em><ul>
+<li><code>unwrap_or_else</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>wording: an <code>Err</code> value that holds an instance of <code>io::Error</code></li>
+<li>This pattern of propagating errors is so common in Rust that Rust provides the question mark operator <code>?</code> to make this easier<ul>
+<li>eliminates a lot of <strong>boilerplate</strong> and makes this function’s implementation simpler</li>
+<li><strong>Where The <code>?</code> Operator Can Be Used</strong><ul>
+<li>only be used in functions <strong>whose return type is compatible</strong> with the value the ? is used on</li>
+<li><code>FromResidual</code></li>
+<li><code>?</code> on <code>Option</code> returns <code>None</code> if it is <code>None</code></li>
+<li>The ? operator won’t automatically convert a Result to an Option or vice versa</li>
+<li>Cases in Which You Have More Information Than the Compiler</li>
+</ul>
+</li>
+<li><strong>The <code>Box&lt;dyn Error&gt;</code> type is a trait object</strong><ul>
+<li>We create a trait object by specifying some sort of pointer, such as a <code>&amp;</code> reference or a <code>Box&lt;T&gt;</code> smart pointer, then the <code>dyn</code> keyword, and then specifying the relevant trait.</li>
+<li><strong>trait objects must use a pointer</strong><ul>
+<li><a href="https://doc.rust-lang.org/book/ch19-04-advanced-types.html#dynamically-sized-types-and-the-sized-trait">to use traits as trait objects, we must put them behind a pointer, such as <code>&amp;dyn Trait</code> or <code>Box&lt;dyn Trait&gt;</code> (<code>Rc&lt;dyn Trait&gt;</code> would work too).</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>However, having lots of error checks in all of your functions would be verbose and annoying. Fortunately, <strong>you can use Rust’s type system (and thus the type checking done by the compiler) to do many of the checks for you.</strong><ul>
+<li><strong>type checking</strong></li>
+</ul>
+</li>
+</ul>
+</div></details><details id="e3de2208-ebd5-4c81-a375-6915249c22c1"><summary>A Fast Address Sanity Checker</summary><div class="list"><ul>
+<li><a href="(https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/37752.pdf)">Source</a><ul>
+<li>It employs a <strong>specialized memory allocator</strong> and code instrumentation that is simple enough to be implemented in any compiler, binary translation system, or even in hardware</li>
+<li>AddressSanitizer consists of two parts: an instrumentation module and a run-time library</li>
+</ul>
+</li>
+<li>The instrumentation module is based on the LLVM [4] compiler infrastructure<ul>
+<li>to detect overflows and underflows.</li>
+</ul>
+</li>
+<li>The run-time library replaces malloc, free and related functions<ul>
+<li><a href="https://en.wikipedia.org/wiki/Shadow_memory">Shadow Memory?</a></li>
+</ul>
+</li>
+<li>In computing, shadow memory is a technique used to track and store information on computer memory used by a program during its execution.</li>
+<li>The technique is utilized by memory-error checkers that can store information on which parts of memory have been allocated to the program being checked</li>
+<li>Use of shadow memory is however not limited to memory-error checkers, as what information is stored in these shadow bytes is not fixed. It is for instance used by <strong>ThreadSanitizer</strong>, a data race detector.<ul>
+<li>AddressSanitizer Algorithm</li>
+</ul>
+</li>
+<li><strong>use shadow memory to record whether each byte of application memory is safe to access</strong>, and use instrumentation to check the shadow memory on each application load or store</li>
+<li><em>has a detailed description of Shadow Memory</em><ul>
+<li><code>malloc</code> -&gt; aligned -&gt; addressability:<ul>
+<li>The memory addresses returned by the malloc function are typically aligned to at least 8 bytes.</li>
+<li>the first k (0 ≤ k ≤ 8) bytes are addressable and the remaining 8−k bytes are not.<ul>
+<li><em>IMHO: if the program accesses the unaddressable address, it is misbehaving</em></li>
+</ul>
+</li>
+<li>giving an normal address <code>Mem</code>, its shadow address is computed as <code>Mem &gt;&gt; 3 + some_hardcoded_offset</code></li>
+</ul>
+</li>
+<li>Applying the shadow mapping to addresses in the shadow region gives us addresses in the Bad region, which is marked inaccessible via page protection</li>
+<li><em>IMHO: this is pure interposition</em></li>
+</ul>
+</li>
+<li>Instrumentation</li>
+<li>Run-time library<ul>
+<li>The malloc and free functions are replaced with a specialized implementation</li>
+<li>The free function poisons the entire memory region and puts it into quarantine, such that this region will not be allocated by malloc any time soon</li>
+</ul>
+</li>
+<li>Poisoned redzones<ul>
+<li><em>Something like honeypot, sanity checker put a lot of shadow memory around a object</em></li>
+<li><em>instead of saying honey, they say poison</em></li>
+</ul>
+</li>
+<li><em>I don&#39;t understand any of these</em><ul>
+<li><em>Finally there are example at the end of the paper</em></li>
+</ul>
+</li>
+<li>the code of <code>*a = 0x1234</code></li>
+<li><em>the checker must check if the access is valid, first it compares %rcx(which is usually the 4th argument, but in this case, it is not, anyway if it finds the %rcx is not zero, it throws(aka, jumps to an error handler)</em><ul>
+<li><em>turns out it&#39;s developed by Google</em></li>
+</ul>
+</li>
+<li><a href="https://github.com/google/sanitizers/wiki/AddressSanitizerAlgorithm">https://github.com/google/sanitizers/wiki/AddressSanitizerAlgorithm</a><ul>
+<li><em>much more readable than the paper</em></li>
+<li><a href="https://docs.microsoft.com/en-us/cpp/sanitizers/asan-shadow-bytes?view=msvc-170">https://docs.microsoft.com/en-us/cpp/sanitizers/asan-shadow-bytes?view=msvc-170</a></li>
+<li><a href="https://suelan.github.io/2020/08/18/20200817-address-sanitizer/">https://suelan.github.io/2020/08/18/20200817-address-sanitizer/</a></li>
+</ul>
+</li>
+</ul>
+</div></details><details id="b7c549be-2bdb-4dba-826b-967ce0ca8546"><summary>Why Study Functional Programming?</summary><div class="list"><ul>
+<li><a href="(https://acm.wustl.edu/functional/whyfp.php)">Source</a><ul>
+<li>it represents programs and algorithms through distinct forms of abstraction and gives you a new toolset with which to solve programming problems.</li>
+<li>Scheme: well articulated Lisp</li>
+</ul>
+</li>
+<li>an excellent place to start is the book: Structure and Interpretation of Computer Programs</li>
+<li>recursion (vs. iteration)</li>
+<li>bottom-up design</li>
+<li>first-class functions</li>
+<li>lambda functions</li>
+<li>closures</li>
+<li><strong>continuations</strong></li>
+<li><strong>macros</strong><ul>
+<li>Common Lisp</li>
+</ul>
+</li>
+<li>The downside is that it renders the language much less &quot;functional&quot;<ul>
+<li>Haskell: purity, not just for the celibate!</li>
+</ul>
+</li>
+<li>represents another major paradigm within functional programming.</li>
+<li>Haskell is statically typed in the style of ML</li>
+<li>Learning basic Haskell shouldn&#39;t be too tricky, but proficiency will require a working knowledge of advanced topics (things like the lambda calculus, <strong>combinators</strong>, and category theory). Hence, studying Haskell requires patience and motivation.</li>
+<li>unique components, like <strong>monads and type-classes</strong></li>
+</ul>
+</div></details><details id="9189dc90-7885-4a40-ba27-fc01c6a91afc"><summary>How to escape single quotes within single quoted strings</summary><div class="list"><ul>
+<li><a href="(https://stackoverflow.com/questions/1250079/how-to-escape-single-quotes-within-single-quoted-strings)">Source</a><ul>
+<li>I contend that &#39;&#39;&#39; is vastly more readable in most contexts than &#39;&quot;&#39;&quot;&#39;</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="12ca72b5-311f-4cf2-a6ab-a530466fcd28"><summary>Orphan Rule in Rust trait system</summary><div class="list"><ul>
+<li><a href="(https://doc.rust-lang.org/nightly/book/ch10-02-traits.html#implementing-a-trait-on-a-type)">Source</a><ul>
+<li><strong>We can’t implement external traits on external types</strong></li>
+</ul>
+</li>
+<li>because the parent type is not present.</li>
+<li>This rule ensures that other people’s code can’t break your code and vice versa</li>
+<li>Without the rule, two crates could implement the same trait for the same type, and Rust wouldn’t know which implementation to use.<ul>
+<li><em>Me: an external trait is public for any crate to implement it, they might implement the same external trait on an external type, but their implementations are different, when another crate includes these crates, it also includes the said external type, when calling one of its methods from the external trait, the compiler would have trouble decideing which implementation is to be used.</em></li>
+</ul>
+</li>
+<li>example:<ul>
+<li><code>Display</code> trait and the <code>Vec&lt;T&gt;</code> type are defined outside our crate</li>
+<li><strong>newtype pattern</strong></li>
+</ul>
+</li>
+<li>get around the orphan rule</li>
+<li>Newtype is a term that originates from the Haskell programming language.<ul>
+<li>There is <strong>no runtime performance penalty</strong> for using this pattern, and the wrapper type is elided at compile time.</li>
+</ul>
+</li>
+<li><code>Display</code> trait and the <code>Vec&lt;T&gt;</code> type are defined outside our crate<ul>
+<li>We can make a Wrapper struct that holds an instance of <code>Vec&lt;T&gt;</code>; then we can implement <code>Display</code> on Wrapper and use the <code>Vec&lt;T&gt;</code> value</li>
+</ul>
+</li>
+<li>The downside of using this technique<ul>
+<li>Wrapper is a new type, so it doesn’t have the methods of the value it’s holding</li>
+<li>If we wanted the new type to have every method the inner type has, implementing the <code>Deref</code> trait</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="72b84859-e43d-4667-8726-b8834307c4fb"><summary>Object-Oriented Programming Features of Rust</summary><div class="list"><ul>
+<li><a href="(https://doc.rust-lang.org/nightly/book/ch17-00-oop.html)">Source</a><ul>
+<li>Objects as a programmatic concept were introduced in the programming language Simula in the 1960s. Those objects influenced Alan Kay’s programming architecture in which objects pass messages to each other. To describe this architecture, he coined the term object-oriented programming in 1967.</li>
+<li>Many competing definitions describe what OOP is, and by some of these definitions Rust is object-oriented</li>
+<li>The Gang of Four book</li>
+</ul>
+</li>
+<li>Object-oriented programs are made up of objects. An object packages both data and the procedures that operate on that data. The procedures are typically called methods or operations.<ul>
+<li>Using this definition, Rust is object-oriented</li>
+<li>Characteristics of Object-Oriented Languages</li>
+</ul>
+</li>
+<li>Objects Contain Data and Behavior</li>
+<li><strong>Inheritance as a Type System and as Code Sharing</strong><ul>
+<li>Inheritance has recently fallen out of favor as a programming design solution in many programming languages because <strong>it’s often at risk of sharing more code than necessary</strong></li>
+<li>In addition, some languages will only allow <strong>single inheritance</strong> (meaning a subclass can only inherit from one class), further restricting the flexibility of a program’s design.</li>
+<li>For these reasons, Rust takes the different approach of using trait objects instead of inheritance.</li>
+<li><strong>Rust doesn’t have inheritance</strong></li>
+<li>Using Trait Objects That Allow for Values of Different Types</li>
+</ul>
+</li>
+<li>example<ul>
+<li>define a trait named <code>Draw</code> that will have one method named <code>draw</code></li>
+<li>define a vector that takes a trait object.<ul>
+<li>A trait object points to both an instance of a type implementing our specified trait and <strong>a table used to look up trait methods on that type at runtime.</strong></li>
+<li>We create a trait object by specifying some sort of pointer, such as a <code>&amp;</code> reference or a <code>Box&lt;T&gt;</code> smart pointer, then the <code>dyn</code> keyword,</li>
+<li><code>pub struct Screen { pub components: Vec&lt;Box&lt;dyn Draw&gt;&gt;,}</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>in Rust, we <strong>refrain from calling structs and enums “objects”</strong> to distinguish them from other languages’ objects.</li>
+<li>But trait objects differ from traditional objects in that <strong>we can’t add data to a trait object.</strong></li>
+<li><strong>Trait objects&#39;s specific purpose is to allow abstraction across common behavior.</strong></li>
+<li>This concept is similar to the concept of <strong>duck typing</strong> in dynamically typed languages<ul>
+<li>being concerned only with the messages a value responds to rather than the value’s concrete type</li>
+</ul>
+</li>
+<li>Trait Objects Perform Dynamic Dispatch<ul>
+<li>incurs a <strong>runtime cost</strong> that doesn’t occur with static dispatch.</li>
+<li>it’s a trade-off to consider.</li>
+<li><a href="https://www.reddit.com/r/rust/comments/9h1xy8/how_to_avoidtranslate_oopalike_thinking_when/">How to avoid/translate OOP-alike thinking when writing in Rust?</a></li>
+</ul>
+</li>
+<li>The Ruby community seems to prefer composition over inheritance nowadays.<ul>
+<li>Instead of creating a common base class containing the shared code, create <strong>a mixin (in Rust trait)</strong> containing the code and implement it for each &quot;class&quot;.</li>
+</ul>
+</li>
+<li>Final solution: <code>Vec&lt;Box&lt;dyn BaseTrait&gt;&gt;</code></li>
+</ul>
+</div></details><details id="d8450624-7e07-4447-9ad2-c115326a462f"><summary>NDJSON - Newline delimited JSON</summary><div class="list"><ul>
+<li><a href="(https://github.com/ndjson/ndjson-spec)">Source</a><ul>
+<li>A common use case for NDJSON is delivering multiple instances of JSON text through streaming protocols like TCP or UNIX Pipes.</li>
+<li>The JSON texts MUST NOT contain newlines or carriage returns.</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="8ad156c8-89d5-4f85-ab17-e6ff7b536349"><summary>This repository collects resources for writing clean, idiomatic Rust code</summary><div class="list"><ul>
+<li><a href="(https://github.com/mre/idiomatic-rust)">Source</a></li>
+</ul>
+</div></details><details id="9c23350c-5a1b-4d64-8a3c-2fd7e947da49"><summary>ropsten.etherscan.io: This testnet will be deprecated soon. Migrate your contracts and deploy new ones on Goerli or Sepolia.</summary><div class="list"><ul>
+<li><a href="(https://ropsten.etherscan.io/)">Source</a></li>
+</ul>
+</div></details><details id="0c5b192f-0552-40be-a027-6420854b7eea"><summary>Connect and deploy to Ethereum networks</summary><div class="list"><ul>
+<li><a href="(https://docs.microsoft.com/en-us/learn/modules/blockchain-ethereum-networks/1-introduction)">Source</a><ul>
+<li>explore tools to interact with the network options, and learn how to work with different networks.</li>
+<li>The mainnet (short for &quot;main network&quot;), is the one real public Ethereum blockchain</li>
+<li>You can view all blocks on the Ethereum mainnet by using <a href="https://etherscan.io/">Etherscan</a></li>
+<li>Testnets</li>
+</ul>
+</li>
+<li>Ethereum has four public testnets<ul>
+<li>The testnets stage and test applications in a live public environment before they deploy the applications to the mainnet.<ul>
+<li>Testnets use <strong>consensus protocols</strong> to determine how to add new blocks of transactions to the network.<ul>
+<li>Proof of work<ul>
+<li>a mining rig solves a cryptographic hashing problem</li>
+</ul>
+</li>
+<li>Proof of authority</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Testnets require <em>test ether</em>, you can access it from <em>faucets</em>(it&#39;s free)</li>
+<li>which 4?<ul>
+<li>Ropsten named after a Swedish subway station</li>
+<li>Kovan named after a subway station in Singapore</li>
+<li>Rinkeby named after a metro station in Stockholm.</li>
+<li>Goerli named after a Berlin subway station</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Clients and APIs for deploying to testnets and the mainnet<ul>
+<li>Geth client(written in Go)</li>
+<li>OpenEthereum(written in the Rust programming language)</li>
+<li>Nethermind(C#)</li>
+<li>Private Ethereum networks</li>
+</ul>
+</li>
+<li>Ganache and Hardhat are most commonly used to run personal Ethereum development networks</li>
+<li>consortium networks<ul>
+<li><strong>they require an invitatio to participate</strong></li>
+<li>popular options for consortium blockchains<ul>
+<li>Hyperledger Besu</li>
+<li>R3 Corda</li>
+<li>Quorum</li>
+</ul>
+</li>
+<li>Deploy to the Ropsten test network</li>
+</ul>
+</li>
+<li>MetaMask<ul>
+<li>Ropsten Faucet<ul>
+<li>The faucet has reached its end of life. Thank you for using the faucet.</li>
+<li><a href="https://github.com/ethereum/ethereum-org-website/pull/5516">Update references and instructions for legacy Ropsten testnet faucet to faucETH https://fauceth.komputing.org, an available alternative in tutorials. Remove all references to end-of-life&#39;d legacy Ropsten testnet faucet https://faucet.ropsten.be/</a></li>
+</ul>
+</li>
+<li><a href="https://trufflesuite.com/docs/truffle/getting-started/interacting-with-your-contracts/">https://trufflesuite.com/docs/truffle/getting-started/interacting-with-your-contracts/</a><ul>
+<li><code>truffle console</code><ul>
+<li><code>let instance = await TodoList.deployed()</code></li>
+<li><code>await instance.createTask(&quot;Hello world&quot;)</code></li>
+</ul>
+</li>
+<li><code>truffle console --network ropsten</code><ul>
+<li><code>let instance = await TodoList.deployed()</code></li>
+<li><code>await instance.createTask(&quot;Hello world&quot;)</code></li>
+<li><code>await instance.toggleStatus(2)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><img src="https://docs.microsoft.com/en-us/learn/achievements/ethereum-blockchain-development.svg" alt=""></li>
+</ul>
+</li>
+<li>TROPHY<ul>
+<li>Get started with blockchain development</li>
+<li>Completed on 8/3/2022</li>
+</ul>
+</li>
+<li>what now?</li>
+</ul>
+</div></details><details id="cd19cc99-ee87-43a7-afbc-fe53d3383bd2"><summary>Create tokens using OpenZeppelin</summary><div class="list"><ul>
+<li><a href="(https://docs.microsoft.com/en-us/learn/modules/blockchain-tokens/)">Source</a><ul>
+<li>What is a token?</li>
+</ul>
+</li>
+<li>A blockchain token can represent almost anything that we want to assign a value to.</li>
+<li>a token can<ul>
+<li>grant special platform permissions to a user</li>
+<li>grant exclusive access to a service</li>
+<li>represent ownership</li>
+<li>represent cryptocurrencies that have monetary value</li>
+</ul>
+</li>
+<li>history of tokens<ul>
+<li>forms of economic value<ul>
+<li>shells and beads</li>
+<li>casino chips, vouchers, airline points, stock certificats, concert entry tokens, dinner reservations, ID cards, club memberships</li>
+<li>the idea is that you can <strong>accumulate tokens</strong>, which have a certain <strong>assigned value</strong>, and then trade them <strong>to get some item or service of value</strong> in return</li>
+<li>in computing, tokens are used to give a user permission to complete an operation or to manage access<ul>
+<li>QR code: the information that&#39;s contained in the QR code redirects us to a webpage or service(or transaction)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Blockchain tokens<ul>
+<li>they represents<ul>
+<li><strong>ownership rights to an item</strong></li>
+<li>access to a service</li>
+<li>monetary value</li>
+<li>a set of rules that are programmed in a smart contract</li>
+</ul>
+</li>
+<li>the tokens are accessible by using a crypto wallet<ul>
+<li>each token belongs to a blockchain <strong>address</strong></li>
+<li>only the person who has the <strong>private key for that address</strong> can access those tokens</li>
+</ul>
+</li>
+<li>two categories of blockchain tokens<ul>
+<li>Fungible: If something is fungible, you can exchange it for something else.</li>
+<li>Non-fungible</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>contract standards<ul>
+<li>ERC20: most widely known and used</li>
+<li>ERC721: top solution for <strong>non-fungible tokens(NFT)</strong></li>
+<li>ERC777</li>
+<li>ERC1155</li>
+</ul>
+</li>
+<li>OpenZeppelin<ul>
+<li><a href="https://docs.microsoft.com/en-us/learn/modules/blockchain-tokens/5-set-up-project">Exercise - Set up a new project and integrate OpenZeppelin</a></li>
+<li>When the reward function is called, the current block&#39;s miner, block.coinbase, receives 20 MRW tokens for mining this block and an event is emitted.</li>
+<li><a href="https://docs.openzeppelin.com/contracts/3.x/tokens">OpenZeppelin token documentation</a></li>
+</ul>
+</li>
+</ul>
+</div></details><details id="7b3efac0-b887-4322-97b5-ff7ba6e36387"><summary>Write Ethereum smart contracts by using Solidity</summary><div class="list"><ul>
+<li><a href="(https://docs.microsoft.com/en-us/learn/modules/blockchain-solidity-ethereum-smart-contracts/1-introduction)">Source</a><ul>
+<li>smart contract</li>
+</ul>
+</li>
+<li>A smart contract is a program that&#39;s stored <strong>inside a blockchain</strong></li>
+<li>Smart contracts extend blockchain from data to code.<ul>
+<li>They represent an <strong>agreement</strong> between parties.<ul>
+<li>he agreement is coded, and when an action happens, <strong>the code runs and provides a response</strong>.</li>
+</ul>
+</li>
+<li>Ethereum is the world&#39;s first programmable blockchain</li>
+<li>Solidity is Turing-complete</li>
+<li>Because every state transition is logged and immutable, <strong>you should thoroughly test the contract before you release it into a production environment</strong>. Bug fixes can be costly and can even cause critical system damage.</li>
+<li>Use cases:</li>
+</ul>
+</li>
+<li>Insurance</li>
+<li>Voting</li>
+<li>Supply chains</li>
+<li>Record keeping</li>
+<li>Property ownership<ul>
+<li>Tools</li>
+</ul>
+</li>
+<li>IDE<ul>
+<li>VSCode</li>
+</ul>
+</li>
+<li>Extensions<ul>
+<li>Truffle for VS Code<ul>
+<li>Use the noun truffle when you&#39;re talking about <strong>a fancy French mushroom</strong> or <strong>a certain type of rich, fancy chocolate</strong>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Frameworks:<ul>
+<li>Truffle Suite</li>
+<li>OpenZeppelin</li>
+</ul>
+</li>
+<li>Truffle: <code>npm install -g truffle</code></li>
+<li>Ganache: <code>npm install ganache --global</code><ul>
+<li><strong>Hindu god</strong> of wisdom or prophecy; the god who removes obstacles</li>
+<li>Gas prices are shown in gwei. One gwei is worth 0.000000001 ETH.</li>
+<li><a href="https://docs.microsoft.com/en-us/learn/modules/blockchain-solidity-ethereum-smart-contracts/6-test-contract">https://docs.microsoft.com/en-us/learn/modules/blockchain-solidity-ethereum-smart-contracts/6-test-contract</a></li>
+<li>notes on the example:</li>
+</ul>
+</li>
+<li><code>ShippingStatus.deployed()</code> returns an initialized instance, probably a singleton</li>
+<li>the contract defined in <code>shipping.sol</code> is wrapped into an artifact object, of which we now know nothing</li>
+<li>run the functions defined in the contract from the instance as asynchronous functions.</li>
+<li>the events are emitted to the VM, something catches the events, the name of the event caught is the name defined in <code>.sol</code> file, the parameters is the ones set by the emitters.</li>
+<li>So I take that events are transaction records which are to be appended to the blockchain, the events can&#39;t be retrieved or modified once they are emitted, they are caught by event listeners, but that is beyond the control of smart contracts.</li>
+</ul>
+</div></details><details id="6b15c899-83c5-4ef3-99b4-4f84767453da"><summary>Learn how to use Solidity</summary><div class="list"><ul>
+<li><a href="(https://docs.microsoft.com/en-us/learn/modules/blockchain-learning-solidity/1-introduction)">Source</a><ul>
+<li>Solidity is an <strong>object-oriented</strong> language for writing smart contracts</li>
+<li>You use Solidity to program smart contracts for the Ethereum blockchain platform</li>
+<li>smart contracts enable you to create a business workflow</li>
+<li>Solidity is an open-source programming language</li>
+<li>What is Ethereum?</li>
+</ul>
+</li>
+<li>Ethereum is one of the most popular blockchain platforms, right behind Bitcoin</li>
+<li>It&#39;s a <strong>community-built</strong> technology and has <strong>its own cryptocurrency called Ether</strong> (ETH) that you can buy and sell.</li>
+<li>it&#39;s the &quot;world&#39;s programmable blockchain&quot;<ul>
+<li>Solidity contracts run on the <strong>Ethereum Virtual Machine</strong>, or EVM for short.</li>
+<li>website: <a href="https://docs.soliditylang.org/">https://docs.soliditylang.org/</a></li>
+<li>details</li>
+</ul>
+</li>
+<li>visibility is placed after the function parameters: <code>function f(args) public returns (type)</code></li>
+<li>function modifiers: like <code>const</code> for C++ member functions. Except for that, Solidity has more modifiers to define the behavior of a function.</li>
+<li>Events:<ul>
+<li>must use the keyword <code>emit</code> to emit an event</li>
+<li>events have parameters</li>
+<li>the event you call is captured as a transaction in the transaction log<ul>
+<li>transaction log is a special data structure in the blockchain</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>value types:<ul>
+<li>integers, booleans, string literals</li>
+<li><strong>Address</strong></li>
+<li>Enums</li>
+</ul>
+</li>
+<li>reference types: provide a data location for the value<ul>
+<li>data location:<ul>
+<li>memory<ul>
+<li>the location where function arguments are stored</li>
+</ul>
+</li>
+<li>storage<ul>
+<li>the location where state variables are stored</li>
+</ul>
+</li>
+<li>calldata<ul>
+<li>the location where function arguement are stored</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Arrays</li>
+<li>structs</li>
+<li>mapping types</li>
+</ul>
+</li>
+<li>Remix IDE: <a href="https://remix.ethereum.org/">https://remix.ethereum.org/</a></li>
+</ul>
+</div></details><details id="64ddbf4e-dd03-48df-b4a2-28dbeb41cf35"><summary>Get started with blockchain development - Microsoft</summary><div class="list"><ul>
+<li><a href="(https://docs.microsoft.com/en-us/learn/paths/ethereum-blockchain-development/)">Source</a><ul>
+<li>Gain an understanding of the tools to develop on the <strong>Ethereum</strong> blockchain</li>
+<li>Deploy to local and test Ethereum networks</li>
+<li>features</li>
+</ul>
+</li>
+<li>without using a central database: blockchain allows business partners to trust each other&#39;s data without a central authority<ul>
+<li>What if no one company wants to be responsible for hosting a centralized database?</li>
+<li>Distributed database<ul>
+<li>each participant has a copy of the database</li>
+<li>synchronization of changes to each database is required</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>extremely difficult to change previous history<ul>
+<li>purpose of blockchain</li>
+</ul>
+</li>
+<li>identify the supply chain party at fault</li>
+<li>record-keeping and contract-enforcement<ul>
+<li>Blockchain technology is referred to as a distributed ledger</li>
+</ul>
+</li>
+<li>the distributed ledger is a history of transactions</li>
+<li>Blockchain networks: consortium network<ul>
+<li><strong>con·sor·ti·um</strong>: An association, typically of several business companies.</li>
+</ul>
+</li>
+<li>Blockchain uses <strong>consensus rules</strong> to ensure data is consistent across nodes.</li>
+<li>each participant can do its own auditing</li>
+<li>the ice cream scenario<ul>
+<li><img src="https://docs.microsoft.com/en-us/learn/modules/intro-to-blockchain/media/peer-network.png" alt=""></li>
+<li>Responsibility for the product must be transferred</li>
+<li>a transaction is sent each time the status changes<ul>
+<li>send it to a blockchain transaction node</li>
+<li>updates the shipment <strong>responsibility</strong></li>
+<li>Blockchain sends the transaction throughout the blockchain network: <strong>Each node gets a copy of the transaction</strong>.</li>
+</ul>
+</li>
+<li>it requires validation using a <strong>consensus mechanism</strong> to process the transaction<ul>
+<li>Consensus enables consistency<ul>
+<li><strong>order</strong> matters<ul>
+<li><strong>double spend problem</strong></li>
+</ul>
+</li>
+<li>consensus algorithms<ul>
+<li>proof of work</li>
+<li>proof of stake<ul>
+<li>coin age</li>
+<li>A share or interest in a business or a given situation</li>
+</ul>
+</li>
+<li>proof of authority</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>What is a block?</li>
+</ul>
+</li>
+<li>a cluster of data that stores transaction information</li>
+<li><strong>time-based</strong><ul>
+<li>immutable</li>
+</ul>
+</li>
+<li>Blockchain uses a cryptographic hash to create link between blocks</li>
+<li>Blockchain uses hashes to detect if any changes have been made to the blocks.</li>
+<li>By <strong>including the hash of the previous block when creating a new block</strong>, an immutable chain of transactions is created in order.<ul>
+<li>Decentralized application (<strong>DApp</strong>)</li>
+</ul>
+</li>
+<li>Ethereum DApps are called <strong>smart contracts</strong><ul>
+<li>use a smart contract, you create an instance<ul>
+<li>an instance contains state data and program logic<ul>
+<li>the ice cream scenario<ul>
+<li>instance contains data: the responsible participant, location, and if the product temperature is out of compliance</li>
+<li>program logic:<ul>
+<li>transfer responsibility</li>
+<li>receive temperature telemetry for the instance</li>
+<li>If the temperature is above freezing, the smart contract logic marks the shipment as non-compliant.<ul>
+<li>immutable record<ul>
+<li>The ice cream shop can refuse delivery and can avoid food safety issues.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Any code changes require a new smart contract be deployed at a new address</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>On Ethereum, you program the logic using a programming language called <strong>Solidity</strong>.<ul>
+<li>There are several blockchain <strong>protocols</strong></li>
+</ul>
+</li>
+<li>The most well known is <strong>Bitcoin</strong></li>
+<li>Ethereum is a general use protocol, Ethereum <strong>extends</strong> what Bitcoin had created to provide a protocol that would allow small programs to be written</li>
+<li>If you are going to use blockchain for your own solution, consider a general use protocol like <strong>Ethereum and Hyperledger Fabric</strong><ul>
+<li><strong>programmable blockchains</strong></li>
+<li>When to use blockchain</li>
+</ul>
+</li>
+<li>In many cases, a centralized database is a better option.</li>
+<li>Blockchain transaction rates can be low<ul>
+<li>Knowledge check</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="ad5ac0b2-15f7-431d-b646-94f6514b7b1b"><summary>So I realized that Metalsmith was just a poor gulp implementation</summary><div class="list"><ul>
+<li><a href="(http://nathanblack.org/post/migration-to-static-site-via-gulp/)">Source</a></li>
+</ul>
+</div></details><details id="a9c59e5e-90fb-4fa0-bd4c-34571472dd78"><summary>Formatter</summary><div class="list"><ul>
+<li><a href="http://journal.stuffwithstuff.com/2015/09/08/the-hardest-program-ive-ever-written/">http://journal.stuffwithstuff.com/2015/09/08/the-hardest-program-ive-ever-written/</a></li>
+<li><a href="https://github.com/dart-lang/dart_style">an automated code formatter</a><ul>
+<li><a href="https://news.ycombinator.com/item?id=22706242">https://news.ycombinator.com/item?id=22706242</a></li>
+</ul>
+</li>
+<li>Knuth and Plass&#39;s (very readable!) paper on Breaking Paragraphs into Lines is here: <a href="http://www.eprg.org/G53DOC/pdfs/knuth-plass-breaking.pdf">http://www.eprg.org/G53DOC/pdfs/knuth-plass-breaking.pdf</a></li>
+<li>Being able to format erroneous code has come up as a feature request a number of times.</li>
+<li><a href="https://blog.vjeux.com/2017/javascript/anatomy-of-a-javascript-pretty-printer.html">https://blog.vjeux.com/2017/javascript/anatomy-of-a-javascript-pretty-printer.html</a><ul>
+<li>Using either Babylon or Flow we can parse this example and we get the following tree.</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="4ecfe58d-686b-4c89-bfbd-b23ee5462f1c"><summary>Elements of Programming written by Alexander Stepanov</summary><div class="list"><ul>
+<li><a href="https://news.ycombinator.com/item?id=22706242">It&#39;s a little bit different from the other resources I&#39;ve linked, but &quot;Elements of Programming&quot; [0] is another excellent (though incredibly challenging) read. It&#39;s written by Alexander Stepanov, and basically walks through the way he built STL by decomposing algorithms and data structures into abstract mathematical structures.</a></li>
+</ul>
+</div></details><details id="bf2d1282-e074-480a-8f92-a792c98867fc"><summary>State of the art</summary><div class="list"><ul>
+<li><a href="(https://en.wikipedia.org/wiki/State_of_the_art)">Source</a><ul>
+<li>The state of the art (sometimes cutting edge or leading edge) refers to the highest level of general development, as of a device, technique, or scientific field achieved at a particular time</li>
+<li>In advertising, the phrase is often used to convey that a product is made with the best or latest available technology</li>
+</ul>
+</li>
+</ul>
+</div></details><details id="f7baea6e-a09b-46cc-a0ea-eea555abbca2"><summary>1MB Club is a growing collection of performance-focused web pages weighing less than 1 megabyte.</summary><div class="list"><ul>
+<li><a href="(http://1mb.club/)">Source</a></li>
+</ul>
+</div></details><details id="c41f57e0-b706-4363-9f8c-82bae040a906"><summary>How are comments usually parsed?</summary><div class="list"><ul>
+<li><a href="(https://softwareengineering.stackexchange.com/a/362981)">Source</a></li>
+</ul>
+</div></details><details id="09e40bb9-cce0-4554-882f-c261e616a8a8"><summary>Visual Studio Code Javascript Debugging</summary><div class="list"><ul>
+<li><a href="https://stackoverflow.com/a/46977963/19406298">Mocha breakpoints using Visual Studio Code</a></li>
+<li><a href="https://github.com/akosyakov/ts-mocha-debugging/blob/b0b56ce858a86dbb1c99776b0915662dbb85b99c/.vscode/launch.json#L9">Simple TypeScript setup to debug Mocha tests from VS Code</a></li>
+<li><a href="https://medium.com/@mtiller/debugging-with-typescript-jest-ts-jest-and-visual-studio-code-ef9ca8644132">https://medium.com/@mtiller/debugging-with-typescript-jest-ts-jest-and-visual-studio-code-ef9ca8644132</a></li>
+<li><a href="https://medium.com/@dupski/debug-typescript-in-vs-code-without-compiling-using-ts-node-9d1f4f9a94a">https://medium.com/@dupski/debug-typescript-in-vs-code-without-compiling-using-ts-node-9d1f4f9a94a</a></li>
+<li><a href="https://www.andrewconnell.com/blog/debugging-node-js-projects-with-typescript-and-vs-code-digging-into-sourcemaps">https://www.andrewconnell.com/blog/debugging-node-js-projects-with-typescript-and-vs-code-digging-into-sourcemaps</a></li>
+<li><a href="https://jestjs.io/docs/troubleshooting">https://jestjs.io/docs/troubleshooting</a></li>
+</ul>
+</div></details><details id="cfc5d7a6-73b8-4788-a5fd-bafa9f3212a9"><summary>States and Fates</summary><div class="list"><ul>
+<li><a href="(https://github.com/domenic/promises-unwrapping/blob/master/docs/states-and-fates.md)">Source</a><ul>
+<li>Promise</li>
+</ul>
+</li>
+<li>states:<ul>
+<li>settled<ul>
+<li>fullfilled</li>
+<li>rejected</li>
+</ul>
+</li>
+<li>pending</li>
+</ul>
+</li>
+<li>fates: resolved, unresolved</li>
+</ul>
+</div></details>
+    </article>
+  </body>
+</html>
+

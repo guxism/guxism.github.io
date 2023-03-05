@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>RSA 的数学推理</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <style id="MJX-SVG-styles">
+mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+  min-height: 1px;
+  min-width: 1px;
+}
+
+mjx-container[jax="SVG"] > svg a {
+  fill: blue;
+  stroke: blue;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line], svg[data-table] > g > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame], svg[data-table] > g > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed, svg[data-table] > g > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted, svg[data-table] > g > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > g > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
+  stroke-width: 3;
+}
+</style></head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>RSA 的数学推理</h1>
+        <p>写这篇文章之前，我看了三本书相关内容：</p>
+<ol>
+<li>图解密码技术 [日]结城浩，没有给出数学证明</li>
+<li>Computer Networking，James F. Kurose, Keith W. Ross，有部分数学推理，但关键部分只引用第三本书的证明</li>
+<li>NETWORK SECURITY PRIVATE Communication in a PUBLIC World，CHARLIE KAUFMAN • RADIA PERLMAN • MIKE SPECINER，看了这本书我才理解其中的数学原理，但这本书也没提供严格的数学证明，不过我认为已经够用了，我们又不是研究数学的人。</li>
+</ol>
+<h2 id="模运算" tabindex="-1">模运算</h2>
+<p><mjx-container class="MathJax" jax="SVG" display="true" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="35.361ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 15629.4 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mtext" transform="translate(572,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(822,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(1700,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2185,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(2705,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(2955,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(3777.2,0)"><use data-c="2B" xlink:href="#MJX-TEX-N-2B"></use></g><g data-mml-node="mi" transform="translate(4777.4,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mtext" transform="translate(5267.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(5517.4,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(6395.4,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(6880.4,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(7400.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(7650.4,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(8528.2,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mo" transform="translate(9584,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(9973,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mo" transform="translate(10767.2,0)"><use data-c="2B" xlink:href="#MJX-TEX-N-2B"></use></g><g data-mml-node="mi" transform="translate(11767.4,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mo" transform="translate(12257.4,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mtext" transform="translate(12646.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(12896.4,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(13774.4,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(14259.4,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(14779.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(15029.4,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>x</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>+</mo><mi>y</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><mo stretchy="false">(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo stretchy="false">)</mo><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container><br>
+<mjx-container class="MathJax" jax="SVG" display="true" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="35.361ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 15629.4 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mtext" transform="translate(572,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(822,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(1700,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2185,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(2705,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(2955,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(3777.2,0)"><use data-c="D7" xlink:href="#MJX-TEX-N-D7"></use></g><g data-mml-node="mi" transform="translate(4777.4,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mtext" transform="translate(5267.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(5517.4,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(6395.4,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(6880.4,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(7400.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(7650.4,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(8528.2,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mo" transform="translate(9584,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(9973,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mo" transform="translate(10767.2,0)"><use data-c="D7" xlink:href="#MJX-TEX-N-D7"></use></g><g data-mml-node="mi" transform="translate(11767.4,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mo" transform="translate(12257.4,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mtext" transform="translate(12646.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(12896.4,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(13774.4,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(14259.4,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(14779.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(15029.4,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>x</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>×</mo><mi>y</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><mo stretchy="false">(</mo><mi>x</mi><mo>×</mo><mi>y</mi><mo stretchy="false">)</mo><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container></p>
+<p>一开始我就遇到一个严重的问题，我不理解为什么以上两个等式成立。但如果我接受它们，我就能推出以下两个等式：</p>
+<p><mjx-container class="MathJax" jax="SVG" display="true" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="53.06ex" height="2.565ex" role="img" focusable="false" viewBox="0 -883.9 23452.6 1133.9" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(389,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mtext" transform="translate(961,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1211,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2089,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2574,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(3094,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(3344,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="msup" transform="translate(3944,0)"><g data-mml-node="mo"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mn" transform="translate(422,413) scale(0.707)"><use data-c="32" xlink:href="#MJX-TEX-N-32"></use></g></g><g data-mml-node="mo" transform="translate(5047.3,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mo" transform="translate(6103.1,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(6492.1,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mtext" transform="translate(7064.1,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(7314.1,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(8192.1,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(8677.1,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(9197.1,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(9447.1,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(10047.1,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(10658.3,0)"><use data-c="D7" xlink:href="#MJX-TEX-N-D7"></use></g><g data-mml-node="mo" transform="translate(11658.6,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(12047.6,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mtext" transform="translate(12619.6,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(12869.6,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(13747.6,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(14232.6,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(14752.6,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(15002.6,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(15602.6,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(16269.3,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mo" transform="translate(17325.1,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(17714.1,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mo" transform="translate(18508.3,0)"><use data-c="D7" xlink:href="#MJX-TEX-N-D7"></use></g><g data-mml-node="mi" transform="translate(19508.6,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mo" transform="translate(20080.6,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mtext" transform="translate(20469.6,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(20719.6,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(21597.6,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(22082.6,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(22602.6,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(22852.6,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mo stretchy="false">(</mo><mi>x</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><msup><mo stretchy="false">)</mo><mn>2</mn></msup><mo>=</mo><mo stretchy="false">(</mo><mi>x</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo stretchy="false">)</mo><mo>×</mo><mo stretchy="false">(</mo><mi>x</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><mi>x</mi><mo>×</mo><mi>x</mi><mo stretchy="false">)</mo><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container><br>
+<mjx-container class="MathJax" jax="SVG" display="true" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="22.807ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 10080.5 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(389,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mtext" transform="translate(961,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1211,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2089,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2574,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(3094,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(3344,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="msup" transform="translate(3944,0)"><g data-mml-node="mo"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mi" transform="translate(422,413) scale(0.707)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g></g><g data-mml-node="mo" transform="translate(5040.3,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="msup" transform="translate(6096,0)"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mi" transform="translate(605,413) scale(0.707)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g></g><g data-mml-node="mtext" transform="translate(7097.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(7347.5,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(8225.5,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(8710.5,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(9230.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(9480.5,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mo stretchy="false">(</mo><mi>x</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><msup><mo stretchy="false">)</mo><mi>y</mi></msup><mo>=</mo><msup><mi>x</mi><mi>y</mi></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container></p>
+<h2 id="multiplicative-inverse" tabindex="-1">Multiplicative inverse</h2>
+<p>通过观察发现存在两个质数 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="1.138ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 503 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></mjx-assistive-mml></mjx-container>, <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="1.041ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 460 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>q</mi></math></mjx-assistive-mml></mjx-container>,  使得</p>
+<p><mjx-container class="MathJax" jax="SVG" display="true" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="22.59ex" height="2.009ex" role="img" focusable="false" viewBox="0 -694 9985 888" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mtext" transform="translate(503,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(753,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(1631,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2116,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(2636,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(2886,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(3708.2,0)"><use data-c="D7" xlink:href="#MJX-TEX-N-D7"></use></g><g data-mml-node="mi" transform="translate(4708.4,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g><g data-mml-node="mtext" transform="translate(5168.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(5418.4,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(6296.4,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(6781.4,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(7301.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(7551.4,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(8429.2,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(9485,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>p</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>×</mo><mi>q</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container></p>
+<p>这是另外一个无法证明的地方，不过也可以通过举例理解，假设 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="19.124ex" height="1.968ex" role="img" focusable="false" viewBox="0 -676 8453 870" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(877.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(1933.6,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use><use data-c="30" xlink:href="#MJX-TEX-N-30" transform="translate(500,0)"></use></g><g data-mml-node="mo" transform="translate(2933.6,0)"><use data-c="2C" xlink:href="#MJX-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(3378.2,0)"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mo" transform="translate(4159,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(5214.8,0)"><use data-c="33" xlink:href="#MJX-TEX-N-33"></use></g><g data-mml-node="mo" transform="translate(5714.8,0)"><use data-c="2C" xlink:href="#MJX-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(6159.4,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g><g data-mml-node="mo" transform="translate(6897.2,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(7953,0)"><use data-c="37" xlink:href="#MJX-TEX-N-37"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi><mo>=</mo><mn>10</mn><mo>,</mo><mi>p</mi><mo>=</mo><mn>3</mn><mo>,</mo><mi>q</mi><mo>=</mo><mn>7</mn></math></mjx-assistive-mml></mjx-container></p>
+<h2 id="totient-function" tabindex="-1">Totient function</h2>
+<p>将与 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.357ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 600 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></mjx-assistive-mml></mjx-container> 互质(relatively prime)的数的总量记为 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="4.466ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 1974 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(596,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(985,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(1585,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container>，包括如果 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.357ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 600 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></mjx-assistive-mml></mjx-container> 是质数，那么 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="12.738ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 5630 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(596,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(985,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(1585,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(2251.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mi" transform="translate(3307.6,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4129.8,0)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g><g data-mml-node="mn" transform="translate(5130,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mi>n</mi><mo>−</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container> 。现在这个性质是何用处未知，我的理解这是数学家探索质数的性质的时候偶尔发现的性质。</p>
+<p>如果 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.357ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 600 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></mjx-assistive-mml></mjx-container> 是两个质数 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="1.138ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 503 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></mjx-assistive-mml></mjx-container>, <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="1.041ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 460 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>q</mi></math></mjx-assistive-mml></mjx-container> 的乘积，那么 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="23.742ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 10493.9 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(596,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(985,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(1585,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(2251.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mo" transform="translate(3307.6,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(3696.6,0)"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mo" transform="translate(4421.8,0)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g><g data-mml-node="mn" transform="translate(5422,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g><g data-mml-node="mo" transform="translate(5922,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(6533.2,0)"><use data-c="D7" xlink:href="#MJX-TEX-N-D7"></use></g><g data-mml-node="mo" transform="translate(7533.4,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(7922.4,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g><g data-mml-node="mo" transform="translate(8604.7,0)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g><g data-mml-node="mn" transform="translate(9604.9,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g><g data-mml-node="mo" transform="translate(10104.9,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>×</mo><mo stretchy="false">(</mo><mi>q</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container>，因为对于所有 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.294ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 572 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math></mjx-assistive-mml></mjx-container>, 使得 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="9.572ex" height="1.661ex" role="img" focusable="false" viewBox="0 -540 4231 734" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mo" transform="translate(725.2,0)"><use data-c="D7" xlink:href="#MJX-TEX-N-D7"></use></g><g data-mml-node="mi" transform="translate(1725.4,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mo" transform="translate(2575.2,0)"><use data-c="3C" xlink:href="#MJX-TEX-N-3C"></use></g><g data-mml-node="mi" transform="translate(3631,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi><mo>×</mo><mi>x</mi><mo>&lt;</mo><mi>n</mi></math></mjx-assistive-mml></mjx-container> 的 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.294ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 572 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math></mjx-assistive-mml></mjx-container> 不超过 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="1.041ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 460 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>q</mi></math></mjx-assistive-mml></mjx-container> 个，包括 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="1.131ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 500 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="30" xlink:href="#MJX-TEX-N-30"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>0</mn></math></mjx-assistive-mml></mjx-container> 在内，即 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="8.747ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 3866.2 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mo" transform="translate(849.8,0)"><use data-c="2208" xlink:href="#MJX-TEX-N-2208"></use></g><g data-mml-node="mo" transform="translate(1794.6,0)"><use data-c="5B" xlink:href="#MJX-TEX-N-5B"></use></g><g data-mml-node="mn" transform="translate(2072.6,0)"><use data-c="30" xlink:href="#MJX-TEX-N-30"></use></g><g data-mml-node="mo" transform="translate(2572.6,0)"><use data-c="2C" xlink:href="#MJX-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(3017.2,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g><g data-mml-node="mo" transform="translate(3477.2,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi><mo>∈</mo><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mi>q</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container>, 一共是 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="1.041ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 460 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>q</mi></math></mjx-assistive-mml></mjx-container> 个数，同理，对于所有 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.464ex;" xmlns="http://www.w3.org/2000/svg" width="1.109ex" height="1.464ex" role="img" focusable="false" viewBox="0 -442 490 647" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi></math></mjx-assistive-mml></mjx-container>, 使得 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.464ex;" xmlns="http://www.w3.org/2000/svg" width="9.29ex" height="1.686ex" role="img" focusable="false" viewBox="0 -540 4106 745" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g><g data-mml-node="mo" transform="translate(682.2,0)"><use data-c="D7" xlink:href="#MJX-TEX-N-D7"></use></g><g data-mml-node="mi" transform="translate(1682.4,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mo" transform="translate(2450.2,0)"><use data-c="3C" xlink:href="#MJX-TEX-N-3C"></use></g><g data-mml-node="mi" transform="translate(3506,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>q</mi><mo>×</mo><mi>y</mi><mo>&lt;</mo><mi>n</mi></math></mjx-assistive-mml></mjx-container> 的 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.464ex;" xmlns="http://www.w3.org/2000/svg" width="1.109ex" height="1.464ex" role="img" focusable="false" viewBox="0 -442 490 647" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi></math></mjx-assistive-mml></mjx-container> 的个数一共有 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="1.138ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 503 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></mjx-assistive-mml></mjx-container> 个，其中也包括 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="1.131ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 500 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="30" xlink:href="#MJX-TEX-N-30"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>0</mn></math></mjx-assistive-mml></mjx-container>, 所以从 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="1.131ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 500 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="30" xlink:href="#MJX-TEX-N-30"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>0</mn></math></mjx-assistive-mml></mjx-container> 到 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="2.179ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 963 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mi" transform="translate(503,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi><mi>q</mi></math></mjx-assistive-mml></mjx-container> 一共 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="2.179ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 963 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mi" transform="translate(503,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi><mi>q</mi></math></mjx-assistive-mml></mjx-container> 个小于 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="2.179ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 963 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mi" transform="translate(503,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi><mi>q</mi></math></mjx-assistive-mml></mjx-container> 的数中，有 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="8.841ex" height="1.946ex" role="img" focusable="false" viewBox="0 -666 3907.9 860" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mo" transform="translate(725.2,0)"><use data-c="2B" xlink:href="#MJX-TEX-N-2B"></use></g><g data-mml-node="mi" transform="translate(1725.4,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g><g data-mml-node="mo" transform="translate(2407.7,0)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g><g data-mml-node="mn" transform="translate(3407.9,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi><mo>+</mo><mi>q</mi><mo>−</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container> 个数是不符合“与 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="2.179ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 963 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mi" transform="translate(503,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi><mi>q</mi></math></mjx-assistive-mml></mjx-container> 互质”这一条件的，减去 1 是因为 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="1.131ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 500 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="30" xlink:href="#MJX-TEX-N-30"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>0</mn></math></mjx-assistive-mml></mjx-container> 被包含两次。</p>
+<p>所以对于质数 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="1.138ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 503 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></mjx-assistive-mml></mjx-container>, <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="1.041ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 460 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>q</mi></math></mjx-assistive-mml></mjx-container>, <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="40.36ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 17839.3 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(596,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(985,0)"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mi" transform="translate(1488,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g><g data-mml-node="mo" transform="translate(1948,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(2614.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mi" transform="translate(3670.6,0)"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mi" transform="translate(4173.6,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g><g data-mml-node="mo" transform="translate(4855.8,0)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g><g data-mml-node="mo" transform="translate(5856,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(6245,0)"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mo" transform="translate(6970.2,0)"><use data-c="2B" xlink:href="#MJX-TEX-N-2B"></use></g><g data-mml-node="mi" transform="translate(7970.4,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g><g data-mml-node="mo" transform="translate(8652.7,0)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g><g data-mml-node="mn" transform="translate(9652.9,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g><g data-mml-node="mo" transform="translate(10152.9,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(10819.7,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mo" transform="translate(11875.4,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(12264.4,0)"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mo" transform="translate(12989.7,0)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g><g data-mml-node="mn" transform="translate(13989.9,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g><g data-mml-node="mo" transform="translate(14489.9,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(14878.9,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(15267.9,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g><g data-mml-node="mo" transform="translate(15950.1,0)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g><g data-mml-node="mn" transform="translate(16950.3,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g><g data-mml-node="mo" transform="translate(17450.3,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϕ</mi><mo stretchy="false">(</mo><mi>p</mi><mi>q</mi><mo stretchy="false">)</mo><mo>=</mo><mi>p</mi><mi>q</mi><mo>−</mo><mo stretchy="false">(</mo><mi>p</mi><mo>+</mo><mi>q</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mi>q</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></p>
+<p>再次说明，我不理解为什么要推出这种结论，我的理解是数学家随手造出一个结论，然后把结论放在工具箱里面，说不定哪天就可以用。</p>
+<h2 id="modular-exponentiation" tabindex="-1">Modular Exponentiation</h2>
+<p>通过观察发现以下性质<strong>可能</strong>成立：</p>
+<p><mjx-container class="MathJax" jax="SVG" display="true" style="position: relative;"><svg style="vertical-align: -0.186ex;" xmlns="http://www.w3.org/2000/svg" width="28.861ex" height="2.32ex" role="img" focusable="false" viewBox="0 -943.3 12756.7 1025.3" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mi" transform="translate(605,413) scale(0.707)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g></g><g data-mml-node="mtext" transform="translate(1001.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1251.5,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2129.5,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2614.5,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(3134.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(3384.5,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4262.3,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="msup" transform="translate(5318,0)"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="TeXAtom" transform="translate(605,413) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mo"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(389,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mtext" transform="translate(879,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1129,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2007,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2492,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mi" transform="translate(3012,0)"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(3608,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(3997,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4597,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(4986,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g><g data-mml-node="mtext" transform="translate(9773.7,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(10023.7,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(10901.7,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(11386.7,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(11906.7,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(12156.7,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msup><mi>x</mi><mi>y</mi></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mi>y</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container></p>
+<p>对于某些数是不能成立的，比如 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="28.969ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 12804.2 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(877.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(1933.6,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use><use data-c="30" xlink:href="#MJX-TEX-N-30" transform="translate(500,0)"></use></g><g data-mml-node="mo" transform="translate(2933.6,0)"><use data-c="2C" xlink:href="#MJX-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(3378.2,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mo" transform="translate(4228,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(5283.8,0)"><use data-c="34" xlink:href="#MJX-TEX-N-34"></use></g><g data-mml-node="mo" transform="translate(5783.8,0)"><use data-c="2C" xlink:href="#MJX-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(6228.4,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mo" transform="translate(6996.2,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(8052,0)"><use data-c="38" xlink:href="#MJX-TEX-N-38"></use></g><g data-mml-node="mo" transform="translate(8552,0)"><use data-c="2C" xlink:href="#MJX-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(8996.7,0)"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(9592.7,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(9981.7,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(10581.7,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(11248.4,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(12304.2,0)"><use data-c="34" xlink:href="#MJX-TEX-N-34"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi><mo>=</mo><mn>10</mn><mo>,</mo><mi>x</mi><mo>=</mo><mn>4</mn><mo>,</mo><mi>y</mi><mo>=</mo><mn>8</mn><mo>,</mo><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mn>4</mn></math></mjx-assistive-mml></mjx-container> 的时候，等号左边等于 6，右边等于 1。</p>
+<pre class="one-piece"><code>&gt;&gt;&gt; (4 ** 8) % 10
+6
+&gt;&gt;&gt; (4 ** (8 % 4)) % 10
+1
+</code></pre>
+<p>但如果 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.294ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 572 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math></mjx-assistive-mml></mjx-container>, <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.464ex;" xmlns="http://www.w3.org/2000/svg" width="1.109ex" height="1.464ex" role="img" focusable="false" viewBox="0 -442 490 647" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi></math></mjx-assistive-mml></mjx-container> 都是质数，而且 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.357ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 600 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></mjx-assistive-mml></mjx-container> 是两个质数的乘积，那么上面的等式成立。</p>
+<p>同样，我无法理解它为什么能成立，因为偶然性太大了，你怎么能偶然发现 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="4.466ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 1974 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(596,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(985,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(1585,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container>, 同时又恰好发现可以 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="10.966ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 4847 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mtext" transform="translate(490,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(740,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(1618,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2103,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(2623,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(2873,0)"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(3469,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(3858,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4458,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container>?</p>
+<h2 id="加解密的机制" tabindex="-1">加解密的机制</h2>
+<p>对称加解密的设计是对于明文 m, 密钥 K, 通过 m XOR K = c 加密，通过 c XOR K 解密。同样，无法理解为什么这么刚好这么巧。</p>
+<p>而不对称加解密则是，对于明文 m, 用公钥 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="2.611ex" height="1.779ex" role="img" focusable="false" viewBox="0 -775.2 1154.1 786.2" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><use data-c="1D458" xlink:href="#MJX-TEX-I-1D458"></use></g><g data-mml-node="mo" transform="translate(554,363) scale(0.707)"><use data-c="2B" xlink:href="#MJX-TEX-N-2B"></use></g></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>k</mi><mo>+</mo></msup></math></mjx-assistive-mml></mjx-container> 加密: <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="14.039ex" height="2.32ex" role="img" focusable="false" viewBox="0 -775.2 6205.4 1025.2" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D450" xlink:href="#MJX-TEX-I-1D450"></use></g><g data-mml-node="mo" transform="translate(710.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mi" transform="translate(1766.6,0)"><use data-c="1D438" xlink:href="#MJX-TEX-I-1D438"></use></g><g data-mml-node="mo" transform="translate(2530.6,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="msup" transform="translate(2919.6,0)"><g data-mml-node="mi"><use data-c="1D43E" xlink:href="#MJX-TEX-I-1D43E"></use></g><g data-mml-node="mo" transform="translate(974,363) scale(0.707)"><use data-c="2B" xlink:href="#MJX-TEX-N-2B"></use></g></g><g data-mml-node="mo" transform="translate(4493.7,0)"><use data-c="2C" xlink:href="#MJX-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(4938.4,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mo" transform="translate(5816.4,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>c</mi><mo>=</mo><mi>E</mi><mo stretchy="false">(</mo><msup><mi>K</mi><mo>+</mo></msup><mo>,</mo><mi>m</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container>，用 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="2.611ex" height="1.779ex" role="img" focusable="false" viewBox="0 -775.2 1154.1 786.2" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><use data-c="1D458" xlink:href="#MJX-TEX-I-1D458"></use></g><g data-mml-node="mo" transform="translate(554,363) scale(0.707)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>k</mi><mo>−</mo></msup></math></mjx-assistive-mml></mjx-container> 解密: <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="14.184ex" height="2.32ex" role="img" focusable="false" viewBox="0 -775.2 6269.4 1025.2" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mo" transform="translate(1155.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mi" transform="translate(2211.6,0)"><use data-c="1D437" xlink:href="#MJX-TEX-I-1D437"></use></g><g data-mml-node="mo" transform="translate(3039.6,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="msup" transform="translate(3428.6,0)"><g data-mml-node="mi"><use data-c="1D43E" xlink:href="#MJX-TEX-I-1D43E"></use></g><g data-mml-node="mo" transform="translate(974,363) scale(0.707)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g></g><g data-mml-node="mo" transform="translate(5002.7,0)"><use data-c="2C" xlink:href="#MJX-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(5447.4,0)"><use data-c="1D450" xlink:href="#MJX-TEX-I-1D450"></use></g><g data-mml-node="mo" transform="translate(5880.4,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mo>=</mo><mi>D</mi><mo stretchy="false">(</mo><msup><mi>K</mi><mo>−</mo></msup><mo>,</mo><mi>c</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></p>
+<h2 id="通过模运算实现不对称加解密" tabindex="-1">通过模运算实现不对称加解密</h2>
+<p>假设某一个天，数学家或密码学家观察了这个等式很久</p>
+<p><mjx-container class="MathJax" jax="SVG" display="true" style="position: relative;"><svg style="vertical-align: -0.186ex;" xmlns="http://www.w3.org/2000/svg" width="28.861ex" height="2.32ex" role="img" focusable="false" viewBox="0 -943.3 12756.7 1025.3" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mi" transform="translate(605,413) scale(0.707)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g></g><g data-mml-node="mtext" transform="translate(1001.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1251.5,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2129.5,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2614.5,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(3134.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(3384.5,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4262.3,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="msup" transform="translate(5318,0)"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="TeXAtom" transform="translate(605,413) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mo"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(389,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mtext" transform="translate(879,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1129,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2007,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2492,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mi" transform="translate(3012,0)"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(3608,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(3997,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4597,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(4986,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g><g data-mml-node="mtext" transform="translate(9773.7,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(10023.7,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(10901.7,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(11386.7,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(11906.7,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(12156.7,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msup><mi>x</mi><mi>y</mi></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mi>y</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container></p>
+<p>发现如果 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="10.4ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 4597 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mtext" transform="translate(490,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(740,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(1618,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2103,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mi" transform="translate(2623,0)"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(3219,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(3608,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4208,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container> 如果等于 1， 那么直接就有 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.186ex;" xmlns="http://www.w3.org/2000/svg" width="20.075ex" height="1.756ex" role="img" focusable="false" viewBox="0 -694 8873 776" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mi" transform="translate(605,363) scale(0.707)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g></g><g data-mml-node="mtext" transform="translate(1001.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1251.5,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2129.5,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2614.5,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(3134.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(3384.5,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4262.3,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mi" transform="translate(5318,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mtext" transform="translate(5890,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(6140,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(7018,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(7503,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(8023,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(8273,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>x</mi><mi>y</mi></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><mi>x</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container> 。</p>
+<p>如果 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.186ex;" xmlns="http://www.w3.org/2000/svg" width="8.063ex" height="2.117ex" role="img" focusable="false" viewBox="0 -853.7 3563.8 935.7" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mo" transform="translate(849.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="msup" transform="translate(1905.6,0)"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="TeXAtom" transform="translate(911,363) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g><g data-mml-node="mi" transform="translate(466,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g></g></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi><mo>=</mo><msup><mi>m</mi><mrow data-mjx-texclass="ORD"><mi>e</mi><mi>d</mi></mrow></msup></math></mjx-assistive-mml></mjx-container> ，<mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.986ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 878 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math></mjx-assistive-mml></mjx-container> 是密文，<mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="2.92ex" height="1.553ex" role="img" focusable="false" viewBox="0 -675.5 1290.5 686.5" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(911,363) scale(0.707)"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>m</mi><mi>e</mi></msup></math></mjx-assistive-mml></mjx-container> 是加密之后的密文，<mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="5.7ex" height="2.497ex" role="img" focusable="false" viewBox="0 -853.7 2519.2 1103.7" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="msup" transform="translate(389,0)"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(911,363) scale(0.707)"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g></g><g data-mml-node="msup" transform="translate(1679.5,0)"><g data-mml-node="mo"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mi" transform="translate(422,363) scale(0.707)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">(</mo><msup><mi>m</mi><mi>e</mi></msup><msup><mo stretchy="false">)</mo><mi>d</mi></msup></math></mjx-assistive-mml></mjx-container> 是解密，那么可以看出 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="12.468ex" height="2.497ex" role="img" focusable="false" viewBox="0 -853.7 5511 1103.7" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="msup" transform="translate(389,0)"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(911,363) scale(0.707)"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g></g><g data-mml-node="msup" transform="translate(1679.5,0)"><g data-mml-node="mo"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mi" transform="translate(422,363) scale(0.707)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g></g><g data-mml-node="mo" transform="translate(2797,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="msup" transform="translate(3852.8,0)"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="TeXAtom" transform="translate(911,363) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g><g data-mml-node="mi" transform="translate(466,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g></g></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">(</mo><msup><mi>m</mi><mi>e</mi></msup><msup><mo stretchy="false">)</mo><mi>d</mi></msup><mo>=</mo><msup><mi>m</mi><mrow data-mjx-texclass="ORD"><mi>e</mi><mi>d</mi></mrow></msup></math></mjx-assistive-mml></mjx-container>, 如果能让 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.186ex;" xmlns="http://www.w3.org/2000/svg" width="8.755ex" height="2.117ex" role="img" focusable="false" viewBox="0 -853.7 3869.8 935.7" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="TeXAtom" transform="translate(911,363) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g><g data-mml-node="mi" transform="translate(466,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g></g></g><g data-mml-node="mo" transform="translate(1936,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mi" transform="translate(2991.8,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>m</mi><mrow data-mjx-texclass="ORD"><mi>e</mi><mi>d</mi></mrow></msup><mo>=</mo><mi>m</mi></math></mjx-assistive-mml></mjx-container> 那就实现了解密。</p>
+<p>最后一次说明，这里偶然性太多，我也没看过数学家的传记，所以我同样无法理解怎么必然得出这些结论。</p>
+<p>决定论认为，存在一个拉普拉斯恶魔，只要知道 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="35.361ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 15629.4 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mtext" transform="translate(572,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(822,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(1700,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2185,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(2705,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(2955,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(3777.2,0)"><use data-c="D7" xlink:href="#MJX-TEX-N-D7"></use></g><g data-mml-node="mi" transform="translate(4777.4,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mtext" transform="translate(5267.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(5517.4,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(6395.4,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(6880.4,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(7400.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(7650.4,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(8528.2,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mo" transform="translate(9584,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(9973,0)"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mo" transform="translate(10767.2,0)"><use data-c="D7" xlink:href="#MJX-TEX-N-D7"></use></g><g data-mml-node="mi" transform="translate(11767.4,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mo" transform="translate(12257.4,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mtext" transform="translate(12646.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(12896.4,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(13774.4,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(14259.4,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(14779.4,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(15029.4,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>×</mo><mi>y</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><mo stretchy="false">(</mo><mi>x</mi><mo>×</mo><mi>y</mi><mo stretchy="false">)</mo><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container>, 必然能推出 RSA。不幸的是我们不是拉普拉斯恶魔。</p>
+<p>所以密码学家利用了 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.186ex;" xmlns="http://www.w3.org/2000/svg" width="28.861ex" height="2.207ex" role="img" focusable="false" viewBox="0 -893.3 12756.7 975.3" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mi" transform="translate(605,363) scale(0.707)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g></g><g data-mml-node="mtext" transform="translate(1001.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1251.5,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2129.5,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2614.5,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(3134.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(3384.5,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4262.3,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="msup" transform="translate(5318,0)"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="TeXAtom" transform="translate(605,363) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mo"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(389,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mtext" transform="translate(879,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1129,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2007,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2492,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mi" transform="translate(3012,0)"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(3608,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(3997,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4597,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(4986,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g><g data-mml-node="mtext" transform="translate(9773.7,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(10023.7,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(10901.7,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(11386.7,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(11906.7,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(12156.7,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>x</mi><mi>y</mi></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mi>y</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container> 并利用 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="14.549ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 6430.6 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mtext" transform="translate(490,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(740,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(1618,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2103,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mi" transform="translate(2623,0)"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(3219,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(3608,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4208,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(4874.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(5930.6,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container> 这一特例，设计出 RSA。</p>
+<h2 id="rsa-的设计" tabindex="-1">RSA 的设计</h2>
+<p>首先生成两个质数，<mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="1.138ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 503 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></mjx-assistive-mml></mjx-container>, <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="1.041ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 460 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>q</mi></math></mjx-assistive-mml></mjx-container>, 得出 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="6.553ex" height="1.758ex" role="img" focusable="false" viewBox="0 -583 2896.6 777" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(877.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mi" transform="translate(1933.6,0)"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mi" transform="translate(2436.6,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi><mo>=</mo><mi>p</mi><mi>q</mi></math></mjx-assistive-mml></mjx-container>, 以及 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="25.045ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 11070 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D467" xlink:href="#MJX-TEX-I-1D467"></use></g><g data-mml-node="mo" transform="translate(742.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mi" transform="translate(1798.6,0)"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(2394.6,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(2783.6,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(3383.6,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(4050.3,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mo" transform="translate(5106.1,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(5495.1,0)"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mo" transform="translate(6220.3,0)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g><g data-mml-node="mn" transform="translate(7220.6,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g><g data-mml-node="mo" transform="translate(7720.6,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(8109.6,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(8498.6,0)"><use data-c="1D45E" xlink:href="#MJX-TEX-I-1D45E"></use></g><g data-mml-node="mo" transform="translate(9180.8,0)"><use data-c="2212" xlink:href="#MJX-TEX-N-2212"></use></g><g data-mml-node="mn" transform="translate(10181,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g><g data-mml-node="mo" transform="translate(10681,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi><mo>=</mo><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mi>q</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></p>
+<p>通过计算得出 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.054ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 466 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>e</mi></math></mjx-assistive-mml></mjx-container>, <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.09ex;" xmlns="http://www.w3.org/2000/svg" width="5.429ex" height="1.312ex" role="img" focusable="false" viewBox="0 -540 2399.6 580" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g><g data-mml-node="mo" transform="translate(743.8,0)"><use data-c="3C" xlink:href="#MJX-TEX-N-3C"></use></g><g data-mml-node="mi" transform="translate(1799.6,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>e</mi><mo>&lt;</mo><mi>n</mi></math></mjx-assistive-mml></mjx-container> ，并且 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.054ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 466 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>e</mi></math></mjx-assistive-mml></mjx-container> 也是一个质数，因为这一才能满足 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.186ex;" xmlns="http://www.w3.org/2000/svg" width="28.861ex" height="2.207ex" role="img" focusable="false" viewBox="0 -893.3 12756.7 975.3" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mi" transform="translate(605,363) scale(0.707)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g></g><g data-mml-node="mtext" transform="translate(1001.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1251.5,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2129.5,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2614.5,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(3134.5,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(3384.5,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4262.3,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="msup" transform="translate(5318,0)"><g data-mml-node="mi"><use data-c="1D465" xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="TeXAtom" transform="translate(605,363) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mo"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(389,0)"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mtext" transform="translate(879,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1129,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2007,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2492,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mi" transform="translate(3012,0)"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(3608,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(3997,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4597,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(4986,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g></g></g><g data-mml-node="mtext" transform="translate(9773.7,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(10023.7,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(10901.7,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(11386.7,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(11906.7,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(12156.7,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>x</mi><mi>y</mi></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mi>y</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container></p>
+<p>通过计算得出一个质数 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.023ex;" xmlns="http://www.w3.org/2000/svg" width="1.176ex" height="1.593ex" role="img" focusable="false" viewBox="0 -694 520 704" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>d</mi></math></mjx-assistive-mml></mjx-container>, 使得 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.186ex;" xmlns="http://www.w3.org/2000/svg" width="12.823ex" height="1.756ex" role="img" focusable="false" viewBox="0 -694 5667.6 776" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g><g data-mml-node="mi" transform="translate(466,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(986,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1236,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2114,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2599,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(3119,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(3369,0)"><use data-c="1D467" xlink:href="#MJX-TEX-I-1D467"></use></g><g data-mml-node="mo" transform="translate(4111.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(5167.6,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>e</mi><mi>d</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>z</mi><mo>=</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container>, 这样才能满足  <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="14.549ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 6430.6 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D466" xlink:href="#MJX-TEX-I-1D466"></use></g><g data-mml-node="mtext" transform="translate(490,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(740,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(1618,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2103,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mi" transform="translate(2623,0)"><use data-c="1D719" xlink:href="#MJX-TEX-I-1D719"></use></g><g data-mml-node="mo" transform="translate(3219,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(3608,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4208,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mo" transform="translate(4874.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(5930.6,0)"><use data-c="31" xlink:href="#MJX-TEX-N-31"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mi>ϕ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container></p>
+<p>将 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="8.195ex" height="1.661ex" role="img" focusable="false" viewBox="0 -540 3622.2 734" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="3C" xlink:href="#MJX-TEX-N-3C"></use></g><g data-mml-node="mi" transform="translate(1055.8,0)"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g><g data-mml-node="mo" transform="translate(1521.8,0)"><use data-c="2C" xlink:href="#MJX-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(1966.4,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(2844.2,0)"><use data-c="3E" xlink:href="#MJX-TEX-N-3E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>&lt;</mo><mi>e</mi><mo>,</mo><mi>n</mi><mo>&gt;</mo></math></mjx-assistive-mml></mjx-container> 作为公钥，将 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="8.317ex" height="2.009ex" role="img" focusable="false" viewBox="0 -694 3676.2 888" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="3C" xlink:href="#MJX-TEX-N-3C"></use></g><g data-mml-node="mi" transform="translate(1055.8,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mo" transform="translate(1575.8,0)"><use data-c="2C" xlink:href="#MJX-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(2020.4,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(2898.2,0)"><use data-c="3E" xlink:href="#MJX-TEX-N-3E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>&lt;</mo><mi>d</mi><mo>,</mo><mi>n</mi><mo>&gt;</mo></math></mjx-assistive-mml></mjx-container> 作为私钥。</p>
+<p>加密的时候，对于明文 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.986ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 878 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math></mjx-assistive-mml></mjx-container>, 进行以下运算：</p>
+<p><mjx-container class="MathJax" jax="SVG" display="true" style="position: relative;"><svg style="vertical-align: -0.186ex;" xmlns="http://www.w3.org/2000/svg" width="13.665ex" height="1.827ex" role="img" focusable="false" viewBox="0 -725.5 6040.1 807.5" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D450" xlink:href="#MJX-TEX-I-1D450"></use></g><g data-mml-node="mo" transform="translate(710.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="msup" transform="translate(1766.6,0)"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(911,413) scale(0.707)"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g></g><g data-mml-node="mtext" transform="translate(3057.1,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(3307.1,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(4185.1,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(4670.1,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(5190.1,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(5440.1,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>c</mi><mo>=</mo><msup><mi>m</mi><mi>e</mi></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container><br>
+解密的时候，对于密文 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="0.98ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 433 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D450" xlink:href="#MJX-TEX-I-1D450"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>c</mi></math></mjx-assistive-mml></mjx-container>, 进行以下运算：</p>
+<p><mjx-container class="MathJax" jax="SVG" display="true" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="67.157ex" height="2.61ex" role="img" focusable="false" viewBox="0 -903.7 29683.6 1153.7" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><use data-c="1D450" xlink:href="#MJX-TEX-I-1D450"></use></g><g data-mml-node="mi" transform="translate(466,413) scale(0.707)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g></g><g data-mml-node="mtext" transform="translate(883.7,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1133.7,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2011.7,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2496.7,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(3016.7,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(3266.7,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4144.5,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mo" transform="translate(5200.3,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="msup" transform="translate(5589.3,0)"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(911,413) scale(0.707)"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g></g><g data-mml-node="mtext" transform="translate(6879.8,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(7129.8,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(8007.8,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(8492.8,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(9012.8,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(9262.8,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="msup" transform="translate(9862.8,0)"><g data-mml-node="mo"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mi" transform="translate(422,413) scale(0.707)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g></g><g data-mml-node="mo" transform="translate(10980.2,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="msup" transform="translate(12036,0)"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="TeXAtom" transform="translate(911,413) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g><g data-mml-node="mi" transform="translate(466,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g></g></g><g data-mml-node="mtext" transform="translate(13694.2,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(13944.2,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(14822.2,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(15307.2,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(15827.2,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(16077.2,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(16955,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="msup" transform="translate(18010.8,0)"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="TeXAtom" transform="translate(911,413) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g><g data-mml-node="mi" transform="translate(466,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(986,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1236,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2114,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2599,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mi" transform="translate(3119,0)"><use data-c="1D467" xlink:href="#MJX-TEX-I-1D467"></use></g></g></g><g data-mml-node="mtext" transform="translate(21506,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(21756,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(22634,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(23119,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(23639,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(23889,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(24766.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mi" transform="translate(25822.6,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mtext" transform="translate(26700.6,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(26950.6,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(27828.6,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(28313.6,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(28833.6,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(29083.6,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msup><mi>c</mi><mi>d</mi></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><mo stretchy="false">(</mo><msup><mi>m</mi><mi>e</mi></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><msup><mo stretchy="false">)</mo><mi>d</mi></msup><mo>=</mo><msup><mi>m</mi><mrow data-mjx-texclass="ORD"><mi>e</mi><mi>d</mi></mrow></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><msup><mi>m</mi><mrow data-mjx-texclass="ORD"><mi>e</mi><mi>d</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mi>z</mi></mrow></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><mi>m</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi></math></mjx-assistive-mml></mjx-container></p>
+<p>由于设计了 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.09ex;" xmlns="http://www.w3.org/2000/svg" width="6.361ex" height="1.312ex" role="img" focusable="false" viewBox="0 -540 2811.6 580" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mo" transform="translate(1155.8,0)"><use data-c="3C" xlink:href="#MJX-TEX-N-3C"></use></g><g data-mml-node="mi" transform="translate(2211.6,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mo>&lt;</mo><mi>n</mi></math></mjx-assistive-mml></mjx-container>, 所以 <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.186ex;" xmlns="http://www.w3.org/2000/svg" width="13.739ex" height="1.756ex" role="img" focusable="false" viewBox="0 -694 6072.6 776" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mtext" transform="translate(878,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(1128,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g><g data-mml-node="mi" transform="translate(2006,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(2491,0)"><use data-c="1D451" xlink:href="#MJX-TEX-I-1D451"></use></g><g data-mml-node="mtext" transform="translate(3011,0)"><use data-c="A0" xlink:href="#MJX-TEX-N-A0"></use></g><g data-mml-node="mi" transform="translate(3261,0)"><use data-c="1D45B" xlink:href="#MJX-TEX-I-1D45B"></use></g><g data-mml-node="mo" transform="translate(4138.8,0)"><use data-c="3D" xlink:href="#MJX-TEX-N-3D"></use></g><g data-mml-node="mi" transform="translate(5194.6,0)"><use data-c="1D45A" xlink:href="#MJX-TEX-I-1D45A"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>n</mi><mo>=</mo><mi>m</mi></math></mjx-assistive-mml></mjx-container></p>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  <svg style="display: none;" id="MJX-SVG-global-cache"><defs><path id="MJX-TEX-I-1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path><path id="MJX-TEX-N-A0" d=""></path><path id="MJX-TEX-I-1D45A" d="M21 287Q22 293 24 303T36 341T56 388T88 425T132 442T175 435T205 417T221 395T229 376L231 369Q231 367 232 367L243 378Q303 442 384 442Q401 442 415 440T441 433T460 423T475 411T485 398T493 385T497 373T500 364T502 357L510 367Q573 442 659 442Q713 442 746 415T780 336Q780 285 742 178T704 50Q705 36 709 31T724 26Q752 26 776 56T815 138Q818 149 821 151T837 153Q857 153 857 145Q857 144 853 130Q845 101 831 73T785 17T716 -10Q669 -10 648 17T627 73Q627 92 663 193T700 345Q700 404 656 404H651Q565 404 506 303L499 291L466 157Q433 26 428 16Q415 -11 385 -11Q372 -11 364 -4T353 8T350 18Q350 29 384 161L420 307Q423 322 423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 181Q151 335 151 342Q154 357 154 369Q154 405 129 405Q107 405 92 377T69 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path><path id="MJX-TEX-I-1D45C" d="M201 -11Q126 -11 80 38T34 156Q34 221 64 279T146 380Q222 441 301 441Q333 441 341 440Q354 437 367 433T402 417T438 387T464 338T476 268Q476 161 390 75T201 -11ZM121 120Q121 70 147 48T206 26Q250 26 289 58T351 142Q360 163 374 216T388 308Q388 352 370 375Q346 405 306 405Q243 405 195 347Q158 303 140 230T121 120Z"></path><path id="MJX-TEX-I-1D451" d="M366 683Q367 683 438 688T511 694Q523 694 523 686Q523 679 450 384T375 83T374 68Q374 26 402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487H491Q506 153 506 145Q506 140 503 129Q490 79 473 48T445 8T417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157Q33 205 53 255T101 341Q148 398 195 420T280 442Q336 442 364 400Q369 394 369 396Q370 400 396 505T424 616Q424 629 417 632T378 637H357Q351 643 351 645T353 664Q358 683 366 683ZM352 326Q329 405 277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q233 26 290 98L298 109L352 326Z"></path><path id="MJX-TEX-I-1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path><path id="MJX-TEX-N-2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"></path><path id="MJX-TEX-I-1D466" d="M21 287Q21 301 36 335T84 406T158 442Q199 442 224 419T250 355Q248 336 247 334Q247 331 231 288T198 191T182 105Q182 62 196 45T238 27Q261 27 281 38T312 61T339 94Q339 95 344 114T358 173T377 247Q415 397 419 404Q432 431 462 431Q475 431 483 424T494 412T496 403Q496 390 447 193T391 -23Q363 -106 294 -155T156 -205Q111 -205 77 -183T43 -117Q43 -95 50 -80T69 -58T89 -48T106 -45Q150 -45 150 -87Q150 -107 138 -122T115 -142T102 -147L99 -148Q101 -153 118 -160T152 -167H160Q177 -167 186 -165Q219 -156 247 -127T290 -65T313 -9T321 21L315 17Q309 13 296 6T270 -6Q250 -11 231 -11Q185 -11 150 11T104 82Q103 89 103 113Q103 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Z"></path><path id="MJX-TEX-N-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path><path id="MJX-TEX-N-28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path><path id="MJX-TEX-N-29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path><path id="MJX-TEX-N-D7" d="M630 29Q630 9 609 9Q604 9 587 25T493 118L389 222L284 117Q178 13 175 11Q171 9 168 9Q160 9 154 15T147 29Q147 36 161 51T255 146L359 250L255 354Q174 435 161 449T147 471Q147 480 153 485T168 490Q173 490 175 489Q178 487 284 383L389 278L493 382Q570 459 587 475T609 491Q630 491 630 471Q630 464 620 453T522 355L418 250L522 145Q606 61 618 48T630 29Z"></path><path id="MJX-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-TEX-I-1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path><path id="MJX-TEX-I-1D45E" d="M33 157Q33 258 109 349T280 441Q340 441 372 389Q373 390 377 395T388 406T404 418Q438 442 450 442Q454 442 457 439T460 434Q460 425 391 149Q320 -135 320 -139Q320 -147 365 -148H390Q396 -156 396 -157T393 -175Q389 -188 383 -194H370Q339 -192 262 -192Q234 -192 211 -192T174 -192T157 -193Q143 -193 143 -185Q143 -182 145 -170Q149 -154 152 -151T172 -148Q220 -148 230 -141Q238 -136 258 -53T279 32Q279 33 272 29Q224 -10 172 -10Q117 -10 75 30T33 157ZM352 326Q329 405 277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q233 26 290 98L298 109L352 326Z"></path><path id="MJX-TEX-N-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path><path id="MJX-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path><path id="MJX-TEX-N-2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path><path id="MJX-TEX-N-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"></path><path id="MJX-TEX-N-37" d="M55 458Q56 460 72 567L88 674Q88 676 108 676H128V672Q128 662 143 655T195 646T364 644H485V605L417 512Q408 500 387 472T360 435T339 403T319 367T305 330T292 284T284 230T278 162T275 80Q275 66 275 52T274 28V19Q270 2 255 -10T221 -22Q210 -22 200 -19T179 0T168 40Q168 198 265 368Q285 400 349 489L395 552H302Q128 552 119 546Q113 543 108 522T98 479L95 458V455H55V458Z"></path><path id="MJX-TEX-I-1D719" d="M409 688Q413 694 421 694H429H442Q448 688 448 686Q448 679 418 563Q411 535 404 504T392 458L388 442Q388 441 397 441T429 435T477 418Q521 397 550 357T579 260T548 151T471 65T374 11T279 -10H275L251 -105Q245 -128 238 -160Q230 -192 227 -198T215 -205H209Q189 -205 189 -198Q189 -193 211 -103L234 -11Q234 -10 226 -10Q221 -10 206 -8T161 6T107 36T62 89T43 171Q43 231 76 284T157 370T254 422T342 441Q347 441 348 445L378 567Q409 686 409 688ZM122 150Q122 116 134 91T167 53T203 35T237 27H244L337 404Q333 404 326 403T297 395T255 379T211 350T170 304Q152 276 137 237Q122 191 122 150ZM500 282Q500 320 484 347T444 385T405 400T381 404H378L332 217L284 29Q284 27 285 27Q293 27 317 33T357 47Q400 66 431 100T475 170T494 234T500 282Z"></path><path id="MJX-TEX-N-2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path><path id="MJX-TEX-N-3C" d="M694 -11T694 -19T688 -33T678 -40Q671 -40 524 29T234 166L90 235Q83 240 83 250Q83 261 91 266Q664 540 678 540Q681 540 687 534T694 519T687 505Q686 504 417 376L151 250L417 124Q686 -4 687 -5Q694 -11 694 -19Z"></path><path id="MJX-TEX-N-2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"></path><path id="MJX-TEX-N-5B" d="M118 -250V750H255V710H158V-210H255V-250H118Z"></path><path id="MJX-TEX-N-34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path><path id="MJX-TEX-N-38" d="M70 417T70 494T124 618T248 666Q319 666 374 624T429 515Q429 485 418 459T392 417T361 389T335 371T324 363L338 354Q352 344 366 334T382 323Q457 264 457 174Q457 95 399 37T249 -22Q159 -22 101 29T43 155Q43 263 172 335L154 348Q133 361 127 368Q70 417 70 494ZM286 386L292 390Q298 394 301 396T311 403T323 413T334 425T345 438T355 454T364 471T369 491T371 513Q371 556 342 586T275 624Q268 625 242 625Q201 625 165 599T128 534Q128 511 141 492T167 463T217 431Q224 426 228 424L286 386ZM250 21Q308 21 350 55T392 137Q392 154 387 169T375 194T353 216T330 234T301 253T274 270Q260 279 244 289T218 306L210 311Q204 311 181 294T133 239T107 157Q107 98 150 60T250 21Z"></path><path id="MJX-TEX-I-1D458" d="M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z"></path><path id="MJX-TEX-I-1D450" d="M34 159Q34 268 120 355T306 442Q362 442 394 418T427 355Q427 326 408 306T360 285Q341 285 330 295T319 325T330 359T352 380T366 386H367Q367 388 361 392T340 400T306 404Q276 404 249 390Q228 381 206 359Q162 315 142 235T121 119Q121 73 147 50Q169 26 205 26H209Q321 26 394 111Q403 121 406 121Q410 121 419 112T429 98T420 83T391 55T346 25T282 0T202 -11Q127 -11 81 37T34 159Z"></path><path id="MJX-TEX-I-1D438" d="M492 213Q472 213 472 226Q472 230 477 250T482 285Q482 316 461 323T364 330H312Q311 328 277 192T243 52Q243 48 254 48T334 46Q428 46 458 48T518 61Q567 77 599 117T670 248Q680 270 683 272Q690 274 698 274Q718 274 718 261Q613 7 608 2Q605 0 322 0H133Q31 0 31 11Q31 13 34 25Q38 41 42 43T65 46Q92 46 125 49Q139 52 144 61Q146 66 215 342T285 622Q285 629 281 629Q273 632 228 634H197Q191 640 191 642T193 659Q197 676 203 680H757Q764 676 764 669Q764 664 751 557T737 447Q735 440 717 440H705Q698 445 698 453L701 476Q704 500 704 528Q704 558 697 578T678 609T643 625T596 632T532 634H485Q397 633 392 631Q388 629 386 622Q385 619 355 499T324 377Q347 376 372 376H398Q464 376 489 391T534 472Q538 488 540 490T557 493Q562 493 565 493T570 492T572 491T574 487T577 483L544 351Q511 218 508 216Q505 213 492 213Z"></path><path id="MJX-TEX-I-1D43E" d="M285 628Q285 635 228 637Q205 637 198 638T191 647Q191 649 193 661Q199 681 203 682Q205 683 214 683H219Q260 681 355 681Q389 681 418 681T463 682T483 682Q500 682 500 674Q500 669 497 660Q496 658 496 654T495 648T493 644T490 641T486 639T479 638T470 637T456 637Q416 636 405 634T387 623L306 305Q307 305 490 449T678 597Q692 611 692 620Q692 635 667 637Q651 637 651 648Q651 650 654 662T659 677Q662 682 676 682Q680 682 711 681T791 680Q814 680 839 681T869 682Q889 682 889 672Q889 650 881 642Q878 637 862 637Q787 632 726 586Q710 576 656 534T556 455L509 418L518 396Q527 374 546 329T581 244Q656 67 661 61Q663 59 666 57Q680 47 717 46H738Q744 38 744 37T741 19Q737 6 731 0H720Q680 3 625 3Q503 3 488 0H478Q472 6 472 9T474 27Q478 40 480 43T491 46H494Q544 46 544 71Q544 75 517 141T485 216L427 354L359 301L291 248L268 155Q245 63 245 58Q245 51 253 49T303 46H334Q340 37 340 35Q340 19 333 5Q328 0 317 0Q314 0 280 1T180 2Q118 2 85 2T49 1Q31 1 31 11Q31 13 34 25Q38 41 42 43T65 46Q92 46 125 49Q139 52 144 61Q147 65 216 339T285 628Z"></path><path id="MJX-TEX-I-1D437" d="M287 628Q287 635 230 637Q207 637 200 638T193 647Q193 655 197 667T204 682Q206 683 403 683Q570 682 590 682T630 676Q702 659 752 597T803 431Q803 275 696 151T444 3L430 1L236 0H125H72Q48 0 41 2T33 11Q33 13 36 25Q40 41 44 43T67 46Q94 46 127 49Q141 52 146 61Q149 65 218 339T287 628ZM703 469Q703 507 692 537T666 584T629 613T590 629T555 636Q553 636 541 636T512 636T479 637H436Q392 637 386 627Q384 623 313 339T242 52Q242 48 253 48T330 47Q335 47 349 47T373 46Q499 46 581 128Q617 164 640 212T683 339T703 469Z"></path><path id="MJX-TEX-I-1D452" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"></path><path id="MJX-TEX-I-1D467" d="M347 338Q337 338 294 349T231 360Q211 360 197 356T174 346T162 335T155 324L153 320Q150 317 138 317Q117 317 117 325Q117 330 120 339Q133 378 163 406T229 440Q241 442 246 442Q271 442 291 425T329 392T367 375Q389 375 411 408T434 441Q435 442 449 442H462Q468 436 468 434Q468 430 463 420T449 399T432 377T418 358L411 349Q368 298 275 214T160 106L148 94L163 93Q185 93 227 82T290 71Q328 71 360 90T402 140Q406 149 409 151T424 153Q443 153 443 143Q443 138 442 134Q425 72 376 31T278 -11Q252 -11 232 6T193 40T155 57Q111 57 76 -3Q70 -11 59 -11H54H41Q35 -5 35 -2Q35 13 93 84Q132 129 225 214T340 322Q352 338 347 338Z"></path><path id="MJX-TEX-N-3E" d="M84 520Q84 528 88 533T96 539L99 540Q106 540 253 471T544 334L687 265Q694 260 694 250T687 235Q685 233 395 96L107 -40H101Q83 -38 83 -20Q83 -19 83 -17Q82 -10 98 -1Q117 9 248 71Q326 108 378 132L626 250L378 368Q90 504 86 509Q84 513 84 520Z"></path></defs></svg></body>
+</html>

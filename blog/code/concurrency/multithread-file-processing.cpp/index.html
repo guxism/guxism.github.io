@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>multithread-file-processing.cpp</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      <h1>多线程无锁文件处理</h1>
+<p>目的: 多线程解析大量 Markdown 笔记, 生成 Zettelkasten backlinks 导航</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      <p>程序架构: 使用两个方向的生产消费者队列</p>
+<pre><code>                  +----------------------------------------------+
+                  v                                              |
++----------+     +---------+     +---------+     +--------+     +---------+
+| Producer | --&gt; |         | --&gt; | Worker1 | --&gt; |        | --&gt; | Manager |
++----------+     | Queue1  |     +---------+     | Queue2 |     +---------+
++----------+     |         |     +---------+     |        |
+| Worker4  | &lt;-- |         | --&gt; | Worker2 | --&gt; |        | &lt;+
++----------+     +---------+     +---------+     +--------+  |
+ |                |                               ^         |
+ |                |                               |         |
+ |                v                               |         |
+ |              +---------+                       |         |
+ |              | Worker3 | ----------------------+         |
+ |              +---------+                                 |
+ |                                                          |
+ +----------------------------------------------------------+
+</code></pre>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>使用无锁队列
+<a href="https://github.com/cameron314/concurrentqueue">moodycamel::ConcurrentQueue</a></p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="cp">#include</span><span class="w"> </span><span class="cpf">"concurrentqueue.h"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;chrono&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdlib&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstring&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ctime&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;filesystem&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fstream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;map&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;regex&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;set&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;utility&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;variant&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">Message</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      <p>file -&gt; tags</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">using</span><span class="w"> </span><span class="n">file_tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;&gt;</span><span class="p">;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">cq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moodycamel</span><span class="o">::</span><span class="n">ConcurrentQueue</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">&gt;</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      <p>映射:Tag -&gt; Files</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">using</span><span class="w"> </span><span class="n">statmap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="o">&gt;&gt;</span><span class="p">;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">stat_item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="o">&gt;&gt;</span><span class="p">;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">TaskValue</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">variant</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">file_tags</span><span class="p">,</span><span class="w"> </span><span class="n">stat_item</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="o">&gt;</span><span class="p">;</span><span class="w"></span>
+<span class="cp">#define LOG(...) printf(__VA_ARGS__)</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-5">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-5">#</a>
+      </div>
+      <p>#define LOG(…)
+#define DEBUG 0</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="cp">#define WORKER_THREADS 4</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-6">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-6">#</a>
+      </div>
+      <p>定义消息类型</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">using</span><span class="w"> </span><span class="n">MesgType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">MesgType</span><span class="w"> </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-7">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-7">#</a>
+      </div>
+      <p>告诉 Worker 有新文件需要处理</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">NEW_FILE</span><span class="p">,</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-8">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-8">#</a>
+      </div>
+      <p>已经发送完所有文件任务</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">ALL_FILES_SENT</span><span class="p">,</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-9">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-9">#</a>
+      </div>
+      <p>Worker 处理完一个文件, 发送一个 STAT</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">STAT</span><span class="p">,</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-10">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-10">#</a>
+      </div>
+      <p>Roadmap 任务</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">NEW_ROADMAP</span><span class="p">,</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-11">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-11">#</a>
+      </div>
+      <p>Worker 生成一个 Roadmap</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">ROADMAP_CREATED</span><span class="p">,</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-12">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-12">#</a>
+      </div>
+      <p>告诉 Worke 可以退出</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">RETIRE</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">Message</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">MesgType</span><span class="w"> </span><span class="n">type</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">TaskValue</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">Manager</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">statmap</span><span class="w"> </span><span class="o">*</span><span class="n">stat</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-13">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-13">#</a>
+      </div>
+      <p>Manager 到 Worker 的单向管道</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">cq</span><span class="w"> </span><span class="o">*</span><span class="n">to_worker</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-14">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-14">#</a>
+      </div>
+      <p>Worker 到 Manager 的单向管道</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">cq</span><span class="w"> </span><span class="o">*</span><span class="n">to_manager</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">root</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">num_workers</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">Manager</span><span class="p">(</span><span class="n">statmap</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">cq</span><span class="w"> </span><span class="o">*</span><span class="n">_2w</span><span class="p">,</span><span class="w"> </span><span class="n">cq</span><span class="w"> </span><span class="o">*</span><span class="n">_2m</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">nw</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="n">stat</span><span class="p">(</span><span class="n">s</span><span class="p">),</span><span class="w"> </span><span class="n">to_worker</span><span class="p">(</span><span class="n">_2w</span><span class="p">),</span><span class="w"> </span><span class="n">to_manager</span><span class="p">(</span><span class="n">_2m</span><span class="p">),</span><span class="w"> </span><span class="n">root</span><span class="p">(</span><span class="n">r</span><span class="p">),</span><span class="w"> </span><span class="n">num_workers</span><span class="p">(</span><span class="n">nw</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-15">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-15">#</a>
+      </div>
+      <p>禁止默认构造函数</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">Manager</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">delete</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">Worker</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">cq</span><span class="w"> </span><span class="o">*</span><span class="n">to_worker</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">cq</span><span class="w"> </span><span class="o">*</span><span class="n">to_manager</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">root</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">Worker</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">cq</span><span class="w"> </span><span class="o">*</span><span class="n">_2w</span><span class="p">,</span><span class="w"> </span><span class="n">cq</span><span class="w"> </span><span class="o">*</span><span class="n">_2m</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="n">id</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="w"> </span><span class="n">to_worker</span><span class="p">(</span><span class="n">_2w</span><span class="p">),</span><span class="w"> </span><span class="n">to_manager</span><span class="p">(</span><span class="n">_2m</span><span class="p">),</span><span class="w"> </span><span class="n">root</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">Worker</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">delete</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="n">file_tags</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="w"> </span><span class="o">&amp;</span><span class="n">file</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">create_roadmap</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="o">&amp;</span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="n">stat_item</span><span class="w"> </span><span class="o">&amp;</span><span class="n">tag</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">do_work</span><span class="p">(</span><span class="n">Worker</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">Message</span><span class="w"> </span><span class="n">task</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="n">to_worker</span><span class="o">-&gt;</span><span class="n">try_dequeue</span><span class="p">(</span><span class="n">task</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">type</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">MesgType</span><span class="o">::</span><span class="n">NEW_FILE</span><span class="o">:</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="k">auto</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="o">&gt;</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="n">LOG</span><span class="p">(</span><span class="s">"[thread %d]: Process File &lt;%s&gt;</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span><span class="w"></span>
+<span class="w">                </span><span class="n">file_tags</span><span class="w"> </span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parse</span><span class="p">(</span><span class="n">file</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="n">task</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MesgType</span><span class="o">::</span><span class="n">STAT</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="n">task</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stat</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="n">w</span><span class="p">.</span><span class="n">to_manager</span><span class="o">-&gt;</span><span class="n">enqueue</span><span class="p">(</span><span class="n">task</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">MesgType</span><span class="o">::</span><span class="n">NEW_ROADMAP</span><span class="o">:</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="k">auto</span><span class="w"> </span><span class="n">roadmap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">stat_item</span><span class="o">&gt;</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="n">LOG</span><span class="p">(</span><span class="s">"[thread %d]: Create Roadmap &lt;%s&gt;</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="n">roadmap</span><span class="p">.</span><span class="n">first</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span><span class="w"></span>
+<span class="w">                </span><span class="n">create_roadmap</span><span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="n">roadmap</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="n">task</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MesgType</span><span class="o">::</span><span class="n">ROADMAP_CREATED</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="n">task</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">roadmap</span><span class="p">.</span><span class="n">first</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="n">w</span><span class="p">.</span><span class="n">to_manager</span><span class="o">-&gt;</span><span class="n">enqueue</span><span class="p">(</span><span class="n">task</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">MesgType</span><span class="o">::</span><span class="n">RETIRE</span><span class="o">:</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">LOG</span><span class="p">(</span><span class="s">"[thread %d]: Exit</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="k">default</span><span class="o">:</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="n">statmap</span><span class="w"> </span><span class="o">*</span><span class="n">map</span><span class="p">,</span><span class="w"> </span><span class="n">file_tags</span><span class="w"> </span><span class="o">&amp;</span><span class="n">item</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">manage</span><span class="p">(</span><span class="n">Manager</span><span class="w"> </span><span class="n">manager</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">stat_cnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">total_stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INT_MAX</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">Message</span><span class="w"> </span><span class="n">task</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">stat_cnt</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">total_stat</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">manager</span><span class="p">.</span><span class="n">to_manager</span><span class="o">-&gt;</span><span class="n">try_dequeue</span><span class="p">(</span><span class="n">task</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">type</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">MesgType</span><span class="o">::</span><span class="n">STAT</span><span class="o">:</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="o">++</span><span class="n">stat_cnt</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="n">merge</span><span class="p">(</span><span class="n">manager</span><span class="p">.</span><span class="n">stat</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">file_tags</span><span class="o">&gt;</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">value</span><span class="p">));</span><span class="w"></span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">MesgType</span><span class="o">::</span><span class="n">ALL_FILES_SENT</span><span class="o">:</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="n">LOG</span><span class="p">(</span><span class="s">"[Manager]: Notified by Producer, there will be %d Files</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="n">num</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="n">total_stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">num</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="k">default</span><span class="o">:</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">total_file_work</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">manager</span><span class="p">.</span><span class="n">stat</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-16">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-16">#</a>
+      </div>
+      <p>用另外一条线程充当生产者</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="n">mt</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="n">manager</span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">Message</span><span class="w"> </span><span class="n">task</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">manager</span><span class="p">.</span><span class="n">stat</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">manager</span><span class="p">.</span><span class="n">stat</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-17">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-17">#</a>
+      </div>
+      <p>数据格式: 哈希表的单项</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                </span><span class="n">task</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="n">task</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MesgType</span><span class="o">::</span><span class="n">NEW_ROADMAP</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="n">LOG</span><span class="p">(</span><span class="s">"[Phase 2 Producer]: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="o">-&gt;</span><span class="n">first</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span><span class="w"></span>
+<span class="w">                </span><span class="n">manager</span><span class="p">.</span><span class="n">to_worker</span><span class="o">-&gt;</span><span class="n">enqueue</span><span class="p">(</span><span class="n">task</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">});</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-18">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-18">#</a>
+      </div>
+      <p>无需 join</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">mt</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-19">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-19">#</a>
+      </div>
+      <p>接收 worker 第二轮的工作反馈</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">cnt_file_work</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">cnt_file_work</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">total_file_work</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">Message</span><span class="w"> </span><span class="n">task</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">manager</span><span class="p">.</span><span class="n">to_manager</span><span class="o">-&gt;</span><span class="n">try_dequeue</span><span class="p">(</span><span class="n">task</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">type</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">MesgType</span><span class="o">::</span><span class="n">ROADMAP_CREATED</span><span class="o">:</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="o">++</span><span class="n">cnt_file_work</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="n">LOG</span><span class="p">(</span><span class="s">"[Manager]: Roadmap &lt;%s&gt; created</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">value</span><span class="p">).</span><span class="n">c_str</span><span class="p">());</span><span class="w"></span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="k">default</span><span class="o">:</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">manager</span><span class="p">.</span><span class="n">num_workers</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">task</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MesgType</span><span class="o">::</span><span class="n">RETIRE</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">manager</span><span class="p">.</span><span class="n">to_worker</span><span class="o">-&gt;</span><span class="n">enqueue</span><span class="p">(</span><span class="n">task</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="o">&gt;</span><span class="w"> </span><span class="n">glob</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="o">&amp;</span><span class="n">path</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">produce</span><span class="p">(</span><span class="n">Manager</span><span class="w"> </span><span class="n">manager</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">Message</span><span class="w"> </span><span class="n">task</span><span class="p">{</span><span class="n">MesgType</span><span class="o">::</span><span class="n">NEW_FILE</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-20">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-20">#</a>
+      </div>
+      <p>暂时只列举当前目录</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glob</span><span class="p">(</span><span class="n">manager</span><span class="p">.</span><span class="n">root</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">files</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">files</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">task</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">LOG</span><span class="p">(</span><span class="s">"[Producer]: New Message: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span><span class="w"></span>
+<span class="w">        </span><span class="n">manager</span><span class="p">.</span><span class="n">to_worker</span><span class="o">-&gt;</span><span class="n">enqueue</span><span class="p">(</span><span class="n">task</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-21">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-21">#</a>
+      </div>
+      <p>告诉 manager 总数</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">task</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MesgType</span><span class="o">::</span><span class="n">ALL_FILES_SENT</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">task</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">num</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">LOG</span><span class="p">(</span><span class="s">"[Producer]: All %d files are sent</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">num</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">manager</span><span class="p">.</span><span class="n">to_manager</span><span class="o">-&gt;</span><span class="n">enqueue</span><span class="p">(</span><span class="n">task</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">help</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"zet [dir]"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">root</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">help</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">exists</span><span class="p">(</span><span class="n">root</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"zet: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" : No such directory"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">else</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"./"</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">cq</span><span class="w"> </span><span class="n">q1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">cq</span><span class="w"> </span><span class="n">q2</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">statmap</span><span class="w"> </span><span class="n">stat</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">Manager</span><span class="w"> </span><span class="n">manager</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stat</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">q1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">q2</span><span class="p">,</span><span class="w"> </span><span class="n">WORKER_THREADS</span><span class="p">,</span><span class="w"> </span><span class="n">root</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">Manager</span><span class="w"> </span><span class="n">producer</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stat</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">q1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">q2</span><span class="p">,</span><span class="w"> </span><span class="n">WORKER_THREADS</span><span class="p">,</span><span class="w"> </span><span class="n">root</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="o">&gt;</span><span class="w"> </span><span class="n">consumers</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">Worker</span><span class="w"> </span><span class="n">worker</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">q1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">q2</span><span class="p">,</span><span class="w"> </span><span class="n">root</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-22">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-22">#</a>
+      </div>
+      <p>Passing by value is fine</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="n">consumers</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="p">{</span><span class="n">do_work</span><span class="p">,</span><span class="w"> </span><span class="n">worker</span><span class="p">});</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="n">mt</span><span class="p">(</span><span class="n">manage</span><span class="p">,</span><span class="w"> </span><span class="n">manager</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="n">pt</span><span class="p">(</span><span class="n">produce</span><span class="p">,</span><span class="w"> </span><span class="n">manager</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pt</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="n">mt</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">t</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">consumers</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">t</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="cp">#if DEBUG</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">i</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">stat</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">first</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">f</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">second</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="cp">#endif</span>
+<span class="w">    </span><span class="n">LOG</span><span class="p">(</span><span class="s">"%lu RoadMaps Generated</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">stat</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-23">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-23">#</a>
+      </div>
+      <p>TODO: 可以一边检索文件一边把任务放入队列</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="o">&gt;</span><span class="w"> </span><span class="n">glob</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="o">&amp;</span><span class="n">path</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="o">&gt;</span><span class="w"> </span><span class="n">files</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">entry</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">directory_iterator</span><span class="p">(</span><span class="n">path</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">symlink_status</span><span class="p">(</span><span class="n">entry</span><span class="p">).</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"></span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">file_type</span><span class="o">::</span><span class="n">regular</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entry</span><span class="p">.</span><span class="n">path</span><span class="p">();</span><span class="w"></span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">file</span><span class="p">.</span><span class="n">string</span><span class="p">().</span><span class="n">ends_with</span><span class="p">(</span><span class="s">".md"</span><span class="p">))</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">file</span><span class="p">.</span><span class="n">string</span><span class="p">().</span><span class="n">starts_with</span><span class="p">(</span><span class="s">"__#"</span><span class="p">))</span><span class="w"></span>
+<span class="w">                </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">remove</span><span class="p">(</span><span class="n">file</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="k">else</span><span class="w"></span>
+<span class="w">                </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="n">LOG</span><span class="p">(</span><span class="s">"[Producer]: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span><span class="w"></span>
+<span class="w">                    </span><span class="n">files</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">file</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">files</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="n">file_tags</span><span class="w"> </span><span class="n">parse</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="w"> </span><span class="o">&amp;</span><span class="n">file</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="nf">infile</span><span class="p">(</span><span class="n">file</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">line</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tags</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">regex</span><span class="w"> </span><span class="nf">tag_regex</span><span class="p">(</span><span class="n">R</span><span class="s">"(^(#[a-zA-Z0-9_][a-zA-Z0-9_\-]* *)</span><span class="o">+</span><span class="n">$</span><span class="p">)</span><span class="s">")</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span><span class="w"> </span><span class="n">line</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">regex_match</span><span class="p">(</span><span class="n">line</span><span class="p">,</span><span class="w"> </span><span class="n">tag_regex</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">tag</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">pch</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="n">pch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strtok</span><span class="p">(</span><span class="k">const_cast</span><span class="o">&lt;</span><span class="kt">char</span><span class="w"> </span><span class="o">*&gt;</span><span class="p">(</span><span class="n">line</span><span class="p">.</span><span class="n">c_str</span><span class="p">()),</span><span class="w"> </span><span class="s">" "</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">pch</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pch</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tag</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">"roadmap"</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="n">tags</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">tag</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="n">pch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strtok</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="s">" "</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">file_tags</span><span class="p">{</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">tags</span><span class="p">};</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">create_roadmap</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="o">&amp;</span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="n">stat_item</span><span class="w"> </span><span class="o">&amp;</span><span class="n">roadmap</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">roadmap</span><span class="p">.</span><span class="n">first</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="w"> </span><span class="nf">filename</span><span class="p">(</span><span class="n">root</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">filename</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">"__"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">tag</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">".md"</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">c</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tag</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">toupper</span><span class="p">(</span><span class="n">c</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">roadmap</span><span class="p">.</span><span class="n">second</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ofstream</span><span class="w"> </span><span class="nf">out</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ios</span><span class="o">::</span><span class="n">out</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">out</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"# "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">tag</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">file</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">files</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">out</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"- [["</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">file</span><span class="p">.</span><span class="n">filename</span><span class="p">().</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"]]"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">merge</span><span class="p">(</span><span class="n">statmap</span><span class="w"> </span><span class="o">*</span><span class="n">map</span><span class="p">,</span><span class="w"> </span><span class="n">file_tags</span><span class="w"> </span><span class="o">&amp;</span><span class="n">item</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">item</span><span class="p">.</span><span class="n">first</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">item</span><span class="p">.</span><span class="n">second</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">tag</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tags</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">map</span><span class="o">-&gt;</span><span class="k">operator</span><span class="p">[](</span><span class="n">tag</span><span class="p">).</span><span class="n">insert</span><span class="p">(</span><span class="n">file</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-24">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-24">#</a>
+      </div>
+      <pre><code>➜  g++ -MT zet -MMD -MP -MF zet.Td -std=c++2a -Wall -g \
+     -fsanitize=address -fpic -O0  -Ilib -Llib -o zet  \
+         zet.cpp -Wl,-rpath=lib -l_cxx -lgtest -pthread
+➜  Zettelkasten ls *.md | wc -l
+386
+➜  ./zet Zettelkasten
+...
+174 RoadMaps Generated
+./zet Zettelkasten  0.91s user 0.05s system 394% cpu 0.242 total
+# 开了 -O3, 去掉打印之后速度大幅提升
+./zet Zettelkasten  0.39s user 0.11s system 351% cpu 0.141 total
+# 没写单线程对照组, 用命令行模拟
+# 发现对用户而言速度差别不大,
+很可能是因为回收线程导致多线程在用户态时间上没有优势 ➜  bash test.sh bash
+test.sh  0.83s user 0.49s system 101% cpu 1.295 total ➜  cat test.sh for md
+in $(ls 20*.md); do grep "#.*" ${md}; cp ${md} /tmp/__#${md}; done
+</code></pre>
+<p>结果就这样: 我用的是 Vscode 的 Foam 插件, 每个点表示一个笔记, 连线表示有关联,
+散开的为未整理笔记; 总共 1600+</p>
+<p><img alt="" src="/images/foam.png"></p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+
+                    <div class="section" id="section-links">
+                        <div class="docs">
+                            <div class="octowrap">
+                                <a class="octothorpe" href="#section-links">#</a>
+                            </div>
+                            <p><a href="raw/multithread-file-processing.cpp">raw source</a></p>
+                        </div>
+                    </div>
+                    <div class="clearall"></div>
+                </div>
+            
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+            
+</html>

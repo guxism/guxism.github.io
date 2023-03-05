@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Netfilter 代码梳理</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Netfilter 代码梳理</h1>
+        <h2 id="1-iptables" tabindex="-1">1. iptables</h2>
+<p><img src="netfilter/0xfeff_3a31318b92384df0883b1ead8a503648.png" alt=""></p>
+<p>流量的去向是确定的, netfilter 做的就是在流量的必经之路设下关卡, 这些关卡又称为钩子. 为什么叫做钩子呢, 钩子就是用来挂东西的, 设想某些巨型衣架, 挂满了衣服, 你作为流量从中间穿过, 衣服就是钩子函数.</p>
+<p>流量的必经之路很明确：</p>
+<ol>
+<li>流量进来, 被 Router1 分流, 分流之前的钩子叫 PREROUTING</li>
+<li>被 Router1 分流后一条路径通往协议栈, 进入协议栈之前的钩子叫 LOCAL_INPUT</li>
+<li>有些流量只是经过当前主机, Router1 判断这些流量应被送到网口发送出去, 在网口之前首先进入钩子 FORWARD</li>
+<li>有些流量是主机里面的进程发出来的, 这些经过 LOCAL_OUT 钩子, 然后进入 Router2, Router2 判断流量的目的是 localhost 还是外部网络</li>
+<li>发出去的流量有两种, 转发的, 和主机本身发出的, 这两种最终汇合在网卡的发送队列里面, 由于它们汇合, 所以可以统一处理, 所以不难推断出 POST_ROUTING 这个钩子的存在意义.</li>
+</ol>
+<h3 id="11-iptables-的用法" tabindex="-1">1.1 iptables 的用法</h3>
+<pre class="one-piece"><code>命令： iptables 动作 条件 -j 目标
+目标： 扩展 | 保留目标
+保留目标： ACCEPT ...
+</code></pre>
+<p>作为工具没有特别值得研究的地方, 我见过几个用法（以后也许会写, 但其实在网上搜得到）：</p>
+<ol>
+<li>给流量打上标记(connmark), 同时在 netfilter 的出口处设置 tc 限速(使用 htb 算法比如说), 具体细节还包括处理 ACK 等小包对限速的影响.</li>
+<li>使用 conntrack 让已经建立的连接快速通过, 避免遍历下面的规则, 需要对有数据连接（second connection) 的协议特别留意, 需要额外配置对应的 connection tracking 模块.</li>
+<li>hashlimit 每 ip 限速.</li>
+<li>给流量打上标记, 让它通过某些路由.</li>
+<li>给自己电脑做一个 NAT, 让多个设备可以共享一个 IP 上网.</li>
+<li>路由器科学上网（其实没必要, 太多规则, 或庞大的 ipset 会让网络有延迟, 应该做一个旁路由）.</li>
+</ol>
+<p>这里关注的是 iptables 的底层, iptables 是 netfilter 的前端, 两者通过 netlink 交互(待确认)</p>
+<h2 id="2-netfilter-入口" tabindex="-1">2. netfilter 入口</h2>
+<p><a href="http://www.martin-flatin.org/papers/tr-datatag-2004-1.pdf">参考 A Map of the Networking Code in Linux Kernel 2.4.20</a> , 留意 HOOK 所在位置, 流量在进出之间, 通过了 netfilter 的 HOOK.</p>
+<p><img src="netfilter/0xfeff_c625a990be0848169bd93026434fe31f.png" alt=""></p>
+<pre class="one-piece"><code>/*
+ * IP receive entry point
+ */
+int ip_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt,
+	   struct net_device *orig_dev)
+{
+	struct net *net = dev_net(dev);
+
+	skb = ip_rcv_core(skb, net);
+	if (skb == NULL)
+		return NET_RX_DROP;
+
+	return NF_HOOK(NFPROTO_IPV4, NF_INET_PRE_ROUTING,
+		       net, NULL, skb, dev, NULL,
+		       ip_rcv_finish);
+}
+</code></pre>
+<p><code>NF_HOOK</code>(include/linux/netfilter.h) 封装了 <code>nf_hook</code>, 后者的主要逻辑：</p>
+<ol>
+<li>根据 L3 协议号（比如 <code>NFPROTO_IPV4</code>）找到对应的 <code>struct nf_hook_entries</code> （钩子函数入口）</li>
+<li><code>nf_hook_slow(skb, &amp;state, hook_head, 0)</code>, skb 要遍历所有钩子函数</li>
+</ol>
+<pre class="one-piece"><code>static inline int nf_hook(u_int8_t pf, unsigned int hook, struct net *net,
+			  struct sock *sk, struct sk_buff *skb,
+			  struct net_device *indev, struct net_device *outdev,
+			  int (*okfn)(struct net *, struct sock *, struct sk_buff *))
+{
+    struct nf_hook_entries *hook_head = NULL;
+    [...]
+    // 找到函数
+    hook_head = rcu_dereference(net-&gt;nf.hooks_ipv[hook]);
+    [...]
+    // 执行
+    ret = nf_hook_slow(skb, &amp;state, hook_head, 0);
+}
+</code></pre>
+<p>如果没问题发生, 在最后执行 <code>ip_rcv_finish</code>, 这个回调函数的虚参名字叫 <code>okfn</code>: if things are ok then execute the fn</p>
+<p>net/netfilter/nf_conntrack_core.c 实现部分核心函数, 不同的协议使用不同的 conntrack 实现, ftp 使用 net/netfilter/nf_conntrack_ftp.c, 原因是 ftp 有 data 连接, 如果 ftp 端口有变, 还需要重新加载 nf_conntrack_ftp 模块, 加上参数 port, 告诉内核目标端口为 xxx 的连接是 ftp,  内核才会发现某个连接是 ftp 的 related 连接.</p>
+<p>下图展示了模块如何将自己的函数注册到钩子上去</p>
+<p><img src="netfilter/0xfeff_cb33a051399c42788ac8e33ce44633d6.png" alt=""></p>
+<h2 id="3-netfilter-module-结构" tabindex="-1">3. netfilter module 结构</h2>
+<p>参考 <a href="https://inai.de/documents/Netfilter_Modules.pdf">Writing Netfilter modules</a></p>
+<p>iptables 通过 -m 调用模块, <code>iptables -m A </code> 将调用 A 模块. 模块是一系列函数的集合, 这些函数按照一定的模式执行, 这个模式由 netfilter 规定, 模式规定了各接口的调用时机, 位置等, iptables 通过依赖注入把函数的具体实现（在模块中）挂在各接口上.</p>
+<p>以下为各接口的作用：</p>
+<ul>
+<li><code>match</code>: skb 进模块之后调用</li>
+<li><code>checkentry</code>: 插入规则的时候调用</li>
+<li><code>destroy</code>: 删除规则时调用</li>
+</ul>
+<p>此外还有通过 <code>module_init</code>, <code>module_exit</code> 注册的函数, 作用是增加/减少模块的引用计数, 内核不会因为删一条规则就调模块的 <code>module_exit</code>.</p>
+<p><code>match</code> 的原型：</p>
+<pre class="one-piece"><code>/// include/linux/netfilter/x_tables.h
+struct xt_match {
+    [...]
+    bool (*match)(const struct sk_buff *skb,
+	      struct xt_action_param *);
+    [...]
+}
+</code></pre>
+<p>每个 netfilter 模块都要实现这个接口, 以 conntrack 模块为例, <code>.match</code> 的一个实现为 <code>conntrack_mt_v1</code>, 模块作者根据 <code>xt_action_param</code> 提供的信息决定 skb 的去留和属性.</p>
+<pre class="one-piece"><code>/// 重点关注 xt_action_param 的 matchinfo
+static bool
+conntrack_mt_v1(const struct sk_buff *skb, struct xt_action_param *par)
+{
+	const struct xt_conntrack_mtinfo1 *info = par-&gt;matchinfo;
+	return conntrack_mt(skb, par, info-&gt;state_mask, info-&gt;status_mask);
+}
+/// 定义
+struct xt_action_param {
+	union {
+     	/// -m
+		const struct xt_match *match;
+        /// -j
+		const struct xt_target *target;
+	};
+	union {
+		const void *matchinfo, *targinfo;
+	};
+	const struct nf_hook_state *state;
+    /// fragment offset
+	int fragoff;
+    /// transport header
+	unsigned int thoff;
+	bool hotdrop;
+};
+</code></pre>
+<p><code>xt_action_param</code> 的来历：可以看函数 <code>ipt_do_table</code>, 根据 skb, <code>nf_hook_state</code>, <code>xt_table</code> <code>填充 xt_action_param</code> 信息</p>
+<pre class="one-piece"><code>acpar.fragoff = ntohs(ip-&gt;frag_off) &amp; IP_OFFSET;
+acpar.thoff   = ip_hdrlen(skb);
+acpar.hotdrop = false;
+acpar.state   = state;
+/// 使用各模块的 match
+xt_ematch_foreach(ematch, e) {
+	acpar.match     = ematch-&gt;u.kernel.match;
+	acpar.matchinfo = ematch-&gt;data;
+	if (!acpar.match-&gt;match(skb, &amp;acpar))
+		goto no_match;
+}
+</code></pre>
+<h2 id="4-connection-tracking-system" tabindex="-1">4. connection tracking system</h2>
+<p>有一篇非常好的<a href="http://people.netfilter.org/pablo/docs/login.pdf">文章</a>, 这里仅根据它的描述找相应代码.</p>
+<h3 id="41-在钩子上注册函数" tabindex="-1">4.1 在钩子上注册函数</h3>
+<p>将 nf_conntrack_in 注册到 PREROUTING Hook</p>
+<pre class="one-piece"><code>/// nf_conntrack_in 是公共函数
+/// 实际调用者：
+/// 	ipv4_conntrack_in()
+/// 	ipv4_conntrack_local()
+/// 	ipv6_conntrack_in()
+/// 	ipv6_conntrack_local()
+/// 以 ipv4_conntrack_in 为例, 注册为 nf_hook_ops的 .hook
+{
+	.hook		= ipv4_conntrack_in,
+	.pf		= NFPROTO_IPV4,
+	/// 这个位置表示 PREROUTING
+	.hooknum	= NF_INET_PRE_ROUTING,
+	.priority	= NF_IP_PRI_CONNTRACK,
+}
+</code></pre>
+<h3 id="42-连接跟踪" tabindex="-1">4.2 连接跟踪</h3>
+<p>通过 <code>resolve_normal_ct</code> 找到 skb 对应的 conntrack, 如果没找到, 就创建一个新的.</p>
+<p>先了解一个叫 tuple 的概念</p>
+<p>tuple 的含义：数学定义上, tuple 是一个数量有限的元素的序列.</p>
+<p>内核中 tuple 的定义：</p>
+<blockquote>
+<p>A `tuple' is a structure containing the information to uniquely identify a connection.  ie. if two packets have the same tuple, they are in the same connection; if not, they are not.</p>
+</blockquote>
+<p>理解为 tuple 为数量有限的特征的序列（或集合, 毕竟顺序不重要）. 每个包都是独特的, 但在某些语境下有共同特征, 语境是连接的时候, 不难理解到, 共同特征是 srcip, destip, srcport, destport 等, 使用相同的 hash 函数可得出一样的结果. 由于有必要分辨方向, 所以一个连接需要 2 个 tuple.</p>
+<p>整个流程： <code>拿到 skb 包 =&gt; 提取特征值 =&gt; 取哈希值 =&gt; 找到相应bucket =&gt; 找到对应连接记录 =&gt; 更新/获取信息 </code></p>
+<pre class="one-piece"><code>/// include/net/netfilter/nf_conntrack.h
+struct nf_conn {
+	/// &gt;&gt;&gt; hash tuple &lt;&lt;&lt;
+	struct nf_conntrack_tuple_hash tuplehash[IP_CT_DIR_MAX];
+}
+
+/// hash tuple
+/// hnnode 是双向链表的结点
+struct nf_conntrack_tuple_hash {
+	struct hlist_nulls_node hnnode;
+	struct nf_conntrack_tuple tuple;
+};
+
+/// 双向链表结点
+struct hlist_nulls_node {
+	struct hlist_nulls_node *next, **pprev;
+};
+
+/// nf_conntrack_in 调用 resolve_normal_ct
+/* On success, returns 0, sets skb-&gt;_nfct | ctinfo */
+static int
+resolve_normal_ct(struct nf_conn *tmpl,
+		  struct sk_buff *skb,
+		  unsigned int dataoff,
+		  u_int8_t protonum,
+		  const struct nf_hook_state *state)
+{
+	const struct nf_conntrack_zone *zone;
+	struct nf_conntrack_tuple tuple;
+	struct nf_conntrack_tuple_hash *h;
+	/// ESTABLISHED, RELATED...
+	enum ip_conntrack_info ctinfo;
+	struct nf_conntrack_zone tmp;
+	struct nf_conn *ct;
+	u32 hash;
+
+	/// 根据 skb 查找 tuple
+	if (!nf_ct_get_tuple(skb, skb_network_offset(skb),
+			     dataoff, state-&gt;pf, protonum, state-&gt;net,
+			     &amp;tuple)) {
+		pr_debug("Can't get tuple\n");
+		return 0;
+	}
+
+	/* look for tuple match */
+	zone = nf_ct_zone_tmpl(tmpl, skb, &amp;tmp);
+	hash = hash_conntrack_raw(&amp;tuple, state-&gt;net);
+	/// 是否找到
+	h = __nf_conntrack_find_get(state-&gt;net, zone, &amp;tuple, hash);
+	if (!h) {
+		/// 如果没找到, 创建一个
+		h = init_conntrack(state-&gt;net, tmpl, &amp;tuple,
+				   skb, dataoff, hash);
+		if (!h)
+			return 0;
+		if (IS_ERR(h))
+			return PTR_ERR(h);
+	}
+    /// 根据 h(类型是 struct nf_conntrack_tuple_hash)
+    /// &gt;&gt;&gt;&gt;&gt; 找到 conntrack &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+	ct = nf_ct_tuplehash_to_ctrack(h);
+	/// 更新 conntrack 状态
+	/* It exists; we have (non-exclusive) reference. */
+	if (NF_CT_DIRECTION(h) == IP_CT_DIR_REPLY) {
+		ctinfo = IP_CT_ESTABLISHED_REPLY;
+	} else {
+		/* Once we've had two way comms, always ESTABLISHED. */
+		if (test_bit(IPS_SEEN_REPLY_BIT, &amp;ct-&gt;status)) {
+			pr_debug("normal packet for %p\n", ct);
+			ctinfo = IP_CT_ESTABLISHED;
+		} else if (test_bit(IPS_EXPECTED_BIT, &amp;ct-&gt;status)) {
+			pr_debug("related packet for %p\n", ct);
+			ctinfo = IP_CT_RELATED;
+		} else {
+			pr_debug("new packet for %p\n", ct);
+			ctinfo = IP_CT_NEW;
+		}
+	}
+    /// 设置
+	nf_ct_set(skb, ct, ctinfo);
+	return 0;
+}
+
+/// 继续看如何根据 tuple 找到 conntrack
+static inline struct nf_conn *
+nf_ct_tuplehash_to_ctrack(const struct nf_conntrack_tuple_hash *hash)
+{
+    /// 调用 container_of 宏, 从 hash 指针处找到包含 tuplehash(dir表示方向) 的 nf_conn, 返回其指针
+	return container_of(hash, struct nf_conn,
+			    tuplehash[hash-&gt;tuple.dst.dir]);
+}
+/// 很明显了, 建立新连接的时候创建一个 nf_conn, 然后将 tuple 指针注册到 hashmap
+</code></pre>
+<p>另外有个不重要的细节： confirmed. 连接已经被跟踪时, confirmed is set.</p>
+<pre class="one-piece"><code>/// &gt;&gt;&gt; net/netfilter/nf_conntrack_proto.c
+/// 在 NF_INET_POST_ROUTING 和 NF_INET_LOCAL_IN 两个钩子上关联函数
+static const struct nf_hook_ops ipv4_conntrack_ops[] = {
+	{
+		.hook		= ipv4_confirm,
+		.pf		= NFPROTO_IPV4,
+		.hooknum	= NF_INET_POST_ROUTING,
+		.priority	= NF_IP_PRI_CONNTRACK_CONFIRM,
+	},
+	{
+		.hook		= ipv4_confirm,
+		.pf		= NFPROTO_IPV4,
+		.hooknum	= NF_INET_LOCAL_IN,
+		.priority	= NF_IP_PRI_CONNTRACK_CONFIRM,
+	},
+};
+</code></pre>
+<p><code>ipv4_confirm</code> 调用到 conntrack 模块的过程：</p>
+<ol>
+<li><code>nf_confirm</code></li>
+<li><code>nf_conntrack_confirm</code></li>
+<li><code>__nf_conntrack_confirm</code></li>
+</ol>
+<p>net/netfilter/nf_conntrack_core.c function __nf_conntrack_confirm():</p>
+<ol>
+<li>从 skb 处获取 ct</li>
+<li>从 ct 处获取 net</li>
+<li>删除失效或者 unconfirmed 连接</li>
+<li>增加 <code>ct-&gt;ct_general.use</code></li>
+<li>标记为 <code>IPS_CONFIRMED</code></li>
+<li>设置时间戳</li>
+</ol>
+<h3 id="43-分片数据处理" tabindex="-1">4.3 分片数据处理</h3>
+<pre class="one-piece"><code>/// &gt;&gt;&gt; net/ipv4/netfilter/nf_defrag_ipv4.c
+static const struct nf_hook_ops ipv4_defrag_ops[] = {
+	{
+		.hook		= ipv4_conntrack_defrag,
+		.pf			= NFPROTO_IPV4,
+		.hooknum	= NF_INET_PRE_ROUTING,
+		.priority	= NF_IP_PRI_CONNTRACK_DEFRAG,
+	},
+	{
+		.hook           = ipv4_conntrack_defrag,
+		.pf             = NFPROTO_IPV4,
+		.hooknum        = NF_INET_LOCAL_OUT,
+		.priority       = NF_IP_PRI_CONNTRACK_DEFRAG,
+	},
+};
+</code></pre>
+<p>defrag 操作都在 ROUTE 之前进行, 在一个缓冲区组装好包, 再继续发送出去.</p>
+<h3 id="44-helper-与-expectation" tabindex="-1">4.4 HELPER 与 EXPECTATION</h3>
+<pre class="one-piece"><code>/// 有些应用层的协议很难跟踪, 比如 FTP 的被动模式有两条连接, 第二条连接的端口随机（主动模式的数据传输服务端口为 20）. 
+/// Conntrack 定义了一个叫做 helper 的机制去检测一条连接是否与另一个已经存在的连接相关. 
+/// &gt;&gt;&gt; include/net/netfilter/nf_conntrack_helper.h
+struct nf_conntrack_helper {
+	struct hlist_node hnode;	/* Internal use. */
+	char name[NF_CT_HELPER_NAME_LEN]; /* name of the module */
+	/// 引用计数
+	refcount_t refcnt;
+	/// interesting...
+	struct module *me;		/* pointer to self */
+	const struct nf_conntrack_expect_policy *expect_policy;
+
+	/* Tuple of things we will help (compared against server response) */
+	struct nf_conntrack_tuple tuple;
+
+	/* Function to call when data passes; return verdict, or -1 to
+           invalidate. */
+	int (*help)(struct sk_buff *skb,
+		    unsigned int protoff,
+		    struct nf_conn *ct,
+		    enum ip_conntrack_info conntrackinfo);
+	[...]
+};
+
+/// 初始化 helper
+/// &gt;&gt;&gt; net/netfilter/nf_conntrack_helper.c
+
+void nf_ct_helper_init(struct nf_conntrack_helper *helper,
+		       u16 l3num, u16 protonum, const char *name,
+		       u16 default_port, u16 spec_port, u32 id,
+		       const struct nf_conntrack_expect_policy *exp_pol,
+		       u32 expect_class_max,
+		       int (*help)(struct sk_buff *skb, unsigned int protoff,
+				   struct nf_conn *ct,
+				   enum ip_conntrack_info ctinfo),
+		       int (*from_nlattr)(struct nlattr *attr,
+					  struct nf_conn *ct),
+		       struct module *module)
+{
+	/// 赋值
+	[...]
+}
+
+/// 另外定义了概念 expectation, 指一个在应该在一段时间内出现的连接, 比如第二条连接. 
+/// &gt;&gt;&gt; include/net/netfilter/nf_conntrack_expect.h
+struct nf_conntrack_expect {
+	/* Conntrack expectation list member */
+	struct hlist_node lnode;
+
+	/* Hash member */
+	struct hlist_node hnode;
+	/// 新的连接进来时, 应该是这个 tuple, 同时用 mask 进行过滤
+	/* We expect this tuple, with the following mask */
+	struct nf_conntrack_tuple tuple;
+	struct nf_conntrack_tuple_mask mask;
+
+	/* Function to call after setup and insertion */
+	void (*expectfn)(struct nf_conn *new,
+			 struct nf_conntrack_expect *this);
+
+	/// 与 helper 建立关系
+	/* Helper to assign to new connection */
+	struct nf_conntrack_helper *helper;
+
+	/* The conntrack of the master connection */
+	struct nf_conn *master;
+
+	/* Timer function; deletes the expectation. */
+	struct timer_list timeout;
+
+	/* Usage count. */
+	refcount_t use;
+
+	/* Flags */
+	unsigned int flags;
+
+	/* Expectation class */
+	unsigned int class;
+	[...]
+};
+
+/// helper 查找每个包, 判断是否有第二条连接, 如果有则根据第二条连接的 pattern 创建一个 expecation, 并放入一个全局队列里面. 
+/// &gt;&gt;&gt; net/netfilter/nf_conntrack_proto.c
+/// 以 nf_confirm() 实现为例
+unsigned int nf_confirm(struct sk_buff *skb, unsigned int protoff,
+			struct nf_conn *ct, enum ip_conntrack_info ctinfo)
+{
+	const struct nf_conn_help *help;
+	///一个新连接进来的时候, conntrack 模块创建一个新的 ct, 并搜索 expectation list, 如果找不到匹配项, 就调用 helper 去处理连接. 
+	help = nfct_help(ct);
+	if (help) {
+		const struct nf_conntrack_helper *helper;
+		int ret;
+
+		/* rcu_read_lock()ed by nf_hook_thresh */
+		helper = rcu_dereference(help-&gt;helper);
+		if (helper) {
+			/// 如果有, 利用 helper 对连接进行处理, 处理函数见下
+			ret = helper-&gt;help(skb,
+					   protoff,
+					   ct, ctinfo);
+			if (ret != NF_ACCEPT)
+				return ret;
+		}
+	}
+	[...]
+}
+/// 查找 \.help.*= 或 nf_ct_helper_init
+/// 如果找到匹配项, 则认为新的连接是创建了 expectation 的连接(master conntrack)的 related 连接. 
+
+/// 举个 ftp 的例子
+/// &gt;&gt;&gt; net/netfilter/nf_conntrack_ftp.c
+/// FTP 定义了若干 helper 去识别第二连接
+static struct nf_conntrack_helper ftp[MAX_PORTS * 2] __read_mostly;
+/// 通过 nf_ct_helper_init 初始化
+nf_ct_helper_init(&amp;ftp[2 * i], AF_INET, IPPROTO_TCP,
+		HELPER_NAME, FTP_PORT, ports[i], ports[i],
+		&amp;ftp_exp_policy, 0, help,
+		nf_ct_ftp_from_nlattr, THIS_MODULE);
+/// 这里需要关注的是核心 help 函数
+static int help(struct sk_buff *skb,
+		unsigned int protoff,
+		struct nf_conn *ct,
+		enum ip_conntrack_info ctinfo)
+{
+	[...]
+	/// 待创建的 expectation
+	struct nf_conntrack_expect *exp;
+	[...]
+	/// 如果连接已经建立, 直接返回
+	if (ctinfo != IP_CT_ESTABLISHED &amp;&amp;
+	    ctinfo != IP_CT_ESTABLISHED_REPLY) {
+		pr_debug("ftp: Conntrackinfo = %u\n", ctinfo);
+		return NF_ACCEPT;
+	}
+	[...]
+	for (i = 0; i &lt; ARRAY_SIZE(search[dir]); i++) {
+		found = find_pattern(fb_ptr, datalen,
+				     search[dir][i].pattern,
+				     search[dir][i].plen,
+				     search[dir][i].skip,
+				     search[dir][i].term,
+				     &amp;matchoff, &amp;matchlen,
+				     &amp;cmd,
+				     search[dir][i].getnum);
+		if (found) break;
+	}
+	[...]
+	/// 创建 exp
+	exp = nf_ct_expect_alloc(ct);
+	[...]
+	/// 放到 expectation list
+	nf_ct_expect_put(exp);
+	[...]
+}
+/// 其中使用 ftp_search 去识别报文
+static struct ftp_search {
+	const char *pattern;
+	size_t plen;
+	char skip;
+	char term;
+	enum nf_ct_ftp_type ftptype;
+	int (*getnum)(const char *, size_t, struct nf_conntrack_man *, char, unsigned int *);
+} search[IP_CT_DIR_MAX][2] = {
+	[IP_CT_DIR_ORIGINAL] = {
+		{
+			.pattern	= "PORT",
+			.plen		= sizeof("PORT") - 1,
+			.skip		= ' ',
+			.term		= '\r',
+			.ftptype	= NF_CT_FTP_PORT,
+			.getnum		= try_rfc959,
+		},
+		{
+			.pattern	= "EPRT",
+			.plen		= sizeof("EPRT") - 1,
+			.skip		= ' ',
+			.term		= '\r',
+			.ftptype	= NF_CT_FTP_EPRT,
+			.getnum		= try_eprt,
+		},
+	},
+	[IP_CT_DIR_REPLY] = {
+		{
+			.pattern	= "227 ",
+			.plen		= sizeof("227 ") - 1,
+			.ftptype	= NF_CT_FTP_PASV,
+			.getnum		= try_rfc1123,
+		},
+		{
+			.pattern	= "229 ",
+			.plen		= sizeof("229 ") - 1,
+			.skip		= '(',
+			.term		= ')',
+			.ftptype	= NF_CT_FTP_EPSV,
+			.getnum		= try_epsv_response,
+		},
+	},
+};
+/// find_pattern 时将 skb_header_pointer（代表整个包）传给各个判断标准
+</code></pre>
+<h2 id="5-结论" tabindex="-1">5. 结论</h2>
+<p>看了一堆代码后发现收获并不大, 但至少有几个点弄清楚了</p>
+<ol>
+<li><code>NF_HOOK</code> 里面存在 <code>nf_hook_entries</code> ,里面是模块注册到上面的函数, 流量单位 skb 依次通过这些函数, 如果可以通过, 返回 <code>NF_ACCEPT</code>, 或跳转到其他目标.</li>
+<li>模块注册的时候需要指明注册到哪个钩子, 并要按照接口实现具体的模块功能.</li>
+<li>连接跟踪模块是一个很具有代表性的模块, 它可以识别同一个连接的 skb, 从 skb 中提取特征值之后根据魔法宏找到连接结构体 <code>struct nf_conn</code>,然后更新其状态.</li>
+</ol>
+<h2 id="参考" tabindex="-1">参考</h2>
+<ol>
+<li><a href="https://making.pusher.com/per-ip-rate-limiting-with-iptables/">https://making.pusher.com/per-ip-rate-limiting-with-iptables/</a></li>
+<li><a href="https://blog.packagecloud.io/eng/2016/10/11/monitoring-tuning-linux-networking-stack-receiving-data-illustrated/">https://blog.packagecloud.io/eng/2016/10/11/monitoring-tuning-linux-networking-stack-receiving-data-illustrated/</a></li>
+<li><a href="https://blog.packagecloud.io/eng/2016/06/22/monitoring-tuning-linux-networking-stack-receiving-data/">https://blog.packagecloud.io/eng/2016/06/22/monitoring-tuning-linux-networking-stack-receiving-data/</a></li>
+<li><a href="http://people.netfilter.org/pablo/docs/login.pdf">Netfilter’s connection tracking system </a></li>
+<li><a href="https://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO-4.html">https://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO-4.html</a></li>
+</ol>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

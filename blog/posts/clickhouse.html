@@ -1,0 +1,3877 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>ClickHouse</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>ClickHouse</h1>
+        <p>由于某些原因我看了两个月的 ClickHouse 代码，以下是我的笔记:</p>
+<p>太长不看：</p>
+<ol>
+<li>MergeTree 存储引擎: 用于大量写入场景, 每个写入都被临时放在一个 part, 为了提高 IO 效率, 后台线程会合并 part. Mutation: 如果更改数据, 会触发同步或异步的 Mutation 过程.</li>
+<li>Query -&gt; AST -&gt; Interpreter, 生成 QueryPlan</li>
+<li>根据 QueryPlan 构造 QueryPipeline, 运行 Pipeline, 生成输出</li>
+<li>输出输入通过 Block Stream</li>
+<li>Block 是数据处理的基本单元, Chunk: 轻量 Block, 不包含索引, Granule, 写入磁盘时的尺度, Marks, 存储偏移量</li>
+<li>读取数据到 Chunk, 算出索引, 有利于 Projection(所有 Select 都是 Projection)</li>
+<li>QueryPlan 由 Step 组成, Step 需要综合 AST, 存储情况指定</li>
+<li>在生成 Interpreter 时也生成分析结构, 分析结构包括语法树重写等优化, 这是难点</li>
+<li>Pipeline, 由 Port 连接起来的 Pipe, Port 之间共享内存, Pipe 可能会并行运行, 由 Processors 驱动</li>
+<li>ClickHouse 构造了大量依赖关系, 以树的形式存在, 通过执行树获取分析结果, 获取输入输出, 等等, ExecuteGraph, ActionDAG, ExpressionChain, etc</li>
+<li>RBAC(Role-Based Access Control)</li>
+</ol>
+<p>很多数据公司都用这种模型: user/event, user 是维度表, event 事实表, 通过组成 view, 或 materialized view 提供各种信息服务, 通过写 SQL 来提供各种细节，比如"标签"，分析师就是干这个的。在 ClickHouse 的上游, 是一套 Java 生态: ZooKeeper, Hadoop, Hive, Spark..., 这是大数据开发工程师的领域。据说 ClickHouse 写入和 Join 的性能差, 没有 transaction, 难运维等，我不了解行情，所以就不展开说了，我看代码的重点是 Interpreter 和 Storage。</p>
+<nav class="table-of-contents"><ol><li><a href="#interpreter">Interpreter</a></li><li><a href="#view">View</a></li><li><a href="#并行的读">并行的读</a></li><li><a href="#格式化输出">格式化输出</a><ol><li><a href="#写一个-formatter">写一个 formatter</a></li></ol></li><li><a href="#从-blockstream-中读写">从 blockstream 中读写</a></li><li><a href="#part-的知识">Part 的知识</a><ol><li><a href="#part-的状态">Part 的状态</a></li></ol></li><li><a href="#如何加载-part">如何加载 part?</a><ol><li><a href="#double-buffering">Double Buffering?</a></li><li><a href="#loaddataparts">loadDataParts</a></li></ol></li><li><a href="#如何写-part">如何写 part?</a><ol><li><a href="#分析">分析</a><ol><li><a href="#writewithpermutation">writeWithPermutation</a></li><li><a href="#writesuffixandfinalizepart">writeSuffixAndFinalizePart</a></li></ol></li><li><a href="#结构体">结构体</a><ol><li><a href="#mergetreeindexgranularity">MergeTreeIndexGranularity</a></li><li><a href="#granule">Granule</a></li><li><a href="#从-nativeblockoutputstreamwrite-猜测">从 NativeBlockOutputStream::write 猜测</a></li><li><a href="#columnwithtypeandname">ColumnWithTypeAndName</a></li><li><a href="#paddedpodarray">PaddedPODArray</a><ol><li><a href="#podarraybase">PODArrayBase</a></li></ol></li></ol></li><li><a href="#磁盘文件">磁盘文件</a></li></ol></li><li><a href="#总的写入流程">总的写入流程</a><ol><li><a href="#keywords">Keywords</a><ol><li><a href="#columns_list">columns_list</a></li><li><a href="#mergedblockoutputstream-out">MergedBlockOutputStream out</a></li></ol></li></ol></li><li><a href="#调试">调试</a><ol><li><a href="#著名断点">著名断点</a></li><li><a href="#util-类">Util 类</a><ol><li><a href="#iostream_debug_helpers">iostream_debug_helpers</a></li><li><a href="#nativeblockoutputstream">NativeBlockOutputStream</a></li></ol></li><li><a href="#测试-sql">测试 SQL</a></li><li><a href="#log_debug">LOG_DEBUG</a></li></ol></li><li><a href="#单元测试">单元测试</a></li><li><a href="#storage-join">Storage Join</a><ol><li><a href="#介绍">介绍</a></li><li><a href="#示例">示例</a><ol><li><a href="#创建任意引擎的表">创建任意引擎的表</a></li><li><a href="#创建-right-side-join-table">创建 right-side Join table</a></li><li><a href="#join-the-tables">Join the tables</a></li><li><a href="#查询">查询</a></li><li><a href="#作为右表的意义">作为右表的意义</a><ol><li><a href="#使用案例">使用案例:</a></li></ol></li><li><a href="#多列-join-table">多列 join table</a></li><li><a href="#性能">性能</a></li><li><a href="#小结">小结</a></li></ol></li><li><a href="#实现">实现</a><ol><li><a href="#建表-创建字典">建表: 创建字典</a></li><li><a href="#read-读取数据">Read: 读取数据</a><ol><li><a href="#创建恢复文件">创建恢复文件</a></li></ol></li><li><a href="#insert">Insert</a></li><li><a href="#joinget">joinGet</a></li><li><a href="#在-storagejoin-中-hashjoin-仅是哈希表">在 StorageJoin 中 HashJoin 仅是哈希表</a></li><li><a href="#作为右表">作为右表</a><ol><li><a href="#根据-ast-树找到-storagejoin">根据 AST 树找到 StorageJoin</a></li><li><a href="#expressionactionschain">ExpressionActionsChain</a></li><li><a href="#小结-1">小结</a></li></ol></li></ol></li><li><a href="#总结">总结</a></li></ol></li><li><a href="#如何实现-explain">如何实现 explain</a><ol><li><a href="#simple-select">simple select</a></li></ol></li><li><a href="#interpreter-1">Interpreter</a><ol><li><a href="#interpreter-的角色-ast-interpreter-blockio">Interpreter 的角色: AST -&gt; Interpreter -&gt; BlockIO</a></li><li><a href="#blockio">BlockIO</a></li><li><a href="#block-io-stream">Block IO Stream</a></li><li><a href="#querypipeline">QueryPipeline</a><ol><li><a href="#pipeline-的产生-queryplan">Pipeline 的产生: QueryPlan</a></li></ol></li><li><a href="#理解-explain-的含义">理解 Explain 的含义</a><ol><li><a href="#explain-join">Explain Join</a></li></ol></li><li><a href="#interpreterselectwithunionquery-嵌套解释器">InterpreterSelectWithUnionQuery: 嵌套解释器</a><ol><li><a href="#每个子查询创建一个解释器">每个子查询创建一个解释器</a></li><li><a href="#获得子解释器之后确定返回结果的结构">获得子解释器之后确定返回结果的结构</a></li></ol></li><li><a href="#状态queryprocessingstage">状态(QueryProcessingStage)</a></li><li><a href="#queryplan">QueryPlan</a><ol><li><a href="#结构">结构</a></li><li><a href="#pipe">Pipe</a></li><li><a href="#queryplanaddstep">QueryPlan::addStep</a></li><li><a href="#executefetchcolumns">executeFetchColumns</a></li><li><a href="#selectqueryexpressionanalyzer">SelectQueryExpressionAnalyzer</a><ol><li><a href="#actiondag">ActionDAG</a></li><li><a href="#functor">functor</a></li></ol></li></ol></li></ol></li><li><a href="#parser">Parser</a></li><li><a href="#mergetree">MergeTree</a><ol><li><a href="#partition">Partition</a></li><li><a href="#introduction">Introduction</a></li><li><a href="#sql">SQL</a></li><li><a href="#存储形式">存储形式</a></li><li><a href="#查询过程">查询过程</a><ol><li><a href="#虚拟列">虚拟列</a></li><li><a href="#调试-1">调试</a></li></ol></li><li><a href="#写入过程">写入过程</a><ol><li><a href="#命中-partition-key">命中 Partition key</a></li></ol></li></ol></li><li><a href="#mergetree-1">MergeTree</a><ol><li><a href="#简介">简介</a></li><li><a href="#存储结构">存储结构</a><ol><li><a href="#存储格式-compactwidein_memory">存储格式: COMPACT/WIDE/IN_MEMORY</a></li></ol></li><li><a href="#marks-的生成">Marks 的生成</a></li><li><a href="#"></a></li><li><a href="#block">Block</a></li><li><a href="#iblockinputstream-与反序列化">IBlockInputStream 与反序列化</a></li><li><a href="#write-将-block-写入内存">write(): 将 Block 写入内存</a></li><li><a href="#写入之前的-processing-query">写入之前的 Processing Query</a></li><li><a href="#mergetreesink">MergeTreeSink</a></li><li><a href="#写入的三个阶段">写入的三个阶段</a></li><li><a href="#writeprefix">WritePrefix()</a></li><li><a href="#writesuffix">WriteSuffix()</a><ol><li><a href="#finalize">Finalize</a></li><li><a href="#writesuffix-1">WriteSuffix()</a></li></ol></li><li><a href="#consume">Consume()</a></li><li><a href="#writetemppart">writeTempPart()</a><ol><li><a href="#permutation">Permutation</a></li></ol></li><li><a href="#part">Part</a><ol><li><a href="#命名">命名</a></li><li><a href="#创建-part">创建 Part</a></li><li><a href="#存储">存储</a></li><li><a href="#partwriter">PartWriter</a></li><li><a href="#写入逻辑">写入逻辑</a><ol><li><a href="#排序">排序</a></li><li><a href="#计算-granularity">计算 Granularity</a></li><li><a href="#填充-index-granularity">填充 Index Granularity</a></li><li><a href="#克隆-block">克隆 Block</a></li><li><a href="#将-block-转化为-granule">将 Block 转化为 Granule</a></li><li><a href="#写-block-primary-key-skip-index">写 Block, Primary key, Skip index</a></li></ol></li><li><a href="#最终写入">最终写入</a></li><li><a href="#小结-2">小结</a></li></ol></li><li><a href="#读取">读取</a></li><li><a href="#后台-merge-进程">后台 Merge 进程</a></li><li><a href="#后台-mutation-进程">后台 Mutation 进程</a></li><li><a href="#mutation">Mutation</a></li><li><a href="#测试语句">测试语句</a></li><li><a href="#设计模式">设计模式</a></li><li><a href="#参考">参考</a></li><li><a href="#数据压缩-codec">数据压缩 Codec</a></li></ol></li></ol></nav><h1 id="interpreter" tabindex="-1">Interpreter</h1>
+<p>一个简单的 Presentation</p>
+<p><img src="/images/clickhouse/Presentation/1.png" alt=""><br>
+<img src="/images/clickhouse/Presentation/2.png" alt=""><br>
+<img src="/images/clickhouse/Presentation/3.png" alt=""><br>
+<img src="/images/clickhouse/Presentation/4.png" alt=""><br>
+<img src="/images/clickhouse/Presentation/5.png" alt=""><br>
+<img src="/images/clickhouse/Presentation/6.png" alt=""><br>
+<img src="/images/clickhouse/Presentation/7.png" alt=""><br>
+<img src="/images/clickhouse/Presentation/8.png" alt=""><br>
+<img src="/images/clickhouse/Presentation/9.0.png" alt=""><br>
+<img src="/images/clickhouse/Presentation/9.1.png" alt=""></p>
+<h1 id="view" tabindex="-1">View</h1>
+<ul>
+<li>view: does not store data</li>
+<li>materialized view: stored</li>
+</ul>
+<p>创建 materialized view 并不会把已经有的 select 数据插入 view 中, 插入仅发生在 Insert 的时候:</p>
+<pre class="one-piece"><code>-- 创建表:
+CREATE TABLE id_val(`id` UInt32, `val` UInt32) ENGINE = TinyLog;
+CREATE TABLE id_val_join(`id` UInt32, `val` UInt8) ENGINE = Join(ANY, LEFT, id);
+-- 插入数据
+
+-- 创建 view
+CREATE MATERIALIZED VIEW mv_1
+ENGINE = TinyLog AS
+SELECT *
+FROM id_val
+ANY LEFT JOIN id_val_join USING (id)
+-- 没有数据
+select * from mv1
+
+SELECT *
+FROM mv1
+-- 插入数据
+insert into id_val_join values(4, 25)
+insert into id_val values(4, 100)
+-- 结果:
+select * from mv_1
+
+-- SELECT *
+-- FROM mv_1
+-- 
+-- Query id: 3307003f-5734-4205-98f7-3208d301043e
+
+┌─id─┬─val─┬─id_val_join.val─┐
+│  4 │ 100 │              25 │
+└────┴─────┴─────────────────┘
+
+</code></pre>
+<p>但如果加入 POPULATE:<br>
+<img src="/images/clickhouse/Images/069a773692eaa0309a489ea6feae51f2.png" alt="069a773692eaa0309a489ea6feae51f2.png"><br>
+相当于执行一遍 as 后面的 select 语句<br>
+和 trigger 差不多效果</p>
+<h1 id="并行的读" tabindex="-1">并行的读</h1>
+<p><a href="https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree/#concurrent-data-access">https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree/#concurrent-data-access</a></p>
+<p><img src="/images/clickhouse/Images/9ed17335dba5bfe7a2dab6fa94812499.png" alt="9ed17335dba5bfe7a2dab6fa94812499.png"><br>
+<img src="/images/clickhouse/Images/5bf7a004307992daf228cc4003df3b48.png" alt="5bf7a004307992daf228cc4003df3b48.png"><br>
+多个 QueryPipelineEx, Ex = executor<br>
+<img src="/images/clickhouse/Images/e7e5559a4c3a7ef351dc3b4ed3c89d90.png" alt="e7e5559a4c3a7ef351dc3b4ed3c89d90.png"><br>
+<img src="/images/clickhouse/Images/b9a2d4452df0f3908c1362e30f676dba.png" alt="b9a2d4452df0f3908c1362e30f676dba.png"><br>
+<img src="/images/clickhouse/Images/894d8a0ad0bd8852a4283375a19ffd1d.png" alt="894d8a0ad0bd8852a4283375a19ffd1d.png"><br>
+可以看出线程 145 负责输出<br>
+<img src="/images/clickhouse/Images/30bf716145fe375e16bf3b18ba6638fe.png" alt="30bf716145fe375e16bf3b18ba6638fe.png"><br>
+线程 145 完成输出</p>
+<h1 id="格式化输出" tabindex="-1">格式化输出</h1>
+<p>CH 将文件发送给客户端, 客户端负责渲染, 服务端用到了</p>
+<ul>
+<li>src/DataStreams/NativeBlockOutputStream.h</li>
+</ul>
+<p><img src="/images/clickhouse/Images/2514bd6a040e5a7124ca518027cb99c6.png" alt="2514bd6a040e5a7124ca518027cb99c6.png"></p>
+<h2 id="写一个-formatter" tabindex="-1">写一个 formatter</h2>
+<p><img src="/images/clickhouse/Images/6172aa446133b58f233ec8aee905d9d3.png" alt="6172aa446133b58f233ec8aee905d9d3.png"></p>
+<p>文件路径: src/Processors/Formats/Impl/Native2Format.h</p>
+<p>调试客户端:<br>
+<img src="/images/clickhouse/Images/ebe68b8ac7a5419cd8a8acf6911b6198.png" alt="ebe68b8ac7a5419cd8a8acf6911b6198.png"></p>
+<p>消耗 chunk 的时候, 先组建一个 block, 获取 chunk 的 header</p>
+<p><img src="/images/clickhouse/Images/37ebb6b51d399432658e792e87140720.png" alt="37ebb6b51d399432658e792e87140720.png"></p>
+<p>获取 chunk 的数据: <code>block.SetColumns(chunk.detachColumns())</code><br>
+然后调用 <code>stream-&gt;write(block)</code> 为什么要将 chunk 转化成 block? 因为基本上所有数据处理函数都是以 block 为基本操作单元. 那么为什么要用 chunk?</p>
+<p>先有 block 后有 chunk, chunk 是一种 variant, 不存储  name, types, index_by_name, 最后者可能会很大. chunk 是 move-only, 但 block 可以拷贝</p>
+<h1 id="从-blockstream-中读写" tabindex="-1">从 blockstream 中读写</h1>
+<p>将查询数据以 Native 格式写出</p>
+<pre class="one-piece"><code>~/Workspace/clickhouse-gio/build/programs/clickhouse-client -u ledzeppelin --query "select * from test_dish format Native" &gt; native.txt     
+</code></pre>
+<p><img src="/images/clickhouse/Images/047abbc2d8ad8c02f194a9e0020de9c7.png" alt="047abbc2d8ad8c02f194a9e0020de9c7.png"></p>
+<ul>
+<li>02 表示字符串有 2 个 bytes<br>
+<img src="/images/clickhouse/Images/ad6c8ea505530c98200cefaa505e5906.png" alt="ad6c8ea505530c98200cefaa505e5906.png"></li>
+<li>06 表示字符串有 6 个 bytes</li>
+</ul>
+<p>int 直接写, 不需要写入长度</p>
+<p>文件:</p>
+<ul>
+<li>src/IO/WriteHelpers.h</li>
+<li>src/IO/ReadHelpers.h</li>
+</ul>
+<h1 id="part-的知识" tabindex="-1">Part 的知识</h1>
+<h2 id="part-的状态" tabindex="-1">Part 的状态</h2>
+<p>src/Storages/MergeTree/IMergeTreeDataPart.h:215</p>
+<ul>
+<li>Temporary: 正在生成中, 不在 data_parts 列表中, 也就说, 内存里面有一个存储 part 的数据结构, 考虑到持久化, <strong>part 的信息也肯定存储在文件里面</strong></li>
+<li>PreCommitted: 处于 data_parts 列表中, 但不能用于 <code>SELECT</code></li>
+<li>Committed: 活跃的 data part, used by current and upcoming selects</li>
+<li>Outdated: not active data part, 可用于 <code>SELECT</code>, 但可能会被删除(MUTATION)</li>
+<li>Deleting: not active with identity refcount, it is deleting right now by a cleaner</li>
+<li>DeleteOnDestroy: was moved to another disk and should be deleted in own destructor</li>
+</ul>
+<h1 id="如何加载-part" tabindex="-1">如何加载 part?</h1>
+<p><img src="/images/clickhouse/Images/01cb0242110f75c2a334ba669429e9de.png" alt="01cb0242110f75c2a334ba669429e9de.png"><br>
+一共 391 行, 分 2 次读取, 每次读取一个 part</p>
+<p>很难调试, 只能从 src/Processors/QueryPlan/ReadFromMergeTree.cpp:939 中找线索</p>
+<p><img src="/images/clickhouse/Images/dd7b21aa9e0c6c0172ffe93208fca4b5.png" alt="dd7b21aa9e0c6c0172ffe93208fca4b5.png"><br>
+先进行磁盘分析</p>
+<h2 id="double-buffering" tabindex="-1">Double Buffering?</h2>
+<p>src/Storages/MergeTree/MergeTreeData.cpp:3328</p>
+<ul>
+<li>buf 和 res 交换</li>
+<li>res 清空</li>
+<li>将 buf 与 range 归并(merge) 之后, 结果输出在 res</li>
+</ul>
+<p>这么做的效果, 实际上是将原来的 res 和 range 归并之后, 交给 res, 即 res 的 merge++, 即 res++</p>
+<p>但是我们还不知道 range 从哪里来.</p>
+<h2 id="loaddataparts" tabindex="-1">loadDataParts</h2>
+<p>src/Storages/MergeTree/MergeTreeData.cpp:864</p>
+<ul>
+<li>先获取 disk</li>
+<li>并行加载 parts</li>
+<li></li>
+</ul>
+<h1 id="如何写-part" tabindex="-1">如何写 part?</h1>
+<p>src/Storages/MergeTree/MergeTreeDataWriter.cpp:270</p>
+<h2 id="分析" tabindex="-1">分析</h2>
+<p>前缀: <code>tmp_insert_</code></p>
+<h3 id="writewithpermutation" tabindex="-1">writeWithPermutation</h3>
+<p><img src="/images/clickhouse/Images/447b82c6d21d48134918d0bb54679488.png" alt="447b82c6d21d48134918d0bb54679488.png"></p>
+<p>INSERT INTO test_dish VALUES (520806,'a','b',1,1,1,1,1.0,1.0)(520805,'a','b',1,1,1,1,1.0,1.0)(520804,'a','b',1,1,1,1,1.0,1.0)(520805,'a','b',1,1,1,1,1.0,1.0)(520806,'a','b',1,1,1,1,1.0,1.0)(520806,'a','b',1,1,1,1,1.0,1.0)</p>
+<ul>
+<li>一共 6 行, 312 bytes</li>
+<li>size_of_row_in_bytes = 52 = 312 / 6 = 52</li>
+<li>index_granularity_for_block: 201649 bytes</li>
+<li>最后得出 index_granularity_for_block = 1, 即每个 granularity 为 1 行</li>
+</ul>
+<pre class="one-piece"><code>index_granularity_for_block = std::min(fixed_index_granularity_rows, index_granularity_for_block)
+</code></pre>
+<p>如果设置的 fixed_index_granularity_rows 过小, 则 index_granularity_for_block 没什么意义<br>
+返回了 1</p>
+<ul>
+<li>computeIndexGranularity 的实际目的就是算颗粒的大小
+<ul>
+<li>computeIndexGranularityImpl</li>
+</ul>
+</li>
+<li>fillIndexGranularity
+<ul>
+<li>fillIndexGranularityImpl (src/Storages/MergeTree/MergeTreeDataPartWriterCompact.cpp:270)</li>
+<li>目的是填充 MergeTreeIndexGranularity, namely <code>index_granularity</code>
+<ul>
+<li>current_row = 0, rows_in_block = 6, =&gt; row_left_in_block = 6 ...(是不是 bug?)
+<ul>
+<li>index_granularity_for_block = 1, 最后一行, current_row = 5</li>
+<li>最后一行, current_row = 5, row_left_in_block = 1, 1 &lt; 1 &amp;&amp; (6 &gt;= 1 || 0 != 0) 不成立</li>
+<li>倒数第二行, current_row = 4, row_left_in_block = 2, 2 &lt; 1 &amp;&amp; (6 &gt;= 1 || 0 != 0) 不成立
+<ul>
+<li>也就是说, 唯一能成立的时候在于 rows_left_in_block = 0, 但是 index_granularity_for_block == 1 这导致了永远没机会执行
+<ul>
+<li>但如果 index_granularity_for_block 如果 8192, 那么最后一个 granularity 就会命中条件</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>index_granularity.appendMark(index_granularity_for_block); index_granularity_for_block == 1
+<ul>
+<li>marks_rows_partial_sums.push_back(marks_rows_partial_sums.back() + rows_count);</li>
+</ul>
+</li>
+<li>也就是说, 这一步, 只是填充了 marks_rows_partial_sums</li>
+</ul>
+</li>
+<li>permuteBlockIfNeeded(block, permutation): 所有列, 进行排序</li>
+<li>将 block 放入一个 columns_buffer</li>
+<li>current_mark_rows == 2, 设置死了</li>
+<li>rows_in_buff == 7, 插入的数据</li>
+<li>getCurrentMark =&gt; return current_mark, 也就是一个 getter</li>
+<li>如果 rows_in_buffer &gt;= current_mark_rows, 即凑够一个 granule, 就开始写, buffer 的意义就是用来积攒 block, 也就是说, 如果数据太小, 小于颗粒的行数, 则不会写入, 那么插入就看不到效果
+<ul>
+<li>如果恰好 rows_in_buffer 比设置的 current_mark_rows 大 1, 也要写入? 那么多出的一行怎么处理?
+<ul>
+<li>比如设置了颗粒是 2 行, 插入 7 行, 这和插入 2, 3 行... 一样</li>
+</ul>
+</li>
+<li>写是通过参数为 columns_buffer 的接口来写的</li>
+<li>先把 block 从 columns_buffer 中释放出来, which is literally 7 行</li>
+<li>将这 7 行转换成 granule: getGranulesToWrite
+<ul>
+<li>获取一共需要几个 granule: 总共 7 行 / 2 行额定 + 1 = 4 个</li>
+<li>marks_rows_partial_sums[current_mark], 也就是说这其实是一个<strong>映射关系</strong>(0-&gt;0, 1-&gt;2, 3-&gt;4, 4-&gt;6), 可以看出这个变量是用来创建 Granule 的, 自带一个 KEY, 比 map 好, 连续内存随机访问</li>
+<li>分别构造了这些 Granule
+<ul>
+<li>start_row, rows_to_write, mark_number, mark_on_start, is_complete</li>
+<li>0, 2, 0, true, true</li>
+<li>2, 2, 1, true, true</li>
+<li>4, 2, 2, true, true</li>
+<li>6, 1, 3, true, true</li>
+</ul>
+</li>
+<li><strong>一个疑惑的地方, 既然是按 column 计量, 为什么这里有 row?</strong>
+<ul>
+<li>getGranulesToWrite 这个函数并没有对 block 做任何改动, 在函数执行的时候并没有考虑每一个 column 而是直接取 block.rows()</li>
+<li>这一排 gruanules(<code>vector&lt;T&gt;</code>) 将作为 plan 用于写入</li>
+</ul>
+</li>
+<li><strong>结论: marks_row_partial_sums -&gt; Granule</strong></li>
+<li><strong>也就是, mark -&gt; mark rows number</strong></li>
+</ul>
+</li>
+<li>writeDataBlockPrimaryIndexAndSkipIndices
+<ul>
+<li>有两个 primary_key: 先是 uid 然后是 eid, getPrimaryKeyColumns() -&gt; Names (<code>using  Names = std::vector&lt;std::string&gt;</code>)</li>
+<li>getBlockAndPermute, 传入 block, 主键名字, 不需要 permutation 因为已经排过序
+<ul>
+<li>创建一个 block, 将主键对应的 ColumnWithTypeAndName 插入 block, 然后返回</li>
+</ul>
+</li>
+<li>calculateAndSerializePrimaryIndex(const  Block  &amp;  primary_index_block, const  Granules  &amp;  granules_to_write)
+<ul>
+<li><img src="/images/clickhouse/Images/76acb99635292482820c48832ab167a7.png" alt="76acb99635292482820c48832ab167a7.png">
+<ul>
+<li>说明有数据</li>
+</ul>
+</li>
+<li>这时候传入的 primary_index_block 就是仅包含"主键 columns" 的 block</li>
+<li>这时候, primary_index_block 有 2 列(因为两个主键)</li>
+<li>创建 index_columns:
+<ul>
+<li>index_columns.resize(2)</li>
+<li>last_block_index_columns.resize(2)</li>
+<li>将 primary_index_block 的 column 克隆(create empty column with the same type)到 index_columns, 也就是说没有数据</li>
+</ul>
+</li>
+<li>进入循环:
+<ul>
+<li>对于每个 granule(实际上是一些信息)
+<ul>
+<li>对于主键的每个 column
+<ul>
+<li>const auto &amp; primary_column = primary_index_block.getByPosition(j); 返回的是 ColumnWithNameAndType</li>
+<li>index_columns[j]-&gt;insertFrom(*primary_column.column, granule.start_row);
+<ul>
+<li>insertFrom 的实现:
+<ul>
+<li><img src="/images/clickhouse/Images/8f7d1540e43629cad305d072df524a1d.png" alt="8f7d1540e43629cad305d072df524a1d.png"></li>
+<li>data 的定义
+<ul>
+<li><code>Container data;</code></li>
+<li><img src="/images/clickhouse/Images/9e067f1c5b90dd8a64a0b65a58941aad.png" alt="9e067f1c5b90dd8a64a0b65a58941aad.png"></li>
+<li>T = unsigned int</li>
+<li>这是因为 uid 是 Uint32</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>这是将每一 column 的第 n 个数据放入 data(也就是一个 array) 中, 这样就能做到: 按照 granule 来将每个 granule 的第一行写入到 ColumnWithNameAndType 中去, 并将其序列化, 写入到 index_stream 中</li>
+<li>然后将每一个 primary_index_block 的 column 放在 last_block_index_columns 中</li>
+<li>也就是说到现在:
+<ul>
+<li><img src="/images/clickhouse/Images/a3d679b52c456a9774f2ffea6056418f.png" alt="a3d679b52c456a9774f2ffea6056418f.png"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>计算 SkipIndices(?)...结果发现 skip_indices_block.rows() == 0</li>
+</ul>
+</li>
+<li>setCurrentMark (<code>void  setCurrentMark(size_t  mark) { current_mark = mark; }</code>)
+<ul>
+<li>更新写过多少个 marks == getCurrentMark + granules_to_write.size() 也就是, 一个 granule 对应一个 mark</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="writesuffixandfinalizepart" tabindex="-1">writeSuffixAndFinalizePart</h3>
+<p>src/Storages/MergeTree/MergedBlockOutputStream.cpp:66</p>
+<ul>
+<li>首先写 checksum, 默认 additional_column_checksums == 0</li>
+<li>MergeTreeDataPartWriterCompact::finish 分 3 步
+<ul>
+<li>MergeTreeDataPartWriterCompact::finishDataSerialization 完成数据序列化
+<ul>
+<li>src/Storages/MergeTree/MergeTreeDataPartWriterCompact.cpp:228</li>
+<li>如果 columns_buffer 缓存中还有数据, 就要排空</li>
+<li>写入 marks(<code>HashingWriteBuffer marks</code>, 一个流):
+<ul>
+<li>对于每一个 column_list
+<ul>
+<li>将 plain_hashing 的数量写入</li>
+<li>写入 Uint64(0) 作为间隔符</li>
+</ul>
+</li>
+<li>写入 Uint64(0) 作为最终间隔符</li>
+</ul>
+</li>
+<li>plain_file(WriteBufferFromFileBase) 整理缓存</li>
+<li>marks(HashingWriteBuffer) 整理缓存</li>
+<li>addToChecksums:
+<ul>
+<li>记录这些文件的文件大小, hash, 是否压缩, 等:
+<ul>
+<li>data.bin</li>
+<li>data.后缀未知(marks_file_extension)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>plain_file 最终? finalize()
+<ul>
+<li>实际上也是 next()</li>
+</ul>
+</li>
+<li>marks_file 最终 finalize()
+<ul>
+<li>实际上也是 next()</li>
+</ul>
+</li>
+<li>如果需要同步:
+<ul>
+<li>plain_file-&gt;sync()</li>
+<li>marks_file-&gt;sync()</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>finishPrimaryIndexSerialization 完成主键的序列化
+<ul>
+<li>在最后追加一个 0</li>
+<li><img src="/images/clickhouse/Images/a9af387c5e5029317dc0e3710156e63b.png" alt="a9af387c5e5029317dc0e3710156e63b.png"></li>
+<li>写最后一个 mark: write_final_mark
+<ul>
+<li>找到 last_block_index_columns, 将数据拷入 index_columns, 相当于最后两个是一样的数据</li>
+<li>index_stream.next(), 集中缓存</li>
+<li>checksum file 写入 "primary.idx" 的信息(大小, hash), 也就是说, 主键索引放在 primary.idx 文件</li>
+<li>index_file_stream(类型: WriteBufferFromFileBase)-&gt;finalize()</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>finishSkipIndicesSerialization(忽略)</li>
+</ul>
+</li>
+<li>写入磁盘时刻
+<ul>
+<li>part_columns = columns_list(类型是: NameAndType)</li>
+<li>finalizePartOnDisk:
+<ul>
+<li>将 part_columns + checksum 写入到 new_part
+<ul>
+<li>src/Storages/MergeTree/MergedBlockOutputStream.cpp:123</li>
+<li><img src="/images/clickhouse/Images/ee6f213f38ca62a940b428ec4cc8e40e.png" alt="ee6f213f38ca62a940b428ec4cc8e40e.png"></li>
+<li>minmax_idx 是什么?(TODO)</li>
+<li>写 checksum</li>
+</ul>
+</li>
+<li>removeEmptyColumnsFromPart</li>
+<li>最后写一个 checksums.txt</li>
+<li><img src="/images/clickhouse/Images/0e9696ac56d8eefc066441f6b36165ca.png" alt="0e9696ac56d8eefc066441f6b36165ca.png"></li>
+<li><img src="/images/clickhouse/Images/24d6748bbf6efd2bae5c7c985e1c8785.png" alt="24d6748bbf6efd2bae5c7c985e1c8785.png"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="结构体" tabindex="-1">结构体</h2>
+<h3 id="mergetreeindexgranularity" tabindex="-1">MergeTreeIndexGranularity</h3>
+<p>结论: marks_rows_partitial_sums 是颗粒行数的累加, 当指定 granularity 行数为 1 的时候, 结果是<br>
+[1, 2, 3, 4, 5, 6]</p>
+<p>如果 granularity == 2, 插入 7 行的时候:</p>
+<p><img src="/images/clickhouse/Images/db2af9800fbac5191f4f19aac5f830ec.png" alt="db2af9800fbac5191f4f19aac5f830ec.png"></p>
+<p>用途:</p>
+<p><img src="/images/clickhouse/Images/f473f2a9f776f9f4a666bcbf50b1089e.png" alt="f473f2a9f776f9f4a666bcbf50b1089e.png"></p>
+<h3 id="granule" tabindex="-1">Granule</h3>
+<p><img src="/images/clickhouse/Images/f850739afa0bda18c48ab96f9e55a63e.png" alt="f850739afa0bda18c48ab96f9e55a63e.png"></p>
+<p>从观察结果来看, 不管最后一个 granule 是否满载, is_complete 都是 true</p>
+<h3 id="从-nativeblockoutputstreamwrite-猜测" tabindex="-1">从 NativeBlockOutputStream::write 猜测</h3>
+<p>注意到 columns 与 indices, 或者 marks 没什么必然联系, 不一定非要物理上组合在一起.<br>
+有用的信息:</p>
+<ul>
+<li>index 中也写入列数,行数</li>
+<li>mark.offset_in_compressed_file = initial_size_of_file + ostr_concrete-&gt;getCompressedBytes()</li>
+<li>mark.offset_in_decompressed_block = ostr_concrete-&gt;getRemainingBytes()<br>
+依次写入:</li>
+<li>column 名</li>
+<li>类型</li>
+<li>压缩之后的偏移量</li>
+<li>未压缩之前的偏移量</li>
+</ul>
+<h3 id="columnwithtypeandname" tabindex="-1">ColumnWithTypeAndName</h3>
+<p>src/Core/ColumnWithTypeAndName.h:19<br>
+<img src="/images/clickhouse/Images/5b7e7536246bb52a7013118cc8bec6f0.png" alt="5b7e7536246bb52a7013118cc8bec6f0.png"><br>
+<img src="/images/clickhouse/Images/9a83d602e942db2bb9f5a34a36d78cca.png" alt="9a83d602e942db2bb9f5a34a36d78cca.png"><br>
+Block 包含的就是 ColumnWithTypeAndName 的 vector<br>
+<img src="/images/clickhouse/Images/3449e0ae9724dd28eca88b15db286b25.png" alt="3449e0ae9724dd28eca88b15db286b25.png"></p>
+<h3 id="paddedpodarray" tabindex="-1">PaddedPODArray</h3>
+<p>什么时候用到?<br>
+<img src="/images/clickhouse/Images/c0981d85e2a4423796947627eed89580.png" alt="c0981d85e2a4423796947627eed89580.png"><br>
+T = unsigned int, size = 4(sizeof 是以 bytes 为单位而不是 bit)</p>
+<p><img src="/images/clickhouse/Images/aca07b83db93f08ff2187adf05fe83da.png" alt="aca07b83db93f08ff2187adf05fe83da.png"></p>
+<ul>
+<li>pad_right_ == 15</li>
+<li>pad_left_ == 16<br>
+还要追溯到 PODArrayBase<br>
+这对齐和编译器的对齐不一样: [[20211215153019]]</li>
+</ul>
+<h4 id="podarraybase" tabindex="-1">PODArrayBase</h4>
+<p>integerRoundUp<br>
+<img src="/images/clickhouse/Images/7fb92d99c7f978a168dd09d88a17ff2b.png" alt="7fb92d99c7f978a168dd09d88a17ff2b.png"></p>
+<p><img src="/images/clickhouse/Images/4ecb8ffca9b3b2f676cf0989c2a65820.png" alt="4ecb8ffca9b3b2f676cf0989c2a65820.png"><br>
+对于 unsigned int, ELEMENT_SIZE == 4<br>
+有:<br>
+pad_right = integerRoundUp(16, ELEMENT_SIZE): ((15 + 4 - 1)/ 4 ) * 4 == 16<br>
+pad_left  = 16</p>
+<h2 id="磁盘文件" tabindex="-1">磁盘文件</h2>
+<p>从磁盘文件, hexdump 出来也是一个思路(dump 出来没有什么*用)</p>
+<h1 id="总的写入流程" tabindex="-1">总的写入流程</h1>
+<p>从 TCPHandler 到 MergeTreeDataPartWriterCompact<br>
+<img src="/images/clickhouse/Images/8bc3bc432fdc99687d07fee897a367e4.png" alt="8bc3bc432fdc99687d07fee897a367e4.png"></p>
+<h2 id="keywords" tabindex="-1">Keywords</h2>
+<h3 id="columns_list" tabindex="-1">columns_list</h3>
+<p>为了知道 columns_list 从哪来, 在 src/Storages/MergeTree/MergeTreeDataPartWriterCompact.cpp:35 打上断点<br>
+看 MergeTreeDataPartWriterCompact 是被谁创建的</p>
+<ul>
+<li>是通过 MergeTreeDataPartCompact::getWriter, 获取写入者</li>
+<li>src/Storages/MergeTree/MergeTreeDataWriter.cpp:437, 在 MergeTreeDataWriter::writeTempPart() 的时候传入</li>
+</ul>
+<pre class="one-piece"><code>INSERT INTO event VALUES　(6, 1, 'blink')　(2, 2, 'eat')　(2, 3, 'arise')　(3, 4, 'crouch')　(1, 5, 'groan')　(1, 6, 'die')　(1, 7, 'flee')
+</code></pre>
+<p>对应的 columns 为:<br>
+<img src="/images/clickhouse/Images/b5a5635e61cc60ba722e9c608e5096ea.png" alt="b5a5635e61cc60ba722e9c608e5096ea.png"><br>
+实现方法:<br>
+<img src="/images/clickhouse/Images/a29436c8815e39555e1ac790083957b2.png" alt="a29436c8815e39555e1ac790083957b2.png"><br>
+实际上是 NameAndTypePair, 只有两个成员</p>
+<pre class="one-piece"><code>struct NameAndTypePair
+{
+public:
+    String name;
+    DataTypePtr type;
+}
+</code></pre>
+<h3 id="mergedblockoutputstream-out" tabindex="-1">MergedBlockOutputStream out</h3>
+<pre class="one-piece"><code>MergedBlockOutputStream out(new_data_part, 
+                             metadata_snapshot, columns, 
+                            index_factory.getMany(metadata_snapshot-&gt;getSecondaryIndices()), 
+                            compression_codec);
+</code></pre>
+<p>metadata_snapshot 是 <code>StorageInMemoryMetadata</code> 类型, 主要是一些描述性字段</p>
+<h1 id="调试" tabindex="-1">调试</h1>
+<h2 id="著名断点" tabindex="-1">著名断点</h2>
+<p>break src/Storages/MergeTree/MergeTreeDataPartWriterCompact.cpp:301 thread 4</p>
+<p>break src/Storages/MergeTree/MergeTreeDataPartWriterCompact.cpp:297 thread 4<br>
+<img src="/images/clickhouse/Images/09fa5c61a4fd2ceead2e850e11395ddf.png" alt="09fa5c61a4fd2ceead2e850e11395ddf.png"><br>
+结论: marks_rows_partitial_sums 是颗粒行数的累加</p>
+<p>break src/Storages/MergeTree/MergeTreeDataPartWriterCompact.cpp:138 thread 4<br>
+<img src="/images/clickhouse/Images/6e7544fc8a115cca8c3bcf53dd8feb02.png" alt="6e7544fc8a115cca8c3bcf53dd8feb02.png"><br>
+break src/Storages/MergeTree/MergeTreeDataPartWriterCompact.cpp:75 thread 4<br>
+<img src="/images/clickhouse/Images/fcdecc0658a0c480c042b3bf562c8c0d.png" alt="fcdecc0658a0c480c042b3bf562c8c0d.png"></p>
+<p>src/Storages/MergeTree/MergedBlockOutputStream.cpp:66<br>
+<img src="/images/clickhouse/Images/2075a34f76d717afbb62a4be3221413a.png" alt="2075a34f76d717afbb62a4be3221413a.png"></p>
+<h2 id="util-类" tabindex="-1">Util 类</h2>
+<h3 id="iostream_debug_helpers" tabindex="-1">iostream_debug_helpers</h3>
+<p>src/Core/iostream_debug_helpers.cpp</p>
+<h3 id="nativeblockoutputstream" tabindex="-1">NativeBlockOutputStream</h3>
+<p>src/DataStreams/NativeBlockOutputStream.cpp:65</p>
+<h2 id="测试-sql" tabindex="-1">测试 SQL</h2>
+<pre class="one-piece"><code>CREATE TABLE mergetree.event
+(
+    `eid` UInt32,
+    `uid` UInt32,
+    `desc` String
+)
+ENGINE = MergeTree
+ORDER BY (eid, uid, desc)
+SETTINGS index_granularity = 2
+</code></pre>
+<p>INSERT</p>
+<pre class="one-piece"><code>INSERT INTO MergeTree.event VALUES 
+(1, 6, 'blink')
+(2, 2, 'eat')
+(3, 2, 'arise')
+(4, 3, 'crouch')
+(5, 1, 'groan')
+(6, 1, 'die')
+(7, 1, 'flee')
+</code></pre>
+<p>结果</p>
+<pre class="one-piece"><code>2021.12.14 13:04:27.770143 [ 1817425 ] {9a4428cb-8675-4985-af83-3a1cc1d81cd2} &lt;Debug&gt; MergeTreeDataPartWriterCompact::write: 
+03 07 03 75 69 64 06 55 49 6E 74 33 32 06 00 00 		...uid.UInt32...
+00 02 00 00 00 02 00 00 00 03 00 00 00 01 00 00 		................
+00 01 00 00 00 01 00 00 00 03 65 69 64 06 55 49 		..........eid.UI
+6E 74 33 32 01 00 00 00 02 00 00 00 03 00 00 00 		nt32............
+04 00 00 00 05 00 00 00 06 00 00 00 07 00 00 00 		................
+04 64 65 73 63 06 53 74 72 69 6E 67 05 62 6C 69 		.desc.String.bli
+6E 6B 03 65 61 74 05 61 72 69 73 65 06 63 72 6F 		nk.eat.arise.cro
+75 63 68 05 67 72 6F 61 6E 03 64 69 65 04 66 6C 		uch.groan.die.fl
+65 65 
+2021.12.14 13:04:27.771776 [ 1817425 ] {9a4428cb-8675-4985-af83-3a1cc1d81cd2} &lt;Debug&gt; MergeTreeDataPartWriterCompact::write: 
+03 07 03 75 69 64 06 55 49 6E 74 33 32 01 00 00 		...uid.UInt32...
+00 01 00 00 00 01 00 00 00 02 00 00 00 02 00 00 		................
+00 03 00 00 00 06 00 00 00 03 65 69 64 06 55 49 		..........eid.UI
+6E 74 33 32 05 00 00 00 06 00 00 00 07 00 00 00 		nt32............
+02 00 00 00 03 00 00 00 04 00 00 00 01 00 00 00 		................
+04 64 65 73 63 06 53 74 72 69 6E 67 05 67 72 6F 		.desc.String.gro
+61 6E 03 64 69 65 04 66 6C 65 65 03 65 61 74 05 		an.die.flee.eat.
+61 72 69 73 65 06 63 72 6F 75 63 68 05 62 6C 69 		arise.crouch.bli
+6E 6B 
+
+</code></pre>
+<pre class="one-piece"><code>CREATE TABLE MergeTree.event
+(
+    `eid` UInt32,
+    `uid` UInt32,
+    `desc` String
+)
+ENGINE = MergeTree
+ORDER BY (eid, uid, desc)
+SETTINGS index_granularity = 2;
+
+CREATE TABLE MergeTree.user
+(
+    `uid` UInt32,
+    `assets` Int32,
+    `profile` String
+)
+ENGINE = MergeTree
+ORDER BY (uid)
+SETTINGS index_granularity = 2;
+
+set -x;for i in $(seq 1 100)                 
+do              
+    assets=$(($RANDOM % 10000 - $RANDOM % 10000))
+    clickhouse-client -u ledzeppelin --port 9001 --query "INSERT INTO MergeTree.user VALUES  (${i}, ${assets}, '$(echo ${i} | md5sum | head -c 20; echo;)') "
+done
+set -x;for i in $(seq 1 1000)                                                
+do               
+    uid=$((1 + $RANDOM % 100))                  
+    clickhouse-client -u ledzeppelin --port 9001 --query "INSERT INTO MergeTree.event VALUES  (${i}, ${uid}, '$(echo $(date) | md5sum | head -c 20; echo;)')"                
+done
+</code></pre>
+<h2 id="log_debug" tabindex="-1">LOG_DEBUG</h2>
+<pre class="one-piece"><code>#include &lt;Poco/Logger.h&gt;
+#include &lt;common/logger_useful.h&gt;
+
+
+LOG_DEBUG(&amp;Poco::Logger::get("MergeTreeDataPartWriterCompact::write"), "\n{}", block.dump())
+</code></pre>
+<h1 id="单元测试" tabindex="-1">单元测试</h1>
+<p><img src="/images/clickhouse/Images/42eb799d61da6829e455a4267bfea6b0.png" alt="42eb799d61da6829e455a4267bfea6b0.png"><br>
+对应<br>
+<img src="/images/clickhouse/Images/f5504cec9c4c0b0409776a216b8e2d54.png" alt="f5504cec9c4c0b0409776a216b8e2d54.png"></p>
+<h1 id="storage-join" tabindex="-1">Storage Join</h1>
+<p>官方文档: <a href="https://clickhouse.com/docs/en/engines/table-engines/special/join/">https://clickhouse.com/docs/en/engines/table-engines/special/join/</a><br>
+语法:</p>
+<pre class="one-piece"><code>CREATE TABLE [IF NOT EXISTS] [db.]table_name [ON CLUSTER cluster]
+(
+    name1 [type1] [DEFAULT|MATERIALIZED|ALIAS expr1] [TTL expr1],
+    name2 [type2] [DEFAULT|MATERIALIZED|ALIAS expr2] [TTL expr2],
+) ENGINE = Join(join_strictness, join_type, k1[, k2, ...])
+</code></pre>
+<ul>
+<li>join_strictness: ALL, ANY, ASOF, 默认是 ALL (<a href="https://clickhouse.com/docs/en/operations/settings/settings/#settings-join_default_strictness">https://clickhouse.com/docs/en/operations/settings/settings/#settings-join_default_strictness</a>)</li>
+<li>join type: INNER JOIN, LEFT OUTER JOIN, RIGHT OUTER JOIN</li>
+<li>k1, k2,...: USING 的时候使用的关键列名</li>
+</ul>
+<h2 id="介绍" tabindex="-1">介绍</h2>
+<ol>
+<li>Join table 的数据一般都会放在 RAM 上, 插入数据时, clickhouse 将 data blocks 写入到磁盘中, 便于数据库重启之后恢复数据</li>
+<li>如果服务器重启时出现问题, 那么磁盘上的数据可能受损或者丢失, 这时候需要手动去删除这些数据</li>
+<li>选择和插入数据: 如果 table 是用 ANY strictness 创建的, 则包含重复的 keys 的数据会被丢弃, 如果 strictness 是 ALL, 则不会去重
+<ul>
+<li>使用场景:
+<ul>
+<li>将 Join table 放在 <code>JOIN</code> 的右边: 比如 <code>select * from  t1 join t2</code>, t2 是 join table</li>
+<li>使用 <code>joinGet</code> 函数, 模拟 KV 数据库</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>删除数据会触发 Mutations</li>
+<li>Join table 涉及以下配置:
+<ul>
+<li>join_use_nulls</li>
+<li>max_rows_in_join</li>
+<li>max_bytes_in_join</li>
+<li>join_overflow_mode</li>
+<li>join_any_take_last_row</li>
+<li>persistent</li>
+</ul>
+</li>
+</ol>
+<h2 id="示例" tabindex="-1">示例</h2>
+<h3 id="创建任意引擎的表" tabindex="-1">创建任意引擎的表</h3>
+<pre class="one-piece"><code>CREATE TABLE id_val(`id` UInt32, `val` UInt32) ENGINE = TinyLog;
+INSERT INTO id_val VALUES (1,11)(2,12)(3,13);
+</code></pre>
+<h3 id="创建-right-side-join-table" tabindex="-1">创建 right-side Join table</h3>
+<p>Join table 的使用场景在上面已经说了, 放在 join 语句的右边, 具体原因以后会讲到.</p>
+<pre class="one-piece"><code>CREATE TABLE id_val_join(`id` UInt32, `val` UInt8) ENGINE = Join(ANY, LEFT, id);
+</code></pre>
+<p><strong>ANY</strong> 表示</p>
+<blockquote>
+<p>If the right table has several matching rows, only the first one found is joined. If the right table has only one matching row, the results of<code>ANY</code>and<code>ALL</code>are the same<br>
+即如果右表有若干个匹配项, 只保留第一个匹配项, 其他丢弃.</p>
+</blockquote>
+<pre class="one-piece"><code>INSERT INTO id_val_join VALUES (1,21)(1,22)(3,23);
+</code></pre>
+<p>第二条数据 (1, 22) 由于匹配 key(即 id) 和第一条数据 (1, 21) 冲突, 所以被丢弃<br>
+<img src="/images/clickhouse/Images/02154d4b91f9daf8ab9361c665b01b3c.png" alt="02154d4b91f9daf8ab9361c665b01b3c.png"></p>
+<h3 id="join-the-tables" tabindex="-1">Join the tables</h3>
+<pre class="one-piece"><code>SELECT * FROM id_val ANY LEFT JOIN id_val_join USING (id);
+</code></pre>
+<p><img src="/images/clickhouse/Images/c8c8c65f8de70878f645ea8f3662f28f.png" alt="c8c8c65f8de70878f645ea8f3662f28f.png"><br>
+右表 in_val_join 不匹配的项目被填充了默认值 0</p>
+<h3 id="查询" tabindex="-1">查询</h3>
+<p>有个疑问: 查询右表的<code>select * from id_val_join</code>到底查的是原来的 id_val_join 还是 id_val any left join id_val_join?<br>
+<img src="/images/clickhouse/Images/96f8c66433f59e9bdb0405c8d72dbe18.png" alt="96f8c66433f59e9bdb0405c8d72dbe18.png"><br>
+创建一个新表 id_val_join2, 不与 id_val 表关联:<br>
+<img src="/images/clickhouse/Images/709050417f99c7aed638d19a2a7f97ca.png" alt="709050417f99c7aed638d19a2a7f97ca.png"><br>
+结果一样, 表明存在这样的逻辑: 如果键不存在, 返回默认值<br>
+此外, 注意到左表和右表都有一个 val 字段, 但 joinGet 取的是右表的字段, 因为查的是右表<br>
+如果查询左表:<br>
+<img src="/images/clickhouse/Images/06badbe46eb4415ab5c05d5d777e76d0.png" alt="06badbe46eb4415ab5c05d5d777e76d0.png"><br>
+结论: joinGet 不依赖 join 本身, 那么 join 的意义是什么?</p>
+<h3 id="作为右表的意义" tabindex="-1">作为右表的意义</h3>
+<p>如果要把表当作字典来用, 还可以用 Dictionary 存储引擎. 用 Join 的意义是它可以加速 join 操作.<br>
+Join 表的数据一直放在 RAM 中, 这就避免了 IO 开销, 也就是因为这个原因, 所以右表不能太大.</p>
+<h4 id="使用案例" tabindex="-1">使用案例:</h4>
+<p>在维度数据仓库中, 右表是维度表, 使用 Join 引擎, 左表是事实表, 引擎不限.<br>
+创建一个 Materialized view:</p>
+<pre class="one-piece"><code>CREATE MATERIALIZED VIEW materialized_view
+ENGINE = MergeTree() AS
+SELECT *
+FROM fact_table
+ANY LEFT JOIN dimension_table USING (id)
+</code></pre>
+<p>测试:</p>
+<pre class="one-piece"><code>CREATE TABLE event(`eid` UInt32, `uid` UInt32, `desc` String)  ENGINE = TinyLog;
+-- join engine 不支持 Order by
+CREATE TABLE user(`uid` UInt32, `profile` String) ENGINE = Join(ANY, LEFT, uid);
+-- 增加 1000 个用户
+for i in $(seq 1 1000) 
+do
+    clickhouse-client -h 10.20.3.100 -u ledzeppelin --query "INSERT INTO user VALUES  (${i}, '$(echo ${i} | md5sum | head -c 20; echo;)') "
+done
+-- 10K 数据
+for i in $(seq 1 10000) 
+do
+    uid=$((1 + $RANDOM % 1000))
+    clickhouse-client -h 10.20.3.100 -u ledzeppelin --query "INSERT INTO event VALUES  (${i}, ${uid}, '$(echo $(date) | md5sum | head -c 20; echo;)')"
+done
+</code></pre>
+<p><img src="/images/clickhouse/Images/67c8e9ad8e8d1cd088f49456b8b48371.png" alt="67c8e9ad8e8d1cd088f49456b8b48371.png"><br>
+<img src="/images/clickhouse/Images/86bc117114be3cf7e0cf99ba5d8a5d4a.png" alt="86bc117114be3cf7e0cf99ba5d8a5d4a.png"></p>
+<h3 id="多列-join-table" tabindex="-1">多列 join table</h3>
+<p>可以认为一张表转化成字典后是这种结构:<br>
+<img src="/images/clickhouse/Images/247e38a074ba761240d612ed672fecd6.png" alt="247e38a074ba761240d612ed672fecd6.png"></p>
+<pre class="one-piece"><code>SELECT joinGet('user', 'uid', toUInt32(100))
+</code></pre>
+<p>取主键的时候, 报错:</p>
+<blockquote>
+<p>Received exception from server (version 21.9.1):<br>
+Code: 16. DB::Exception: Received from localhost:9000. DB::Exception: StorageJoin doesn't contain column uid: While processing joinGet('user', 'uid', toUInt32(100)). (NO_SUCH_COLUMN_IN_TABLE)</p>
+</blockquote>
+<pre class="one-piece"><code>CREATE TABLE user2(`uid` UInt32, `assets` Int32, `profile` String) ENGINE = Join(ANY, LEFT, uid);
+for i in $(seq 1 10000) 
+do
+    assets=$(($RANDOM % 10000 - $RANDOM % 10000))
+    clickhouse-client -u ledzeppelin --query "INSERT INTO user2 VALUES  (${i}, ${assets}, '$(echo ${i} | md5sum | head -c 20; echo;)') "
+done
+</code></pre>
+<h3 id="性能" tabindex="-1">性能</h3>
+<p>joinGet 的性能比普通的 select 好</p>
+<p><img src="/images/clickhouse/Images/bf192f9792ee4f1a6c677a3b0a3bbcb0.png" alt="bf192f9792ee4f1a6c677a3b0a3bbcb0.png"><br>
+可以看出 joinGet 少了一个 FilterTransform, 并且直接从 sourceFromSingleChunk 中读取<br>
+<img src="/images/clickhouse/Images/7d1a38dd1d1ab5c19c38885654eee314.png" alt="7d1a38dd1d1ab5c19c38885654eee314.png"></p>
+<p><img src="/images/clickhouse/Images/2448f3332add54263d2567b539b214cc.png" alt="2448f3332add54263d2567b539b214cc.png"><br>
+结论是, 使用 Join table 的时候, 用 joinGet 比 where 更快, 更多测试结果以后再跟进.</p>
+<h3 id="小结" tabindex="-1">小结</h3>
+<p>所谓 StorageJoin 并不是真正意义上的 join, 而是将右表转化成字典, 放在内存中, 用左表的字段取查字典, 这样避免了传统意义上的 JOIN, 好处是不需要将数据从磁盘上加载起来<br>
+节省了一些 IO 花销. 缺点是右表的数据一直在内存中</p>
+<p><img src="/images/clickhouse/Images/06a3f908a519528a598115768b6e2882.png" alt="06a3f908a519528a598115768b6e2882.png"></p>
+<h2 id="实现" tabindex="-1">实现</h2>
+<h3 id="建表-创建字典" tabindex="-1">建表: 创建字典</h3>
+<p>StorageJoin 实际上并没有执行 join 操作, 因此它的关键点之一在于, 如何将数据转换成字典</p>
+<pre class="one-piece"><code>CREATE TABLE test.user
+(
+    `uid` UInt32,
+    `assets` Int32,
+    `profile` String
+)
+ENGINE = Join(ANY, LEFT, uid)
+</code></pre>
+<p>存储路径:</p>
+<pre class="one-piece"><code>relative_path_.c_str()
+0x7fff3e26a220 "store/1b5/1b5e3ec5-ae5b-47e4-9b5e-3ec5ae5b57e4/"
+# StorageJoin table 的 key
+key_names_[0].c_str()
+0x7fff3e2984a0 "uid"
+</code></pre>
+<p>创建了两个 join:</p>
+<ul>
+<li>TableJoin</li>
+<li>HashJoin</li>
+</ul>
+<p>其中 HashJoin 在 StorageJoin 中的角色就是一个字典, 可以认为 StorageJoin 是在代理 HashJoin, StorageJoin 的构造函数创建了 HashJoin</p>
+<pre class="one-piece"><code>StorageJoin::StorageJoin(...)
+{
+    auto metadata_snapshot = getInMemoryMetadataPtr();
+    for (const auto &amp; key : key_names)
+        if (!metadata_snapshot-&gt;getColumns().hasPhysical(key))
+            throw Exception{"Key column (" + key + ") does not exist in table declaration.", ErrorCodes::NO_SUCH_COLUMN_IN_TABLE};
+
+    table_join = std::make_shared&lt;TableJoin&gt;(limits, use_nulls, kind, strictness, key_names);
+    join = std::make_shared&lt;HashJoin&gt;(table_join, metadata_snapshot-&gt;getSampleBlock().sortColumns(), overwrite);
+    restore();
+}
+</code></pre>
+<p>其中:</p>
+<pre class="one-piece"><code>`printf "%s\n", metadata_snapshot-&gt;getSampleBlock().dump().c_str()
+03 00 03 75 69 64 06 55 49 6E 74 33 32 06 61 73 		...uid.UInt32.as
+73 65 74 73 05 49 6E 74 33 32 07 70 72 6F 66 69 		sets.Int32.profi
+6C 65 06 53 74 72 69 6E 67                      		le.String
+</code></pre>
+<p>在字典功能上, HashJoin 又代理了 TableJoin</p>
+<h3 id="read-读取数据" tabindex="-1">Read: 读取数据</h3>
+<p>Read 在构造执行计划的节点完成数据的加载, 构建字典(Map)</p>
+<p>主要调用顺序:</p>
+<ol>
+<li><code>executeFetchColumns</code> 调用存储引擎提取 columns</li>
+<li><code>DB::StorageJoin::read</code></li>
+</ol>
+<pre class="one-piece"><code>Pipe StorageJoin::read(
+    const Names &amp; column_names,
+    const StorageMetadataPtr &amp; metadata_snapshot,
+    SelectQueryInfo &amp; /*query_info*/,
+    ContextPtr /*context*/,
+    QueryProcessingStage::Enum /*processed_stage*/,
+    size_t max_block_size,
+    unsigned /*num_streams*/)
+{
+    metadata_snapshot-&gt;check(column_names, getVirtuals(), getStorageID());
+
+    Block source_sample_block = metadata_snapshot-&gt;getSampleBlockForColumns(column_names, getVirtuals(), getStorageID());
+    return Pipe(std::make_shared&lt;JoinSource&gt;(join, rwlock, max_block_size, source_sample_block));
+}
+</code></pre>
+<p>命名有些奇怪, source_sample_block 实际就是一个 header</p>
+<pre class="one-piece"><code>`printf "%s\n", source_sample_block.dump().c_str()
+03 00 03 75 69 64 06 55 49 6E 74 33 32 06 61 73 		...uid.UInt32.as
+73 65 74 73 05 49 6E 74 33 32 07 70 72 6F 66 69 		sets.Int32.profi
+6C 65 06 53 74 72 69 6E 67                      		le.String
+</code></pre>
+<p>读取的主要函数调用:</p>
+<pre class="one-piece"><code>SELECT *
+FROM test.user
+</code></pre>
+<ol>
+<li>创建 JoinSource, 所谓 joinsource 就是左右表</li>
+<li>根据 JoinSource 创建 Pipe</li>
+<li>根据 Pipe 创建 ReadFromStorageStep</li>
+<li>加入执行计划</li>
+<li>执行执行计划</li>
+<li>从存储中读取数据: <code>ISourceWithProgress::work()</code>, 以 chunk 的形式返回, 这将调用到 JoinSource 的 <code>createChunk()</code>.</li>
+</ol>
+<p><code>createChunk</code> 会根据调用 <code>fillColumns</code>依次往每个 column 插入数据 Map(即字典)的数据, 分两种情况:</p>
+<ul>
+<li>如果建表的时候, 使用了 <code>LEFT</code> 配置, 即 <code>Join(ANY, LEFT, uid)</code>, 则将数据(类型是 map) 的值填充进 column
+<ul>
+<li>如果 column 是主键, 则直接返回 key</li>
+<li>否则, 查询 key 对应的字段</li>
+</ul>
+</li>
+<li>如果建表的时候, 使用了 <code>RIGHT</code> 配置, 则 map 里面每一个项(键值对)的值都对应一个子表(即二级表), 那么就需要 2 层嵌套. 由于我们通常只使用 <code>LEFT</code> 配置, 所以这里暂时不深入研究.</li>
+</ul>
+<p>总而言之, ReadFromStorage 从一个字典里面抽取数据, 这个字典是在建表的时候创建的.</p>
+<h4 id="创建恢复文件" tabindex="-1">创建恢复文件</h4>
+<p>从上一节的代码中可以看到 Read 构建了一个 JOinSource, 在构造函数中创建字典(或者表)<br>
+具体步骤:</p>
+<ol>
+<li>创建一个 column 索引, 比如第一个键索引是 0, 第二个是 1, 如此类推</li>
+<li>获取一个叫 saved_block 的东西, 实际上是除了 key 之外的列的名字和类型, 没数据</li>
+</ol>
+<pre class="one-piece"><code>`printf "%s\n", saved_block.dump().c_str()
+02 00 06 61 73 73 65 74 73 05 49 6E 74 33 32 07 		...assets.Int32.
+70 72 6F 66 69 6C 65 06 53 74 72 69 6E 67       		profile.String
+</code></pre>
+<ol start="3">
+<li>对于每一列(包括 key), 查询 join(HashJoin) 是否有这个名字, 如果有, 将它存储到 restored_block, 记录它在 header(一张表的所有属性集合) 中的索引</li>
+</ol>
+<p>restored_block 将存到磁盘中, clickhouse 重启的时候回去磁盘读取数据, 加载到内存.<br>
+<img src="/images/clickhouse/Images/76dfaa36032827c869bbf66f28d425b0.png" alt="76dfaa36032827c869bbf66f28d425b0.png"></p>
+<h3 id="insert" tabindex="-1">Insert</h3>
+<pre class="one-piece"><code>void StorageJoin::insertBlock(const Block &amp; block)
+{
+    std::unique_lock&lt;std::shared_mutex&gt; lock(rwlock);
+    join-&gt;addJoinedBlock(block, true);
+}
+</code></pre>
+<p>insert 比较简单, 总而言之是往 join(HashJoin 类型)里面写, 写入也是通过一个 processor 完成, 当 processor-&gt;work() 时将 block 传到存储引擎中完成消费.<br>
+<img src="/images/clickhouse/Images/081a05b61b8c74f9a1d1d7ccc65c7a86.png" alt="081a05b61b8c74f9a1d1d7ccc65c7a86.png"></p>
+<h3 id="joinget" tabindex="-1">joinGet</h3>
+<p>文档: <a href="https://clickhouse.com/docs/en/sql-reference/functions/other-functions/#joinget">https://clickhouse.com/docs/en/sql-reference/functions/other-functions/#joinget</a></p>
+<blockquote>
+<p>Only supports tables created with the<code>ENGINE = Join(ANY, LEFT, &lt;join_keys&gt;)</code>statemen</p>
+<p>代码:<br>
+<img src="/images/clickhouse/Images/e16dcc01adde2a93c46662628d674338.png" alt="e16dcc01adde2a93c46662628d674338.png"></p>
+</blockquote>
+<p>这也证明如果要用好 storage join, 最好以 <code>ENGINE = Join(ANY, LEFT, &lt;join_keys&gt;)</code> 建表</p>
+<p>joinGet 和普通 Projection 的执行计划不一样, joinGet 直接从内存中一个哈希表中读取数据, SourceFromSingleChunk 只是一个 dummy 存储引擎. 也就是说 joinGet 在 ExpressionTransform 中就获取到了结果. 而普通 Projection 还需要进行 FilterTransform 操作.</p>
+<pre class="one-piece"><code>pi :) explain pipeline select joinGet('user2', 'assets', toUInt32(1))
+
+EXPLAIN PIPELINE
+SELECT joinGet('user2', 'assets', toUInt32(1))
+
+Query id: a42979b1-7845-4af5-8a84-55c133bf1748
+
+┌─explain─────────────────────────┐
+│ (Expression)                    │
+│ ExpressionTransform             │
+│   (SettingQuotaAndLimits)       │
+│     (ReadFromStorage)           │
+│     SourceFromSingleChunk 0 → 1 │
+└─────────────────────────────────┘
+
+5 rows in set. Elapsed: 0.007 sec. 
+
+pi :) explain pipeline select assets from user2 where uid = 1
+
+EXPLAIN PIPELINE
+SELECT assets
+FROM user2
+WHERE uid = 1
+
+Query id: 6f9e0cd4-d690-4871-9586-c80bc0103926
+
+┌─explain─────────────────────┐
+│ (Expression)                │
+│ ExpressionTransform         │
+│   (Filter)                  │
+│   FilterTransform           │
+│     (SettingQuotaAndLimits) │
+│       (ReadFromStorage)     │
+│       Join 0 → 1            │
+└─────────────────────────────┘
+
+7 rows in set. Elapsed: 0.010 sec. 
+
+pi :) explain plan select joinGet('user2', 'assets', toUInt32(1))
+
+EXPLAIN
+SELECT joinGet('user2', 'assets', toUInt32(1))
+
+Query id: e3ca7f7b-b8af-40f6-b4c5-961a3b64f562
+
+┌─explain───────────────────────────────────────────────────────────────────┐
+│ Expression ((Projection + Before ORDER BY))                               │
+│   SettingQuotaAndLimits (Set limits and quota after reading from storage) │
+│     ReadFromStorage (SystemOne)                                           │
+└───────────────────────────────────────────────────────────────────────────┘
+
+3 rows in set. Elapsed: 0.007 sec. 
+
+pi :) explain plan select assets from user2 where uid = 1
+
+EXPLAIN
+SELECT assets
+FROM user2
+WHERE uid = 1
+
+Query id: 642408ca-aa1d-46e7-9c1f-056f2e59268a
+
+┌─explain─────────────────────────────────────────────────────────────────────┐
+│ Expression ((Projection + Before ORDER BY))                                 │
+│   Filter (WHERE)                                                            │
+│     SettingQuotaAndLimits (Set limits and quota after reading from storage) │
+│       ReadFromStorage (Join)                                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+4 rows in set. Elapsed: 0.007 sec. 
+
+
+</code></pre>
+<p>可以看到 joinGet 并不用 StorageJoin, 一部分原因是 <code>from user2</code>直接找 StorageJoin 引擎, 因为 user2 表就是用这引擎创建的.<br>
+有几个前提:</p>
+<ol>
+<li>ActionsDAG, 从语法树构建出来的 Action 图(实际上是可以认为是树, 因为它没有环状结构)</li>
+<li>ActionsMatcher, 从 Action 树中创建 functor, 一种可以执行的对象, 用 Node 来封装, 并触发</li>
+<li>触发最终导致调用 <strong>StorageJoin::joinGet()</strong>, 继而调用 HashJoin, 然后到 TableJoin</li>
+<li>结果返回到 Node, Node 被放置在 ScopeStack 中, 后者作用是执行多层嵌套 lambda(在 interpreter 一章会讲到)</li>
+<li>最后形成一个 final_projection, finalized 表达式动作链(ExpressionActionsChain)</li>
+</ol>
+<p>打印"表达式动作链":</p>
+<pre class="one-piece"><code>`printf "%s\n", chain.dumpChain().c_str()
+step 0
+required output:
+joinGet('user2', 'assets', toUInt32(1))
+
+0 : INPUT () (no column) UInt8 dummy
+1 : COLUMN () Const(String) String 'user2'
+2 : COLUMN () Const(String) String 'assets'
+3 : COLUMN () Const(UInt8) UInt8 1
+4 : FUNCTION (3) Const(UInt32) UInt32 toUInt32(1) [toUInt32]
+5 : FUNCTION (1, 2, 4) Const(Int32) Int32 joinGet('user2', 'assets', toUInt32(1)) [joinGet]
+Index: 0 1 2 3 4 5
+
+step 1
+required output:
+joinGet('user2', 'assets', toUInt32(1))
+
+0 : COLUMN () Const(Int32) Int32 joinGet('user2', 'assets', toUInt32(1))
+Index: 0
+</code></pre>
+<p>虽然知道如何执行函数, 这里仍然有个问题, 数据从哪里来? 看执行计划可以看出存储引擎是 <code>SystemOne</code> 而不是 <code>Join</code></p>
+<p>对于不指定表的查询, 一律采用 SystemOne 存储引擎</p>
+<pre class="one-piece"><code>EXPLAIN
+SELECT 1
+
+Query id: a95a8ed3-e32a-43cc-a13f-b360305c4a6b
+
+┌─explain───────────────────────────────────────────────────────────────────┐
+│ Expression ((Projection + Before ORDER BY))                               │
+│   SettingQuotaAndLimits (Set limits and quota after reading from storage) │
+│     ReadFromStorage (SystemOne)                                           │
+└───────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p>SystemOne 通过 SourceFromSingleChunk 创建一个 Pipe, Pipe 是一个 Processor, 这个 Processor 会完成读取数据任务.<br>
+但 <code>SourceFromSingleChunk</code> 返回数据的方式很简单:</p>
+<pre class="one-piece"><code>class SourceFromSingleChunk : public SourceWithProgress
+{
+public:
+    explicit SourceFromSingleChunk(Block header, Chunk chunk_) : SourceWithProgress(std::move(header)), chunk(std::move(chunk_)) {}
+    String getName() const override { return "SourceFromSingleChunk"; }
+
+protected:
+    Chunk generate() override { return std::move(chunk); }
+
+private:
+    Chunk chunk;
+};
+</code></pre>
+<p>直接将 chunk 移动出去.</p>
+<p>关键点:</p>
+<ol>
+<li>SystemOne 只是一个 dummy 操作, 是为了和其他 SELECT 行为保持一致, 所有的 SELECT 操作都涉及 <code>executeFetchColumns</code>, 没有 <code>from</code> 语句的 SELECT 的 <code>executeFetchColumns</code>创建了 SystemOne</li>
+<li>在创建 SystemOne 之前, joinGet 已经拿到结果, 所以从 SystemOne 拿到的数据其实没什么用</li>
+</ol>
+<pre class="one-piece"><code>Pipe StorageSystemOne::read(...)
+{
+    metadata_snapshot-&gt;check(column_names, getVirtuals(), getStorageID());
+
+    Block header{ColumnWithTypeAndName(
+            DataTypeUInt8().createColumn(),
+            std::make_shared&lt;DataTypeUInt8&gt;(),
+            "dummy")};
+
+    auto column = DataTypeUInt8().createColumnConst(1, 0u)-&gt;convertToFullColumnIfConst();
+    Chunk chunk({ std::move(column) }, 1);
+
+    return Pipe(std::make_shared&lt;SourceFromSingleChunk&gt;(std::move(header), std::move(chunk)));
+}
+
+</code></pre>
+<pre class="one-piece"><code>`printf "%s\n",header.dump().c_str()
+01 00 05 64 75 6D 6D 79 05 55 49 6E 74 38       		...dummy.UInt8
+</code></pre>
+<p>如图, 列名为 dummy, 但是, 对于 <code>SELECT joinGet('user2', 'assets', toUInt32(1))</code>, 并没有需要 dummy 的地方.</p>
+<h3 id="在-storagejoin-中-hashjoin-仅是哈希表" tabindex="-1">在 StorageJoin 中 HashJoin 仅是哈希表</h3>
+<pre class="one-piece"><code>Data structure for implementation of JOIN.
+  * It is just a hash table: keys -&gt; rows of joined ("right") table.
+</code></pre>
+<p>StorageJoin 的命名容易产生误解, 它实际上并没有把 2 张表 join 起来, 因为它是一张表的存储引擎. 里面用到的 HashJoin 也不是用来 join 两种表的, 理由也很简单, 只有一张表, HashJoin 在 StorageJoin 中唯一的作用是充当哈希表.</p>
+<ul>
+<li>INSERT 时调用 <code>join-&gt;addJoinedBlock(block, true);</code></li>
+<li>SELECT 时从 <code>join-&gt;data-&gt;maps</code> 中提取数据, 具体看上面 "Read" 一节, 其中一个提取函数的具体代码如下:</li>
+</ul>
+<pre class="one-piece"><code>    template &lt;typename Map&gt;
+    static void fillOne(MutableColumns &amp; columns, const ColumnNumbers &amp; column_indices, typename Map::const_iterator &amp; it,
+                        const std::optional&lt;size_t&gt; &amp; key_pos, size_t &amp; rows_added)
+    {
+        for (size_t j = 0; j &lt; columns.size(); ++j)
+            if (j == key_pos)
+                columns[j]-&gt;insertData(rawData(it-&gt;getKey()), rawSize(it-&gt;getKey()));
+            else
+                columns[j]-&gt;insertFrom(*it-&gt;getMapped().block-&gt;getByPosition(column_indices[j]).column.get(), it-&gt;getMapped().row_num);
+        ++rows_added;
+    }
+</code></pre>
+<p>关于 HashJoin 的细节将在其他章节讲述</p>
+<h3 id="作为右表" tabindex="-1">作为右表</h3>
+<p>文档:</p>
+<blockquote>
+<p>Main use-cases for<code>Join</code>-engine tables are following:</p>
+<ul>
+<li>Place the table to the right side in a<code>JOIN</code>clause.</li>
+<li>Call the <a href="https://clickhouse.com/docs/en/sql-reference/functions/other-functions/#joinget">joinGet</a> function, which lets you extract data from the table the same way as from a dictionary.</li>
+</ul>
+</blockquote>
+<p>我们已经看到 joinGet 是如何从哈希表中读取数据. 现在来看 StorageJoin 表作为右表(创建表的时候指定 join 类型为 LEFT) 的优势是什么.<br>
+已知: 表一直在内存中, 这是优势之一. 缺点是无法应用到大数据中, 后者的数据量超过内存的承受能力.<br>
+这一节仅用于论证把它放在 JOIN 右边的理由.</p>
+<p>Pipeline:</p>
+<pre class="one-piece"><code>EXPLAIN PIPELINE
+SELECT *
+FROM event
+ANY LEFT JOIN user2 USING (uid)
+
+Query id: 46cb1d3e-de04-44d9-bcc1-5b816cdc2e8c
+
+┌─explain───────────────────────┐
+│ (Expression)                  │
+│ ExpressionTransform           │
+│   (FilledJoin)                │
+│   JoiningTransform            │
+│     (Expression)              │
+│     ExpressionTransform       │
+│       (SettingQuotaAndLimits) │
+│         (ReadFromStorage)     │
+│         TinyLog 0 → 1         │
+└───────────────────────────────┘
+
+EXPLAIN PIPELINE
+SELECT *
+FROM user2
+ANY LEFT JOIN event USING (uid)
+
+Query id: 51a2a371-6284-4776-812d-e2fc9cf77fe1
+
+┌─explain─────────────────────────┐
+│ (Expression)                    │
+│ ExpressionTransform             │
+│   (Join)                        │
+│   JoiningTransform 2 → 1        │
+│     FillingRightJoinSide        │
+│       (Expression)              │
+│       ExpressionTransform       │
+│         (SettingQuotaAndLimits) │
+│           (ReadFromStorage)     │
+│           Join 0 → 1            │
+│       (Expression)              │
+│       ExpressionTransform       │
+│         (SettingQuotaAndLimits) │
+│           (ReadFromStorage)     │
+│           TinyLog 0 → 1         │
+└─────────────────────────────────┘
+</code></pre>
+<p>放在右边时操作显然更少</p>
+<p>Plan:</p>
+<pre class="one-piece"><code>EXPLAIN
+SELECT *
+FROM event
+ANY LEFT JOIN user2 USING (uid)
+
+Query id: 1a6515bf-433f-45db-b95f-6669700c14bb
+
+┌─explain───────────────────────────────────────────────────────────────────────┐
+│ Expression ((Projection + Before ORDER BY))                                   │
+│   FilledJoin (JOIN)                                                           │
+│     Expression (Before JOIN)                                                  │
+│       SettingQuotaAndLimits (Set limits and quota after reading from storage) │
+│         ReadFromStorage (TinyLog)                                             │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+
+EXPLAIN
+SELECT *
+FROM user2
+ANY LEFT JOIN event USING (uid)
+
+Query id: 481e3fcf-1715-40c0-8e2d-125855d33805
+
+┌─explain──────────────────────────────────────────────────────────────────────────────────────┐
+│ Expression ((Projection + Before ORDER BY))                                                  │
+│   Join (JOIN)                                                                                │
+│     Expression (Before JOIN)                                                                 │
+│       SettingQuotaAndLimits (Set limits and quota after reading from storage)                │
+│         ReadFromStorage (Join)                                                               │
+│     Expression ((Joined actions + (Rename joined columns + (Projection + Before ORDER BY)))) │
+│       SettingQuotaAndLimits (Set limits and quota after reading from storage)                │
+│         ReadFromStorage (TinyLog)                                                            │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+
+EXPLAIN
+SELECT *
+FROM user2
+INNER JOIN event USING (uid)
+
+Query id: 2eb53474-5461-4b42-a59a-a08367a789c2
+
+┌─explain──────────────────────────────────────────────────────────────────────────────────────┐
+│ Expression ((Projection + Before ORDER BY))                                                  │
+│   Join (JOIN)                                                                                │
+│     Expression (Before JOIN)                                                                 │
+│       SettingQuotaAndLimits (Set limits and quota after reading from storage)                │
+│         ReadFromStorage (Join)                                                               │
+│     Expression ((Joined actions + (Rename joined columns + (Projection + Before ORDER BY)))) │
+│       SettingQuotaAndLimits (Set limits and quota after reading from storage)                │
+│         ReadFromStorage (TinyLog)                                                            │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+
+</code></pre>
+<p>放在左边时, StorageJoin 引擎的 user2 表被当作普通表来读, 步骤也更多, 放在右边时, 不调用任何 StorageJoin 的函数.<br>
+放在右边时, ExpressionAnalyzer 判断 <code>join-&gt;isFilled()</code> 为真, 不需要再填充, 这定义可以在 <code>Class IJoin</code> 看到</p>
+<pre class="one-piece"><code>class IJoin
+{
+public:
+    virtual ~IJoin() = default;
+
+    virtual const TableJoin &amp; getTableJoin() const = 0;
+
+    /// Add block of data from right hand of JOIN.
+    /// @returns false, if some limit was exceeded and you should not insert more data.
+    virtual bool addJoinedBlock(const Block &amp; block, bool check_limits = true) = 0;
+
+    /// Join the block with data from left hand of JOIN to the right hand data (that was previously built by calls to addJoinedBlock).
+    /// Could be called from different threads in parallel.
+    virtual void joinBlock(Block &amp; block, std::shared_ptr&lt;ExtraBlock&gt; &amp; not_processed) = 0;
+
+    /// Set/Get totals for right table
+    virtual void setTotals(const Block &amp; block) = 0;
+    virtual const Block &amp; getTotals() const = 0;
+
+    virtual size_t getTotalRowCount() const = 0;
+    virtual size_t getTotalByteCount() const = 0;
+    virtual bool alwaysReturnsEmptySet() const = 0;
+
+    /// StorageJoin/Dictionary is already filled. No need to call addJoinedBlock.
+    /// Different query plan is used for such joins.
+    virtual bool isFilled() const { return false; }
+
+    virtual BlockInputStreamPtr createStreamWithNonJoinedRows(const Block &amp;, UInt64) const { return {}; }
+}
+</code></pre>
+<p>可以看到关键的 <code>addJoinedBlock()</code> 接受的是右手边的表, 但 StorageJoin 和 Dictionary 已经被 filled, 所以不再需要调用 <code>addJoinedBlock</code>.<br>
+理由可以看 HashJoin.h 的定义, 我们可以假设理由是这些引擎的数据都在内存中, 因此不需要再将数据从磁盘加载起来, fill 到内存中去.</p>
+<pre class="one-piece"><code>bool isFilled() const override { return from_storage_join || data-&gt;type == Type::DICT; }
+</code></pre>
+<p>现在我们关心的是如何找到内存中的右表:<br>
+当右表有 1000 行时, 在 Interpreter 解析语法树的时候就能看到</p>
+<pre class="one-piece"><code>if (expressions.join-&gt;isFilled())
+                {
+                    QueryPlanStepPtr filled_join_step = std::make_unique&lt;FilledJoinStep&gt;(
+                        query_plan.getCurrentDataStream(),
+                        expressions.join,
+                        settings.max_block_size);
+
+                    filled_join_step-&gt;setStepDescription("JOIN");
+                    query_plan.addStep(std::move(filled_join_step));
+                }
+// expressions.join-&gt;getTotalRowCount()
+// 1000
+</code></pre>
+<p>这说明在此之前, 构造 QueryPlan 时已经完成了数据加载, 这一步骤来自 analysis_result(类型是 ExpressionAnalysisResult).<br>
+这一步骤是在获取 sample block 时候完成的</p>
+<pre class="one-piece"><code>Block InterpreterSelectQuery::getSampleBlockImpl()
+{
+ //.....
+  analysis_result = ExpressionAnalysisResult(
+        *query_analyzer, metadata_snapshot, first_stage, second_stage, options.only_analyze, filter_info, source_header);
+ //.....
+}
+</code></pre>
+<p>根据调用栈: 这一步在构造 InterpreterSelectQuery 对象的时候完成</p>
+<pre class="one-piece"><code>DB::InterpreterSelectQuery::getSampleBlockImpl(DB::InterpreterSelectQuery * this)
+DB::InterpreterSelectQuery::InterpreterSelectQuery
+DB::InterpreterSelectQuery::InterpreterSelectQuery
+DB::InterpreterSelectQuery::InterpreterSelectQuery
+</code></pre>
+<p>InterpreterSelectQuery 构造函数的主要逻辑:</p>
+<ol>
+<li>找到左表的存储</li>
+<li>完成左表的子查询(可能存在 subquery)</li>
+<li>检查右表
+<ul>
+<li>analyze(shouldMoveToPrewhere())
+<ul>
+<li>InterpreterSelectQuery::getSampleBlockImpl()
+<ul>
+<li>创建一个 ExpressionAnalysisResult
+<ul>
+<li>构造一个 ExpressionActionsChain(下一个小节讲到)
+<ul>
+<li>构造的时候从 ExpressionActionsChain 从加载数据, 构造 join</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>构造 join 的步骤:</p>
+<ol>
+<li>找到左手边的 columns,</li>
+<li>再根据语法, 结合左表的 columns, 创建一个 TableJoin</li>
+</ol>
+<pre class="one-piece"><code>JoinPtr SelectQueryExpressionAnalyzer::appendJoin(ExpressionActionsChain &amp; chain)
+{
+    const ColumnsWithTypeAndName &amp; left_sample_columns = chain.getLastStep().getResultColumns();
+    JoinPtr table_join = makeTableJoin(*syntax-&gt;ast_join, left_sample_columns);
+
+    if (syntax-&gt;analyzed_join-&gt;needConvert())
+    {
+        chain.steps.push_back(std::make_unique&lt;ExpressionActionsChain::ExpressionActionsStep&gt;(syntax-&gt;analyzed_join-&gt;leftConvertingActions()));
+        chain.addStep();
+    }
+
+    ExpressionActionsChain::Step &amp; step = chain.lastStep(columns_after_array_join);
+    chain.steps.push_back(std::make_unique&lt;ExpressionActionsChain::JoinStep&gt;(
+        syntax-&gt;analyzed_join, table_join, step.getResultColumns()));
+    chain.addStep();
+    return table_join;
+}
+
+JoinPtr SelectQueryExpressionAnalyzer::makeTableJoin(
+    const ASTTablesInSelectQueryElement &amp; join_element, const ColumnsWithTypeAndName &amp; left_sample_columns)
+{
+    /// Two JOINs are not supported with the same subquery, but different USINGs.
+
+    if (joined_plan)
+        throw Exception(ErrorCodes::LOGICAL_ERROR, "Table join was already created for query");
+
+    /// Use StorageJoin if any.
+    JoinPtr join = tryGetStorageJoin(syntax-&gt;analyzed_join);
+    // 如果有 storagejoin 
+    syntax-&gt;analyzed_join-&gt;applyJoinKeyConvert(left_sample_columns, {});
+    return join;
+}
+</code></pre>
+<p>到这就看到 SelectQueryExpressionAnalyzer 在查找可用的 StorageJoin, 这一步返回的是 StorageJoin, 将 join 加入到 ExpressionActionsChain 中去<br>
+加到 ExpressionActionsChain 之前还要创建一个 ExpressionActionsChain::JoinStep, 里面放入 StorageJoin(也就是 table_join)<br>
+JoinStep 的构造函数:</p>
+<pre class="one-piece"><code>ExpressionActionsChain::JoinStep::JoinStep(
+    std::shared_ptr&lt;TableJoin&gt; analyzed_join_,
+    JoinPtr join_,
+    ColumnsWithTypeAndName required_columns_)
+    : Step({})
+    , analyzed_join(std::move(analyzed_join_))
+    , join(std::move(join_))
+{
+    for (const auto &amp; column : required_columns_)
+        required_columns.emplace_back(column.name, column.type);
+
+    NamesAndTypesList result_names_and_types = required_columns;
+    analyzed_join-&gt;addJoinedColumnsAndCorrectTypes(result_names_and_types);
+    for (const auto &amp; [name, type] : result_names_and_types)
+        /// `column` is `nullptr` because we don't care on constness here, it may be changed in join
+        result_columns.emplace_back(nullptr, type, name);
+}
+</code></pre>
+<p>其中在 <code>addJoinedColumnsAndCorrectTypes()</code> 函数中将 <code>columns_added_by_join</code> 拼接到最终表的 NamesAndyTypesLists 中去</p>
+<pre class="one-piece"><code>void TableJoin::addJoinedColumnsAndCorrectTypes(NamesAndTypesList &amp; names_and_types, bool correct_nullability) const
+{
+    for (auto &amp; col : names_and_types)
+    {
+        if (hasUsing())
+        {
+            if (auto it = left_type_map.find(col.name); it != left_type_map.end())
+                col.type = it-&gt;second;
+        }
+        if (correct_nullability &amp;&amp; leftBecomeNullable(col.type))
+            col.type = JoinCommon::convertTypeToNullable(col.type);
+    }
+
+    /// Types in columns_added_by_join already converted and set nullable if needed
+    for (const auto &amp; col : columns_added_by_join)
+        names_and_types.emplace_back(col.name, col.type);
+}
+</code></pre>
+<p>到这我们猜想, 每一个列肯定有对应的数据来源, 我们看到 TableJOin 内部还有一个 <code>StoragePtr  joined_storage</code>, 这就是右表列的数据来源</p>
+<h4 id="根据-ast-树找到-storagejoin" tabindex="-1">根据 AST 树找到 StorageJoin</h4>
+<p>这一步骤是在上一节发生的 <code>makeTableJoin</code> 之间发生, 也就是在创建 Interpreter 的时候发生, 查看它的构造函数:</p>
+<pre class="one-piece"><code>InterpreterSelectQuery::InterpreterSelectQuery
+{
+ // ........
+     ASTSelectQuery &amp; query = getSelectQuery();
+    std::shared_ptr&lt;TableJoin&gt; table_join = joined_tables.makeTableJoin(query);
+     // ........
+}
+</code></pre>
+<p>这不难理解, 因为根据语法树, 发现 user 表是 storagejoin 表, clickhouse 本身必然有表和内存之间的映射, 根据名字可以找到表的指针.<br>
+找到内存指针的关键步骤:</p>
+<pre class="one-piece"><code>std::shared_ptr&lt;TableJoin&gt; JoinedTables::makeTableJoin(const ASTSelectQuery &amp; select_query)
+{
+    if (tables_with_columns.size() &lt; 2)
+        return {};
+
+    auto settings = context-&gt;getSettingsRef();
+    auto table_join = std::make_shared&lt;TableJoin&gt;(settings, context-&gt;getTemporaryVolume());
+
+    const ASTTablesInSelectQueryElement * ast_join = select_query.join();
+    const auto &amp; table_to_join = ast_join-&gt;table_expression-&gt;as&lt;ASTTableExpression &amp;&gt;();
+
+    /// TODO This syntax does not support specifying a database name.
+    if (table_to_join.database_and_table_name)
+    {
+        auto joined_table_id = context-&gt;resolveStorageID(table_to_join.database_and_table_name);
+        StoragePtr table = DatabaseCatalog::instance().tryGetTable(joined_table_id, context);
+        if (table)
+        {
+            if (dynamic_cast&lt;StorageJoin *&gt;(table.get()) ||
+                dynamic_cast&lt;StorageDictionary *&gt;(table.get()))
+                table_join-&gt;joined_storage = table;
+        }
+    }
+
+    if (!table_join-&gt;joined_storage &amp;&amp;
+        settings.enable_optimize_predicate_expression)
+        replaceJoinedTable(select_query);
+
+    return table_join;
+}
+</code></pre>
+<p>重点:</p>
+<ol>
+<li>joined_table_id, 信息:</li>
+</ol>
+<pre class="one-piece"><code>joined_table_id.database_name.c_str()
+0x7fff3e5ef1a0 "default"
+joined_table_id.table_name.c_str()
+0x7fff3e5ef1b8 "user"
+</code></pre>
+<p>根据 joined_table_id 找到内存指针:</p>
+<pre class="one-piece"><code>StoragePtr table = DatabaseCatalog::instance().tryGetTable(joined_table_id, context)
+</code></pre>
+<h4 id="expressionactionschain" tabindex="-1">ExpressionActionsChain</h4>
+<p>仿照 joinGet 一节打印 ExpressionActionsChain, INPUT 表示需要找到读取 (<code>ActionsDAG::ActionType::INPUT</code>), Index 只是一个辅助输出, 没什么意义, 用来记录 ActionDAG 的 节点,<br>
+INPUT 之后的括号表示 Node 的 children, <code>()</code> 表示没有 children, (no column) 表示暂时没有数据, 这些数据需要通过执行 node 的 functor 才能得到.<br>
+现在我们关心的是 step 2 中, 如何提取第 3 个节点的结果: profile</p>
+<pre class="one-piece"><code>`printf "%s\n", chain.dumpChain().c_str()
+step 0
+required output:
+
+0 : INPUT () (no column) UInt32 eid
+1 : INPUT () (no column) UInt32 uid
+2 : INPUT () (no column) String desc
+Index: 0 1 2
+
+step 1
+required output:
+
+JOIN
+step 2
+required output:
+
+0 : INPUT () (no column) UInt32 eid
+1 : INPUT () (no column) UInt32 uid
+2 : INPUT () (no column) String desc
+3 : INPUT () (no column) String profile
+Index: 0 1 2 3
+
+step 3
+required output:
+profile
+desc
+uid
+eid
+
+0 : INPUT () (no column) UInt32 eid
+1 : INPUT () (no column) UInt32 uid
+2 : INPUT () (no column) String desc
+3 : INPUT () (no column) String profile
+Index: 0 1 2 3
+
+step 4
+required output:
+
+0 : INPUT () (no column) UInt32 eid
+1 : INPUT () (no column) UInt32 uid
+2 : INPUT () (no column) String desc
+3 : INPUT () (no column) String profile
+Index: 0 1 2 3
+</code></pre>
+<p>在 <code>ColumnsWithTypeAndName  ActionsDAG::getResultColumns() const</code> 函数中可以看到 sample block</p>
+<pre class="one-piece"><code>index[0].result_name.c_str()
+0x7ffef77a6c50 "eid"
+index[1].result_name.c_str()
+0x7fff3a22e2f0 "uid"
+index[2].result_name.c_str()
+0x7ffef77a6610 "desc"
+index[3].result_name.c_str()
+0x7ffef77a6f70 "profile"
+</code></pre>
+<p>此时每个 node 都没有数据:</p>
+<pre class="one-piece"><code>!index[3].column
+true
+</code></pre>
+<h4 id="小结-1" tabindex="-1">小结</h4>
+<p>这里将 "作为右表" 一节的内容连接起来:</p>
+<ol>
+<li>拿到 AST 语法树之后, Interpreter 进行初始化, 包括找到 StorageJoin 内存地址</li>
+<li>将左表和右表拼接起来, 放在一个 JOinStep 中</li>
+<li>JoinStep 是 ExpressionActionChain 的一部分, 一个链包括多个步骤, JoinStep 是步骤的一种</li>
+<li>ExpressionActionChain 是 Interpreter 的内部成员, Interpreter 通过 <code>execute()</code> 制造 <code>BlockIO</code></li>
+<li>通过驱动 <code>BlockIO</code> 内部的 pipeline 获取结果</li>
+</ol>
+<h2 id="总结" tabindex="-1">总结</h2>
+<ol>
+<li>StorageJoin 有两种用途, 一是直接当作字典来用, 二是将它作为右表, 作为左表时性能比作为右表时更差</li>
+<li>当作字典来用的时候用 joinGet 函数性能更好, INterPreter 直接执行了 joinGet 函数, 而不是通过 StorageJoin 引擎</li>
+<li>当作右表来用的时候, Interpreter 在初始化的时候就直接根据表名找到表的内存地址, 对比其他存储引擎节省了 IO, 同时也不需要再构造 HashJoin(一个哈希表), 因为 StorageJoin 本身就包含一个 HashJoin.</li>
+</ol>
+<p><img src="/images/clickhouse/Images/da4f5a7a8d214f04da2592a88bd0dec4.png" alt="da4f5a7a8d214f04da2592a88bd0dec4.png"></p>
+<h1 id="如何实现-explain" tabindex="-1">如何实现 explain</h1>
+<h2 id="simple-select" tabindex="-1">simple select</h2>
+<pre class="one-piece"><code>EXPLAIN
+SELECT *
+FROM event
+
+Query id: 0ed95346-4bd6-4783-a3da-7ea66325d24e
+
+┌─explain───────────────────────────────────────────────────────────────────┐
+│ Expression ((Projection + Before ORDER BY))                               │
+│   SettingQuotaAndLimits (Set limits and quota after reading from storage) │
+│     ReadFromStorage (TinyLog)                                             │
+└───────────────────────────────────────────────────────────────────────────┘
+
+</code></pre>
+<p>Projection 是什么? 将 Expression 和 DataStream 组成一个新的 ExpressionStep</p>
+<h1 id="interpreter-1" tabindex="-1">Interpreter</h1>
+<h2 id="interpreter-的角色-ast-->-interpreter-->-blockio" tabindex="-1">Interpreter 的角色: AST -&gt; Interpreter -&gt; BlockIO</h2>
+<p><code>Interpreter</code> 的角色就是根据语法树制造 <code>BlockIO</code>, ClickHouse 服务端收到请求, <code>IAST</code> Parser 将它解析成语法树 AST, 根据上下文和 AST 生成一个 Interpreter, Interpreter 输出一个 BlockIO</p>
+<pre class="one-piece"><code>class IInterpreter
+{
+public:
+    /** For queries that return a result (SELECT and similar), sets in BlockIO a stream from which you can read this result.
+      * For queries that receive data (INSERT), sets a thread in BlockIO where you can write data.
+      * For queries that do not require data and return nothing, BlockIO will be empty.
+      */
+    virtual BlockIO execute() = 0;
+
+    virtual bool ignoreQuota() const { return false; }
+    virtual bool ignoreLimits() const { return false; }
+
+    // Fill query log element with query kind, query databases, query tables and query columns.
+    void extendQueryLogElem(
+        QueryLogElement &amp; elem,
+        const ASTPtr &amp; ast,
+        ContextPtr context,
+        const String &amp; query_database,
+        const String &amp; query_table) const;
+
+    virtual void extendQueryLogElemImpl(QueryLogElement &amp;, const ASTPtr &amp;, ContextPtr) const {}
+
+    virtual ~IInterpreter() = default;
+};
+</code></pre>
+<h2 id="blockio" tabindex="-1">BlockIO</h2>
+<p><img src="/images/clickhouse/Images/0f13371381404f9f835705e3fc2264c5.png" alt="0f13371381404f9f835705e3fc2264c5.png"><br>
+BlockIO 是以 Block 为单位读写的媒介, 包括网络通信, 磁盘写入, 关键的成员是两种 stream: Input 和 Output.<br>
+BlockIO 通过 QueryPipeline 连接 Input 和 Output:<br>
+<img src="/images/clickhouse/Images/3aa1f9086b2365581edc3a10cbc38ec7.png" alt="3aa1f9086b2365581edc3a10cbc38ec7.png"></p>
+<p>BlockIO 只是一个简单的聚合类, ClickHouse 源码直接操作里面的成员: Pipeline, IO stream</p>
+<h2 id="block-io-stream" tabindex="-1">Block IO Stream</h2>
+<p>总而言之, 是数据的来源, 或者数据的输出, 包括将数据反序列化加载到内存, 将数据序列化存储到磁盘, 或者发送到网络.<br>
+这里不展开描述, 详情见 <a href="https://xxxxxxxxx.yyyyyy.cn/docs/doccnG254O5NpkKv3iVgB9anVTf">https://xxxxxxxxx.yyyyyy.cn/docs/doccnG254O5NpkKv3iVgB9anVTf</a></p>
+<h2 id="querypipeline" tabindex="-1">QueryPipeline</h2>
+<p>这是最关键的模块之一, 详情见 <a href="https://xxxxxxxxx.yyyyyy.cn/docs/doccnOuFWox96gNkqDXqrPudb1g#C9p09s">https://xxxxxxxxx.yyyyyy.cn/docs/doccnOuFWox96gNkqDXqrPudb1g#C9p09s</a><br>
+从 <strong>IInterpreter</strong> 接口来看, Interpreter 生成 BlockIO, 后者简单聚合了 QueryPipeline, 也就是说 Interpreter 生成了 QueryPipeline, 本文只涉及如何生成 QueryPipeline, 后者如何运行, 在上面的链接中有具体描述.</p>
+<p>以最常见的 <code>InterpreterSelectQuery</code> 为例, 执行 <code>select * from MergeTree.event</code> 触发这个派生类<br>
+建表语句</p>
+<pre class="one-piece"><code>CREATE TABLE MergeTree.event
+(
+    `eid` UInt32,
+    `uid` UInt32,
+    `desc` String
+)
+ENGINE = MergeTree
+ORDER BY (eid, uid, desc)
+SETTINGS index_granularity = 2;
+
+CREATE TABLE MergeTree.user
+(
+    `uid` UInt32,
+    `assets` Int32,
+    `profile` String
+)
+ENGINE = MergeTree
+ORDER BY (uid)
+SETTINGS index_granularity = 2;
+
+
+</code></pre>
+<p>查看空表的 Pipeline:</p>
+<pre class="one-piece"><code>EXPLAIN PIPELINE
+SELECT *
+FROM MergeTree.event
+
+Query id: 37f509d4-6cd2-4a60-a3ef-8b0f9e3d24b7
+
+┌─explain──────────────────────┐
+│ (Expression)                 │
+│ ExpressionTransform          │
+│   (SettingQuotaAndLimits)    │
+│     (ReadFromPreparedSource) │
+│     NullSource 0 → 1         │
+└──────────────────────────────┘
+</code></pre>
+<p>如果有数据则是:</p>
+<pre class="one-piece"><code>┌─explain────────────────────┐
+│ (Expression)               │
+│ ExpressionTransform        │
+│   (SettingQuotaAndLimits)  │
+│     (ReadFromMergeTree)    │
+│     MergeTreeInOrder 0 → 1 │
+└────────────────────────────┘
+</code></pre>
+<h3 id="pipeline-的产生-queryplan" tabindex="-1">Pipeline 的产生: QueryPlan</h3>
+<p><code>InterpreterSelectQuery</code> 是一种 interpreter, 已知 <code>execute()</code> 生成 BlockIO, InterpreterSelectQuery 的实现为:</p>
+<pre class="one-piece"><code>BlockIO InterpreterSelectQuery::execute()
+{
+    BlockIO res;
+    QueryPlan query_plan;
+
+    buildQueryPlan(query_plan);
+
+    res.pipeline = std::move(*query_plan.buildQueryPipeline(
+        QueryPlanOptimizationSettings::fromContext(context), BuildQueryPipelineSettings::fromContext(context)));
+    return res;
+}
+</code></pre>
+<p>先构造一个 QueryPlan, QueryPlan 构造 pipeline</p>
+<p>查看执行计划:</p>
+<pre class="one-piece"><code>EXPLAIN
+SELECT *
+FROM MergeTree.event
+
+Query id: b4a8b334-f2d8-4cab-8c89-34052ff0e84b
+
+┌─explain───────────────────────────────────────────────────────────────────┐
+│ Expression ((Projection + Before ORDER BY))                               │
+│   SettingQuotaAndLimits (Set limits and quota after reading from storage) │
+│     ReadFromMergeTree                                                     │
+└───────────────────────────────────────────────────────────────────────────┘
+
+</code></pre>
+<h2 id="理解-explain-的含义" tabindex="-1">理解 Explain 的含义</h2>
+<p>有些莫名其妙的标记, 比如 Before ORDER BY, Projection, 理解这些含义是理解 interpreter 的一个切入点</p>
+<p>src/Interpreters/InterpreterExplainQuery.cpp:302</p>
+<p><img src="/images/clickhouse/Images/4f9b63504c2717433202a8c4d310fd42.png" alt="4f9b63504c2717433202a8c4d310fd42.png"><br>
+相当于 dump query plan<br>
+<img src="/images/clickhouse/Images/41155b9f324c4d81ee036c007e94b5b8.png" alt="41155b9f324c4d81ee036c007e94b5b8.png"><br>
+以下面 plan 为例</p>
+<pre class="one-piece"><code>explain plan SELECT * from MergeTree.event
+
+┌─explain───────────────────────────────────────────────────────────────────┐
+│ Expression ((Projection + Before ORDER BY))                               │
+│   SettingQuotaAndLimits (Set limits and quota after reading from storage) │
+│     ReadFromMergeTree                                                     │
+└───────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<ul>
+<li>Expression == <code>step.getName()</code></li>
+<li><code>(Projection + Before ORDER BY)</code> == description</li>
+<li>在执行 <code>executeImpl()</code> 之前执行了 <code>executeFetchColumns</code>
+<ul>
+<li>ReadFromMergeTree</li>
+<li>SettingQuotaAndLimits</li>
+</ul>
+</li>
+<li><code>SELECT * FROM MergeTree.event</code> 只命中这一个分支:
+<ul>
+<li><img src="/images/clickhouse/Images/8ece9675cf25d4ee3fabd18096d395f6.png" alt="8ece9675cf25d4ee3fabd18096d395f6.png"></li>
+<li>可以看出, 第一步就是 <code>executeExpression</code>, 先加入 "Before ORDER BY", 意思是在执行 order by 之前执行 select, 即先 select, 后排序(order by)</li>
+<li><code>select *</code> 本身就是 Projection, 投影, 因此这一步骤加入描述 "Projection"</li>
+<li>从存储引擎中读取: 这是最基本的操作: 每个存储引擎都有 <code>getName</code> 函数
+<ul>
+<li><img src="/images/clickhouse/Images/1ab91928b5ac05a1c7bc4a6d52cf2ec8.png" alt="1ab91928b5ac05a1c7bc4a6d52cf2ec8.png"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>为什么描述叫做 "Before ORDER BY"? 可以看代码的执行顺序<br>
+<img src="/images/clickhouse/Images/eaf38943a289001f3491c2a81465ef5b.png" alt="eaf38943a289001f3491c2a81465ef5b.png"></p>
+<p>"Before XX" 的意思是在 <code>executeImpl()</code> 函数中当前的执行步骤在 XX 之前, 以后序遍历(PostOrder)的方式执行.<br>
+综上, 一个 QueryPlan 按照实际执行顺序逆向生成一棵树, 这颗树打印的时候, 先把父节点打印出来, 于是就有 explain plan 时看到的结果<br>
+<img src="/images/clickhouse/Images/ba590319d6938e2cc13cc93a749d5fee.png" alt="ba590319d6938e2cc13cc93a749d5fee.png"></p>
+<h3 id="explain-join" tabindex="-1">Explain Join</h3>
+<pre class="one-piece"><code>EXPLAIN
+SELECT *
+FROM MergeTree.event
+INNER JOIN MergeTree.user USING (uid)
+
+┌─explain──────────────────────────────────────────────────────────────────────────────────────┐
+│ Expression ((Projection + Before ORDER BY))                                                  │
+│   Join (JOIN)                                                                                │
+│     Expression (Before JOIN)                                                                 │
+│       SettingQuotaAndLimits (Set limits and quota after reading from storage)                │
+│         ReadFromMergeTree                                                                    │
+│     Expression ((Joined actions + (Rename joined columns + (Projection + Before ORDER BY)))) │
+│       SettingQuotaAndLimits (Set limits and quota after reading from storage)                │
+│         ReadFromMergeTree                                                                    │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+EXPLAIN PIPELINE
+SELECT *
+FROM MergeTree.event
+INNER JOIN MergeTree.user USING (uid)
+
+┌─explain─────────────────────────────────┐
+│ (Expression)                            │
+│ ExpressionTransform × 2                 │
+│   (Join)                                │
+│   JoiningTransform × 2 2 → 1            │
+│     Resize 1 → 2                        │
+│       FillingRightJoinSide              │
+│         Resize 2 → 1                    │
+│           (Expression)                  │
+│           ExpressionTransform × 2       │
+│             (SettingQuotaAndLimits)     │
+│               (ReadFromMergeTree)       │
+│               MergeTreeThread × 2 0 → 1 │
+│           (Expression)                  │
+│           ExpressionTransform × 2       │
+│             (SettingQuotaAndLimits)     │
+│               (ReadFromMergeTree)       │
+│               MergeTreeThread × 2 0 → 1 │
+└─────────────────────────────────────────┘
+
+</code></pre>
+<p>TODOs:</p>
+<ul>
+<li>QueryPlan 如何 unitePlan</li>
+<li>Pipelien
+<ul>
+<li>Transform</li>
+<li>FillingRightJoinSide</li>
+<li>Resize</li>
+</ul>
+</li>
+</ul>
+<h2 id="interpreterselectwithunionquery-嵌套解释器" tabindex="-1">InterpreterSelectWithUnionQuery: 嵌套解释器</h2>
+<p>执行以下 SQL 时, ClickHouse 首先创建了 InterpreterSelectWithUnionQuery</p>
+<pre class="one-piece"><code>SELECT *
+FROM MergeTree.event
+INNER JOIN MergeTree.user USING (uid)
+</code></pre>
+<p>Union 并不是指 SQL 的 Union ALL/DISTINCT, 而是指包含多个查询</p>
+<p>InterpreterSelectWithUnionQuery 包含一个 vector 的子解释器 nested_interpreters, 一共 3 种类型:</p>
+<ol>
+<li>同类 InterpreterSelectWithUnionQuery</li>
+<li>InterpreterSelectIntersectExceptQuery</li>
+<li>InterpreterSelectQuery</li>
+</ol>
+<p>初始化过程:</p>
+<ol>
+<li>第一层, 根据 AST 的 list_of_selects 发现只有一个 child, 即 nested_interpreter 只有一个 1 个成员, 大部分情况下都是 1 个 child, 即使以下查询语句包含 2 个 SELECT, 第一层也只有 1 个 child</li>
+</ol>
+<pre class="one-piece"><code>SELECT eid
+FROM
+(
+    SELECT *
+    FROM MergeTree.event
+    INNER JOIN MergeTree.user USING (uid)
+)
+</code></pre>
+<p>这是因为 <code>Select eid</code> 和 <code>SELECT *</code> 不在同一层<br>
+<code>select 1 union all select 2</code> 就有 2 个 children</p>
+<pre class="one-piece"><code>┌─explain─────────────────────────────────────────────────────────────────────┐
+│ Union                                                                       │
+│   Expression ((Conversion before UNION + (Projection + Before ORDER BY)))   │
+│     SettingQuotaAndLimits (Set limits and quota after reading from storage) │
+│       ReadFromStorage (SystemOne)                                           │
+│   Expression ((Conversion before UNION + (Projection + Before ORDER BY)))   │
+│     SettingQuotaAndLimits (Set limits and quota after reading from storage) │
+│       ReadFromStorage (SystemOne)                                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p>可以推断出: 对于第一个创建的 InterpreterSelectWithUnionQuery, 所有节点都是它的子节点, 对 SQL <code>SELECT 1</code> 来说 <code>SELECT 1</code>是第一代 child.<br>
+这里用的是代理模式.</p>
+<p>通过 <code>EXPLAIN  AST</code> 查看每一层的子树, (children 1) 表示有一个子节点</p>
+<pre class="one-piece"><code>EXPLAIN AST
+SELECT *
+FROM MergeTree.event
+INNER JOIN MergeTree.user USING (uid)
+
+Query id: 1c7989b1-c533-447a-aa37-502f5def802b
+
+┌─explain─────────────────────────────────────┐
+│ SelectWithUnionQuery (children 1)           │
+│  ExpressionList (children 1)                │
+│   SelectQuery (children 2)                  │
+│    ExpressionList (children 1)              │
+│     Asterisk                                │
+│    TablesInSelectQuery (children 2)         │
+│     TablesInSelectQueryElement (children 1) │
+│      TableExpression (children 1)           │
+│       TableIdentifier MergeTree.event       │
+│     TablesInSelectQueryElement (children 2) │
+│      TableExpression (children 1)           │
+│       TableIdentifier MergeTree.user        │
+│      TableJoin (children 1)                 │
+│       ExpressionList (children 1)           │
+│        Identifier uid                       │
+└─────────────────────────────────────────────┘
+
+</code></pre>
+<h3 id="每个子查询创建一个解释器" tabindex="-1">每个子查询创建一个解释器</h3>
+<pre class="one-piece"><code>// src/Interpreters/InterpreterSelectWithUnionQuery.cpp:132    
+    for (size_t query_num = 0; query_num &lt; num_children; ++query_num)
+    {
+        const Names &amp; current_required_result_column_names
+            = query_num == 0 ? required_result_column_names : required_result_column_names_for_other_selects[query_num];
+
+        nested_interpreters.emplace_back(
+            buildCurrentChildInterpreter(ast-&gt;list_of_selects-&gt;children.at(query_num), require_full_header ? Names() : current_required_result_column_names));
+    }
+</code></pre>
+<p>示例:</p>
+<pre class="one-piece"><code>SELECT *
+FROM MergeTree.event
+INNER JOIN MergeTree.user USING (uid)
+</code></pre>
+<p>解释器构造顺序:</p>
+<ol>
+<li>InterpreterSelectWithUnionQuery as i_1</li>
+<li>i_1 生成 InterpreterSelectQuery as i_2 for <code>SELECT *</code></li>
+<li>i_2 在初始化的时候通过 <strong>ExpressionAnalysisResult</strong> 发现 join 语义, 把加载 user 表视作子查询, 在 <code>SelectQueryExpressionAnalyzer::makeTableJoin()</code>中给 user 配置了一个 InterpreterSelectWithUnionQuery as i_3</li>
+<li>i_3 生成 InterpreterSelectQuery as i_4 给 user 表</li>
+</ol>
+<p>可见 InterpreterSelectWithUnionQuery 只是一个跳板</p>
+<h3 id="获得子解释器之后确定返回结果的结构" tabindex="-1">获得子解释器之后确定返回结果的结构</h3>
+<p>具体实现为遍历当前的子解释器, 获取 sample block 即 header, 表的结构. 这一过程是递归的, 可以看到右表 user 先返回然后在拼接到左表 event</p>
+<pre class="one-piece"><code>    2021.12.20 18:01:35.989999 [ 1348635 ] {58ebd9cf-c0a1-42fb-8c0a-b99e74fd95b1} &lt;Debug&gt; InterpreterSelectWithUnionQuery::InterpreterSelectWithUnionQuery: 0x7fff3e1ea870 result_header: 
+    03 00 03 75 69 64 06 55 49 6E 74 33 32 06 61 73                 ...uid.UInt32.as
+    73 65 74 73 05 49 6E 74 33 32 07 70 72 6F 66 69                 sets.Int32.profi
+    6C 65 06 53 74 72 69 6E 67                                      le.String
+    2021.12.20 18:01:35.995981 [ 1348635 ] {58ebd9cf-c0a1-42fb-8c0a-b99e74fd95b1} &lt;Debug&gt; InterpreterSelectWithUnionQuery::InterpreterSelectWithUnionQuery: 0x7fff3e1f4560 result_header: 
+    05 00 03 65 69 64 06 55 49 6E 74 33 32 03 75 69                 ...eid.UInt32.ui
+    64 06 55 49 6E 74 33 32 04 64 65 73 63 06 53 74                 d.UInt32.desc.St
+    72 69 6E 67 06 61 73 73 65 74 73 05 49 6E 74 33                 ring.assets.Int3
+    32 07 70 72 6F 66 69 6C 65 06 53 74 72 69 6E 67                 2.profile.String
+</code></pre>
+<h2 id="状态queryprocessingstage" tabindex="-1">状态(QueryProcessingStage)</h2>
+<p>SELECT query 的状态:</p>
+<pre class="one-piece"><code>    /// 状态的数值按照状态的演变顺序递增
+    enum Enum
+    {
+        // 读取了 Query 指定的表
+        FetchColumns       = 0,
+        // 在多个服务器完成同步之前都处于这个状态
+        WithMergeableState = 1,
+        /// Completely.
+        Complete           = 2,
+        // 聚合函数完成之前都处于这个状态
+        WithMergeableStateAfterAggregation = 3,
+        // 和分片有关
+        WithMergeableStateAfterAggregationAndLimit = 4,
+
+        MAX = 5,
+    };
+</code></pre>
+<h2 id="queryplan" tabindex="-1">QueryPlan</h2>
+<h3 id="结构" tabindex="-1">结构</h3>
+<p>上一节提到 <code>InterpreterSelectQuery::execute()</code> 如何生成 QueryPlan</p>
+<pre class="one-piece"><code>void InterpreterSelectQuery::buildQueryPlan(QueryPlan &amp; query_plan)
+{
+    executeImpl(query_plan, input, std::move(input_pipe));
+
+    /// We must guarantee that result structure is the same as in getSampleBlock()
+    ///
+    /// But if it's a projection query, plan header does not match result_header.
+    /// TODO: add special stage for InterpreterSelectQuery?
+    if (!options.is_projection_query &amp;&amp; !blocksHaveEqualStructure(query_plan.getCurrentDataStream().header, result_header))
+    {
+        auto convert_actions_dag = ActionsDAG::makeConvertingActions(
+            query_plan.getCurrentDataStream().header.getColumnsWithTypeAndName(),
+            result_header.getColumnsWithTypeAndName(),
+            ActionsDAG::MatchColumnsMode::Name,
+            true);
+
+        auto converting = std::make_unique&lt;ExpressionStep&gt;(query_plan.getCurrentDataStream(), convert_actions_dag);
+        query_plan.addStep(std::move(converting));
+    }
+}
+</code></pre>
+<p>QueryPlan 的结构如下:</p>
+<p>QueryPlan:</p>
+<ul>
+<li>ExplainPlan* 用来打印 explain plan 结果的选项配置</li>
+<li>QueryPlan::Node, 节点, 包含 QueryPlanStepPtr</li>
+<li>Context, 上下文</li>
+<li>构建 QueryPipelinePtr 的接口</li>
+</ul>
+<p>其中 Node 的结构为, 一棵树</p>
+<pre class="one-piece"><code>└── Node
+    ├── QueryPlanStepPtr
+    └── children
+        ├── Node
+        ├── Node
+        ├── Node
+        └── Node
+            ├── QueryPlanStepPtr
+            └── children
+                ├── Node
+                └── Node
+                    ├── QueryPlanStepPtr
+                    └── children
+                        ├── Node
+                        └── ...
+</code></pre>
+<p>构建 QueryPlan 的接口:</p>
+<pre class="one-piece"><code>void InterpreterSelectQuery::executeImpl(
+    QueryPlan &amp; query_plan, 
+    const BlockInputStreamPtr &amp; prepared_input, 
+    std::optional&lt;Pipe&gt; prepared_pipe);
+</code></pre>
+<p>通过这个接口往 query_plan 增加 step</p>
+<h3 id="pipe" tabindex="-1">Pipe</h3>
+<ul>
+<li>Pipe 是一组 processors, 表示 pipeline 的一部分</li>
+<li>Pipe 包含一系列 outports, 所有 outputs 都有统一的 header</li>
+<li>不能使用空的 Pipe, 需要检查它是否为空(<code>empty()</code>)</li>
+<li>Processors 是 Pipeline 的底层组件, Processors + Ports == Pipe</li>
+<li>Port == header + stat + data</li>
+<li>InputPort 从 OutputPort 中 <code>pullData()</code>, 类型是 <code>State::Data</code> 是 Chunk 的简单聚合</li>
+<li>OutputPort 往 InputPort 中 <code>pushData()</code></li>
+<li>State == SharedState, 是两个 port 之间的共享变量, 用来传递数据, 无锁, 数据是 atomic 类型</li>
+</ul>
+<pre class="one-piece"><code>                                            ┌─────────────────────┐
+┌────────────────┐                      pull│                     │
+│                │     ┌────────────────┐   │                     │
+│                │     │   (data)       ├───┼──►                  │
+│  output port  ─┼─────┼─►  shared state│   │     input port      │
+│                │     └────────────────┘   │                     │
+│                │ push                     │                     │
+└────────────────┘                          └─────────────────────┘
+</code></pre>
+<h3 id="queryplanaddstep" tabindex="-1">QueryPlan::addStep</h3>
+<p>QueryPlan 由 <code>ISourceStep</code> 组成.<br>
+执行计划的原则:</p>
+<ol>
+<li>如果没有 GROUP BY, 则在 ORDER BY 和 LIMIT 之前, 所有操作都并行执行</li>
+<li>如果有 ORDER BY, 则用 ResizeProcessor 将 streams 并接起来, 然后 Mergesort transforms</li>
+<li>如果没有 ORDER BY, 就只用 ResizeProcessor 将 streams 并接起来, 然后 LIMIT</li>
+<li>如果有 GROUP BY, 则执行并行所有操作, 然后用一个 GROUP BY PIPE 将多个 stream 归并成一个</li>
+</ol>
+<h3 id="executefetchcolumns" tabindex="-1">executeFetchColumns</h3>
+<p>关键步骤:</p>
+<ol>
+<li>获取 query 语句的 limit 和 offset, 如果没有就是 0</li>
+<li>检查是否有 distinct, where, group by, order by 等...条件状语</li>
+<li>如果通过 from xxx_table 指定了数据来源/表(storage), 则从通过 storage 存储引擎先生成一个初步的 QueryPlan, "ReadFromMergeTree" 就是这时候加入的 STEP</li>
+</ol>
+<p>以 MergeTree 为例, 生成初步 QueryPlan 的接口. 为什么要让存储引擎来参与制定执行计划? 因为不同的存储引擎有不同的读取数据的方法, 像 MergeTree 要从 Parts 读取, StorageTree 从 HashJoin 读取数据. 要多读多少数据, 读哪一列, 都要告诉存储引擎, 以便生成执行计划.</p>
+<pre class="one-piece"><code>QueryPlanPtr  MergeTreeDataSelectExecutor::read(...);
+</code></pre>
+<ol start="4">
+<li>设置资源限制, Quota, Limits, 这里的 Limit 不是 SQL 的 Limit, 而是 StreamLocalLimits, SizeLimits, 将这一步骤加入 QueryPlan</li>
+<li>检查表达式的特征, 比如是否有 join, 是否用到聚合函数, 窗口函数, 根据不同的特征往 QueryPlan 加入 Step. 表达式有两个阶段: first_stage, second_stage(TODO)</li>
+<li>如果有 join, 分两种 join, 一种是 storagejoin 和 dictionary, 这在 StorageJoin 一章有描述. 我们常用的 join 的处理步骤如下:
+<ul>
+<li>通过 query_analyzer 创建一个 joined_step, 通过 unitPlans() 合并成一个 Plan. 可以理解为创建一个新的节点, 之前的节点都是它的 children</li>
+</ul>
+</li>
+</ol>
+<h3 id="selectqueryexpressionanalyzer" tabindex="-1">SelectQueryExpressionAnalyzer</h3>
+<p>上一节提到的 joined_plan 是 SelectQueryExpressionAnalyzer 生成的, 在 StorageJoin 一章也能初步看到它的功能.</p>
+<h4 id="actiondag" tabindex="-1">ActionDAG</h4>
+<pre class="one-piece"><code>FunctionBasePtr  JoinGetOverloadResolver&lt;or_null&gt;::buildImpl(const  ColumnsWithTypeAndName  &amp;  arguments, const  DataTypePtr  &amp;)
+</code></pre>
+<pre class="one-piece"><code>CREATE TABLE id_val_join
+(
+    `id` UInt32,
+    `val` UInt8
+)
+ENGINE = Join(ANY, LEFT, id)
+</code></pre>
+<ul>
+<li>IFunctionOverloadResolver::build, 构造一个 <strong>functor</strong>
+<ul>
+<li>函数 <code>joinGet</code> 一个三个参数:</li>
+<li>从第三个开始是 data_types, 也就是 join table 的 key</li>
+<li>根据 key, attr_name 找到返回类型, 对于表而言, 返回值是 Uint8 类型</li>
+<li>返回一个表锁</li>
+<li>通过以上元素构造一个 <strong>functor</strong></li>
+</ul>
+</li>
+<li>将这个 <strong>functor</strong> 放进一个 Node 中</li>
+<li>运行这个 functor</li>
+<li>将结果放在 node.column 中</li>
+<li><code>node.result_name == joinGet('id_val_join', 'val', toUInt32(1))</code></li>
+<li>将 node 加入到一个 <code>std::list&lt;Node&gt;</code> 中, 这个列表位于 <code>ActionDAG</code>中</li>
+<li>ExpressionActions 使用 ActionDAG</li>
+</ul>
+<h4 id="functor" tabindex="-1">functor</h4>
+<p>一个框架: src/Functions/IFunction.cpp:225</p>
+<pre class="one-piece"><code>ColumnPtr  IExecutableFunction::execute(const  ColumnsWithTypeAndName  &amp;  arguments, const  DataTypePtr  &amp;  result_type, size_t  input_rows_count, bool  dry_run) const
+{
+    // ...
+    convertLowCardinalityColumnsToFull(columns_without_low_cardinality);
+    result = executeWithoutLowCardinalityColumns(columns_without_low_cardinality, result_type, input_rows_count, dry_run);
+    // ...
+}
+</code></pre>
+<ul>
+<li>将低密度 column 从"压缩状态"转换成完整的 column, 即 11111122222222222 从 [12]? 还原回 11111122222222</li>
+<li>得到完整的 column 之后开始计算</li>
+<li>...</li>
+</ul>
+<h1 id="parser" tabindex="-1">Parser</h1>
+<pre class="one-piece"><code> :) explain ast select * from MergeTree.user                                                          
+                                                                                                      
+explain ast select *
+  from MergeTree.user
+
+                                                                                                      
+SelectWithUnionQuery (children 1)
+ ExpressionList (children 1)
+  SelectQuery (children 2)
+   ExpressionList (children 1)
+    Asterisk
+   TablesInSelectQuery (children 1)
+    TablesInSelectQueryElement (children 1)
+     TableExpression (children 1)
+      TableIdentifier MergeTree.user
+
+</code></pre>
+<h1 id="mergetree" tabindex="-1">MergeTree</h1>
+<ul>
+<li>For <code>SELECT</code> queries, ClickHouse analyzes whether an index can be used. (TODO: HOW?)
+<ul>
+<li>When to use an index?
+<ol>
+<li>if, the <code>WHERE/PREWHERE</code>has an expression that represents an equality or inequality <strong>comparison operation</strong></li>
+<li>has <code>IN</code> or <code>LIKE</code> with a fixed prefix on columns or expressions that are in the primary key or partitioning key</li>
+<li>or on certain partially repetitive functions of these columns or logical relationships of these expressions.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>ClickHouse will use the primary key index to trim improper data, and the monthly partitioning key to trim partitions that are in improper data ranges</li>
+<li>the key for partitioning by month allows reading only those data blocks which contain dates from the proper range</li>
+<li>分区键允许读取只包含一定日期的 <strong>data blocks</strong></li>
+<li>因此, data block 可能包含许多日期</li>
+</ul>
+<h2 id="partition" tabindex="-1">Partition</h2>
+<pre class="one-piece"><code>CREATE TABLE MergeTree.p0
+(
+    `eid` UInt32,
+    `uid` UInt32,
+    `pid` UInt32,
+    `desc` String
+)
+ENGINE = MergeTree
+PARTITION BY pid
+ORDER BY (eid, uid, desc)
+SETTINGS index_granularity = 2;
+
+set -x;for i in $(seq 1 15)                                                
+do               
+    uid=$((1 + $RANDOM % 100))                  
+    pid=$((1 + $RANDOM % 5))
+    clickhouse-client -u ledzeppelin --port 9001 --query "INSERT INTO MergeTree.p0 VALUES  (${i}, ${uid}, ${pid}, '$(echo $(date) | md5sum | head -c 20; echo;)')"                
+done
+</code></pre>
+<p>结果</p>
+<pre class="one-piece"><code>SELECT *
+FROM MergeTree.p0
+
+Query id: 31a33a36-fc75-4d39-bd31-1002bda6c97e
+
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│  14 │   2 │   4 │ b2aadc8d3bb4792d695d │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│   9 │  71 │   5 │ b2aadc8d3bb4792d695d │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│   3 │  14 │   3 │ a938460f432d1dc85b82 │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│   6 │   7 │   4 │ a938460f432d1dc85b82 │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│  12 │   4 │   2 │ b2aadc8d3bb4792d695d │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│   7 │  88 │   4 │ a938460f432d1dc85b82 │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│  15 │  72 │   1 │ b2aadc8d3bb4792d695d │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│  11 │  18 │   2 │ b2aadc8d3bb4792d695d │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│   8 │  30 │   3 │ b2aadc8d3bb4792d695d │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│   2 │  77 │   1 │ a938460f432d1dc85b82 │
+│   4 │  32 │   1 │ a938460f432d1dc85b82 │
+│   5 │  59 │   1 │ a938460f432d1dc85b82 │
+│  10 │  40 │   1 │ b2aadc8d3bb4792d695d │
+│  13 │  36 │   1 │ b2aadc8d3bb4792d695d │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│   1 │  16 │   3 │ a938460f432d1dc85b82 │
+└─────┴─────┴─────┴──────────────────────┘
+
+SELECT
+    partition,
+    name,
+    part_type,
+    marks,
+    rows
+FROM system.parts
+WHERE table = 'p0'
+
+Query id: 88572fa5-f591-4369-bde4-0af4221e02ca
+
+┌─partition─┬─name──────┬─part_type─┬─marks─┬─rows─┐
+│ 1         │ 1_2_13_1  │ Compact   │     4 │    5 │
+│ 1         │ 1_15_15_0 │ Compact   │     2 │    1 │
+│ 2         │ 2_11_11_0 │ Compact   │     2 │    1 │
+│ 2         │ 2_12_12_0 │ Compact   │     2 │    1 │
+│ 3         │ 3_1_1_0   │ Compact   │     2 │    1 │
+│ 3         │ 3_3_3_0   │ Compact   │     2 │    1 │
+│ 3         │ 3_8_8_0   │ Compact   │     2 │    1 │
+│ 4         │ 4_6_6_0   │ Compact   │     2 │    1 │
+│ 4         │ 4_7_7_0   │ Compact   │     2 │    1 │
+│ 4         │ 4_14_14_0 │ Compact   │     2 │    1 │
+│ 5         │ 5_9_9_0   │ Compact   │     2 │    1 │
+└───────────┴───────────┴───────────┴───────┴──────┘
+
+</code></pre>
+<h2 id="introduction" tabindex="-1">Introduction</h2>
+<h2 id="sql" tabindex="-1">SQL</h2>
+<h2 id="存储形式" tabindex="-1">存储形式</h2>
+<h2 id="查询过程" tabindex="-1">查询过程</h2>
+<h3 id="虚拟列" tabindex="-1">虚拟列</h3>
+<pre class="one-piece"><code>select *
+  from MergeTree.p0
+ where _part = '1_2_2_0'
+
+                                                                                                      
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│   2 │  12 │   1 │ 2053a4d899477a847e9b │
+└─────┴─────┴─────┴──────────────────────┘
+
+</code></pre>
+<h3 id="调试-1" tabindex="-1">调试</h3>
+<pre class="one-piece"><code>SELECT *
+FROM MergeTree.p0
+WHERE pid &gt; 3
+
+Query id: 5e92d6eb-992e-409a-808a-0da08e4aa0c6
+
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│  14 │   2 │   4 │ b2aadc8d3bb4792d695d │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│   6 │   7 │   4 │ a938460f432d1dc85b82 │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│   9 │  71 │   5 │ b2aadc8d3bb4792d695d │
+└─────┴─────┴─────┴──────────────────────┘
+┌─eid─┬─uid─┬─pid─┬─desc─────────────────┐
+│   7 │  88 │   4 │ a938460f432d1dc85b82 │
+└─────┴─────┴─────┴──────────────────────┘
+</code></pre>
+<pre class="one-piece"><code>`break src/Interpreters/InterpreterSelectQuery.cpp:1988 thread 4
+</code></pre>
+<ul>
+<li>src/Interpreters/InterpreterSelectQuery.cpp:1988</li>
+<li>src/Storages/StorageMergeTree.cpp:191</li>
+<li>创建 QueryPlan: src/Storages/MergeTree/MergeTreeDataSelectExecutor.cpp:135</li>
+<li>src/Storages/MergeTree/MergeTreeDataSelectExecutor.cpp:1140
+<ul>
+<li>
+<p>检查需要返回的列是否有虚拟列, 如果有, 用 virt_column_names 收集起来, 否则就用 real_column_names</p>
+<ul>
+<li>包括: <code>_part, _part_index, _partition_id, _part_uuid,_partition_value,_sample_factor</code></li>
+</ul>
+</li>
+<li>
+<p><code>ReadFromMergeTree</code> 是一个 QueryPlan</p>
+</li>
+</ul>
+</li>
+<li>src/Processors/QueryPlan/ReadFromMergeTree.cpp:77</li>
+<li>ReadFromMergeTree
+<ul>
+<li>有 6 个 prepared_parts, 哪读的?</li>
+</ul>
+</li>
+<li>从 DataStream 创建 ISourceStep, src/Processors/QueryPlan/ISourceStep.cpp:9
+<ul>
+<li>getSampleBlockForColumn:
+<ul>
+<li>创建一个 virtuals_map, 虚拟列, 如果没有虚拟列则没什么卵用</li>
+<li>这个函数只是为了创建列(<code>createColumn()</code>)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre class="one-piece"><code>break src/Storages/MergeTree/MergeTreeDataSelectExecutor.cpp:1140 thread 4
+break src/Storages/StorageInMemoryMetadata.cpp:321 thread 4
+
+</code></pre>
+<pre class="one-piece"><code>getSampleBlockForColumns(
+    Names&amp; columns_name,
+    NamesAndTypesList&amp; virtuals,
+    StorageID storage_id
+)
+</code></pre>
+<pre class="one-piece"><code>column_names[0].c_str()
+0x7ffff669a1e0 "eid"
+column_names[1].c_str()
+0x7ffff669a1f8 "uid"
+column_names[2].c_str()
+0x7ffff669a210 "pid"
+column_names[3].c_str()
+0x7ffff669a228 "desc"
+
+`printf "%s\n", virtuals.getNames()[$i++].c_str()
+_part
+`printf "%s\n", virtuals.getNames()[$i++].c_str()
+_part_index
+`printf "%s\n", virtuals.getNames()[$i++].c_str()
+_part_uuid
+`printf "%s\n", virtuals.getNames()[$i++].c_str()
+_partition_id
+`printf "%s\n", virtuals.getNames()[$i++].c_str()
+_partition_value
+`printf "%s\n", virtuals.getNames()[$i++].c_str()
+_sample_factor
+virtuals.size()
+6
+</code></pre>
+<p>获取 combined set of columns</p>
+<pre class="one-piece"><code>`printf "%s\n", getColumns().toString().c_str()
+columns format version: 1
+4 columns:
+`eid` UInt32
+`uid` UInt32
+`pid` UInt32
+`desc` String
+</code></pre>
+<p>reader 是 MergeTreeDataSelectExecutor, 执行 -&gt;read 时, 从内部成员 data-&gt;getDataPartsVector()<br>
+返回状态是 Committed 的 Parts</p>
+<p>reader 是在 StorageMergeTree 构造的时候创建的, 创建的时候检查 Part 状态?(如果后台有线程 merge怎么办?)</p>
+<p>创建 InterpreterSelectQuery 的时候</p>
+<p>在</p>
+<pre class="one-piece"><code>// src/Interpreters/InterpreterSelectQuery.cpp:321
+storage  =  joined_tables.getLeftTableStorage();
+</code></pre>
+<p>初始化 storage</p>
+<pre class="one-piece"><code>// src/Interpreters/JoinedTables.cpp:218    
+    /// Read from table. Even without table expression (implicit SELECT ... FROM system.one).
+    return DatabaseCatalog::instance().getTable(table_id, context);
+</code></pre>
+<p>读取的时候做了什么?<br>
+src/Interpreters/DatabaseCatalog.cpp:217</p>
+<pre class="one-piece"><code>DatabaseAndTable DatabaseCatalog::getTableImpl(
+    const StorageID &amp; table_id,
+    ContextPtr context_,
+    std::optional&lt;Exception&gt; * exception) const
+</code></pre>
+<p>内存有一张表记录了表和 uuid 的关系<br>
+问题是如果有 pid, 会怎样? predicate? 怎么查?</p>
+<pre class="one-piece"><code>ReadFromMergeTree::AnalysisResult ReadFromMergeTree::getAnalysisResult() const
+{
+    auto result_ptr = analyzed_result_ptr ? analyzed_result_ptr : selectRangesToRead(prepared_parts);
+    if (std::holds_alternative&lt;std::exception_ptr&gt;(result_ptr-&gt;result))
+        std::rethrow_exception(std::move(std::get&lt;std::exception_ptr&gt;(result_ptr-&gt;result)));
+
+    return std::get&lt;ReadFromMergeTree::AnalysisResult&gt;(result_ptr-&gt;result);
+}
+</code></pre>
+<p>一般, 第一轮, analyzed_result_ptr 为空, 所以执行 selectRangesToRead<br>
+src/Processors/QueryPlan/ReadFromMergeTree.cpp:772</p>
+<pre class="one-piece"><code>std::optional&lt;std::unordered_set&lt;String&gt;&gt; MergeTreeDataSelectExecutor::filterPartsByVirtualColumns
+</code></pre>
+<p>需要 AST, 找到 virtual_column_blocks</p>
+<pre class="one-piece"><code>    /// Construct a block consisting only of possible virtual columns for part pruning.
+    /// If one_part is true, fill in at most one part.
+    Block getBlockWithVirtualPartColumns(const MergeTreeData::DataPartsVector &amp; parts, bool one_part) const;
+</code></pre>
+<ul>
+<li>getBlockWithVirtualPartColumns
+<ul>
+<li>不管怎样, 先组件 <code>_part, _partition_id, _part_uuid, _partition_value</code></li>
+<li>对于每一个 part, 都填充 4 个 Virtual Part Columns
+<ul>
+<li><code>_part</code> column: part 的名字</li>
+<li><code>partition_id</code>: 插入 partition id</li>
+<li><code>part_uui</code> 插入 uuid</li>
+<li><code>_partition_value</code>: 插入 partition.value 的 begin, end, 迭代器</li>
+<li>如果 one part: 只填充一个 part?????
+<ul>
+<li>代码表现为, 只把 <code>_part</code> 哪一列写进去????</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>看不懂代码</p>
+<pre class="one-piece"><code>// src/Storages/MergeTree/MergeTreeData.cpp:784
+part_column = ColumnConst::create(std::move(part_column), 1);
+</code></pre>
+<pre class="one-piece"><code>`printf "%s\n", virtual_columns_block.dump().c_str()
+04 01 05 5F 70 61 72 74 06 53 74 72 69 6E 67 08 		..._part.String.
+31 5F 32 5F 31 33 5F 31 0D 5F 70 61 72 74 69 74 		1_2_13_1._partit
+69 6F 6E 5F 69 64 06 53 74 72 69 6E 67 01 31 0A 		ion_id.String.1.
+5F 70 61 72 74 5F 75 75 69 64 04 55 55 49 44 00 		_part_uuid.UUID.
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 10 		................
+5F 70 61 72 74 69 74 69 6F 6E 5F 76 61 6C 75 65 		_partition_value
+0D 54 75 70 6C 65 28 55 49 6E 74 33 32 29 01 00 		.Tuple(UInt32)..
+00 00                                           		..
+
+</code></pre>
+<p>造出虚拟列, 只有一个名字??? 因为 One_part is always true<br>
+所以 one part 只写了一个, 第一个值??</p>
+<ul>
+<li>prepareFilterBlockWithQuery, z准备 filter block??
+<ul>
+<li>拿出第一行去见一个 constant block(这就是 one part 的原因?)<br>
+constant block 的样子:</li>
+</ul>
+</li>
+</ul>
+<pre class="one-piece"><code>`printf "%s\n", block.dump().c_str()
+04 01 05 5F 70 61 72 74 06 53 74 72 69 6E 67 08 		..._part.String.
+31 5F 32 5F 31 33 5F 31 0D 5F 70 61 72 74 69 74 		1_2_13_1._partit
+69 6F 6E 5F 69 64 06 53 74 72 69 6E 67 01 31 0A 		ion_id.String.1.
+5F 70 61 72 74 5F 75 75 69 64 04 55 55 49 44 00 		_part_uuid.UUID.
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 10 		................
+5F 70 61 72 74 69 74 69 6F 6E 5F 76 61 6C 75 65 		_partition_value
+0D 54 75 70 6C 65 28 55 49 6E 74 33 32 29 01 00 		.Tuple(UInt32)..
+00 00                                           		..
+</code></pre>
+<p>没改变, 也就是其实是为了检查是不是 constant, 是的的话可以直接求职, 不用在往下探索</p>
+<p>注意到 pid &gt; 3 被 prewhere() 了, 但是 functions 为空<code>&lt;std::vector&lt;ASTPTR&gt; functions</code></p>
+<p>如果没有实体键, 必须找一个, 通过 getSmallestColumn</p>
+<p>检查 primary key, 如果设置要求必须用 primary key, 即 force_primary_key</p>
+<ol>
+<li>首先尝试 filterPartsByPartition</li>
+<li>其次 getSampling</li>
+<li>对已每一个part, 找到所有的 marks</li>
+</ol>
+<p>parts_before_ok = parts.size, 即 6 块, 有啥用? 难道继续拆分 part</p>
+<p>调用</p>
+<p>最后找到 result.parts_with_ranges, 是这个 filterPartsByPrimaryKeyAndSkipIndexes 函数的结果</p>
+<pre class="one-piece"><code>    result.total_parts = total_parts;
+    result.parts_before_pk = parts_before_pk;
+    result.selected_parts = result.parts_with_ranges.size();
+    result.selected_ranges = sum_ranges;
+    result.selected_marks = sum_marks;
+    result.selected_marks_pk = sum_marks_pk;
+    result.total_marks_pk = total_marks_pk;
+    result.selected_rows = sum_rows;
+    result.read_type
+</code></pre>
+<h2 id="写入过程" tabindex="-1">写入过程</h2>
+<h3 id="命中-partition-key" tabindex="-1">命中 Partition key</h3>
+<pre class="one-piece"><code>insert into MergeTree.p0 values (16, 23, 3, 'when multiple pid=3')
+</code></pre>
+<h1 id="mergetree-1" tabindex="-1">MergeTree</h1>
+<h2 id="简介" tabindex="-1">简介</h2>
+<blockquote>
+<p><code>*MergeTree</code> engines are the most robust ClickHouse table engines.<br>
+设计意图是大量写入. 数据以 part 为单位写入, 每次写入都创建一个 part, 而不是追加 (append) 到其他 part 中, 提高了写入速度. 如果要追加, 则还需要保存写入位置等状态.<br>
+同时后台线程 merge parts. 这样的好处是避免在 insert 的时候同步执行数据重写(merge 就是一种重写)导致 insert 效率低下. 此外 parts 数量过多也会增加 IO 花销, 所以需要 merge.<br>
+主要特征:</p>
+</blockquote>
+<ul>
+<li>数据按照 primary key 排序, 同时存在稀疏索引可以加速查找, 主键通过 ORDER BY 指定</li>
+<li>可以通过 PARTITION BY 指定 partitioning key</li>
+<li>支持 data replication</li>
+<li>支持 data sampling (TODO)</li>
+</ul>
+<h2 id="存储结构" tabindex="-1">存储结构</h2>
+<h3 id="存储格式-compact-wide-in_memory" tabindex="-1">存储格式: COMPACT/WIDE/IN_MEMORY</h3>
+<p>Compact 是指所有列都存储在一个文件里面, Wide 是指每个列分别存储在不同文件.<br>
+用什么存储格式由 <code>min_bytes_for_wide_part</code> 和 <code>min_rows_for_wide_part</code> 决定, 也就是说, 数据量要大到某个程度才能以 Wide 格式存储.<br>
+代码逻辑:</p>
+<ul>
+<li>如果字节数小于 <code>min_bytes_for_wide_part</code>, 用 COMPACT</li>
+<li>否则, 如果行数小于 <code>min_rows_for_wide_part</code>, 用 COMPACT</li>
+<li>否则, 用 WIDE</li>
+</ul>
+<p>IN_MEMORY 的 codec:</p>
+<pre class="one-piece"><code>default_codec  =  CompressionCodecFactory::instance().get("NONE", {});
+</code></pre>
+<p>改动:</p>
+<ol>
+<li>MergeTreeReaderCompact.h</li>
+<li>MergeTreeDataPartWriterCompact.h</li>
+</ol>
+<h2 id="marks-的生成" tabindex="-1">Marks 的生成</h2>
+<p><img src="/images/clickhouse/Images/6f996923ef2ad5eb708c5c2519bc4bf6.png" alt="6f996923ef2ad5eb708c5c2519bc4bf6.png"></p>
+<h2 id="" tabindex="-1"></h2>
+<h2 id="block" tabindex="-1">Block</h2>
+<p>Block 是数据处理的基本单元。Block 包含一个 Column 集合以及 Column 的元信息。它的基本结构为：</p>
+<pre class="one-piece"><code>class Block
+{
+    std::vector&lt;ColumnWithTypeAndName&gt; data;
+    BlockInfo info;
+    //...
+}
+</code></pre>
+<p><code>ColumnWithTypeAndName</code> 顾名思义是指 Column。</p>
+<h2 id="iblockinputstream-与反序列化" tabindex="-1">IBlockInputStream 与反序列化</h2>
+<p>以它的派生类 <code>NativeBlockInputStream</code> 为例，InputStream 的主体是一个 ReadBuffer，按照格式（或者协议）来读取数据，根据代码，ReadBuffer 格式如下：</p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=YzRlZTQ0OGY1ZjAzODVjYjJhNjc3MTllNGM1OTNmYzZfQzlmY3dVMmtvRTRCOFVZUmQya1E5cWI4aTd6aVMybVFfVG9rZW46Ym94Y251dlR0ZWhzemd3TTgyV2VwNU1qMzdlXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<pre class="one-piece"><code>std::shared_ptr&lt;ReadBuffer&gt; in = std::make_shared&lt;ReadBufferFromPocoSocket&gt;(socket());
+</code></pre>
+<p>与 clickhouse-client 交互时，clickhouse-server 通过 <code>ReadBufferFromPocoSocket</code> 读取 block。</p>
+<p>从网络字节流中将数据读取到内存数据结构这一过程叫反序列化。</p>
+<h2 id="write-将-block-写入内存" tabindex="-1">write(): 将 Block 写入内存</h2>
+<p>简化的 <code>TCPHandler::receiveData()</code></p>
+<ul>
+<li>将字节流读取到 Block</li>
+<li>将 Block 写入 IBlockOutputStream</li>
+</ul>
+<p>经过多层调用，ClickHouse 将 Block 追加到 SquashingBlockInputStream 的 SquashingTransform 中。也就是说并没有一次性将 Block 写入磁盘。</p>
+<pre class="one-piece"><code>class SquashingTransform
+{
+    // ...
+private:
+    Block accumulated_block;
+    // ...    
+}
+</code></pre>
+<h2 id="写入之前的-processing-query" tabindex="-1">写入之前的 Processing Query</h2>
+<p>写入之前需要对 <code>QueryState.io</code> 赋值</p>
+<pre class="one-piece"><code>state.io = executeQuery(state.query, query_context, false, state.stage, may_have_embedded_data);
+</code></pre>
+<p>这一步骤包括对查询语句的解析和解释，语法树是在这个步骤生成的。</p>
+<p>这一步骤也创建了 <code>MergeTreeSink</code></p>
+<p>最后从 <code>MergeTreeSink</code> 中生成一个 <code>PushingToSinkBlockOutputStream</code> 类型的 output.</p>
+<pre class="one-piece"><code>auto sink = storage-&gt;write(query_ptr, storage-&gt;getInMemoryMetadataPtr(), getContext());
+metadata_snapshot-&gt;check(sink-&gt;getPort().getHeader().getColumnsWithTypeAndName());
+replicated_output = dynamic_cast&lt;ReplicatedMergeTreeSink *&gt;(sink.get());
+output = std::make_shared&lt;PushingToSinkBlockOutputStream&gt;(std::move(sink));
+</code></pre>
+<h2 id="mergetreesink" tabindex="-1">MergeTreeSink</h2>
+<pre class="one-piece"><code>    // class SinkToStorage : public ISink
+    // class MergeTreeSink : public SinkToStorage
+    class ISink : public IProcessor
+    {
+        // ...
+        InputPort &amp; input;
+        Chunk current_chunk;
+        // ...
+    };
+</code></pre>
+<p>可以看到 Sink 封装了输入和数据块(Chunk), Chunk 包含一组大小相同的 Columns, 比 Block 轻量，因为它不存储名称, 类别和索引。</p>
+<pre class="one-piece"><code>    class Chunk
+    {
+        // ...
+        Columns columns;
+        UInt64 num_rows = 0;
+        ChunkInfoPtr chunk_info;
+        // ...
+    };
+    // using Columns = std::vector&lt;ColumnPtr&gt;;
+</code></pre>
+<h2 id="写入的三个阶段" tabindex="-1">写入的三个阶段</h2>
+<p>写入分为 3 个阶段：</p>
+<ul>
+<li><code>writePrefix</code></li>
+<li><code>write</code></li>
+<li><code>writeSuffix</code></li>
+</ul>
+<pre class="one-piece"><code>    void TCPHandler::processInsertQuery()
+    {
+        // ...
+        state.io.out-&gt;writePrefix();
+        // ...
+        readData();
+        // ...
+        state.io.out-&gt;writeSuffix();
+    }
+</code></pre>
+<h2 id="writeprefix" tabindex="-1">WritePrefix()</h2>
+<p>WritePrefix 是指写入前的准备工作，经过多层调用由 <code>PushingToSinkBlockOutputStream-&gt;writePrefix()</code> 写入</p>
+<pre class="one-piece"><code>        void writePrefix() override
+        {
+            connect(port, sink-&gt;getPort());
+    
+            while (true)
+            {
+                auto status = sink-&gt;prepare();
+                switch (status)
+                {
+                    case IProcessor::Status::Ready:
+                        sink-&gt;work();
+                        continue;
+                // ...
+            }
+        }
+</code></pre>
+<p><code>sink-&gt;work()</code> 调用 <code>MergeTreeData::delayInsertOrThrowIfNeeded()</code> 顾名思义是要么推迟插入要么抛出异常。这个函数实际上是用来检查”活跃的数据块是否太多“，如果太多，就暂不插入, 进入睡眠等待。</p>
+<pre class="one-piece"><code>        if (until)
+            until-&gt;tryWait(delay_milliseconds);
+        else
+            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast&lt;size_t&gt;(delay_milliseconds)));
+</code></pre>
+<p>否则直接退出，下一步就是 <code>write()</code>。</p>
+<h2 id="writesuffix" tabindex="-1">WriteSuffix()</h2>
+<p>这一步骤将内存中的数据刷到磁盘中。</p>
+<p><code>state.io.out-&gt;writeSuffix()</code> 经过多层调用到达 <code>SquashingBlockOutputStream::writeSuffix()</code></p>
+<pre class="one-piece"><code>    void SquashingBlockOutputStream::writeSuffix()
+    {
+        finalize();
+        output-&gt;writeSuffix();
+    }
+</code></pre>
+<p>其中 <code>output</code> 是 <code>AddingDefaultBlockOutputStream</code> 类型</p>
+<h3 id="finalize" tabindex="-1">Finalize</h3>
+<pre class="one-piece"><code>    void SquashingBlockOutputStream::finalize()
+    {
+        if (all_written)
+            return;
+    
+        all_written = true;
+    
+        auto squashed_block = transform.add({});
+        if (squashed_block)
+            output-&gt;write(squashed_block);
+    }
+</code></pre>
+<p>经过多层调用到达 <code>PushingToSinkBlockOutputStream::write()</code>, 然后 <code>sink-&gt;work()</code>。从上面的小节中可以看到 <code>sink</code> 是对 Column 的封装, <code>work()</code> 命中 <code>has_input</code> 分支</p>
+<pre class="one-piece"><code>    void write(const Block &amp; block) override
+    {
+        // ...
+        size_t num_rows = block.rows();
+        Chunk chunk(block.getColumns(), num_rows);
+        port.push(std::move(chunk));
+    
+        while (true)
+        {
+        auto status = sink-&gt;prepare();
+        switch (status)
+        {
+        case IProcessor::Status::Ready:
+            sink-&gt;work();
+            // ...
+    }
+    void ISink::work()
+    {
+        // ...
+        else if (has_input)
+        {
+            has_input = false;
+            consume(std::move(current_chunk));
+        }
+        // ...
+    }
+</code></pre>
+<p>这一步消耗 <code>current_chunk</code>, 我们可以看到调试 SQL</p>
+<pre class="one-piece"><code>    INSERT INTO test_dish VALUES (520802,'a','b',1,1,1,1,1.0,1.0)(520803,'a','b',1,1,1,1,1.0,1.0)(520804,'a','b',1,1,1,1,1.0,1.0)(520805,'a','b',1,1,1,1,1.0,1.0)(520806,'a','b',1,1,1,1,1.0,1.0)
+</code></pre>
+<p>对应的 chunk 确实有 5 行</p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=ODFjNDM0MjczNGEwNzI4YTc0MjlmODBjYzFkMTgzNDRfeEVEd2FobHNOb2J5NTVYNFY3eFY1MVplOEMxT2Z4MWhfVG9rZW46Ym94Y254UmFrRVA0OHZWbGFicklwWmlQbTBlXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p><code>consume()</code> 的实现在 <code>MergeTreeSink::consume</code>，这一部分在后面的小节讲到。</p>
+<h3 id="writesuffix-1" tabindex="-1">WriteSuffix()</h3>
+<p>前面看 <code>finalize()</code> 之后还有一个 <code>writeSuffix()</code>, 经过多层调用到达 <code>PushingToSinkBlockOutputStream::write()</code> 最终还是到 <code>sink-&gt;work()</code></p>
+<p>这次命中的是 <code>! was_on_finish_called</code> 分支</p>
+<pre class="one-piece"><code>    void ISink::work()
+    {
+        // ...
+        else if (!was_on_finish_called)
+        {
+            was_on_finish_called = true;
+            onFinish();
+        }
+    }
+</code></pre>
+<p><code>onFinish()</code>实现为空，也就是说这一步目前没有用处。</p>
+<h2 id="consume" tabindex="-1">Consume()</h2>
+<p>这一步骤包括：</p>
+<ul>
+<li>将 Block 切割成 Part</li>
+<li>对于每个 Part：
+<ul>
+<li>将它写到一个临时 Part 中： <code>storage.writer.writeTempPart()</code></li>
+<li>记录日志</li>
+<li>触发异步任务</li>
+</ul>
+</li>
+</ul>
+<pre class="one-piece"><code>    void MergeTreeSink::consume(Chunk chunk)
+    {
+        auto block = ...;
+        auto part_blocks = storage.writer.splitBlockIntoParts(block, ...);
+        for (auto &amp; current_block : part_blocks)
+        {
+            // ...
+            MergeTreeData::MutableDataPartPtr part = storage.writer.writeTempPart(current_block, metadata_snapshot, context);
+            // ...
+            /// Part can be deduplicated, so increment counters and add to part log only if it's really added
+            if (storage.renameTempPartAndAdd(part, &amp;storage.increment, nullptr, storage.getDeduplicationLog()))
+            {
+                PartLog::addNewPart(storage.getContext(), part, watch.elapsed());
+    
+                /// Initiate async merge - it will be done if it's good time for merge and if there are space in 'background_pool'.
+                storage.background_executor.triggerTask();
+            }
+        }
+    }
+</code></pre>
+<h2 id="writetemppart" tabindex="-1"><code>writeTempPart()</code></h2>
+<p>分为以下步骤：</p>
+<ul>
+<li>前缀为 <code>tmp_insert_</code></li>
+<li>创建一个临时索引</li>
+<li>创建数据块文件</li>
+<li>排序(stableGetPermutation)</li>
+<li>更新 TTL 等元信息</li>
+<li>将 Block 写入</li>
+</ul>
+<h3 id="permutation" tabindex="-1">Permutation</h3>
+<p>src/Interpreters/sortBlock.cpp:227</p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=Mzc5MmQ4MjBiMmE0MTI3ODE2NjFiMzc2OGI2M2MxYWZfT2hoamtDODNON3BtY1ZHNWVFYmdJSGpZTlNzcnR3RmhfVG9rZW46Ym94Y25Ma3NJdzBTUGpGNmEzSlIxRVhtc29jXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p>对于插入数据：</p>
+<pre class="one-piece"><code>    0 (520806,'a','b',1,1,1,1,1.0,1.0)
+    1 (520805,'a','b',1,1,1,1,1.0,1.0)
+    2 (520804,'a','b',1,1,1,1,1.0,1.0)
+    3 (520805,'a','b',1,1,1,1,1.0,1.0)
+    4 (520806,'a','b',1,1,1,1,1.0,1.0)
+    5 (520806,'a','b',1,1,1,1,1.0,1.0)
+</code></pre>
+<p>排序之后：</p>
+<pre class="one-piece"><code>    2 (520804,'a','b',1,1,1,1,1.0,1.0)
+    1 (520805,'a','b',1,1,1,1,1.0,1.0)
+    3 (520805,'a','b',1,1,1,1,1.0,1.0)
+    0 (520806,'a','b',1,1,1,1,1.0,1.0)
+    4 (520806,'a','b',1,1,1,1,1.0,1.0)
+    5 (520806,'a','b',1,1,1,1,1.0,1.0)
+</code></pre>
+<p><strong>可见 permutation 是一张映射表</strong></p>
+<h2 id="part" tabindex="-1">Part</h2>
+<h3 id="命名" tabindex="-1">命名</h3>
+<p>all_1_98_31_99</p>
+<ul>
+<li>all 是 partition_id</li>
+<li>1 是 min_block, 合并时取第一个 part 的 min_block</li>
+<li>98 是 max_block, 合并时取最后一个 part 的 max_block</li>
+<li>31 是 level, merge 一次 + 1</li>
+<li>99: mutation 版本：ALTER 1 次版本 + 1， 示例日志：Mutating part all_1_98_31_99 to mutation version 100</li>
+</ul>
+<pre class="one-piece"><code>    String MergeTreePartInfo::getPartName() const
+    {
+        WriteBufferFromOwnString wb;
+    
+        writeString(partition_id, wb);
+        writeChar('_', wb);
+        writeIntText(min_block, wb);
+        writeChar('_', wb);
+        writeIntText(max_block, wb);
+        writeChar('_', wb);
+        if (use_leagcy_max_level)
+        {
+            assert(level == MAX_LEVEL);
+            writeIntText(LEGACY_MAX_LEVEL, wb);
+        }
+        else
+        {
+            writeIntText(level, wb);
+        }
+    
+        if (mutation)
+        {
+            writeChar('_', wb);
+            writeIntText(mutation, wb);
+        }
+    
+        return wb.str();
+    }
+</code></pre>
+<p>Mutation:</p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=NDc2OGFhODg4ZGVkNzI2NzM0MGE4YmZiMWRiN2JlZGFfbE9jSDEwZm1XZGtraW1IV2t5VVJ0MlJtdFdnMHRLYWlfVG9rZW46Ym94Y25iRkVpVlluQUFJWFVBcThTcUZ5NmpmXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<pre><code>default.test_dish (d9359a5b-3542-46a3-9935-9a5b3542d6a3) (MergerMutator): Mutating part all_1_98_31_99 to mutation version 100
+</code></pre>
+<h3 id="创建-part" tabindex="-1">创建 Part</h3>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=YzdkNzQzNzYxZmZkMzIxZWVhZTRmMzYzZDA3YTQ5YTBfbDFiU29zcVhkc0N4U2JvM3QzUXpqQTFEZXg4UnAyckZfVG9rZW46Ym94Y25SQjN5S2M4c3lkZ3RmeXJ1OWdaS2FmXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=YmZkZDc3M2Q1NDFjOTkzYzVmODFkMzRlY2M1ODFmZWNfblBVTE85NXNWMjlzTDljSEFiY3VlRzRkaWF5YWhpVm9fVG9rZW46Ym94Y25iOGZjeVV4VVJWOWVTSHppSlRFc3BlXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p>Part 有三种格式：</p>
+<ul>
+<li>COMPACT</li>
+<li>WIDE</li>
+<li>IN_MEMORY</li>
+</ul>
+<p>格式由每一个 Part 的未压缩字节数和 <code>min_bytes_for_compact_part</code> 等设置有关：</p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=ZDlkNDMwYjEzY2MyMmExNzMxMWYyZTA4ZjQ3OTVkYzdfQUtLU0M1SWFWMWQ3eVdwd3g4amwwcmpsMXNiYjZmSGVfVG9rZW46Ym94Y25JalZOUzNId3NFeGlmcG1VRUlBc3ZiXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p>如果是 COMPACT 格式，对应的类是 <code>MergeTreeDataPartCompact</code></p>
+<h3 id="存储" tabindex="-1">存储</h3>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=MTc5MjQ5OTRiMzYyNGZhYzhlZDkzMTJlMDIxMWQxODZfTUN3SFAzU0JLeDlBVm85U1AxUFM0c1dvc00xVDZiMHNfVG9rZW46Ym94Y25NRVVtWkRPazBUdnVNZWpzWU5uYlNoXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<pre><code>        const auto disk = new_data_part-&gt;volume-&gt;getDisk();
+        disk-&gt;createDirectories(full_path);
+</code></pre>
+<p><code>MergedBlockOutputStream</code> 是写入流</p>
+<pre><code>auto compression_codec = data.getContext()-&gt;chooseCompressionCodec(0, 0);
+
+const auto &amp; index_factory = MergeTreeIndexFactory::instance();
+MergedBlockOutputStream out(new_data_part, metadata_snapshot, columns, index_factory.getMany(metadata_snapshot-&gt;getSecondaryIndices()), compression_codec);
+bool sync_on_insert = data.getSettings()-&gt;fsync_after_insert;
+
+out.writePrefix();
+out.writeWithPermutation(block, perm_ptr);
+out.writeSuffixAndFinalizePart(new_data_part, sync_on_insert);
+
+// ...
+return new_data_part;
+</code></pre>
+<h3 id="partwriter" tabindex="-1">PartWriter</h3>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=ODlhZTA5YzQ0N2NiNzQxY2M5OGFmNjUzYjMxYTRiMDdfWDRySzdxNnRUTHBEN2pjV1Z1bVRnYnJiOWZjN2xqOVdfVG9rZW46Ym94Y25yRVhjVzg3dXp3ZkdiR0Y1TDlOZmVjXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=NWVkMWM0YWY5YzRlOTA3ZTYwOGQyYTcwOGE4ZTY0NDNfZjJYRTJia2tyS2w4d2c3R2FuZ2JDRWNGR1Z2MlNWR1pfVG9rZW46Ym94Y25oUllXNmVoWERnem1xWEk5QVRCenloXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p>按照位置排序，COMPACT Part 中有”名字 -&gt; OFFSET“的映射(Hashmap)。</p>
+<h3 id="写入逻辑" tabindex="-1">写入逻辑</h3>
+<pre><code>void MergeTreeDataPartWriterCompact::write(const Block &amp; block, const IColumn::Permutation * permutation)
+</code></pre>
+<p>关键步骤</p>
+<ul>
+<li>排序</li>
+<li>计算 Granularity</li>
+<li>获取 Block</li>
+<li>将 Block 转化为 Granules</li>
+<li>写入 Primary Index 和 Skip Index</li>
+<li>设置 Marks</li>
+</ul>
+<h4 id="排序" tabindex="-1">排序</h4>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=M2U5NTcyYzE5NWU5M2FhNTNiZmNlNzkwOTUwNzFkMjZfNkJJNHNoeXcwN002dGRjeEV1U1l5d08zc1BuYVVQY1VfVG9rZW46Ym94Y25aUVRTTEhPNjJleGJIM0prWTJiRHNlXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p>经过 <code>permuteBlockIfNeeded</code> 之后 result_block 的里面的 column 就是有序的</p>
+<h4 id="计算-granularity" tabindex="-1">计算 Granularity</h4>
+<p>实现： <a href="https://clickhouse.com/codebrowser/html_report/ClickHouse/src/Storages/MergeTree/MergeTreeDataPartWriterOnDisk.cpp.html#_ZN2DBL27computeIndexGranularityImplERKNS_5BlockEmmbb">https://clickhouse.com/codebrowser/html_report/ClickHouse/src/Storages/MergeTree/MergeTreeDataPartWriterOnDisk.cpp.html#_ZN2DBL27computeIndexGranularityImplERKNS_5BlockEmmbb</a></p>
+<p>由于我将 index_granularity 设置为 1，所以得出的 <code>index_granularity_for_block</code> 结果是 1</p>
+<h4 id="填充-index-granularity" tabindex="-1">填充 Index Granularity</h4>
+<p>实现：<a href="https://clickhouse.com/codebrowser/html_report/ClickHouse/src/Storages/MergeTree/MergeTreeDataPartWriterCompact.cpp.html#_ZN2DBL24fillIndexGranularityImplERNS_25MergeTreeIndexGranularityEmmm">https://clickhouse.com/codebrowser/html_report/ClickHouse/src/Storages/MergeTree/MergeTreeDataPartWriterCompact.cpp.html#_ZN2DBL24fillIndexGranularityImplERNS_25MergeTreeIndexGranularityEmmm</a></p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=YzI4NTgzMmZjY2U2MWRlY2FhMzBjOTdlOWJjYTFiZjRfaDkyN3hUOThTdlNxNlhvSUZmVVRVclcxVGxuN3JVTjRfVG9rZW46Ym94Y25HbTloUXZxVnJYRmlsdXBVVWN5V0JZXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p>一共 5 行数据，<code>index_granularity_for_block</code> 为 1, 一共进行 5 次迭代，假设迭代之前 mark 最后一个数为 N，那么迭代之后 marks 变成 <code>[..., N, N+1, ..., N+5]</code></p>
+<p><a href="https://clickhouse.com/codebrowser/html_report/ClickHouse/src/Storages/MergeTree/MergeTreeIndexGranularity.h.html">src/Storages/MergeTree/MergeTreeIndexGranularity.h</a> 有详细解释</p>
+<h4 id="克隆-block" tabindex="-1">克隆 Block</h4>
+<p>比如插入 6 行数据，每个 column 则有 6 行数据。</p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=ZTNlMTk4MDQ3Y2Q4ODMyNzQ5OTE0YWNkODQwYWMyNTNfZXlzOUtXSkVaZlZBOVhDMEJoMTYwWkRWcUh0eVBRckpfVG9rZW46Ym94Y25jbEdCZmpmUXlCSFg1RkpWZjBtUDFlXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<h4 id="将-block-转化为-granule" tabindex="-1">将 Block 转化为 Granule</h4>
+<pre><code>Granules getGranulesToWrite(const MergeTreeIndexGranularity &amp; index_granularity, size_t block_rows, size_t current_mark, bool last_block);
+</code></pre>
+<p><a href="https://clickhouse.com/codebrowser/html_report/ClickHouse/src/Storages/MergeTree/MergeTreeDataPartWriterCompact.cpp.html#_ZN2DB12_GLOBAL__N_118getGranulesToWriteERKNS_25MergeTreeIndexGranularityEmmb">https://clickhouse.com/codebrowser/html_report/ClickHouse/src/Storages/MergeTree/MergeTreeDataPartWriterCompact.cpp.html#_ZN2DB12_GLOBAL__N_118getGranulesToWriteERKNS_25MergeTreeIndexGranularityEmmb</a></p>
+<p>关键步骤：</p>
+<ul>
+<li>对于当前的 mark, 确保它有足够空间装下数据</li>
+<li>创建 Granule:
+<ul>
+<li>当前所在的行作为第一行</li>
+<li>Granule 的容量（多少行）</li>
+<li>Mark 为当前的 mark</li>
+<li>最后一个 Granule 有一个 is_complete 标记，标记所有数据是否已经装完。</li>
+</ul>
+</li>
+</ul>
+<h4 id="写-block-primary-key-skip-index" tabindex="-1">写 Block, Primary key, Skip index</h4>
+<pre><code>void MergeTreeDataPartWriterCompact::writeDataBlockPrimaryIndexAndSkipIndices(const Block &amp; block, const Granules &amp; granules_to_write)
+</code></pre>
+<ul>
+<li>对于每个 granule
+<ul>
+<li>将元信息写入 marks 缓存</li>
+<li>对于每一个 column, 将数据序列化，依次写入一个序列化哈希表缓存</li>
+</ul>
+</li>
+<li>计算出 primary key Block</li>
+<li>计算出 skip index Block</li>
+</ul>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=ZDM3OGU2NDBmMzQ2MGM4NzI5OTMzYzI2M2M0ZDgxNzdfcFYzcndxcVN1RG1yS3pkTEJDV3BFeU5FelM1QmV1VWNfVG9rZW46Ym94Y241bEpCRWl1enlZcTlwNVpyUm5VS29iXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p>可以看到默认选择 Primary key 为 id</p>
+<h3 id="最终写入" tabindex="-1">最终写入</h3>
+<pre class="one-piece"><code>    MergeTreeData::MutableDataPartPtr MergeTreeDataWriter::writeTempPart(
+        BlockWithPartition &amp; block_with_partition, const StorageMetadataPtr &amp; metadata_snapshot, ContextPtr context)
+    {
+        // ...    
+        out.writePrefix();
+        out.writeWithPermutation(block, perm_ptr);
+        out.writeSuffixAndFinalizePart(new_data_part, sync_on_insert);
+        //  
+     }
+</code></pre>
+<p>最终写入在 <code>out.writeSuffixAndFinalizePart(new_data_part, sync_on_insert)</code></p>
+<pre class="one-piece"><code>    void MergedBlockOutputStream::writeSuffixAndFinalizePart(
+            MergeTreeData::MutableDataPartPtr &amp; new_part,
+            bool sync,
+            const NamesAndTypesList * total_columns_list,
+            MergeTreeData::DataPart::Checksums * additional_column_checksums)
+    {
+        //...
+    }
+</code></pre>
+<p>在第二步 <code>out.writeWithPermutation(block, perm_ptr)</code> 将数据序列化并保存在 writer 之后，通过 writer 写入到新的 part 中。</p>
+<h3 id="小结-2" tabindex="-1">小结</h3>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=MzUyYjM1OWE2M2NmMGUyMTc3NmVmY2NmYzA0MDgzZDNfRkx4eEt2ek1DVHFRY1UyTDB6SnZ4b1R3WlBUd3dVejNfVG9rZW46Ym94Y25rV0RxOHJSd3p5MmdGdDdQa0oxQVdmXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<h2 id="读取" tabindex="-1">读取</h2>
+<pre class="one-piece"><code>    Selected 2/2 parts by partition key, 2 parts by primary key, 379/379 marks by primary key, 379 marks to read from 2 ranges
+</code></pre>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=ZDI0MzQ4NmFjZDJmMTJlZTczM2VjNGIzN2M2MjhhMTlfb3FERWU5YW5IMWJnQzRJQmJtS2RIOUZjZlhPQld2T1hfVG9rZW46Ym94Y25ncE9CN2pnNWdzQTYxZEMxNlJtc3ZiXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p>可以看出，每个 part 都是有序的，按照主键排序</p>
+<h2 id="后台-merge-进程" tabindex="-1">后台 Merge 进程</h2>
+<p>后台进程由 <code>IBackgroundJobExecutor</code> 执行, src/Storages/StorageMergeTree.cpp:1043</p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=NGQ3OTlhMzViMDlmNWI0NjBlNjlkNDlkOGVhYmY0MjlfRjBwQjI4NzBMa0t4dnZSRXJMS2t4WDVQaW5iQXlMOXNfVG9rZW46Ym94Y25XZ1Qya0NwdndrWlBUVFh4WWxsOHNmXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<pre class="one-piece"><code>   bool StorageMergeTree::mergeSelectedParts(
+        const StorageMetadataPtr &amp; metadata_snapshot,
+        bool deduplicate,
+        const Names &amp; deduplicate_by_columns,
+        MergeMutateSelectedEntry &amp; merge_mutate_entry,
+        TableLockHolder &amp; table_lock_holder);
+</code></pre>
+<p>整个过程：</p>
+<ul>
+<li>将多个 Part 合并成一个临时的 Part: <code>mergePartsToTemporaryPart</code></li>
+<li>将临时 Part 重命名：<code>renameMergedTemporaryPart</code></li>
+</ul>
+<p>归并排序的细节就不深入了解了： <a href="https://clickhouse.com/codebrowser/html_report/ClickHouse/src/Storages/MergeTree/MergeTreeDataMergerMutator.cpp.html#_ZN2DB26MergeTreeDataMergerMutator25mergePartsToTemporaryPartENSt3__110shared_ptrINS_23FutureMergedMutatedPartEEERKNS2_IKNS_23StorageInMemoryMetadataE8733248">https://clickhouse.com/codebrowser/html_report/ClickHouse/src/Storages/MergeTree/MergeTreeDataMergerMutator.cpp.html#_ZN2DB26MergeTreeDataMergerMutator25mergePartsToTemporaryPartENSt3__110shared_ptrINS_23FutureMergedMutatedPartEEERKNS2_IKNS_23StorageInMemoryMetadataE8733248</a></p>
+<h2 id="后台-mutation-进程" tabindex="-1">后台 Mutation 进程</h2>
+<p><code>ALTER</code> 查询语句通过 ”Mutation“ 机制实现。Mutation 和 MergeTree 的 Merge 类似，是异步后台进程。Mutation 直接重写整个 part，而不是修改。这是因为 CH 大部分操作都是不可变（immutable） 的。不可变是指一旦创建就不会被修改。如果需要修改，就生成一个修改之后的副本，再用这个副本替代原来的数据。</p>
+<p>Mutation 不是原子过程，意思是整个 Mutation 可能被其他任务打断。如果 Mutation 正在进行还没完成，用户发起一次 SELECT 查询，那么他将看到已经重写了的 parts 和还没重写的 Parts。</p>
+<p>如果在 Mutation 正在进行的时候，用户发起一次 ALTER, 在 Mutation 发生之前发起一次 INSERT，那么 INSERT 的内容将被放在 Mutation 进程中。</p>
+<p>可以通过 system.mutations 跟踪 mutation 进程。</p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=Y2ExYjU0OWVjMWQzNmU5MzZiZGVmNzQwZjAyMDUyNWZfRGJzOU5PNGNuTFJ5MmhtQWxUaExXMG5PcDFJR0RPR0hfVG9rZW46Ym94Y25zQ0xCRDFSOFFRWVRsN3ZBb0w4VDNjXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p>由于 Mutation 是异步的，所以只要将 Mutation 加入任务队列，就马上返回</p>
+<ul>
+<li>对于 replicated 表，马上返回给 zookeeper</li>
+<li>对于非 replicated 表，马上返回给文件系统</li>
+</ul>
+<p>如果 Mutation 卡住了，可以用 <code>KILL</code> 命令杀死</p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=MTJmODhjZTVlNzVjOGZlMzQwNTdiNWY3ZThiODI2NTlfSzJpUW5Pak9LUmZOb3JsWmpPWlg5eWI1N0lFelU5ZTVfVG9rZW46Ym94Y25YTVAyQnd5cW52T1ZGWEdFZ3ZCTWtlXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<h2 id="mutation" tabindex="-1">Mutation</h2>
+<p>Call Stack</p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=NDY3YjcwM2QwNWI1Y2E0NGFhNTRhMzI2ZjA4MzI4MTRfcHlORjdwVE1SM0g5RlVmTFUyakVQNHk1bXM1VWlmcHNfVG9rZW46Ym94Y25VOG5VZ09vSm1pYWs0cnV3TndOS1VmXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=NjIzZWNjMzQ3NWY5MzhiZmIzZTExOTk4YmY4MWZjMmRfVnJDVDdjZEpINGdISWFZNUZtNDB0SUtHd1hDRkdnZ3lfVG9rZW46Ym94Y25la2NMZ2JUN2tvRmZMRjgwRkRwN2ZoXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<p>主要逻辑是创建一个 Mutation 条目，然后触发后台进程: <code>background_executor.triggerTask()</code></p>
+<h2 id="测试语句" tabindex="-1">测试语句</h2>
+<pre class="one-piece"><code>CREATE TABLE test_dish　(　    
+        id UInt32,　    
+        name String,　    
+        description String,　    
+        menus_appeared UInt32,　    
+        times_appeared Int32,　    
+        first_appeared UInt16,　    
+        last_appeared UInt16,　    
+        lowest_price Decimal64(3),　    
+        highest_price Decimal64(3)　
+    ) ENGINE = MergeTree 
+    ORDER BY id 
+    SETTINGS index_granularity = 1
+    
+INSERT INTO test_dish VALUES (520806,'a','b',1,1,1,1,1.0,1.0)(520805,'a','b',1,1,1,1,1.0,1.0)(520804,'a','b',1,1,1,1,1.0,1.0)(520805,'a','b',1,1,1,1,1.0,1.0)(520806,'a','b',1,1,1,1,1.0,1.0)(520806,'a','b',1,1,1,1,1.0,1.0)
+    
+
+alter table test_dish update last_appeared = 3 where id = 520806
+</code></pre>
+<h2 id="设计模式" tabindex="-1">设计模式</h2>
+<p>代理模式用得比较多</p>
+<pre class="one-piece"><code>using BlockOutputStreamPtr = std::shared_ptr&lt;IBlockOutputStream&gt;;
+    class PushingToViewsBlockOutputStream : public IBlockOutputStream, WithContext
+    {
+        // ...
+        BlockOutputStreamPtr output;
+        // ...
+    }
+    void PushingToViewsBlockOutputStream::write(const Block &amp; block)
+    {
+        // ...
+        if (output)
+            output-&gt;write(block);
+        // ...
+    }
+</code></pre>
+<p><img src="https://xxxxxxxxx.yyyyyy.cn/space/api/box/stream/download/asynccode/?code=N2ViNTdhYTcyZDFiNzYyYjM2ZmQ1NDJkY2M4NDI2NjFfUERodVdXS2pUa1NUUTQ4Zkh5cmNEVnVBTE5RNWdqVkdfVG9rZW46Ym94Y25wNzBQQVA5MWVSRmpPSXBDdjZ5c1ZlXzE2NDAyMjgyOTc6MTY0MDIzMTg5N19WNA" alt=""></p>
+<h2 id="参考" tabindex="-1">参考</h2>
+<ul>
+<li><a href="https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree/#mergetree-data-storage">https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree/#mergetree-data-storage</a></li>
+<li><a href="https://clickhouse.com/docs/en/development/architecture/#columns">https://clickhouse.com/docs/en/development/architecture/#columns</a></li>
+</ul>
+<h2 id="数据压缩-codec" tabindex="-1">数据压缩 Codec</h2>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

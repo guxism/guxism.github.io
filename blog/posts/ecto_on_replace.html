@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Explain Ecto on_replace</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Explain Ecto on_replace</h1>
+        <nav class="table-of-contents"><ol><li><a href="#aim">Aim</a></li><li><a href="#playground">Playground</a></li><li><a href="#device-the-schemas">Device the Schemas</a></li><li><a href="#the-experiment">The Experiment</a></li></ol></nav><h2 id="aim" tabindex="-1">Aim</h2>
+<p>As I am implementing the "toxi solution" with Ecto, using the "many_to_many" function,  I get lost with what the documents say about its <code>on_replace</code> option, and I believe that if I don't conduct an experiement on it myself I will never understand it.</p>
+<p>Here are some links which may be helpful:</p>
+<ul>
+<li><a href="https://elixirforum.com/t/help-me-understand-the-associations-on-replace-delete-example-in-the-docs/11837/3">https://elixirforum.com/t/help-me-understand-the-associations-on-replace-delete-example-in-the-docs/11837/3</a></li>
+<li><a href="https://stackoverflow.com/questions/46751961/ectos-on-replace-delete-option-doesnt-work-for-has-many-association">https://stackoverflow.com/questions/46751961/ectos-on-replace-delete-option-doesnt-work-for-has-many-association</a></li>
+</ul>
+<p>These links do not help me because these materials actually expect you to have some experiences in Ecto. So I decide first to create a playground, play with it, and then design and perform an experiement.</p>
+<h2 id="playground" tabindex="-1">Playground</h2>
+<p>In this scenario, we don't need an umbrella project, we generate a new Elixir application by running the command below, according to <a href="https://hexdocs.pm/ecto/getting-started.html">the Ecto Guide</a>:</p>
+<pre class="one-piece"><code>mix new ecto_playground --sup
+</code></pre>
+<p>Next, instead of Postgres we use SQLite to simplify database setup, edit <code>mix.exs</code> file and change <code>deps</code> definition to this:</p>
+<pre class="one-piece"><code>  defp deps do
+    [
+      {:ecto_sql, "~&gt; 3.8.3"},
+      {:ecto_sqlite3, "~&gt; 0.7.5"},
+      {:ecto_fields, "~&gt;1.3.0"}
+    ]
+  end
+</code></pre>
+<p>And install these dependencies:</p>
+<pre class="one-piece"><code>mix deps.get
+</code></pre>
+<p>Set up the database configuration:</p>
+<pre class="one-piece"><code>$ mix ecto.gen.repo -r EctoPlayground.Repo
+...
+Don't forget to add your new repo to your supervision tree
+(typically in lib/ecto_playground/application.ex):
+
+    def start(_type, _args) do
+      children = [
+        EctoPlayground.Repo,
+      ]
+
+And to add it to the list of Ecto repositories in your
+configuration files (so Ecto tasks work as expected):
+
+    config :ecto_playground,
+      ecto_repos: [EctoPlayground.Repo]
+</code></pre>
+<p>We do what mix reminds us to do as above:</p>
+<pre class="one-piece"><code>  def start(_type, _args) do
+    children = [
+      EctoPlaygroud.Repo
+    ]
+
+    opts = [strategy: :one_for_one, name: EctoPlayground.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+</code></pre>
+<p>Bewared that a directory <code>config</code> is created, that saves us from messing around ourselves. Glad the libraries provide many convenient utilities to generate boilerplate code.</p>
+<p>in "config/config.exs" change the content to this:</p>
+<pre class="one-piece"><code>import Config
+
+config :ecto_playground, EctoPlayground.Repo,
+  database: "db/playground.db"
+</code></pre>
+<p>And change <code>lib/ecto_playground/repo.ex</code> to this:</p>
+<pre class="one-piece"><code>defmodule EctoPlayground.Repo do
+  use Ecto.Repo,
+    otp_app: :ecto_playground,
+    adapter: Ecto.Adapters.SQLite3
+end
+</code></pre>
+<p>finally we add this line to <code>config/config.exs</code></p>
+<pre class="one-piece"><code>config :ecto_playground, ecto_repos: [EctoPlayground.Repo]
+</code></pre>
+<p>it says the repository of <code>ecto_playground</code> application is specified in the brackets, and this allows us to run the command <code>mix ecto.create</code> to create the database</p>
+<pre class="one-piece"><code>➜  ecto_playground mix ecto.create                         
+Compiling 3 files (.ex)
+Generated ecto_playground app
+The database for EctoPlayground.Repo has been created
+</code></pre>
+<p>All this work above is extremely important, without it we could be very reluctant to carry out experiement on the Ecto library, as we have seen for ourselves, the setup is a lot of trouble. The document is all right, but if we really want to understand it and apply the knowledge to development, we had better get our hands dirty.</p>
+<h2 id="device-the-schemas" tabindex="-1">Device the Schemas</h2>
+<p>Create a migration file by running this command:</p>
+<pre class="one-piece"><code>mix ecto.gen.migration M2M
+</code></pre>
+<p>Fill it with the following code:</p>
+<pre class="one-piece"><code>defmodule EctoPlayground.Repo.Migrations.M2M do
+  use Ecto.Migration
+
+  def change do
+    create table(:xs) do
+      add(:name, :string)
+    end
+
+    create table(:ys) do
+      add(:name, :string)
+    end
+
+    create(unique_index(:ys, [:name]))
+
+    create table(:xs_ys, primary_key: false) do
+      add(:x_id, references(:xs))
+      add(:y_id, references(:ys))
+    end
+  end
+end
+
+</code></pre>
+<p>The intention of the file is clear, then we need to write code that interacts with the database:</p>
+<pre class="one-piece"><code>defmodule EctoPlayground.Y do
+  use Ecto.Schema
+
+  schema "ys" do
+    field(:name, :string)
+  end
+
+  def changeset(struct, params \\ %{}) do
+    struct
+    |&gt; Ecto.Changeset.cast(params, [:name])
+  end
+end
+
+defmodule EctoPlayground.X do
+  use Ecto.Schema
+  import Ecto.Query
+
+  @repo EctoPlayground.Repo
+
+  schema "xs" do
+    field(:name, :string)
+
+    many_to_many(:ys, EctoPlayground.Y,
+      join_through: "xs_ys",
+      on_replace: :delete
+    )
+  end
+
+  def changeset(struct, params \\ %{}) do
+    struct
+    |&gt; Ecto.Changeset.cast(params, [:name])
+    |&gt; Ecto.Changeset.unique_constraint(:name)
+    |&gt; Ecto.Changeset.put_assoc(:ys, handle_y(params))
+  end
+
+  defp handle_y(params) do
+    (params[:ys] || "")
+    |&gt; String.split(",")
+    |&gt; Enum.map(&amp;String.trim/1)
+    |&gt; Enum.reject(&amp;(&amp;1 == ""))
+    |&gt; insert_ys()
+  end
+
+  defp insert_ys([]) do
+    []
+  end
+
+  defp insert_ys(names) do
+    maps =
+      Enum.map(
+        names,
+        &amp;%{
+          name: &amp;1
+        }
+      )
+
+    @repo.insert_all(EctoPlayground.Y, maps, on_conflict: :nothing)
+
+    @repo.all(from(y in EctoPlayground.Y, where: y.name in ^names))
+  end
+end
+
+defmodule EctoPlayground do
+  @repo EctoPlayground.Repo
+  def create_x_with_y(%{
+        x: x,
+        y: y
+      }) do
+    case @repo.get_by(EctoPlayground.X, name: x) do
+      nil -&gt; %EctoPlayground.X{}
+      x -&gt; x |&gt; @repo.preload(:ys) |&gt; IO.inspect()
+    end
+    |&gt; EctoPlayground.X.changeset(%{name: x, ys: y})
+    |&gt; @repo.insert_or_update()
+  end
+end
+
+</code></pre>
+<p>I suppose you must know some Elixir or you won't be reading this, still there are some points I should emphasize:</p>
+<ul>
+<li>I set <code>on_replace</code> to <code>:delete</code> as <a href="https://hexdocs.pm/ecto/constraints-and-upserts.html">this guide</a> does</li>
+<li>to use <code>insert_or_update</code> I must load <code>x</code> from the database if it exists and use <code>preload</code> to load its associated <code>ys</code>, without the <code>preload</code>, a change error is returned, as shown below:</li>
+</ul>
+<pre class="one-piece"><code>{:error,
+ #Ecto.Changeset&lt;
+   action: :insert,
+   changes: %{name: "x1"},
+   errors: [ys: {"is invalid", [type: {:array, :map}]}],
+   data: #EctoPlayground.X&lt;&gt;,
+   valid?: false
+ &gt;}
+</code></pre>
+<h2 id="the-experiment" tabindex="-1">The Experiment</h2>
+<p>Then run <code>iex -S mix</code> in the root directory to provoke the REPL, later where we insert a set of data:</p>
+<pre class="one-piece"><code>iex(1)&gt; EctoPlayground.create_x_with_y(%{x: "x1", y: "y1,y2"})
+
+...
+
+{:ok,
+ %EctoPlayground.X{
+   __meta__: #Ecto.Schema.Metadata&lt;:loaded, "xs"&gt;,
+   id: 1,
+   name: "x1",
+   ys: [
+     %EctoPlayground.Y{
+       __meta__: #Ecto.Schema.Metadata&lt;:loaded, "ys"&gt;,
+       id: 1,
+       name: "y1" 
+     },
+     %EctoPlayground.Y{
+       __meta__: #Ecto.Schema.Metadata&lt;:loaded, "ys"&gt;,
+       id: 2,
+       name: "y2"
+     }
+   ]
+ }}
+</code></pre>
+<p>Tables in the database look as this:</p>
+<pre class="one-piece"><code>sqlite&gt; select * from xs;
+1|x1
+sqlite&gt; select * from ys;
+1|y1
+2|y2
+sqlite&gt; select * from xs_ys;
+1|1
+1|2
+</code></pre>
+<p>The <code>xs_ys</code> table manages the mapping from <code>x1</code> to <code>y1,y2</code>, now, we update <code>x1</code> to associate with <code>y2,y3</code>, and see what will happen to the table:</p>
+<pre class="one-piece"><code>iex(2)&gt; EctoPlayground.create_x_with_y(%{x: "x1", y: "y2,y3"})
+
+03:10:07.824 [debug] QUERY OK source="xs" db=0.2ms idle=1624.8ms
+SELECT x0."id", x0."name" FROM "xs" AS x0 WHERE (x0."name" = ?) ["x1"]
+ 
+03:10:07.831 [debug] QUERY OK source="ys" db=0.1ms idle=1632.3ms
+SELECT y0."id", y0."name", CAST(x1."x_id" AS INTEGER) FROM "ys" AS y0 INNER JOIN "xs_ys" AS x1 ON y0."id" = x1."y_id" WHERE (x1."x_id" IN (?)) ORDER BY CAST(x1."x_id" AS INTEGER) [1]
+
+
+03:10:07.832 [debug] QUERY OK db=0.2ms idle=1632.7ms
+INSERT INTO "ys" ("name") VALUES (?),(?) ON CONFLICT DO NOTHING ["y2", "y3"]
+ 
+03:10:07.832 [debug] QUERY OK source="ys" db=0.1ms idle=1633.0ms
+SELECT y0."id", y0."name" FROM "ys" AS y0 WHERE (y0."name" IN (?,?)) ["y2", "y3"]
+ 
+03:10:07.832 [debug] QUERY OK db=0.0ms idle=1633.3ms
+begin []
+ 
+03:10:07.833 [debug] QUERY OK source="xs_ys" db=0.0ms
+DELETE FROM "xs_ys" AS x0 WHERE (x0."x_id" = ?) AND (x0."y_id" = ?) [1, 1]
+ 
+03:10:07.834 [debug] QUERY OK db=0.0ms
+INSERT INTO "xs_ys" ("x_id","y_id") VALUES (?,?) [1, 3]
+ 
+03:10:07.834 [debug] QUERY OK db=0.0ms
+commit []
+{:ok,
+ %EctoPlayground.X{
+   __meta__: #Ecto.Schema.Metadata&lt;:loaded, "xs"&gt;,
+   id: 1,
+   name: "x1",
+   ys: [
+     %EctoPlayground.Y{
+       __meta__: #Ecto.Schema.Metadata&lt;:loaded, "ys"&gt;,
+       id: 2,
+       name: "y2" 
+     },
+     %EctoPlayground.Y{
+       __meta__: #Ecto.Schema.Metadata&lt;:loaded, "ys"&gt;,
+       id: 3,
+       name: "y3"
+     }
+   ]
+ }}
+</code></pre>
+<p>From the result output we shall see the line <code>DELETE FROM ...</code>, which seems to correspond to the <code>:delete</code> we set to the <code>on_replace</code> option, so it's easy to deduce that when we replaced the association, deletion took places.</p>
+<p>So although I did not understand the document, the result of experiment reveals that <code>on_replace</code> means the association between <code>x</code> and <code>y</code> is determined in one act, you can't add more <code>y</code> to <code>x</code>, hoping the <code>y</code>s are accumulated, in fact they are not, there is not addition to the association, only overrides,when you update the association, the privious associate is replaced by the new one, hence the word <code>on_replace</code>. The <code>:delete</code> means that when the replacement happens, the previous association is deleted, the mapping relations must be deleted.</p>
+<p>But observe that only one DELETE happened, then we can assume that when replacement takes place, all related associated data is loaded and then compared with the new one, only those mapping relations that are not in the new input data will be deleted, in this case, the <code>x1 -&gt; y1</code> relation is deleted.</p>
+<p>But note that <code>y1</code> still exists:</p>
+<pre class="one-piece"><code>sqlite&gt; select * from xs_ys;
+1|2
+1|3
+sqlite&gt; select * from ys;
+1|y1
+2|y2
+3|y3
+sqlite&gt; select * from xs;
+1|x1
+</code></pre>
+<p>Then we can conclude the <code>on_replace</code> option only affects the <code>many_to_many</code> function, which corresponds to the <code>xs_ys</code> table.</p>
+<p>If you set <code>on_replace</code> to <code>:mark_as_invalid</code>, when replacement happens, an invalid changeset is returned</p>
+<pre class="one-piece"><code>iex(6)&gt; EctoPlayground.create_x_with_y(%{x: "x2", y: "y1,y2"})
+iex(7)&gt; EctoPlayground.create_x_with_y(%{x: "x2", y: "y2,y3"})
+...
+{:error,
+ #Ecto.Changeset&lt;
+   action: :update,
+   changes: %{},
+   errors: [ys: {"is invalid", [type: {:array, :map}]}],
+   data: #EctoPlayground.X&lt;&gt;,
+   valid?: false 
+ &gt;}
+</code></pre>
+<p>I hate to say that but the examples in the Ecto documents are often incomplete, I hope the team could provide the complete example code some day, but whatever, we must run some code ourselves.</p>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

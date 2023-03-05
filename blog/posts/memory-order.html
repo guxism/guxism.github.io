@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>内存顺序</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>内存顺序</h1>
+        <nav class="table-of-contents"><ol><li><a href="#概述">概述</a></li><li><a href="#acquire-release">Acquire-Release</a></li><li><a href="#relaxed-ordering">Relaxed Ordering</a><ol><li><a href="#shared_ptr-构造函数和析构函数中的内存顺序">shared_ptr 构造函数和析构函数中的内存顺序</a></li><li><a href="#memory_order_acq_rel">memory_order_acq_rel</a></li></ol></li><li><a href="#release-consume-ordering">Release-Consume ordering</a></li><li><a href="#sequential-consitent-ordering">Sequential-consitent ordering</a></li><li><a href="#什么时候该用什么">什么时候该用什么？</a></li><li><a href="#其他资源">其他资源</a></li></ol></nav><h2 id="概述" tabindex="-1">概述</h2>
+<p><a href="https://doc.rust-lang.org/nomicon/atomics.html">The Rustonomicon Atomics </a> 讲到 Rust 的内存模型和 <a href="https://en.cppreference.com/w/cpp/atomic/memory_order">C++20</a> 的一样，其中 C 也复制了 C++ 的内存模型，这就让人感到吃惊，因为我们通常认为 C 是 C++ 之父。本文直接梳理了 <a href="https://en.cppreference.com/w/cpp/atomic/memory_order">C++ specification</a>，并对其中的例子加以说明。</p>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sequenced-before</td>
+<td>同一个线程中，A 语句先于 B 语句执行，需要说明的是 <code>a() + b() + c()</code> 中，<code>c()</code> 可能是第一个执行，也可能是最后一个执行， 参考 <a href="https://en.cppreference.com/w/cpp/language/eval_order">evaluation order</a></td>
+</tr>
+<tr>
+<td>Carries dependency</td>
+<td>如果 A 语句 sequenced-before B 语句，B 语句可能依赖 A 语句的执行结果，比如 A 写入 scalar object M, B 读取 M</td>
+</tr>
+<tr>
+<td>scalar object</td>
+<td>a scalar is a fundamental except it cannot be void, but it can be a pointer type, or an enum type. 参考 <a href="http://howardhinnant.github.io/TypeHiearchy.pdf">TypeHiearchy</a></td>
+</tr>
+<tr>
+<td>Modification order</td>
+<td>指两个线程的执行顺序，如果两个线程之间存在 modification order, 那么他们的读写遵循某些原则，比如， Write-Write coherence，如果 A 语句修改了某个原子变量 M，而且 A 语句 sequenced-before B 语句，而且 B 语句也修改 M，那么 A 语句在 modification order 中排在 B 语句之前。（这些原则更像是数学定义）</td>
+</tr>
+<tr>
+<td>Release sequence</td>
+<td>A 语句执行 release 原子变量 M 的操作之后，如果 B 处于 A 的 modification order 之后，且 B 也需要 RMW（read modifify write) 变量 M， 那么就说 B 语句 is known as release sequence headed by A</td>
+</tr>
+<tr>
+<td>Dependency-order before</td>
+<td>如果 A 语句释放了原子变量 M, 而 B 语句读取了这一变量，则称 A is dependency-order before B</td>
+</tr>
+<tr>
+<td>inter-thread happens-before</td>
+<td>如果 A 与 B 有同步关系（即通过某种同步手段，比如锁），而且 A dependency-order before B, 那么就称 A inter-thread happens-before B</td>
+</tr>
+<tr>
+<td>Happens-before</td>
+<td>不管是否在同一线程，只要 A 语句发生在 B 之前则称 A happens-before B</td>
+</tr>
+<tr>
+<td>Visible side-effects</td>
+<td>A 在 scalar M 的写入可以被 B 观测到，B 也引用 M，这就要求 A happens-before B, A 和 B 之间的操作 X 不能存在副作用，否则就覆盖了</td>
+</tr>
+<tr>
+<td>Consume operation</td>
+<td>线程 B 中所有消费原子变量 M 的操作都得到保证可以看到线程 A release M 之后的 M</td>
+</tr>
+<tr>
+<td>Acquire operation</td>
+<td>Mutex 的 lock() operation 也是一个 acquire operation</td>
+</tr>
+<tr>
+<td>Release operation</td>
+<td>Mutex 的 unlock() operation 也是一个 release operation</td>
+</tr>
+</tbody>
+</table>
+<h2 id="acquire-release" tabindex="-1">Acquire-Release</h2>
+<p>假设线程 A 上有 <code>memory_order_release</code>, 线程 B <code>memory_order_acquire</code>, 那么可以让线程 B 在 acquire 的时候一直轮询， 线程 A release 之后，线程 B 可以看到线程 A 写入内存的一切内容</p>
+<blockquote>
+<p>That is, once the atomic load is completed, thread B is guaranteed to see everything thread A wrote to memory.</p>
+</blockquote>
+<p>上面说的 everything thread A wrote to memory 包括 data, data 并不是原子类型，它的写入是副作用：</p>
+<blockquote>
+<p>all memory writes (non-atomic and relaxed atomic) that happened-before the atomic store from the point of view of thread A, become visible side-effects in thread B</p>
+</blockquote>
+<p>线程 A (producer) 和线程 B (consumer) 都可以访问两块内存：</p>
+<pre class="one-piece"><code>#include &lt;atomic&gt;
+#include &lt;cassert&gt;
+#include &lt;chrono&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;thread&gt;
+using namespace std::chrono_literals;
+
+std::atomic&lt;std::string *&gt; ptr;
+int data;
+
+// 线程 A
+void producer() {
+  // 让线程 A 睡眠 2 秒，此时线程 B 肯定已经启动，而且读取到了 data 和 ptr
+  std::this_thread::sleep_for(2000ms);
+  std::string *p = new std::string("Hello");
+  data = 42;
+  // 但线程 B 必须等待线程 A 执行完这一语句, 但它不是被阻塞，而是不停地旋转
+  ptr.store(p, std::memory_order_release);
+}
+
+// 线程 B
+void consumer() {
+  std::string *p2 = "a";
+  std::cout &lt;&lt; data &lt;&lt; std::endl;
+  // 用 cnt 统计未能加载 ptr 的次数
+  int cnt = 0;
+  // https://en.cppreference.com/w/cpp/atomic/atomic/load
+  // Return value
+  //    The current value of the atomic variable.
+  // 如果加载失败，则 ptr.load() 返回空值
+  while (!(p2 = ptr.load(std::memory_order_acquire))) {
+    ++cnt;
+  }
+  std::cout &lt;&lt; "fail to acquire: " &lt;&lt; cnt &lt;&lt; " times" &lt;&lt; std::endl;
+  std::cout &lt;&lt; *p2 &lt;&lt; std::endl;
+  std::cout &lt;&lt; data &lt;&lt; std::endl;
+  assert(*p2 == "Hello"); // never fires
+  assert(data == 42);     // never fires
+}
+
+int main() {
+  std::thread t1(producer);
+  std::thread t2(consumer);
+  t1.join();
+  t2.join();
+}
+</code></pre>
+<p>结果：</p>
+<pre class="one-piece"><code>0
+fail to acquire: 614149592 times
+Hello
+42
+</code></pre>
+<p>可以看出线程 B 实际要把 CPU 烧起来了，它一直在轮询 ptr 是否有写入.</p>
+<p>我们可以体会到的是，如果一个线程需要 acquire, 那么它必须等待另外一个线程 release, 如果一个线程需要 release, 那么它掌握主动权，如果我们把这一行去掉：</p>
+<pre class="one-piece"><code>ptr.store(p, std::memory_order_release);
+</code></pre>
+<p>结果就是线程 B (consumer) 永久处于空转状态</p>
+<p>这种顺序限制只发生对原子变量执行了 acquire 和 release 的两个线程之间，其他线程看到的读写顺序并不能保证，很容易理解：因为观察者的读取顺序不在控制范围之内，如果它启动得最快，那么它读到的是未初始化的 data, 如果它启动最慢，那么它读到 data = 42</p>
+<p>我们可以再运行 <a href="https://en.cppreference.com/w/cpp/atomic/memory_order#Release-Acquire_ordering">https://en.cppreference.com/w/cpp/atomic/memory_order#Release-Acquire_ordering</a> 的例子，这个例子中，<code>thread_2</code> 属于透明人的状态，无论它是不是先把 flag 设置为 2，但只要 <code>thread_1</code> 没有 release, 那么 <code>thread_3</code> 就只能空转(主动空转，即如果没有成功提取，则不停地尝试)</p>
+<pre class="one-piece"><code>#include &lt;atomic&gt;
+#include &lt;cassert&gt;
+#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &lt;vector&gt;
+
+std::vector&lt;int&gt; data;
+std::atomic&lt;int&gt; flag = {0};
+
+void thread_1() {
+  data.push_back(42);
+  flag.store(1, std::memory_order_release);
+  std::cout
+      &lt;&lt; "thread 1 has set the flag to 1 and let loose those who awaits the flag"
+      &lt;&lt; std::endl;
+}
+
+void thread_2() {
+  int expected = 1;
+  // memory_order_relaxed is okay because this is an RMW,
+  // and RMWs (with any ordering) following a release form a release sequence
+  while (
+      !flag.compare_exchange_strong(expected, 2, std::memory_order_relaxed)) {
+    expected = 1;
+  }
+  std::cout &lt;&lt; "thread 2 has set the flag to 2" &lt;&lt; std::endl;
+}
+
+void thread_3() {
+  while (flag.load(std::memory_order_acquire) &lt; 2)
+    ;
+  std::cout &lt;&lt; "thread 3 gets the flag as 2" &lt;&lt; std::endl;
+  // if we read the value 2 from the atomic flag, we see 42 in the vector
+  assert(data.at(0) == 42); // will never fire
+}
+
+int main() {
+  std::thread a(thread_1);
+  std::thread b(thread_2);
+  std::thread c(thread_3);
+  a.join();
+  b.join();
+  c.join();
+}
+</code></pre>
+<p>结果：</p>
+<pre class="one-piece"><code>$ ./run
+thread 1 has set the flag to 1 and let loose those who awaits the flag
+thread 2 has set the flag to 2
+thread 3 gets the flag as 2
+$ ./run
+thread 2 has set the flag to 2
+thread 1 has set the flag to 1 and let loose those who awaits the flag
+thread 3 gets the flag as 2
+</code></pre>
+<h2 id="relaxed-ordering" tabindex="-1">Relaxed Ordering</h2>
+<pre class="one-piece"><code>// Thread 1:
+r1 = y.load(std::memory_order_relaxed); // A
+x.store(r1, std::memory_order_relaxed); // B
+// Thread 2:
+r2 = x.load(std::memory_order_relaxed); // C
+y.store(42, std::memory_order_relaxed); // D
+</code></pre>
+<p>可以发生这种顺序：</p>
+<pre class="one-piece"><code>y.store(42, std::memory_order_relaxed); // D
+r1 = y.load(std::memory_order_relaxed); // A
+x.store(r1, std::memory_order_relaxed); // B
+r2 = x.load(std::memory_order_relaxed); // C
+</code></pre>
+<p>那么结果就会是： r1 = 42, r2 = 42</p>
+<p>这种 "tag"(memory_order_relax) 只保证 store 和 load 是原子的，顺序则不能保证，也就是说 thread 1 和 thread 2 之间不存在 synchronization 操作</p>
+<h3 id="shared_ptr-构造函数和析构函数中的内存顺序" tabindex="-1">shared_ptr 构造函数和析构函数中的内存顺序</h3>
+<p>Relaxed memory ordering 的使用场景包括 <code>std::shared_ptr</code> 的 reference counters，因为只需要用到 atomicity, 而不需要考虑执行顺序和 synchronization, 比如 10 个线程，每个线程加 1000，你不需要让这些计数操作遵循某种顺序，只要完成任务就行。</p>
+<p>但 <code>shared_ptr</code> 的计数在析构的时候就必须按照 acquire-release 的同步顺序。理由见 <a href="https://stackoverflow.com/a/48148318/19406298">https://stackoverflow.com/a/48148318/19406298</a> ，简而言之是：</p>
+<ol>
+<li>因为 <code>make_shared</code> 先于 <code>shared_ptr</code> 的构造函数发生，所以前者 inter-thread happens-before 后者，所以不需要特别的 ordering, 只需要让后者的计数保持原子性即可</li>
+<li>最后一个 <code>shared_ptr</code> 使用者要释放资源，为什么 relaxed ordering 有问题？如果有问题，那必然是因为它无法确保计数递减和持有资源的关系，如果仅仅是计数那倒是没关系，只要保证原子操作就行，可以想象的是，在释放的时候，如果释放资源和 ref -1 的顺序无法保证，那么线程 A 可能先执行了释放资源，后执行 refcnt - 1, 而线程 B 先 refcnt - 1 后释放资源，这样就导致竞争关系，如图：</li>
+</ol>
+<ul>
+<li>
+<table>
+<thead>
+<tr>
+<th>线程 A</th>
+<th>线程 B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>释放资源中</td>
+<td>--refcnt</td>
+</tr>
+<tr>
+<td>释放资源中</td>
+<td>发现 refcnt == 0</td>
+</tr>
+<tr>
+<td>--refcnt</td>
+<td>释放资源</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<ol start="3">
+<li>所以应该用 <code>memory_order_acq_rel</code> 控制释放资源和 --refcnt 的执行顺序</li>
+</ol>
+<h3 id="memory_order_acq_rel" tabindex="-1">memory_order_acq_rel</h3>
+<blockquote>
+<p>A read-modify-write operation with this memory order is both an <em>acquire operation</em> and a <em>release operation</em>. No memory reads or writes in the current thread can be reordered before the load, nor after the store. All writes in other threads that release the same atomic variable are visible before the modification and the modification is visible in other threads that acquire the same atomic variable.</p>
+</blockquote>
+<p>需要好好研究这些单词组合：</p>
+<ol>
+<li>同一线程中，在 load(read) 前的所有 memory reads or writes 都无法 reordered, write 之后也一样，这就意味着仅在 modify 的时候可以 reorder。</li>
+<li>其他线程对原子变量的 release 操作对当前线程的 modification 可见，可见意味着其他线程的 release 操作在当前线程 modification 之前发生</li>
+<li>同时当前线程的 modification 对其他 acquire 原子变量的线程可见</li>
+</ol>
+<p>也就是说，当一个线程出现这种 acquire-release 原子操作时候，它严格遵守了 acquire-release 与上下其他语句的顺序</p>
+<h2 id="release-consume-ordering" tabindex="-1">Release-Consume ordering</h2>
+<p>如果原子变量 M 在线程 A 中是 <code>memory_order_release</code>，而在线程 B 中是 <code>memory_order_consume</code>，那么在线程 A 的 store 操作之前(store 会伴随 <code>memory_order_release</code>）的其他写入操作(非 atomic 或者 relaxed atomic)都会成为线程 B 在执行 consume 操作的时候的 visible side effect，换句话说，当线程 B 完成 load 操作之后，假设 load 的变量是 M，那么所有需要读取 M 的操作都会看到全新的 M。这也就是说，如果某些函数不依赖 M，那么它的同步顺序则无法得到保证，因为它 doesn't carry dependency from ptr</p>
+<p>Rust 不提供这种顺序</p>
+<blockquote>
+<p>(Note: We explicitly do not expose the C++ consume ordering)</p>
+</blockquote>
+<h2 id="sequential-consitent-ordering" tabindex="-1">Sequential-consitent ordering</h2>
+<p><code>memory_order_seq_cst</code> 不仅导致 release/acquire 的顺序，而且还会建立一种 single total modification order 的顺序。</p>
+<p>也就是说如果不是修改操作，则可能不按照顺序执行</p>
+<pre class="one-piece"><code>#include &lt;thread&gt;
+#include &lt;atomic&gt;
+#include &lt;cassert&gt;
+
+std::atomic&lt;bool&gt; x = {false};
+std::atomic&lt;bool&gt; y = {false};
+std::atomic&lt;int&gt; z = {0};
+
+void write_x()
+{
+    // 如果注释这一行，则程序阻塞，因为在 store 的 memory_order_seq_cst 相当于 release
+    x.store(true, std::memory_order_seq_cst);
+}
+
+void write_y()
+{
+    y.store(true, std::memory_order_seq_cst);
+}
+
+void read_x_then_y()
+{
+    // 保证 x 先加载，然后加载 y
+    while (!x.load(std::memory_order_seq_cst))
+        ;
+    // 如果 write_y 在这个语句之前发生，则 y.load() 结果是 true, 则 ++z
+    if (y.load(std::memory_order_seq_cst)) {
+        ++z;
+    }
+}
+
+void read_y_then_x()
+{
+    while (!y.load(std::memory_order_seq_cst))
+        ;
+    // 如果 write_x 在这个语句之前发生，则 x.load() 结果是 true, 则 ++z
+    if (x.load(std::memory_order_seq_cst)) {
+        ++z;
+    }
+}
+
+int main()
+{
+    std::thread a(write_x);
+    std::thread b(write_y);
+    std::thread c(read_x_then_y);
+    std::thread d(read_y_then_x);
+    a.join(); b.join(); c.join(); d.join();
+    assert(z.load() != 0);  // will never happen
+}
+</code></pre>
+<p>可以预见的执行顺序是 a -&gt; c, b -&gt; d, 其中 b 可能发生在 a -&gt; c 的前后或者中间，有各种排列方式，如果我们希望 z == 0, 那么必须做到 b 在 c 之后发生， a 在 d 之后发生，假设 c b 成立，为了让 c 运行，则必须用将 a 放在 c 前面，形成 a c b, 同时把 d 放在前面： d a c b, 这是不可能的： d 绝对不会第一个运行</p>
+<p>也就是说，通过这种手段，将 d 的顺序限制在 b 之后， a 后是 c， b 后是 d，a-&gt;c 就好象是一条线程执行的那样， 同时， b -&gt; d 同理，并且， a-&gt;c, 和 b-&gt;d 就好像在单独一个 CPU 上运行的两个任务</p>
+<p>但这和 acquire-release 有什么区别？将代码改成这样也是一样的逻辑：</p>
+<pre class="one-piece"><code>
+#include &lt;atomic&gt;
+#include &lt;cassert&gt;
+#include &lt;thread&gt;
+using namespace std::chrono_literals;
+std::atomic&lt;bool&gt; x = {false};
+std::atomic&lt;bool&gt; y = {false};
+std::atomic&lt;int&gt; z = {0};
+
+void write_x() {
+  std::this_thread::sleep_for(2000ms);
+  x.store(true, std::memory_order_release);
+  std::cout &lt;&lt; "a" &lt;&lt; std::endl;
+}
+
+void write_y() {
+  std::cout &lt;&lt; "b1" &lt;&lt; std::endl;
+  y.store(true, std::memory_order_release);
+  std::cout &lt;&lt; "b2" &lt;&lt; std::endl;
+}
+
+void read_x_then_y() {
+  while (!x.load(std::memory_order_acquire))
+    ;
+  std::cout &lt;&lt; "c1" &lt;&lt; std::endl;
+  if (y.load(std::memory_order_acquire)) {
+    ++z;
+  }
+  std::cout &lt;&lt; "c2" &lt;&lt; std::endl;
+}
+
+void read_y_then_x() {
+  while (!y.load(std::memory_order_acquire))
+    ;
+  std::cout &lt;&lt; "d1" &lt;&lt; std::endl;
+  if (x.load(std::memory_order_acquire)) {
+    ++z;
+  }
+  std::cout &lt;&lt; "d2" &lt;&lt; std::endl;
+}
+
+int main() {
+  std::thread a(write_x);
+  std::thread b(write_y);
+  std::thread c(read_x_then_y);
+  std::thread d(read_y_then_x);
+  a.join();
+  b.join();
+  c.join();
+  d.join();
+  std::cout &lt;&lt; z.load() &lt;&lt; std::endl;
+  assert(z.load() != 0); // will never happen
+}
+</code></pre>
+<p>解释：</p>
+<ol>
+<li><a href="https://stackoverflow.com/a/14864466/19406298">https://stackoverflow.com/a/14864466/19406298</a> 来自 《C++ 并发编程》 的作者讲述了，虽然 a 和 b 的顺序不是固定的，即 y 可能先写入，但它们的顺序对一切线程而言都是一致的</li>
+<li><a href="https://stackoverflow.com/a/56656610/19406298">https://stackoverflow.com/a/56656610/19406298</a> 解释了如果将多个 CPU 并行压缩成在一个 CPU 上运行，则能看到多个任务 interleave，一个核的系统不需要同步原子变量，甚至原子变量都是不需要的，而 <code>memory_order_seq_cst</code> 可以保证多个核的并行效果与单核一样</li>
+<li><a href="https://www.cs.utexas.edu/~bornholt/post/memory-models.html">https://www.cs.utexas.edu/~bornholt/post/memory-models.html</a> 讲述了为什么要让用 <code>memory_order_seq_cst</code> 来限定这么明显的事情，对于我们来说明显的东西在 CPU 的执行逻辑上来讲可能是错的，因为 CPU 有多层缓存，如果指令执行地太快，那么写入还没到 memory，下一指令就把 CPU 的 store buffer 里的值给读取了，或者另一个 CPU 去读内存，却没发现数值，因为当前 CPU 还没把 Storage buffer 的东西同步到内存</li>
+</ol>
+<p>可以对比：</p>
+<table>
+<thead>
+<tr>
+<th>release-acquire</th>
+<th>sequential consistency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>如果 y 先写入，那么线程 d 先运行，到加载 x 的时候，可能线程 a 还没运行，所以 z 不能 +1，但 x 写入之后，线程 c 运行，此时 y 已经写入，但可能线程 c 不知道，因为 x 的 release-acquire 只保证了线程 a 中 x 之前的写入必然被线程 c 看到，但不保证另外一条线程中 y 的写入能被 c 看到，根据这种"数学"定义，我们可以认为 y 发生了，但 c 不知道，因为 release-acquire 不提供这种“知道”的保证，如果不能保证一个事件不能发生，就当它可能会发生</td>
+<td>如果 y 先写入，那么线程 d 先运行，到加载 x 的时候，可能线程 a 还没运行，所以 z 不能 +1, 但 x 写入之后，线程 c 运行，此时 y 已经写入，所以 ++z</td>
+</tr>
+</tbody>
+</table>
+<p>在这种强行论证中，可以看出 sequential consistency 像一个拍平的树，从头拍到尾，先拍平的区域的顺序是固定的，虽然不知道具体是什么顺序，但一旦拍平，后面没拍平的部分需要参照已经拍平的部分，形成一种顺序</p>
+<p>我们可以理解为 <code>memory_order_seq_cst</code> 实际上是在确保写入和读取都发生在内存</p>
+<h2 id="什么时候该用什么？" tabindex="-1">什么时候该用什么？</h2>
+<table>
+<thead>
+<tr>
+<th>memory order</th>
+<th>use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>release-acquire</td>
+<td>保证 release 之前的操作在 acquire 之后能完全看到，适用于 Mutex</td>
+</tr>
+<tr>
+<td>release-consume</td>
+<td>保证 release 时原子变量的修改可以被 acquire 看到，但不保证其他非原子变量的修改会被同步，适用于写入很少的并发数据结构</td>
+</tr>
+<tr>
+<td>relaxed</td>
+<td>只保证 atomity, 适用于计数，因为只保证 counter 的增减是原子的</td>
+</tr>
+<tr>
+<td>sequentially consistent</td>
+<td>当需要不同线程的原子变量的写入顺序在其他不同线程眼中保持一致的时候，这其实也是默认的 ordering，如果你不显式指定其他 ordering, 那么你就默认选择了 sequential consistency</td>
+</tr>
+</tbody>
+</table>
+<p>问题是，什么时候需要这些？用原子变量的时候可能需要考虑到，比如 <a href="https://doc.rust-lang.org/std/thread/fn.park.html"><code>thread::park</code></a> 中的例子。否则我们就一直在用 sequential consistency（除非不用 x86(relatively strongly ordered system<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>), 其他平台有不同的 ordering 策略）。</p>
+<h2 id="其他资源" tabindex="-1">其他资源</h2>
+<ul>
+<li><a href="http://svr-pes20-cppmem.cl.cam.ac.uk/cppmem/">CppMem: Interactive C/C++ memory model</a></li>
+<li>litmus7<sup class="footnote-ref"><a href="#fn1" id="fnref1:1">[1:1]</a></sup></li>
+<li><a href="https://gcc.gnu.org/wiki/Atomic/GCCMM/AtomicSync">https://gcc.gnu.org/wiki/Atomic/GCCMM/AtomicSync</a></li>
+</ul>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>IS PARALLEL PROGRAMMING HARD? CHAPTER 15 <a href="#fnref1" class="footnote-backref">↩︎</a> <a href="#fnref1:1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          留言请发
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com">邮件</a>
+        </p>
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

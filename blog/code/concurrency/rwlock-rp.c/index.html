@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>rwlock-rp.c</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      <h1>读优先的读写锁</h1>
+<p>面试八股文之一. 先读懂<a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock">概念</a>:</p>
+<blockquote>
+<ul>
+<li>writer threads will not be able to acquire the lock as long as at least one reading thread holds it</li>
+<li>a writer thread may continue waiting for the lock while new reader threads are able to acquire the lock,
+even to the point where the writer may still be waiting after all of the readers which were holding the lock when it first attempted to acquire it have released the lock.</li>
+</ul>
+</blockquote>
+<p>Readers_writer 这个命名就透露了, 多个读者, 一个写者的设计, 只要还有读者, 写者就不能写数据; 不过这并不意味着只能有一个写者, 可以有多个写者,
+但不能同时写.</p>
+<p>根据维基, 可以用一个读锁一个写锁, 一个读者计数器实现读写锁.
+这里存在一个问题, 就算读者释放了写锁, 就在写者马上就要获取写锁之前, 读者完全有可能又把写锁给抢了;
+在存在大量读者的情况下, 写者可能会饿死(starve).</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      <p>首先确定读写接口</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">read_fn</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">write_fn</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>上下文, 运行时</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
+<span class="cp">#define NUM_READERS 4</span>
+<span class="cp">#define NUM_WRITERS 4</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_t</span><span class="w"> </span><span class="n">attr</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      <p>读锁</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">pthread_mutex_t</span><span class="w"> </span><span class="n">rlock</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      <p>写锁</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">pthread_mutex_t</span><span class="w"> </span><span class="n">wlock</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-5">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-5">#</a>
+      </div>
+      <p>统计读者数量</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rnum</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-6">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-6">#</a>
+      </div>
+      <p>一个写线程, 多个读线程</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">pthread_t</span><span class="w"> </span><span class="n">writers</span><span class="p">[</span><span class="n">NUM_WRITERS</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_t</span><span class="w"> </span><span class="n">readers</span><span class="p">[</span><span class="n">NUM_READERS</span><span class="p">];</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-7">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-7">#</a>
+      </div>
+      <p>共享变量</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">shared</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">NUM_WRITERS</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">writers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">write_fn</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">NUM_READERS</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">readers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">read_fn</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-8">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-8">#</a>
+      </div>
+      <p>上下文的初始化和回收</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kt">void</span><span class="w"> </span><span class="nf">ctx_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">ctx_destroy</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-9">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-9">#</a>
+      </div>
+      <p>整个过程包括上下文初始化, 运行, 上下文回收</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="n">ctx</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ctx_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">run</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">ctx_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_exit</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-10">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-10">#</a>
+      </div>
+      <p>实现读写</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-11">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-11">#</a>
+      </div>
+      <p>辅助函数</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kt">void</span><span class="w"> </span><span class="nf">begin_read</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-12">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-12">#</a>
+      </div>
+      <p>读者当然要上读锁, 问题来了, 读者不需要写东西, 为什么要上锁? 原因是读者需要维护一个读者记数.</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">rlock</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="o">++</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">rnum</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-13">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-13">#</a>
+      </div>
+      <p>如果是唯一的读者, 上写锁, 防止写者入侵</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">rnum</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">wlock</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-14">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-14">#</a>
+      </div>
+      <p>操作完读者记数, 应马上离场, 让其他读者读数</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">rlock</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">end_read</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">rlock</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="o">--</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">rnum</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-15">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-15">#</a>
+      </div>
+      <p>如果是唯一的读者, 释放锁, 给写者写的机会</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">rnum</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">wlock</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">rlock</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">read_fn</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">begin_read</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">"[reader]: current readers number: %d, content: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">rnum</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">end_read</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-16">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-16">#</a>
+      </div>
+      <p>控制频率; 如果不睡眠的话, 读者有很大概率马上又抢到锁, 写者将饿死</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_exit</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">write_fn</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-17">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-17">#</a>
+      </div>
+      <p>写者试图获取写锁, 但如果有人在读, 则阻塞</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">wlock</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">++</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">"[writer]: content: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">wlock</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_exit</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-18">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-18">#</a>
+      </div>
+      <p>上下文初始化和回收</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;strings.h&gt;</span><span class="cp"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">ctx_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">bzero</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_setdetachstate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">PTHREAD_CREATE_JOINABLE</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">rlock</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">wlock</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">ctx_destroy</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">NUM_WRITERS</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">pthread_join</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">writers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">NUM_READERS</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">pthread_join</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">readers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">rlock</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">wlock</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-19">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-19">#</a>
+      </div>
+      <pre><code>➜  gcc -g -O0 -o rwlock-rp rwlock-rp.c -pthread
+# 在读写线程 4:4, 频率一样的情况下, 读写很均匀
+➜  ./rwlock-rp
+[writer]: content: 1
+[writer]: content: 2
+[writer]: content: 3
+[writer]: content: 4
+[reader]: current readers number: 3, content: 4
+[reader]: current readers number: 3, content: 4
+[reader]: current readers number: 2, content: 4
+[reader]: current readers number: 2, content: 4
+[writer]: content: 5
+[writer]: content: 6
+[writer]: content: 7
+[writer]: content: 8
+[reader]: current readers number: 3, content: 8
+[reader]: current readers number: 3, content: 8
+[reader]: current readers number: 2, content: 8
+[reader]: current readers number: 2, content: 8
+[writer]: content: 9
+[writer]: content: 0
+[writer]: content: 1
+[writer]: content: 2
+[reader]: current readers number: 2, content: 2
+[reader]: current readers number: 3, content: 2
+[reader]: current readers number: 2, content: 2
+[reader]: current readers number: 1, content: 2
+[writer]: content: 3
+[writer]: content: 4
+[writer]: content: 5
+[writer]: content: 6
+[reader]: current readers number: 1, content: 6
+[reader]: current readers number: 3, content: 6
+[reader]: current readers number: 2, content: 6
+[reader]: current readers number: 2, content: 6
+^C
+# 在读写线程 4:4, 频率 10:1 一样的情况下, 毫无疑问, 写者的机会也少
+# 如果读者暴涨(flood), 写者就会饿死
+➜  ./rwlock-rp
+[writer]: content: 1
+[writer]: content: 2
+[writer]: content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 3, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 3, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 3, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 3, content: 3
+[reader]: current readers number: 4, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 3, content: 3
+[reader]: current readers number: 3, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 3, content: 3
+[reader]: current readers number: 2, content: 3
+[reader]: current readers number: 3, content: 3
+[reader]: current readers number: 3, content: 3
+[reader]: current readers number: 2, content: 3
+[writer]: content: 4
+[writer]: content: 5
+[writer]: content: 6
+[reader]: current readers number: 2, content: 6
+[reader]: current readers number: 2, content: 6
+[reader]: current readers number: 3, content: 6
+[reader]: current readers number: 3, content: 6
+[reader]: current readers number: 2, content: 6
+[reader]: current readers number: 1, content: 6
+[writer]: content: 7
+[writer]: content: 8
+[writer]: content: 9
+[reader]: current readers number: 2, content: 9
+[reader]: current readers number: 3, content: 9
+[reader]: current readers number: 4, content: 9
+[reader]: current readers number: 3, content: 9
+[reader]: current readers number: 3, content: 9
+[reader]: current readers number: 3, content: 9
+[reader]: current readers number: 3, content: 9
+[reader]: current readers number: 2, content: 9
+[reader]: current readers number: 3, content: 9
+[reader]: current readers number: 3, content: 9
+[reader]: current readers number: 3, content: 9
+[reader]: current readers number: 3, content: 9
+[reader]: current readers number: 3, content: 9
+[reader]: current readers number: 1, content: 9
+^C
+</code></pre>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+
+                    <div class="section" id="section-links">
+                        <div class="docs">
+                            <div class="octowrap">
+                                <a class="octothorpe" href="#section-links">#</a>
+                            </div>
+                            <p><a href="raw/rwlock-rp.c">raw source</a></p>
+                        </div>
+                    </div>
+                    <div class="clearall"></div>
+                </div>
+            
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+            
+</html>

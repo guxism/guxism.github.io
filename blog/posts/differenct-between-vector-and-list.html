@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Differences between vector and list</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Differences between vector and list</h1>
+        <p>I have been through several interviews, and was asked to tell the difference between vector and list 3 or 4 times. Normally I would say vector uses a continous storage and employs a 2x storage growth strategy, and list uses a linked list, which performs better when much insertion and deletion is required at random postions. But it is not satisfying, so I decided to read the GCC source.</p>
+<nav class="table-of-contents"><ol><li><a href="#vector">Vector</a><ol><li><a href="#reserve">reserve</a></li><li><a href="#erase">erase</a></li><li><a href="#operator">operator=</a></li><li><a href="#vector-1">vector</a></li></ol></li><li><a href="#push_back">push_back</a></li><li><a href="#list">list</a></li><li><a href="#conclusion">Conclusion</a></li></ol></nav><h2 id="vector" tabindex="-1">Vector</h2>
+<p><a href="https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-4.4/a01423.html">source code</a></p>
+<h3 id="reserve" tabindex="-1">reserve</h3>
+<pre class="one-piece"><code>00062   template&lt;typename _Tp, typename _Alloc&gt;
+00063     void
+00064     vector&lt;_Tp, _Alloc&gt;::
+00065     reserve(size_type __n)
+00066     {
+00067       if (__n &gt; this-&gt;max_size())
+00068     __throw_length_error(__N("vector::reserve"));
+00069       if (this-&gt;capacity() &lt; __n)
+00070     {
+00071       const size_type __old_size = size();
+00072       pointer __tmp = _M_allocate_and_copy(__n,
+00073          _GLIBCXX_MAKE_MOVE_ITERATOR(this-&gt;_M_impl._M_start),
+00074          _GLIBCXX_MAKE_MOVE_ITERATOR(this-&gt;_M_impl._M_finish));
+00075       std::_Destroy(this-&gt;_M_impl._M_start, this-&gt;_M_impl._M_finish,
+00076             _M_get_Tp_allocator());
+00077       _M_deallocate(this-&gt;_M_impl._M_start,
+00078             this-&gt;_M_impl._M_end_of_storage
+00079             - this-&gt;_M_impl._M_start);
+00080       this-&gt;_M_impl._M_start = __tmp;
+00081       this-&gt;_M_impl._M_finish = __tmp + __old_size;
+00082       this-&gt;_M_impl._M_end_of_storage = this-&gt;_M_impl._M_start + __n;
+00083     }
+00084     }
+</code></pre>
+<p>Looks like nightmare. First of all, a <code>reserve(n)</code> is called, the function will make sure <code>n</code> is not larger than <code>max_size()</code>, <s>that is to say, the user case of <code>reserver</code> happens when you try to shrink vector's capacity.</s>(as mentioned later, max_size() is like INT_MAX)</p>
+<p>If <code>n</code> is legal, then vector performs some memory operations and finally marks the end of storage to be <code>_M_start + n</code>, easy to understand.</p>
+<p>I suppose <code>_M</code> stands for memory, no?  <code>_M_impl</code> wraps the raw memory, Let's call it <code>_M</code> for short. <code>_M_allocate_and_copy</code> as its name implies, allocates, then copies from <code>_M</code>, from start to end, then destroys objects in <code>_M</code> calling their destructors, and finally deallocates!</p>
+<p>At first I was wondering why allocate new memory instead of just trimming the tail; Such Foolish thought. Because, any chunk you allocate must be deallocated as a whole entity. When you reserve, you want to <s>save memory</s>(not necessarily save, but perhaps enlarge), there is no choise but to use a <s>small</s> new one.</p>
+<h3 id="erase" tabindex="-1">erase</h3>
+<pre class="one-piece"><code>00131   template&lt;typename _Tp, typename _Alloc&gt;
+00132     typename vector&lt;_Tp, _Alloc&gt;::iterator
+00133     vector&lt;_Tp, _Alloc&gt;::
+00134     erase(iterator __position)
+00135     {
+00136       if (__position + 1 != end())
+00137     _GLIBCXX_MOVE3(__position + 1, end(), __position);
+00138       --this-&gt;_M_impl._M_finish;
+00139       this-&gt;_M_impl.destroy(this-&gt;_M_impl._M_finish);
+00140       return __position;
+00141     }
+</code></pre>
+<p>Use <code>_GLIBCXX_MOVE3</code> to move objects behind the item to be erased backwards, like bubbling, that item will bubbled up to the last position, finally be destroyed.</p>
+<h3 id="operator=" tabindex="-1">operator=</h3>
+<pre class="one-piece"><code>00154   template&lt;typename _Tp, typename _Alloc&gt;
+00155     vector&lt;_Tp, _Alloc&gt;&amp;
+00156     vector&lt;_Tp, _Alloc&gt;::
+00157     operator=(const vector&lt;_Tp, _Alloc&gt;&amp; __x)
+</code></pre>
+<p>Just to observe how GNU overload operators. It is not a global friend operator. Once upon a time some people wrote global operator for as a solution to an interview question "How to write a string class", almost misled me.</p>
+<h3 id="vector-1" tabindex="-1">vector<bool></bool></h3>
+<pre class="one-piece"><code>00560   // vector&lt;bool&gt;
+00561 
+00562   template&lt;typename _Alloc&gt;
+00563     void
+00564     vector&lt;bool, _Alloc&gt;::
+00565     reserve(size_type __n)
+00566     {
+00567       if (__n &gt; this-&gt;max_size())
+00568     __throw_length_error(__N("vector::reserve"));
+00569       if (this-&gt;capacity() &lt; __n)
+00570     {
+00571       _Bit_type* __q = this-&gt;_M_allocate(__n);
+00572       this-&gt;_M_impl._M_finish = _M_copy_aligned(begin(), end(),
+00573                             iterator(__q, 0));
+00574       this-&gt;_M_deallocate();
+00575       this-&gt;_M_impl._M_start = iterator(__q, 0);
+00576       this-&gt;_M_impl._M_end_of_storage = (__q + (__n + int(_S_word_bit) - 1)
+00577                          / int(_S_word_bit));
+00578     }
+00579     }
+</code></pre>
+<p>I have the impression that people keep saying vectors of boolean get special treatment. How?Let's go over it. When <code>n</code> is legal... now it look different, compared to <code>reserve</code> for other type, it doesn't call <code>_M_allocate_and_copy</code> and doesnot destroy(does it destroy int, float?). But it aligns, user-defined object doesnot need to be aligned because it's done when they are created. <code>bool</code> should be aligned because it is one bit long? or what?Doesn't matter at the moment.</p>
+<h2 id="push_back" tabindex="-1">push_back</h2>
+<p>I caught no sight of <code>push_back</code> in <a href="https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-4.4/a01423.html">this source code</a>, I found it <a href="https://gcc.gnu.org/onlinedocs/gcc-4.6.3/libstdc++/api/a01115_source.html">here</a>, to understatnd why, read <a href="https://gcc.gnu.org/onlinedocs/gcc-4.6.3/libstdc++/api/a01114_source.html">this</a></p>
+<pre class="one-piece"><code>00056 #ifndef _GLIBCXX_VECTOR
+00057 #define _GLIBCXX_VECTOR 1
+00058 
+00059 #pragma GCC system_header
+00060 
+00061 #include &lt;bits/stl_algobase.h&gt;
+00062 #include &lt;bits/allocator.h&gt;
+00063 #include &lt;bits/stl_construct.h&gt;
+00064 #include &lt;bits/stl_uninitialized.h&gt;
+00065 #include &lt;bits/stl_vector.h&gt;
+00066 #include &lt;bits/stl_bvector.h&gt; 
+00067 #include &lt;bits/range_access.h&gt;
+00068 
+00069 #ifndef _GLIBCXX_EXPORT_TEMPLATE
+00070 # include &lt;bits/vector.tcc&gt;
+00071 #endif
+00072 
+00073 #ifdef _GLIBCXX_DEBUG
+00074 # include &lt;debug/vector&gt;
+00075 #endif
+00076 
+00077 #ifdef _GLIBCXX_PROFILE
+00078 # include &lt;profile/vector&gt;
+00079 #endif
+00080 
+00081 #endif /* _GLIBCXX_VECTOR */
+</code></pre>
+<p>Looks like I read the long source; It is <code>00065 #include &lt;bits/stl_vector.h&gt;</code> that we want.</p>
+<p>so go to <a href="https://gcc.gnu.org/onlinedocs/gcc-4.6.3/libstdc++/api/a01069_source.html">stl_vector.h</a></p>
+<pre class="one-piece"><code>00806 #ifdef __GXX_EXPERIMENTAL_CXX0X__
+00807       const _Tp*
+00808 #else
+00809       const_pointer
+00810 #endif
+00811       data() const
+00812       { return std::__addressof(front()); }
+00813 
+00814       // [23.2.4.3] modifiers
+00815       /**
+00816        *  @brief  Add data to the end of the %vector.
+00817        *  @param  x  Data to be added.
+00818        *
+00819        *  This is a typical stack operation.  The function creates an
+00820        *  element at the end of the %vector and assigns the given data
+00821        *  to it.  Due to the nature of a %vector this operation can be
+00822        *  done in constant time if the %vector has preallocated space
+00823        *  available.
+00824        */
+00825       void
+00826       push_back(const value_type&amp; __x)
+00827       {
+00828     if (this-&gt;_M_impl._M_finish != this-&gt;_M_impl._M_end_of_storage)
+00829       {
+00830         this-&gt;_M_impl.construct(this-&gt;_M_impl._M_finish, __x);
+00831         ++this-&gt;_M_impl._M_finish;
+00832       }
+00833     else
+00834       _M_insert_aux(end(), __x);
+00835       }
+</code></pre>
+<p>This may be the most frequently asked detail of vector. If storage has not run out, the vector <code>construct</code> one element at <code>_M_finish</code>, I wonder if it is the <code>end()</code> iterator;</p>
+<p>Else, <code>_M_insert_aux</code>(interesting nameing, auxilliary, not helper).</p>
+<p>In another version of gcc source it is <code>_M_realloc_insert(end(), __x);</code>(I downloaded the source code to facilitate searching)</p>
+<p>It resides in <code>gcc-master/libstdc++-v3/include/bits/vector.tcc</code></p>
+<p>The code is extremely difficult and long. So I just paste some of its fragments and read fast.</p>
+<ul>
+<li>first of all, mark current <code>_M</code> 's start and end</li>
+<li>collect <code>_M</code> size with <code>__pos - begin()</code></li>
+<li>allocate new memory of size <code>__len</code> which is measured by <code>_M_check_len</code></li>
+</ul>
+<p>actually We only care about how it measures</p>
+<pre class="one-piece"><code>      // Called by _M_fill_insert, _M_insert_aux etc.
+      size_type
+      _M_check_len(size_type __n, const char* __s) const
+      {
+	if (max_size() - size() &lt; __n)
+	  __throw_length_error(__N(__s));
+
+	const size_type __len = size() + (std::max)(size(), __n);
+	return (__len &lt; size() || __len &gt; max_size()) ? max_size() : __len;
+      }
+</code></pre>
+<p>What is <code>size_type</code> anyway? <code>typedef size_t size_type;</code></p>
+<pre class="one-piece"><code>      const size_type __len =
+	_M_check_len(size_type(1), "vector::_M_realloc_insert");
+</code></pre>
+<p>then <code>__n</code> is 1, I guess <code>max_size() - size()</code> can't be smaller than 1, else an error is thrown and you see, the <code>_M_realloc_insert</code> can't catch it because <code>_M_check_len</code> is not in try block. We assumpt it passes the test.</p>
+<p>Then <code>__len = size() + (std::max)(size(), __n)</code> feels like 2x growth, if <code>__len</code> is still less than <code>size()</code>(it is impossible) or <code>__len &gt; max_size()</code> then return <code>max_size</code>. The code is insane.</p>
+<pre class="one-piece"><code>|-----------------------------|
+max_size()
+|------|
+size()
+|--------------|-------------------------------|
+size()         |-&gt; __n
+len()   
+</code></pre>
+<p>Picture above shows that <code>__len</code> is larger than <code>max_size</code>, and <code>__n</code> objects will be inserted into the vector, but the logic says only <code>max_size()</code> will be return;</p>
+<p>Sure, let's continue.</p>
+<ul>
+<li><code>pointer __new_start(this-&gt;_M_allocate(__len));</code></li>
+<li>enter try block, copy old elements to new space</li>
+<li>interestingly, <code>__new_finish = pointer();</code> to make a NULL pointer</li>
+</ul>
+<pre class="one-piece"><code>old_start   old_pos       old_pos                old_finish                   
+|------------|-------------|-----------------------|
+new_start  new_pos
+              new_finish
+</code></pre>
+<pre class="one-piece"><code>__new_finish = _S_relocate(__old_start, __position.base(),
+					 __new_start, _M_get_Tp_allocator());
+</code></pre>
+<p>move elements from old start to the required position end to new memory started from <code>__new_start</code></p>
+<pre class="one-piece"><code>	      ++__new_finish;
+
+	      __new_finish = _S_relocate(__position.base(), __old_finish,
+					 __new_finish, _M_get_Tp_allocator());
+</code></pre>
+<p>move one step further, copy the rest of old.</p>
+<pre class="one-piece"><code>	  _Alloc_traits::construct(this-&gt;_M_impl,
+				   __new_start + __elems_before,
+#if __cplusplus &gt;= 201103L
+				   std::forward&lt;_Args&gt;(__args)...);
+</code></pre>
+<p>before copying the old elements, new elements are inserted, insertion point is <code>__new_start + __elems_before</code></p>
+<p>Phew...It's all clear, except the calculation of new memory <code>(__len &lt; size() || __len &gt; max_size()) ? max_size() : __len</code>, does it mean, if max_size is not large enough, I should resize vector's capacity?</p>
+<p>capacity:</p>
+<pre class="one-piece"><code>      size_type
+      capacity() const _GLIBCXX_NOEXCEPT
+      { return size_type(this-&gt;_M_impl._M_end_of_storage
+			 - this-&gt;_M_impl._M_start); }
+
+</code></pre>
+<p>max_size:</p>
+<pre class="one-piece"><code>
+      /**  Returns the size() of the largest possible %vector.  */
+      size_type
+      max_size() const _GLIBCXX_NOEXCEPT
+      { return _S_max_size(_M_get_Tp_allocator()); }
+</code></pre>
+<p>Max_size to vector is what <code>INT_MAX</code> is to int. Certainly, it makes sense!</p>
+<h2 id="list" tabindex="-1">list</h2>
+<p>libstdc++-v3/include/bits/stl_list.h</p>
+<p>I guess most of its behaviors are like those of vector, so I will move fast.</p>
+<pre class="one-piece"><code>  template&lt;typename _Tp&gt;
+    struct _List_node : public __detail::_List_node_base
+    {
+#if __cplusplus &gt;= 201103L
+      __gnu_cxx::__aligned_membuf&lt;_Tp&gt; _M_storage;
+      _Tp*       _M_valptr()       { return _M_storage._M_ptr(); }
+      _Tp const* _M_valptr() const { return _M_storage._M_ptr(); }
+#else
+      _Tp _M_data;
+      _Tp*       _M_valptr()       { return std::__addressof(_M_data); }
+      _Tp const* _M_valptr() const { return std::__addressof(_M_data); }
+#endif
+    };
+</code></pre>
+<p>A list node, aha!</p>
+<p><code>__List_node_base</code></p>
+<pre class="one-piece"><code>struct _List_node_base
+    {
+      _List_node_base* _M_next;
+      _List_node_base* _M_prev;
+      void
+      _M_hook(_List_node_base* const __position) _GLIBCXX_USE_NOEXCEPT;
+</code></pre>
+<p>it is a bidirectional linked list.</p>
+<p>Let's checkout how it inserts: libstdc++-v3/include/bits/list.tcc</p>
+<pre class="one-piece"><code>  template&lt;typename _Tp, typename _Alloc&gt;
+    typename list&lt;_Tp, _Alloc&gt;::iterator
+    list&lt;_Tp, _Alloc&gt;::
+    insert(const_iterator __position, const value_type&amp; __x)
+    {
+      _Node* __tmp = _M_create_node(__x);
+      __tmp-&gt;_M_hook(__position._M_const_cast()._M_node);
+      this-&gt;_M_inc_size(1);
+      return iterator(__tmp);
+    }
+</code></pre>
+<p>the hook operation:</p>
+<pre class="one-piece"><code>    void
+    _List_node_base::
+    _M_hook(_List_node_base* const __position) _GLIBCXX_USE_NOEXCEPT
+    {
+      this-&gt;_M_next = __position;
+      this-&gt;_M_prev = __position-&gt;_M_prev;
+      __position-&gt;_M_prev-&gt;_M_next = this;
+      __position-&gt;_M_prev = this;
+    }
+</code></pre>
+<p>insert one single value, steps:</p>
+<ul>
+<li>create_node</li>
+<li>connect prev and next using hook</li>
+<li>done</li>
+</ul>
+<p>We should go no further, it's sufficient for any eloquence... in any interview!</p>
+<h2 id="conclusion" tabindex="-1">Conclusion</h2>
+<ul>
+<li>When inserting a sequence or one element into a vector, the vector will allocate new memory and copy old elements, it must be expansive. While list insertion simply takes a node creation</li>
+<li>Vector's memory is allocated as a chunk, when memory is insufficient, new length is calculated as <code>size() * 2</code> or <code>size() + new_len</code> if <code>new_len</code> is larger. As for list, it's not hard to imaging that not extra efforts is required, simply <code>_M_create_node</code></li>
+<li>Almost forgot one last thing, the memory access, see the code:</li>
+</ul>
+<p>vector:</p>
+<pre class="one-piece"><code>      const_reference
+      operator[](size_type __n) const _GLIBCXX_NOEXCEPT
+      {
+	__glibcxx_requires_subscript(__n);
+	return *(this-&gt;_M_impl._M_start + __n);
+      }
+</code></pre>
+<p>while there is no such thing in list. Accessing one element in vector costs O(1), in list cost O(n), because in list you have to <code>curr = curr-&gt;next</code>, isn't it?</p>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

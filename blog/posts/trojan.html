@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Trojan</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Trojan</h1>
+        <p>For the last few days, my scientific network suffered an irritating performance deficiency. As I was searching the latest SS news, I discovered a new tool, Trojan. It took me some effort to deploy the server with its certifications and keys, and the performance turns out to be quite impressive. No doubt SS is under attack, but it's so pleasing to see how scientific toolkits evolve in response to the relentless assault of the man in the middle.</p>
+<p>To my knowledge, this kind of tool is probably about encrypting and encapsulating data from one socket and sending it to another. I have no intention to read the Trojan code to understand its precise detail. But we can get a sense of it by looking at how SS is attacked by the so-called <strong>connection replay:</strong> the man in the middle captures the packets, which by its algorithms is suspicious of being scientific, and then sends those packets to the destination server; if the server responses vacuously, then it is exposed as an outlaw. The man in the middle then breaks down the traffic, and you lose your scientific connection. The way Trojan handles the <strong>connection replay</strong> is to let the malicious packets go through; with the aid of Nginx, the attacking traffic is forwarded to a funny website, which in my case, is <a href="http://ietf.org">ietf.org</a>, rather legitimate. Another advantage that Trojan takes is HTTPS, which dominates the Internet, making it difficult to locate scientific traffics.</p>
+<p>The performance is excellent. See the comparison below:</p>
+<p>SS(under attack):</p>
+<p><img src="trojan/0xfeff_07577a38b13e4bf490f8db993b603621.png" alt=""></p>
+<p>Trojan:</p>
+<p><img src="trojan/0xfeff_a380eeceb9e34159b3198ee58606b59b.png" alt=""></p>
+<p>Trojan-go:</p>
+<p><img src="trojan/0xfeff_508fc881f33a4e90811ed43614138128.png" alt=""></p>
+<p><img src="trojan/0xfeff_95fcc6844a7949f4936239df445f9f51.png" alt=""></p>
+<p>Trojan-go is a variant of Trojan which outperforms its predecessor.</p>
+<h2 id="update-1" tabindex="-1">Update 1</h2>
+<p>After using Trojan for a few days, I find Trojan is not that magical. It becomes slower. I guess the GFW has found a way to identify Trojan traffic, or it just noticed that the outgoing traffic to my VPS is unusually active and blocked it. But I can still reach my VPS, so my VPS is not on the IP blacklist.</p>
+<p><img src="trojan/0xfeff_da57a1b1d1484e25a2ec3577fce50f9b.png" alt=""></p>
+<p>Another thing is that Trojan takes a longer time to establish a connection than SS, probably because of the TLS handshake. The latency is about 5 seconds and is unbearable.<br>
+Here is an analysis based on the Wireshark capture:<br>
+In the beginning, my laptop shook hands with VPS; we can see that both sides support SACK; the MSS is of normal size.</p>
+<p><img src="trojan/0xfeff_703b81afb746416381ecf53f78927e18.png" alt=""></p>
+<p>The client said hello to issue a TLS handshake. A 0.5-second timeout occurred, the client resend the hello again. The last ACK of the TCP handshake phase didn't arrive at the server in time, so the server resend its SYNACK. But that doesn't imply anything; the same thing can happen to any TCP-based protocol.</p>
+<p><img src="trojan/0xfeff_fa3e2211d6754346914328fb7de1432e.png" alt=""></p>
+<p>By the time the client sent its application Data at 11.51, 1.57 seconds had elapsed.</p>
+<p><img src="trojan/0xfeff_94f345d9a480481abd1c17a0cabdfec9.png" alt=""></p>
+<p>In comparison, SS sent its first application data in about 0.3 seconds, which means Trojan is five times slower. The comparison is not accurate, I only test them once, but there is no doubt that TLS handshake is time-consuming.</p>
+<p><img src="trojan/0xfeff_42c0747591c94309bad0074882df0165.png" alt=""></p>
+<p>In fact, Trojan takes much more time than 1.5 seconds because the requests it issues was redirected many times:</p>
+<p>Wget via SS:</p>
+<p><img src="trojan/0xfeff_66b8e794dc5f414ead7685ec9f71f9ae.png" alt=""></p>
+<p>Wget via Trojan:</p>
+<p><img src="trojan/0xfeff_c81109a84dcc465c8e4f7fe48fa5984e.png" alt=""></p>
+<p>In conclusion, a TLS handshake slows the traffic, but the main cause of Trojan latency is 302 redirection. It's probably a DNS problem, as my VPS is in JP, but the requests were redirected to HK. I will tend to it later.</p>
+<h2 id="update-2" tabindex="-1">Update 2</h2>
+<p>So I set out to see what happened in the DNS querying stage. There are dozens of DNS solutions to the lockdown. I have been using ChinaDNS, the idea of which is simple, that is, to drop any reply that is from domestic DNS but with a foreign-IP answer. After knowing how its works, I lose faith in it, I don't think it is robust enough to resist the powerful and ever-developing wall, so I decide to use something else, for example, overture. But before that, I need to check out what is 302 redirection exactly and why Trojan gives rise to so many 302s while SS does not.</p>
+<h3 id="302" tabindex="-1">302</h3>
+<p>We have seen 302 redirections happened when using wget over Trojan. The same thing happens when I use Chrome to browse 142.250.196.142, the IP address of <a href="http://google.com">google.com</a> replied by ChinaDNS. It is an Indian IP but hosts <a href="http://google.com.hk">google.com.hk</a>.</p>
+<p><img src="trojan/0xfeff_27f643f4a17248859d0b13d61409fe20.png" alt=""></p>
+<p><img src="trojan/0xfeff_b705bf6a486b4b96a2114abbf5b89d35.png" alt=""></p>
+<p><img src="trojan/0xfeff_8202db30b0d34e9faae630c343d97c58.png" alt=""></p>
+<p>Now it makes sense: if the request URL is not <a href="https://www.google.com/*">https://www.google.com/*</a>, Google will reply with 301/302/307 to demand the end-user to send another URL as specified in the location field. SS does not cause 302, but it causes 301, which is also one of the redirection instructions.</p>
+<p>The last question is, why redirect my requests to India?</p>
+<p>Let's try another foreign website that is impossible to host services in China(unlike <a href="http://bing.com">bing.com</a>, <a href="http://apple.com">apple.com</a>):</p>
+<p><img src="trojan/0xfeff_77bfea7271f74fbe8dea89da81a76eca.png" alt=""></p>
+<p>No redirection. Does it mean Google decides that I should visit India because India is closed to China? Is my DNS resolver using ECS? Let's say it uses ECS; wouldn't Google recognizes that my requests via SS are also from China?</p>
+<p>I dig <a href="http://google.com">google.com</a> on my Japanese VPS, and the result is a Japanese IP.</p>
+<p><img src="trojan/0xfeff_f1f83b55be72446b90ef4dcc512dbfc4.png" alt=""></p>
+<p>The next test is embarrassing because requests from Japan to Google are also redirected to Hong kong; 172.217.175.36 is a Japan Address.</p>
+<p><img src="trojan/0xfeff_9256d9a32cc74a93a0149d6fa91aa189.png" alt=""></p>
+<p>I google around and find a lot of people complain about the redirection. There's nothing we can do about it.</p>
+<p>I forget to write down one thing before all those tests and screenshots: to shorten the time spent establishing a connection, I wrote my Trojan domain in <code>/etc/hosts</code> to get rid of the DNS query and gained a 2-second boost. Another strange thing is now it only takes 1 second to reach <a href="http://google.com">google.com</a> using Trojan(at midnight).</p>
+<p><img src="trojan/0xfeff_75a8bc801a4b4ed6b4c6b555a71e073e.png" alt=""></p>
+<p>Everything suddenly works properly. It's surprisingly fast even there were three redirections which added up to at least 4 RTT but still did not exceed 1 second. A few days ago, it was another way around. It's midnight; maybe the wall is shut down for maintenance.</p>
+<h3 id="difference-between-ss-and-trojan" tabindex="-1">Difference between SS and Trojan</h3>
+<p><img src="trojan/0xfeff_a92c1f2ddcee4e4281b405aa1ceff56e.png" alt=""></p>
+<p>The figure above shows that both SS and Trojan do not cause 301 redirections because this time the URL is complete; most importantly, SS doesn't cause 302 redirections while Trojan does, which means Trojan has a bug. The reason must be known for the sake of knowledge. In what way? We don't debug their code unless we have no choice. And messages sent to the VPS are encrypted; without adding logs to their codes, there is no way to see what's going on. But on the other side of the proxy, things are not that encrypted, so that we can try our luck there.</p>
+<p>Here is the difference between their DNS queries:</p>
+<p>SS: query both IPV4 and IPV6 addresses, using DNS over IPV4</p>
+<p><img src="trojan/0xfeff_3aed9255cfc246d895f5a6078934fd57.png" alt=""></p>
+<p>Trojan: DNS over IPV6, we can see the VPS was querying for <a href="http://google.com.hk">google.com.hk</a>. The query is undoubtedly caused by a re-sent request after 302 redirections.</p>
+<p><img src="trojan/0xfeff_7e13f7412c304b2fbee8ca11e6429bf9.png" alt=""></p>
+<p>SS: HTTPS over IPV4</p>
+<p><img src="trojan/0xfeff_a65377d4ee424f2bb64127afc830130f.png" alt=""></p>
+<p>Trojan: HTTPS over IPV6</p>
+<p><img src="trojan/0xfeff_c0b35c832410434abdb3f9d0ed21dff5.png" alt=""></p>
+<p>The redirections are caused by using IPV6. So stupid. Confirm the stupidity using <code>strace</code>, we shall see:</p>
+<p><img src="trojan/0xfeff_f480f194a3704e78a4389fd5139cbb10.png" alt=""></p>
+<p>Trojan-go is using IPV6 behind our back! Luckily, we can change the configuration:</p>
+<p><img src="trojan/0xfeff_23db736b72b847088ad26dcce305e5c2.png" alt=""></p>
+<p>Restart the proxy server, no more 302 this time:</p>
+<p><img src="trojan/0xfeff_1e3efa75a3fc47b193db877df4996d57.png" alt=""></p>
+<p>What's the point of using IPV6? I am not against the future, but if IPV4 works just fine, there is no need to replace it with this god damned IPV6; what if the server we want to connect with does not support IPV6? For example:</p>
+<p><img src="trojan/0xfeff_f65b52dbda454eb3bb50acaf0a00e7f6.png" alt=""></p>
+<p>An APP on my phone failed to load its buttons because its server does not support IPV6; it felt like a joke. Here is the funny thing: everybody would blame the wall for packet loss and low speed; it's a lot easier; but hardly someone would suspect it's the developers' fault; even though there are 3.5K stars for the project and the number of developers adds up to almost 20, no one has doubts on 302 redirections, and no one uses an IPV6-incompatible APP. But still, it's a minor mistake compared to the great deeds those developers have made.</p>
+<h2 id="final-conclusion" tabindex="-1">Final Conclusion</h2>
+<ol>
+<li>Embedded scientific traffic in HTTPS is hard to detect, so GFW may let scientific responses be shipped inside.</li>
+<li>Don't forget to disable IPV6. Results from Google IPV6 DNS bring forth 302 redirections. If the wall is in rage and kills incoming packets randomly, then redirections will make you suffer. In the meantime, not every service is IPV6 compatible. IPV6 is not prepared; do not use it.</li>
+</ol>
+<h2 id="update-3" tabindex="-1">Update 3</h2>
+<p>I have been using Trojan for about 3 months, I have to say that Trojan is getting slow, 50 KiB/s in average, when I switch to sslocal, the speed grows up to 160 KiB/s. What happened in the last 3 months is that the wall is becoming increasingly severe, Trojan just performs worse in dire situations.</p>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

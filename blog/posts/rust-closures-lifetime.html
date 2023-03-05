@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Rust 闭包的生命周期</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Rust 闭包的生命周期</h1>
+        <nav class="table-of-contents"><ol><li><a href="#闭包的引用">闭包的引用</a></li><li><a href="#内部结构">内部结构</a><ol><li><a href="#mir">MIR</a></li><li><a href="#汇编">汇编</a></li></ol></li><li><a href="#附录">附录</a></li></ol></nav><h2 id="闭包的引用" tabindex="-1">闭包的引用</h2>
+<p>从上一篇文章可以看出，闭包是一个容易擦枪走火的东西，写简单的东西也许没问题，但如果用一种极其别扭的方式来使用闭包的话，我不知道 Rust 是否进化到能理解这种代码(见目录)，因为如果用 C/C++ 写一样的代码，编译器肯定不会报错，但这也说明了指针的危险。本文描述我遇到的一个问题，代码经过简化。</p>
+<pre class="one-piece"><code>struct S(i32);
+
+
+fn generator&lt;'a, 'b&gt;(s: &amp;'a S) -&gt; impl Fn(&amp;'b i32) -&gt; bool + 'a
+{
+    |i: &amp;i32| -&gt; bool {
+        i == &amp;s.0
+    }
+}
+
+fn test() {
+    let s = S(100);
+    let cmp = generator(&amp;s);
+    let n = 2;
+    dbg!(cmp(&amp;n));
+}
+
+
+
+fn main() {
+    println!("Hello, world!");
+}
+</code></pre>
+<p>报错：</p>
+<pre class="one-piece"><code>error[E0597]: `n` does not live long enough
+  --&gt; src/main.rs:15:14
+   |
+15 |     dbg!(cmp(&amp;n));
+   |              ^^ borrowed value does not live long enough
+16 | }
+   | -
+   | |
+   | `n` dropped here while still borrowed
+   | borrow might be used here, when `cmp` is dropped and runs the destructor for type `impl Fn(&amp;i32)-&gt; bool`
+   |
+   = note: values in a scope are dropped in the opposite order they are defined
+
+For more information about this error, try `rustc --explain E0597`.
+error: could not compile `closure` due to previous error
+</code></pre>
+<p>注意这句话：</p>
+<blockquote>
+<p>values in a scope are dropped in the opposite order they are defined</p>
+</blockquote>
+<p>出错原因是 <code>n</code> 先被释放，<code>cmp</code> 作为一个闭包，在 <code>n</code> 之后释放，<code>cmp</code> 引用了 <code>n</code>, 也就是说，<code>n</code> 的释放影响了 <code>cmp</code>，所以报错。</p>
+<p>所以调整位置成这样就对了：</p>
+<pre class="one-piece"><code>fn test() {
+    let s = S(100);
+    let n = 2;
+    let cmp = generator(&amp;s);
+    dbg!(cmp(&amp;n));
+}
+</code></pre>
+<p>现实中这种调整不是那么容易, 比如我正在处理的问题，知道了原因但目前位置还没解决，打算用 trait 的方式以类似于 OOP 的方式调用方法，而不是闭包。</p>
+<p>问题：</p>
+<ol>
+<li>为什么 <code>impl Fn(&amp;i32) -&gt; bool</code> 有 destructor?</li>
+<li>如何自定义闭包的 destrutor?</li>
+</ol>
+<p>第一个问题很容易：语言规定一切变量都有 destructor。第二个问题：不知道，没有相关资料。</p>
+<h2 id="内部结构" tabindex="-1">内部结构</h2>
+<p>闭包肯定要找块空间来存储它捕获的变量，接下来看看它的底层结构。</p>
+<h3 id="mir" tabindex="-1">MIR</h3>
+<p><a href="https://play.rust-lang.org/">https://play.rust-lang.org/</a> 可以看到闭包的 MIR</p>
+<p><img src="images/0xfeff_61dc18b08f534436b01e101e72867065.png" alt=""></p>
+<p>可以看出：</p>
+<ul>
+<li><code>&amp;[closure@...</code> 就像 <code>&amp;self</code> 一样</li>
+<li><code>&amp;s</code> 存在 <code>[closure@...]</code> 的第一个位置</li>
+<li>最后两个 <code>i32</code> 的引用对比</li>
+</ul>
+<p>结论就是数据存在 <code>[closure@...</code> 处</p>
+<h3 id="汇编" tabindex="-1">汇编</h3>
+<p>Playground 也可以生成汇编：</p>
+<pre class="one-piece"><code>playground::generator:
+	subq	$16, %rsp
+	movq	%rdi, 8(%rsp)
+	movq	%rdi, (%rsp)
+	movq	(%rsp), %rax
+	addq	$16, %rsp
+	retq
+
+playground::generator:::
+	subq	$40, %rsp
+	movq	%rsi, 16(%rsp)
+	movq	%rdi, 32(%rsp)
+	movq	(%rdi), %rax
+	movq	%rax, 24(%rsp)
+	leaq	16(%rsp), %rdi
+	leaq	24(%rsp), %rsi
+	callq	core::cmp::impls::&lt;impl core::cmp::PartialEq&lt;&amp;B&gt; for &amp;A&gt;::eq
+	movb	%al, 15(%rsp)
+	movb	15(%rsp), %al
+	andb	$1, %al
+	movzbl	%al, %eax
+	addq	$40, %rsp
+	retq
+
+playground::test:
+	subq	$24, %rsp
+	movl	$100, (%rsp)
+	movl	$2, 4(%rsp)
+	movq	%rsp, %rdi
+	callq	playground::generator
+	movq	%rax, 8(%rsp)
+	leaq	4(%rsp), %rax
+	movq	%rax, 16(%rsp)
+	movq	16(%rsp), %rsi
+	leaq	8(%rsp), %rdi
+	callq	playground::generator::
+	addq	$24, %rsp
+	retq
+</code></pre>
+<p>有一个奇怪的地方，<code>test</code> 函数的指令中，先调用 <code>playground::generator</code> 生成 <code>cmp</code>, <code>callq	playground::generator::</code> 对应了 <code>cmp(&amp;n)</code></p>
+<p>奇怪的地方是闭包的名字叫做 <code>generator::</code></p>
+<p>这也解释了 MIR 中闭包的签名是：</p>
+<pre class="one-piece"><code>fn generator::{closure#0}(_1: &amp;[closure@src/lib.rs:6:5: 8:6], _2: &amp;i32) -&gt; bool；
+</code></pre>
+<p>汇编指令中只需要关注 <code>i</code> 对应的指令：</p>
+<pre class="one-piece"><code>	movq	%rsi, 16(%rsp)
+	movq	%rdi, 32(%rsp)
+	movq	(%rdi), %rax
+	movq	%rax, 24(%rsp)
+	leaq	16(%rsp), %rdi
+	leaq	24(%rsp), %rsi
+	callq	core::cmp::impls::&lt;impl core::cmp::PartialEq&lt;&amp;B&gt; for &amp;A&gt;::eq
+</code></pre>
+<p>解读：</p>
+<ul>
+<li>第一个参数是闭包存储变量的地方，简称 <code>[closure]</code>，可以看出是一个指针，因为 <code>(%rdi)</code> 在解引用</li>
+<li>接着将 <code>[closure]</code> 的数据存在距离 <code>%rsp</code>  24 个字节的地方</li>
+<li>接着比较 <code>[closure]</code> 和第一个参数</li>
+</ul>
+<p>接着看 <code>[closure]</code> 从那来：</p>
+<pre class="one-piece"><code>playground::test:
+	subq	$24, %rsp
+	movl	$100, (%rsp)
+	movl	$2, 4(%rsp)
+	movq	%rsp, %rdi
+	callq	playground::generator
+</code></pre>
+<ul>
+<li>可以看出先声明的 <code>s</code> 放在最靠近栈顶的地方</li>
+<li><code>%rdi</code> 指向 <code>s</code></li>
+<li><code>generator</code> 的结果放在 <code>8(%rsp)</code>, 也就是闭包</li>
+<li>闭包的第二个参数是 <code>n</code> 的地址</li>
+<li>闭包的第一个参数是 <code>8(%rsp)</code>, 也就是闭包本身</li>
+</ul>
+<p>结果让人震惊，但是仔细一想，所谓返回闭包只是一种抽象，掩盖一些丑陋的事实，而事实是，也许并没有所谓的 struct + method = closure, 而是一切被闭包捕捉的变量，实际上就放在栈上，而所谓的闭包就是一个普通函数</p>
+<p>但也可以把这块存放捕捉变量的区域称作 struct。可以看到 <code>n</code> 的地址就放在 <code>16(%rsp)</code>, 也就是说闭包 borrow 了 <code>n</code></p>
+<p>也就是说，在调用 <code>cmp(&amp;n)</code> 之前，先把 <code>&amp;n</code> 放入 <code>[closure]</code></p>
+<p><img src="images/0xfeff_719575e74b844ae79e25b9e2b4780052.png" alt=""></p>
+<p>为了比较正常函数如何处理引用，增加一个函数：</p>
+<pre class="one-piece"><code>fn nop(v: &amp;i32) -&gt; i32 {
+    0
+}
+
+fn test() {
+    let s = S(100);
+    let n = 2;
+    let cmp = generator(&amp;s);
+    cmp(&amp;n);
+    nop(&amp;n);
+}
+</code></pre>
+<p>发现并没有将 <code>n</code> 的地址放在其他地方的操作</p>
+<pre class="one-piece"><code>	callq	playground::generator::
+	leaq	4(%rsp), %rdi
+	callq	playground::nop
+</code></pre>
+<p>代码：<a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=e446bc7f784635f53c3de2f5b4251326">https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=e446bc7f784635f53c3de2f5b4251326</a></p>
+<p>可以看出这一系列调查其实很有意思，但我的教训是少用闭包这种东西，有太多不透明的细节。用闭包生成闭包解决的问题其实可以用 trait 来解决，这也是我下一步要做的事情。</p>
+<h2 id="附录" tabindex="-1">附录</h2>
+<pre class="one-piece"><code>    let (predicate, input, state) = p1(input, state)?;
+
+    let mut pred = predicate.unwrap();
+
+    let sub = pred.value;
+    
+    match sub {
+        OptionItemValue::SubNodes(arg_opts) =&gt; {
+            let pp0 = lookahead(&amp;arg_opts);
+            let pp1 = many(pp0);
+            let (params, _, _) = pp1(input, state)?;
+            pred.value = OptionItemValue::SubNodes(ArgOptions(params))
+        }
+        _ =&gt; bail!(""),
+    }
+    
+
+    Ok(TdOp {
+        options,
+        object,
+        predicate: pred,
+    })
+}
+</code></pre>
+<p>报错：</p>
+<pre class="one-piece"><code>borrow might be used here, when `p1` is dropped and runs the destructor for type `impl Fn(std::iter::Peekable&lt;std::slice::Iter&lt;'_, std::string::String&gt;&gt;, parser::error::State)-&gt; std::result::Result&lt;(std::option::Option&lt;parser::parser::OptionItem&gt;, std::iter::Peekable&lt;std::slice::Iter&lt;'_, std::string::String&gt;&gt;, parser::error::State), anyhow::Error&gt;`
+</code></pre>
+<p>可以看出编译器无法确定 <code>arg_opts</code> 和 <code>p1</code> 的关系，只能说 "borrow <strong>might be</strong> used here", 这就是为什么我认为也许编译器无法处理这么“扭曲“的代码, 但如果非要解决这个问题，就要将 <code>lookahead(&amp;arg_opts)</code> 的 <code>arg_opts</code> 的 lifetime 放在 <code>p1</code> 之后。</p>
+<p>我重构了一轮代码，问题依然没解决，可以看出编译器要求内层闭包的生命周期和最外层的生命周期一样，这显然不合理，因为我只在最里面那层作用域使用内层闭包</p>
+<p><img src="images/0xfeff_6cea15257d254ba5830f6b83b0e5558b.png" alt=""></p>
+<p>最后解决方法是避免大多数引用, 只要考虑好哪些数据可以移动，哪些应该拷贝。</p>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          留言请发
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com">邮件</a>
+        </p>
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

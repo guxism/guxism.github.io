@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Substrate Pallet</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Substrate Pallet</h1>
+        <h2 id="fooling-around" tabindex="-1">Fooling around</h2>
+<p>Parity 官网文章 <a href="https://www.parity.io/blog/introducing-substrate-marketplace-your-one-stop-resource-for-substrate-pallets">Introducing Substrate Marketplace: Your One-Stop Resource for Substrate Pallets</a> 就是我说的堆大词行为的一个例子，通篇看下来不知道讲什么。上述文章要讲的其实就是 “pallets 是 substrate 的 building blocks”。而我关心的是，怎么做到？是以插件的形式？</p>
+<p>就在我深入了解 Pallet 之前，我遇到了 <code>#[pallet::call_index(expr)]</code> , 这某种程度上让人猜想，pallet 的函数通过某种形式注入到 substrate 的系统中，每一个函数都有一个独特的编号，调用函数就是调用编号，加上按照某个协议序列化的参数。这是插件？是的。最简单的插件使用方式是 <code>p = load(plugin)</code>, 然后调用它的方法： <code>p.method()</code>。通过 CallIndex 调用函数一种更高的抽象。我们不难想到这是将 <code>p.method()</code> 映射到内核的某个 mapping 结构体中去。但 pallet 又不是插件, 因为它不是动态加载上去的。</p>
+<p>接下来直接完成 <a href="https://docs.substrate.io/tutorials/work-with-pallets/add-a-pallet/:">https://docs.substrate.io/tutorials/work-with-pallets/add-a-pallet/:</a></p>
+<ol>
+<li>首先搭建一个 node： <a href="https://docs.substrate.io/tutorials/get-started/build-local-blockchain/">https://docs.substrate.io/tutorials/get-started/build-local-blockchain/</a>, 并安装前端</li>
+<li>安装 pallet-nicks，源码 <a href="https://paritytech.github.io/substrate/master/src/pallet_nicks/lib.rs.html">https://paritytech.github.io/substrate/master/src/pallet_nicks/lib.rs.html</a></li>
+</ol>
+<p>先体会一下源码：</p>
+<ol>
+<li>首先源码用了大量标记，这种标记让阅读源码变得没什么意义，但是还是要看看它的结构和使用方式</li>
+<li>注意到 <code>frame_*</code> 系列 modules</li>
+<li>实现以下：
+<ul>
+<li><code>#[pallet::config]</code></li>
+<li><code>#[pallet::event]</code></li>
+<li><code>#[pallet::error]</code></li>
+<li><code>#[pallet::storage]</code></li>
+<li><code>#[pallet::call]</code></li>
+</ul>
+</li>
+</ol>
+<p>这让人想到 Ink! , 但我不知道 Ink! 是不是更高的抽象。</p>
+<p>接着，pallet-nicks 的接口:</p>
+<ol>
+<li><code>set_name</code>
+<ol>
+<li>这里面全是被修饰过的类型，比如你看不到 <code>std::vec::Vec</code>, 只能看到 <code>BoundedVec</code></li>
+<li>可以发出事件 Event</li>
+</ol>
+</li>
+</ol>
+<p><code>Runtime</code> 的特质</p>
+<ol>
+<li><code>impl pallet_foo::Config for Runtime</code>, 让 Runtime 继承某些类型</li>
+<li>调用 <code>construct_runtime!</code> 去构造结构体 Runtime</li>
+<li>实现 <code>impl_runtime_apis!</code> Runtime 的函数，比如：
+<ol>
+<li><code>impl sp_api::Core&lt;Block&gt; for Runtime</code></li>
+</ol>
+</li>
+</ol>
+<p>看起来可以理解，即一个 <code>Runtime</code> 被赋予了各种 traits, 然后实现，其中，pallet 就包含 trait，比如 Config, Runtime 携带 pallet 的 trait，里面全部是类型</p>
+<p>关于 associate type:</p>
+<pre class="one-piece"><code>pub trait Iterator {
+    type Item;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+}
+
+impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        // --snip--
+</code></pre>
+<p>那么在 pallet_nicks 中：</p>
+<pre class="one-piece"><code>#[pallet::config]
+	pub trait Config: frame_system::Config {
+		/// The currency trait.
+		type Currency: ReservableCurrency&lt;Self::AccountId&gt;;
+</code></pre>
+<p>在 runtime:</p>
+<pre class="one-piece"><code>impl pallet_nicks::Config for Runtime {
+	// The Balances pallet implements the ReservableCurrency trait.
+	// `Balances` is defined in `construct_runtime!` macro.
+	type Currency = Balances;
+</code></pre>
+<p>语言层面是，Runtime 的 Currency 现在变成了 Balances 类型，也就是说 Runtime::Currency 是 Balances</p>
+<p>不过这其中并没有什么奇怪的地方，如果</p>
+<pre class="one-piece"><code>trait A {
+    type Money;
+}
+
+impl A for Country {
+    type Money = Money;
+}
+</code></pre>
+<p>可以编译，那么它们前面必然有：</p>
+<pre class="one-piece"><code>struct Country;
+type Money = i128;
+</code></pre>
+<p>这个例子有问题，但我不想浪费时间去修改：</p>
+<pre class="one-piece"><code>  error[E0277]: the trait bound `Runtime: frame_system::pallet::Config` is not satisfied
+     --&gt; /home/root_/Workspace4/substrate-node-template/runtime/src/lib.rs:256:6
+      |
+  256 | impl pallet_nicks::Config for Runtime {
+      |      ^^^^^^^^^^^^^^^^^^^^ the trait `frame_system::pallet::Config` is not implemented for `Runtime`
+      |
+</code></pre>
+<p>我认为看这代码没什么意义</p>
+<h2 id="getting-serious" tabindex="-1">Getting Serious</h2>
+<p>Substrate 源码有个例子：frame/examples/basic, 我们逐行阅读它的源码</p>
+<p>首先是著名的反 std 宣言，忘记加这个根本无法编译</p>
+<pre class="one-piece"><code>// Ensure we're `no_std` when compiling for Wasm.
+#![cfg_attr(not(feature = "std"), no_std)]
+</code></pre>
+<p>接着写一些 helper 类型：</p>
+<pre class="one-piece"><code>/// A type alias for the balance type from this pallet's point of view.
+type BalanceOf&lt;T&gt; = &lt;T as pallet_balances::Config&gt;::Balance;
+const MILLICENTS: u32 = 1_000_000_000;
+</code></pre>
+<p>我们需要重视语言层面的东西, <code>&lt;T as pallet_balances::Config&gt;</code> 意味着 T 有多个 impl, 而它选择 <code>pallet_balances::Config</code></p>
+<pre class="one-piece"><code>trait A {
+    type Money;
+}
+
+trait B {
+    type Money;
+}
+
+struct Country;
+
+impl A for Country {
+    type Money = String;
+}
+
+impl B for Country {
+    type Money = i32;
+}
+
+fn main() {
+    let a : &lt;Country as A&gt;::Money = "hello".to_string();
+    dbg!(a);
+    let b : &lt;Country as B&gt;::Money = 42;
+    dbg!(b);
+}
+</code></pre>
+<p>接下来就是制造一个 <code>WeigthtForSetDummy</code>, 并给它一些接口, 它是泛型数据结构，T impl 了 <code>pallet_balances::Config</code> 的类型， 参数是 <code>Balances</code>。如果去掉泛型其实并不难，但熟悉泛型之后理解也不是问题。我们先略过这一部分内容，因为不知道它的目的是什么</p>
+<pre class="one-piece"><code>struct WeightForSetDummy&lt;T: pallet_balances::Config&gt;(BalanceOf&lt;T&gt;);
+
+impl&lt;T: pallet_balances::Config&gt; WeighData&lt;(&amp;BalanceOf&lt;T&gt;,)&gt; for WeightForSetDummy&lt;T&gt; {
+	fn weigh_data(&amp;self, target: (&amp;BalanceOf&lt;T&gt;,)) -&gt; Weight {
+		let multiplier = self.0;
+		// *target.0 is the amount passed into the extrinsic
+		let cents = *target.0 / &lt;BalanceOf&lt;T&gt;&gt;::from(MILLICENTS);
+		Weight::from_ref_time((cents * multiplier).saturated_into::&lt;u64&gt;())
+	}
+}
+</code></pre>
+<p>OK，其实我们应该硬着头皮理解什么是 Weight: <a href="https://docs.substrate.io/build/tx-weights-fees/">https://docs.substrate.io/build/tx-weights-fees/</a>, 大意是这是一种防御方式</p>
+<ol>
+<li>malicious user might overload the network to stop the network from producing new blocks
+<ol>
+<li>comment: 还能这样？例子？没有例子，所以这句话是废话</li>
+</ol>
+</li>
+<li>to protect blockchain resource from being drained or overloaded, you need to manage how they are made available and how they are consumed
+<ol>
+<li>comment: fair</li>
+</ol>
+</li>
+</ol>
+<p>什么是 Weight: <a href="https://docs.substrate.io/reference/glossary/#weight">https://docs.substrate.io/reference/glossary/#weight</a></p>
+<ol>
+<li>一种 convention</li>
+<li>用来衡量 blockchain 需要消耗的时间</li>
+<li>一个单位的 weight （one unit of weight） 是 one picosecond （<strong>one trillionth of a second</strong>.）equal to 10−12 or 1⁄1 000 000 000 000 (one trillionth) of a second
+<ol>
+<li>
+<blockquote>
+<p>One gas is equivalent to one <a href="https://docs.substrate.io/v3/runtime/weights-and-fees">weight</a> which is defined as one picosecond of execution time on the runtime's reference machine. (<a href="https://github.com/paritytech/substrate/blob/b75a253f148aa36fa17cf795b9f2fc2f22d0fcc5/frame/contracts/README.md">https://github.com/paritytech/substrate/blob/b75a253f148aa36fa17cf795b9f2fc2f22d0fcc5/frame/contracts/README.md</a>)</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li>一个块的最大 weight (maximun block weight) 应该是三个三分之一的叠加：
+<ol>
+<li>1/3 for block construction</li>
+<li>1/3 for network propagation</li>
+<li>1/3 for import and verfication</li>
+</ol>
+</li>
+</ol>
+<p>根本不知道在说什么</p>
+<p>其他说法：</p>
+<ol>
+<li>Weights are used to manage the time it takes to validate a block. In general, weights are used to characterize the time it takes to execute the calls in the body of a block</li>
+</ol>
+<p>我的理解是 weight 是一种配额，每一个函数调用都要消耗一些 weight。如果有人 malicious people 攻击区块链，那么他就会消耗 weight, 消耗完之后攻击就无法继续，这就起到了制止攻击的作用。</p>
+<p>如果劝说节点去执行你的函数，就需要一个 incentive 机制，即给节点 transaction fees, 用来购买 weight, 可以这么理解吧？因为每一台机器出块的时间都是有限的，有限是价值的一种体现。</p>
+<p>Any fucking way, 我们继续 <a href="https://docs.substrate.io/build/tx-weights-fees/">https://docs.substrate.io/build/tx-weights-fees/</a></p>
+<ul>
+<li>讲到了如何计算 fees
+<ul>
+<li>base fees: 像出租车的起步价</li>
+<li>weight fee: execution time，就和刚才说的一样，每台机器的出块时间有限，你需要劝说他们执行你的函数就要给钱</li>
+<li>length fee: 可以说是一种税，你的内容越多，缴税越多</li>
+<li>tip: 小费</li>
+</ul>
+</li>
+</ul>
+<p>上述的费用分类其实比较符合直觉，这些 fees 组合成了 <strong>includsion fee</strong></p>
+<blockquote>
+<p>inclusion fee is the mininum fee that must be available for a trasaction to be included in a block</p>
+</blockquote>
+<p>inclusion 这一词对应了 transaction be included in a block 这一动作</p>
+<p>计算公式也很有意思：</p>
+<pre class="one-piece"><code>inclusion_fee = base_fee + length_fee + [targeted_fee_adjustment * weight_fee];
+final_fee = inclusion_fee + tip;
+</code></pre>
+<p>有相应的工具用来计算费用：这种工具可以用 pallet 实现</p>
+<ul>
+<li>将 weight 换算成 fees: convert a weight value into a deductible fee using <code>Config::WeightToFee</code>, 这种说法不难理解</li>
+<li>Update the fee for the next block by defining a mulitplier: 根据上一个块的 fee 算出下一个 fee 这也符合常理，问题是, 这个 fee 是什么 fee, 是我们给机器的钱的总和？需要注意的一点是，如果机器无法出块，那么你的 fee 是否会被退回？一个 off-topic 的问题：怎么保证退回？</li>
+<li>处理 withdrawal, deposit</li>
+</ul>
+<p>关于 withdrawal: 以 moonriver 为例，在 moonriver 中 withdraw <code>xc$Token</code> 是指将 <code>xc$Token</code> 从 moonriver 发送会 original chain</p>
+<p>而 deposit 是指将一部分 asset 从 original chain 转移到 moonriver 中</p>
+<p>anyway, 我们现在关心的是这个 pallet 是怎么弄到 chain 里面去的</p>
+<p>在 pallet 中，每一个函数(dispatchable, 即可以通过 CallIndex 找到的函数)都必须声明一个 weight: 通过 <code>#[pallet::weight(100_000)]</code>, 这就相当于售卖服务，别人调用该函数需要付出与 <code>100_000</code> 相应的 fee</p>
+<p>从 frame/examples/basic/ 中还可以提取这些信息：</p>
+<ol>
+<li>调用 pallet 函数的方法就是通过 signing 和 submitting 一个 extrinsic 实现，Polkadot UI 就是通过这种方式来让用户调用 pallet 的函数</li>
+</ol>
+<p><img src="images/Pasted%20image%2020221011151419.png" alt=""></p>
+<p>pallet 语法要求返回结果是 <code>DispatchResultWithPostInfo</code>, 这也是符合直觉的，因为我们自己写代码也要返回一些自定义的 <code>Result</code></p>
+<p>而调用 pallet 函数的方式通常有三种</p>
+<ol>
+<li>external account 签发的 public calls, 用 <code>ensure_signed</code> 确认
+<ol>
+<li>为什么要签名呢？因为避免 external account 反悔，当然这种担心可能是 fuss</li>
+</ol>
+</li>
+<li>goverance system 发出的 root calls，用 <code>ensure_root</code> 确认</li>
+<li>没有签名的 calls, 暂时不管，用 <code>ensure_none</code> 辨识</li>
+</ol>
+<p>调用方式就标注在每一个 pallet 函数的第一个参数中：<code>OriginFor&lt;T&gt;</code></p>
+<p>有几行注释是需要注意的：</p>
+<pre class="one-piece"><code>		// Each transaction must define a `#[pallet::weight(..)]` attribute to convey a set of
+		// static information about its dispatch. FRAME System and FRAME Executive pallet then use
+		// this information to properly execute the transaction, whilst keeping the total load of
+		// the chain in a moderate rate.
+		//
+</code></pre>
+<p>这个例子也不实用，因为至今我们依然无法把 pallet 用上</p>
+<h2 id="contract-pallet" tabindex="-1">Contract Pallet</h2>
+<p><a href="https://docs.substrate.io/reference/how-to-guides/pallet-design/add-contracts-pallet/">https://docs.substrate.io/reference/how-to-guides/pallet-design/add-contracts-pallet/</a></p>
+<p>让人出乎意料的是，contract 能用是因为 blockchain 里面有一个 contract pallet. 这就让人意识到 contract 到 contract pallet 到另外一个 pallet 的通信有哪些可能，至少，从 contract 到 contract pallet 是一个下降的过程，而 pallet 之间的通信也许不需要通过 rpc</p>
+<blockquote>
+<p>the contract pallet provides the <strong>chain extension</strong></p>
+</blockquote>
+<p><a href="https://github.com/paritytech/substrate/blob/b75a253f148aa36fa17cf795b9f2fc2f22d0fcc5/frame/contracts/README.md">https://github.com/paritytech/substrate/blob/b75a253f148aa36fa17cf795b9f2fc2f22d0fcc5/frame/contracts/README.md</a></p>
+<p>这篇文章的信息有：</p>
+<ol>
+<li>The smart contract code is stored once in a <code>code_cache</code>, 接着没什么有效内容了，我猜想这是链的某个存储位置，每个节点都有一样的内容</li>
+<li>日志，调试信息可以通过配置 contract 相关信息为 debug 级别, 其他信息为 error 级别来避免噪音: <code>cargo run --release -- --dev -lerror,runtime::contracts=debug</code></li>
+</ol>
+<h2 id="自己写-pallet" tabindex="-1">自己写 Pallet</h2>
+<p>FRAME 是一个用来开发 pallet 的 framework，在此我们用这个框架来写一个自己的 pallet</p>
+<p>template 在 <a href="https://github.com/substrate-developer-hub/substrate-node-template/tree/main/pallets/template">https://github.com/substrate-developer-hub/substrate-node-template/tree/main/pallets/template</a></p>
+<p>不过我们可以看到 template 已经被包含在 runtime 中</p>
+<pre class="one-piece"><code>construct_runtime!(
+	pub struct Runtime
+	where
+		Block = Block,
+		NodeBlock = opaque::Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		// ... snip
+		TemplateModule: pallet_template,
+	}
+);
+</code></pre>
+<p>我看看 template 有哪些相关代码：</p>
+<pre class="one-piece"><code>/// Import the template pallet.
+pub use pallet_template;
+
+/// Configure the pallet-template in pallets/template.
+impl pallet_template::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+}
+
+
+construct_runtime!(
+	pub struct Runtime
+	where
+		Block = Block,
+		NodeBlock = opaque::Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		// ... snip
+		TemplateModule: pallet_template,
+	}
+);
+
+#[cfg(feature = "runtime-benchmarks")]
+mod benches {
+	define_benchmarks!(
+		// ... snip
+		[pallet_template, TemplateModule]
+	);
+}
+</code></pre>
+<p>就这些，但怎么用？首先我们运行链，然后在前端找到这一块区域</p>
+<p><img src="images/Pasted%20image%2020221011165422.png" alt=""></p>
+<p>如上图所示，我找到了 templateModule, 指定函数 <code>doSomething</code>, 参数是 <code>42</code>，然后点击蓝色的 <code>Signed</code></p>
+<p>注意到 <code>doSomething</code> 的代码是这样：</p>
+<pre class="one-piece"><code>#[pallet::weight(10_000 + T::DbWeight::get().writes(1).ref_time())]
+		pub fn do_something(origin: OriginFor&lt;T&gt;, something: u32) -&gt; DispatchResult {
+			// Check that the extrinsic was signed and get the signer.
+			// This function will return an error if the extrinsic is not signed.
+			// https://docs.substrate.io/main-docs/build/origins/
+			let who = ensure_signed(origin)?;
+
+			// Update storage.
+			&lt;Something&lt;T&gt;&gt;::put(something);
+
+			// Emit an event.
+			Self::deposit_event(Event::SomethingStored(something, who));
+			// Return a successful DispatchResultWithPostInfo
+			Ok(())
+		}
+</code></pre>
+<p>有几个要点：</p>
+<ol>
+<li><code>ensure_signed</code> 要求签名</li>
+<li>存储的 <code>::put</code> 函数存储了数值 42</li>
+<li>发出一个事件</li>
+</ol>
+<p>看看有哪些事件：</p>
+<pre class="one-piece"><code> system:ExtrinsicSuccess
+[{"weight":{"refTime":"186,308,000"},"class":"Normal","paysFee":"Yes"}]
+transactionPayment:TransactionFeePaid
+["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","186,308,111","0"]
+templateModule:SomethingStored
+["43","5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"]
+balances:Withdraw
+["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","186,308,111"]
+</code></pre>
+<p>可以看到，第三个事件(或者第二个？)才是 pallet 发出的：</p>
+<pre class="one-piece"><code>templateModule:SomethingStored
+["43","5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"]
+</code></pre>
+<p>Query 是这样：</p>
+<p><img src="images/Pasted%20image%2020221011170027.png" alt=""></p>
+<p>对应的代码是：</p>
+<pre class="one-piece"><code>// The pallet's runtime storage items.
+	// https://docs.substrate.io/main-docs/build/runtime-storage/
+	#[pallet::storage]
+	#[pallet::getter(fn something)]
+	// Learn more about declaring storage items:
+	// https://docs.substrate.io/main-docs/build/runtime-storage/#declaring-storage-items
+	pub type Something&lt;T&gt; = StorageValue&lt;_, u32&gt;;
+</code></pre>
+<p>也就是一个 getter</p>
+<p>如果我们要自己的 pallet, 最好的方式直接修改 pallet template 的逻辑, 但这么做没什么价值了，因为我们已经知道 pallet 是如何被引入到链上去的。我们如何 DIY 其实并不重要。</p>
+<p>我下一个目标，则是知道如何在 contract pallet 上运行的 wasm 代码(contract) 如何调用其他 pallet(比如 pallet template) 的接口。</p>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          留言请发
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com">邮件</a>
+        </p>
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

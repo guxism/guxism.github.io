@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>condition-variable.c</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      <h1>条件变量</h1>
+<p>条件变量是线程间通信的一种方法, 具体表现为等待条件变量不可用的时候,
+线程进入睡眠状态, 直到另一个线程把它唤醒</p>
+<p>在这个例子中:</p>
+<ul>
+<li>2 个线程 A, B 对一个变量 V 进行加减操作, 一个 <code>+1</code>, 一个 <code>-1</code>,</li>
+<li>第三个线程 C 检查变量, 检测到 <code>V == 0</code> 的时候, 打印”好耶”, 否则就进入睡眠状态</li>
+<li>当 A, B 发现 <code>V == 0</code> 的时候, 需要唤醒 C</li>
+</ul>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      <p>把 <a href="mutex.c.html">mutex.c</a> 的代码拿过来用;
+这俩是线程 A, B 执行的函数</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">inc</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">dec</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>线程 C</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">watch</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      <p>用 context 提供可重入性</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      <p>Condition Variable, 提供唤醒线程的功能;
+可以理解为: 条件变量背后有个等待线程的集合;
+通过 <code>pthread_cond_signal(&amp;cv)</code>, 可以唤醒集合里面的线程</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">pthread_cond_t</span><span class="w"> </span><span class="n">cv</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-5">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-5">#</a>
+      </div>
+      <p>还是需要一个共享变量; 简单示例用 int, 显示用更复杂的数据结构,
+<code>pthread_cond_t</code> 没法应付这么多需求</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">shared</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-6">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-6">#</a>
+      </div>
+      <p>用互斥变量保护共享变量的读写</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">pthread_mutex_t</span><span class="w"> </span><span class="n">mutex</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-7">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-7">#</a>
+      </div>
+      <p>标记是谁发送信号</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">signaller</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_t</span><span class="w"> </span><span class="n">attr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_t</span><span class="w"> </span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="n">t2</span><span class="p">,</span><span class="w"> </span><span class="n">t3</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">inc</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">t2</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">dec</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">t3</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">watch</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-8">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-8">#</a>
+      </div>
+      <p>上下文初始化和回收的实现</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;strings.h&gt;</span><span class="cp"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">ctx_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">bzero</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_setdetachstate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">PTHREAD_CREATE_JOINABLE</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_cond_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cv</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">ctx_destroy</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_join</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_join</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">t2</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_join</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">t3</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_cond_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cv</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"ctx-&gt;shared: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-9">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-9">#</a>
+      </div>
+      <p>整个过程包括上下文初始化, 运行, 上下文回收;</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="n">ctx</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ctx_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">run</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">ctx_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_exit</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-10">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-10">#</a>
+      </div>
+      <p>写完以上的 boilerplant 之后进入正题;</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">inc</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-11">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-11">#</a>
+      </div>
+      <p>做一件会被打断的事情;</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"inc: read %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">write</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">write</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"inc: write %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-12">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-12">#</a>
+      </div>
+      <p>如果发现 shared == 0, 唤醒线程 C</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">"inc signal</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">signaller</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'A'</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-13">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-13">#</a>
+      </div>
+      <p>发出信号之后, 线程马上就能解开 ctx-&gt;mutex;
+这时信号到达线程 C(操作系统唤醒), C 有希望比 A, B 更快获得 ctx-&gt;mutex;</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="n">pthread_cond_signal</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cv</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_exit</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">dec</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"dec: read %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">write</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">write</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"dec: write %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">"dec signal</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">signaller</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'B'</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">pthread_cond_signal</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cv</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_exit</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">watch</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-14">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-14">#</a>
+      </div>
+      <p>如果刚好是 0 则跳过; 用 <code>while</code> 而不是 <code>if</code>, 是为了防止 spurious wakeup;
+spurious wakeup 无解, 把它看作操作系统的失误即可.</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">shared</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">"Poll failed, enter waiting state</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-15">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-15">#</a>
+      </div>
+      <p>等待的时候, 放弃 ctx-&gt;mutex; 这个步骤在 Pthread 内部实现, 我们看不到;
+线程 C 被唤醒之后, 马上获得锁, 并从 <code>pthread_cond_wait()</code> 返回;</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="n">pthread_cond_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cv</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">"%c me excitat!</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">signaller</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-16">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-16">#</a>
+      </div>
+      <p>线程 C 执行任务:</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"好耶!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_exit</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-17">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-17">#</a>
+      </div>
+      <p>编译:</p>
+<pre><code class="language-bash">gcc -O0 -o mutex condition-variable.c -pthread
+</code></pre>
+<p>运行结果:</p>
+<pre><code>➜  .out/condition-variable 
+dec: read 0
+dec: write -1
+Poll failed, enter waiting state
+inc: read -1
+inc: write 0
+inc signal
+A me excitat!
+好耶!
+ctx-&gt;shared: 0
+</code></pre>
+<p>这个例子有点简单了, 本想设计成多次循环, 但可能会出现线程 C 无限阻塞的情况.
+设想, 如果让每个线程只迭代 10 次, 程序运行之后, A 连续 +10, B 连续 -10, A, B 一共消耗了 10 次迭代,
+C 堵塞从第 1 轮迭代的等待中醒来, 这是可能发生的情况;
+最后 A, B 退出, C 还在等. 可以用 <code>pthread_cond_timewait()</code> 等待一定时间后退出.
+但作为简单的接口使用示例, 就到此为止, 读者可以自行扩展.</p>
+<p>最后总结条件变量的使用协议:</p>
+<table>
+ <tr>
+     <td>Thread A</td>
+     <td>Thread B</td>
+ </tr>
+ <tr>
+     <td> lock mutex <br>signal cv <br> unlock mutex</td>
+     <td> lock mutex <br>wait(cv, mutex)   <br> unlock mutex</td>
+ </tr>
+</table>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+
+                    <div class="section" id="section-links">
+                        <div class="docs">
+                            <div class="octowrap">
+                                <a class="octothorpe" href="#section-links">#</a>
+                            </div>
+                            <p><a href="raw/condition-variable.c">raw source</a></p>
+                        </div>
+                    </div>
+                    <div class="clearall"></div>
+                </div>
+            
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+            
+</html>

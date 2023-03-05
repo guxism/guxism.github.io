@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>SQL Zoo</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>SQL Zoo</h1>
+        <p><a href="https://sqlzoo.net/wiki/SQL_Tutorial">https://sqlzoo.net/wiki/SQL_Tutorial</a></p>
+<nav class="table-of-contents"><ol><li><a href="#select-basics">SELECT Basics</a><ol><li><a href="#1-show-the-population-of-germany">1. show the population of Germany</a></li><li><a href="#2-show-the-name-and-the-population-for-sweden-norway-and-denmark">2. Show the name and the population for 'Sweden', 'Norway' and 'Denmark'</a></li><li><a href="#3-show-the-country-and-the-area-for-countries-with-an-area-between-200000-and-250000">3. show the country and the area for countries with an area between 200,000 and 250,000</a></li></ol></li><li><a href="#select-names">SELECT names</a><ol><li><a href="#1-find-the-country-that-start-with-y">1. Find the country that start with Y</a></li><li><a href="#2-find-the-countries-that-end-with-y">2. Find the countries that end with y</a></li><li><a href="#3-find-the-countries-that-contain-the-letter-x">3. Find the countries that contain the letter x</a></li><li><a href="#4-find-the-countries-that-end-with-land">4. Find the countries that end with land</a></li><li><a href="#5-find-the-countries-that-start-with-c-and-end-with-ia">5. Find the countries that start with C and end with ia</a></li><li><a href="#6-find-the-country-that-has-oo-in-the-name">6. Find the country that has oo in the name</a></li><li><a href="#7-find-the-countries-that-have-three-or-more-a-in-the-name">7. Find the countries that have three or more a in the name</a></li><li><a href="#8-find-the-countries-that-have-t-as-the-second-character">8. Find the countries that have "t" as the second character</a></li><li><a href="#9-find-the-countries-that-have-two-o-characters-separated-by-two-others">9. Find the countries that have two "o" characters separated by two others</a></li><li><a href="#10-find-the-countries-that-have-exactly-four-characters">10. Find the countries that have exactly four characters</a></li><li><a href="#11-find-the-country-where-the-name-is-the-capital-city">11. Find the country where the name is the capital city</a></li><li><a href="#12-find-the-country-where-the-capital-is-the-country-plus-city">12. Find the country where the capital is the country plus "City"</a></li><li><a href="#13-find-the-capital-and-the-name-where-the-capital-includes-the-name-of-the-country">13. Find the capital and the name where the capital includes the name of the country</a></li><li><a href="#14-find-the-capital-and-the-name-where-the-capital-is-an-extension-of-name-of-the-country">14. Find the capital and the name where the capital is an extension of name of the country</a></li><li><a href="#15-show-the-name-and-the-extension-where-the-capital-is-an-extension-of-name-of-the-country">15. Show the name and the extension where the capital is an extension of name of the country</a></li></ol></li><li><a href="#select-from-world-tutorial">SELECT from WORLD Tutorial</a><ol><li><a href="#1-show-the-name-continent-and-population-of-all-countries">1. show the name, continent and population of all countries</a></li><li><a href="#2-show-the-name-for-the-countries-that-have-a-population-of-at-least-200-million">2. Show the name for the countries that have a population of at least 200 million</a></li><li><a href="#3-give-the-name-and-the-per-capita-gdp-for-those-countries-with-a-population-of-at-least-200-million">3. Give the name and the per capita GDP for those countries with a population of at least 200 million</a></li><li><a href="#4-show-the-name-and-population-in-millions-for-the-countries-of-the-continent-south-america">4. Show the name and population in millions for the countries of the continent 'South America'</a></li><li><a href="#5-show-the-name-and-population-for-france-germany-italy">5. Show the name and population for France, Germany, Italy</a></li><li><a href="#6-show-the-countries-which-have-a-name-that-includes-the-word-united">6. Show the countries which have a name that includes the word 'United'</a></li><li><a href="#7-show-the-countries-that-are-big-by-area-or-big-by-population-show-name-population-and-area">7. Show the countries that are big by area or big by population. Show name, population and area</a></li><li><a href="#8-show-the-countries-that-are-big-by-area-more-than-3-million-or-big-by-population-more-than-250-million-but-not-both-show-name-population-and-area">8. Show the countries that are big by area (more than 3 million) or big by population (more than 250 million) but not both. Show name, population and area</a></li><li><a href="#9-show-the-name-and-population-in-millions-and-the-gdp-in-billions-for-the-countries-of-the-continent-south-america">9. Show the name and population in millions and the GDP in billions for the countries of the continent 'South America'</a></li><li><a href="#10-show-per-capita-gdp-for-the-trillion-dollar-countries-to-the-nearest-1000">10. Show per-capita GDP for the trillion dollar countries to the nearest $1000</a></li><li><a href="#11-show-the-name-and-capital-where-the-name-and-the-capital-have-the-same-number-of-characters">11. Show the name and capital where the name and the capital have the same number of characters</a></li><li><a href="#12-show-the-name-and-the-capital-where-the-first-letters-of-each-match-dont-include-countries-where-the-name-and-the-capital-are-the-same-word">12. Show the name and the capital where the first letters of each match. Don't include countries where the name and the capital are the same word</a></li><li><a href="#13-find-the-country-that-has-all-the-vowels-and-no-spaces-in-its-name">13. Find the country that has all the vowels and no spaces in its name</a></li></ol></li><li><a href="#参考">参考</a></li></ol></nav><h2 id="select-basics" tabindex="-1">SELECT Basics</h2>
+<h3 id="1-show-the-population-of-germany" tabindex="-1">1. show the population of Germany</h3>
+<pre class="one-piece"><code>SELECT population FROM world
+  WHERE name = 'Germany'
+</code></pre>
+<h3 id="2-show-the-name-and-the-population-for-sweden-norway-and-denmark" tabindex="-1">2. Show the name and the population for 'Sweden', 'Norway' and 'Denmark'</h3>
+<pre class="one-piece"><code>SELECT name, population FROM world
+  WHERE name IN ('Sweden', 'Norway', 'Denmark');
+</code></pre>
+<h3 id="3-show-the-country-and-the-area-for-countries-with-an-area-between-200000-and-250000" tabindex="-1">3. show the country and the area for countries with an area between 200,000 and 250,000</h3>
+<pre class="one-piece"><code>SELECT name, area FROM world
+  WHERE area BETWEEN 200000 AND 250000
+</code></pre>
+<h2 id="select-names" tabindex="-1">SELECT names</h2>
+<h3 id="1-find-the-country-that-start-with-y" tabindex="-1">1. Find the country that start with Y</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+  WHERE name LIKE 'Y%'
+</code></pre>
+<h3 id="2-find-the-countries-that-end-with-y" tabindex="-1">2. Find the countries that end with y</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+  WHERE name LIKE '%y'
+</code></pre>
+<h3 id="3-find-the-countries-that-contain-the-letter-x" tabindex="-1">3. Find the countries that contain the letter x</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+  WHERE name LIKE '%x%'
+</code></pre>
+<h3 id="4-find-the-countries-that-end-with-land" tabindex="-1">4. Find the countries that end with land</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+  WHERE name LIKE '%land'
+</code></pre>
+<h3 id="5-find-the-countries-that-start-with-c-and-end-with-ia" tabindex="-1">5. Find the countries that start with C and end with ia</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+  WHERE name LIKE 'C%ia'
+</code></pre>
+<h3 id="6-find-the-country-that-has-oo-in-the-name" tabindex="-1">6. Find the country that has oo in the name</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+  WHERE name LIKE '%oo%'
+</code></pre>
+<h3 id="7-find-the-countries-that-have-three-or-more-a-in-the-name" tabindex="-1">7. Find the countries that have three or more a in the name</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+  WHERE name LIKE '%a%a%a%'
+</code></pre>
+<h3 id="8-find-the-countries-that-have-t-as-the-second-character" tabindex="-1">8. Find the countries that have "t" as the second character</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+ WHERE name LIKE '_t%'
+ORDER BY name
+</code></pre>
+<h3 id="9-find-the-countries-that-have-two-o-characters-separated-by-two-others" tabindex="-1">9. Find the countries that have two "o" characters separated by two others</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+ WHERE name LIKE '%o__o%'
+</code></pre>
+<h3 id="10-find-the-countries-that-have-exactly-four-characters" tabindex="-1">10. Find the countries that have exactly four characters</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+ WHERE name LIKE '____'
+</code></pre>
+<h3 id="11-find-the-country-where-the-name-is-the-capital-city" tabindex="-1">11. Find the country where the name is the capital city</h3>
+<pre class="one-piece"><code>SELECT name
+  FROM world
+ WHERE name LIKE capital
+</code></pre>
+<h3 id="12-find-the-country-where-the-capital-is-the-country-plus-city" tabindex="-1">12. Find the country where the capital is the country plus "City"</h3>
+<pre class="one-piece"><code>SELECT name
+   FROM world
+   WHERE capital LIKE concat(name, ' City')
+</code></pre>
+<h3 id="13-find-the-capital-and-the-name-where-the-capital-includes-the-name-of-the-country" tabindex="-1">13. Find the capital and the name where the capital includes the name of the country</h3>
+<pre class="one-piece"><code>SELECT capital, name
+   FROM world
+   WHERE LOCATE(name, capital)
+</code></pre>
+<h3 id="14-find-the-capital-and-the-name-where-the-capital-is-an-extension-of-name-of-the-country" tabindex="-1">14. Find the capital and the name where the capital is an extension of name of the country</h3>
+<pre class="one-piece"><code>SELECT capital, name
+   FROM world
+   WHERE LOCATE(name, capital) = 1 AND name NOT LIKE capital
+</code></pre>
+<h3 id="15-show-the-name-and-the-extension-where-the-capital-is-an-extension-of-name-of-the-country" tabindex="-1">15. Show the name and the extension where the capital is an extension of name of the country</h3>
+<pre class="one-piece"><code>SELECT name, REPLACE(capital, name, '') as ext
+   FROM world
+   WHERE LOCATE(name, capital) = 1 AND name NOT LIKE capital
+</code></pre>
+<h2 id="select-from-world-tutorial" tabindex="-1">SELECT from WORLD Tutorial</h2>
+<h3 id="1-show-the-name-continent-and-population-of-all-countries" tabindex="-1">1. show the name, continent and population of all countries</h3>
+<pre class="one-piece"><code>SELECT name, continent, population FROM world
+</code></pre>
+<h3 id="2-show-the-name-for-the-countries-that-have-a-population-of-at-least-200-million" tabindex="-1">2. Show the name for the countries that have a population of at least 200 million</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+WHERE population &gt;= 200000000
+</code></pre>
+<h3 id="3-give-the-name-and-the-per-capita-gdp-for-those-countries-with-a-population-of-at-least-200-million" tabindex="-1">3. Give the name and the per capita GDP for those countries with a population of at least 200 million</h3>
+<pre class="one-piece"><code>SELECT name, gdp / population FROM world
+WHERE population &gt;= 200000000
+</code></pre>
+<h3 id="4-show-the-name-and-population-in-millions-for-the-countries-of-the-continent-south-america" tabindex="-1">4. Show the name and population in millions for the countries of the continent 'South America'</h3>
+<pre class="one-piece"><code>SELECT name, population / 1000000 FROM world
+where continent LIKE 'South America'
+</code></pre>
+<h3 id="5-show-the-name-and-population-for-france-germany-italy" tabindex="-1">5. Show the name and population for France, Germany, Italy</h3>
+<pre class="one-piece"><code>SELECT name, population FROM world
+where name IN ('France', 'Germany', 'Italy')
+</code></pre>
+<h3 id="6-show-the-countries-which-have-a-name-that-includes-the-word-united" tabindex="-1">6. Show the countries which have a name that includes the word 'United'</h3>
+<pre class="one-piece"><code>SELECT name FROM world
+where name LIKE '%United%'
+</code></pre>
+<h3 id="7-show-the-countries-that-are-big-by-area-or-big-by-population-show-name-population-and-area" tabindex="-1">7. Show the countries that are big by area or big by population. Show name, population and area</h3>
+<pre class="one-piece"><code>SELECT name, population, area FROM world
+where area &gt;= 3000000 OR population &gt;= 250000000
+</code></pre>
+<h3 id="8-show-the-countries-that-are-big-by-area-more-than-3-million-or-big-by-population-more-than-250-million-but-not-both-show-name-population-and-area" tabindex="-1">8. Show the countries that are big by area (more than 3 million) or big by population (more than 250 million) but not both. Show name, population and area</h3>
+<pre class="one-piece"><code>SELECT name, population, area
+FROM world
+WHERE area &gt;= 3000000 XOR population &gt;= 250000000
+</code></pre>
+<h3 id="9-show-the-name-and-population-in-millions-and-the-gdp-in-billions-for-the-countries-of-the-continent-south-america" tabindex="-1">9. Show the name and population in millions and the GDP in billions for the countries of the continent 'South America'</h3>
+<pre class="one-piece"><code>SELECT name, ROUND(population / 1000000, 2), ROUND(gdp / 1000000000, 2)
+FROM world
+WHERE continent LIKE 'South America'
+</code></pre>
+<h3 id="10-show-per-capita-gdp-for-the-trillion-dollar-countries-to-the-nearest-$1000" tabindex="-1">10. Show per-capita GDP for the trillion dollar countries to the nearest $1000</h3>
+<pre class="one-piece"><code>SELECT name, ROUND(gdp / population, -3)
+FROM world
+WHERE gdp &gt;= 1000000000000
+</code></pre>
+<h3 id="11-show-the-name-and-capital-where-the-name-and-the-capital-have-the-same-number-of-characters" tabindex="-1">11. Show the name and capital where the name and the capital have the same number of characters</h3>
+<pre class="one-piece"><code>SELECT name, capital
+  FROM world
+ WHERE LENGTH(name)=LENGTH(capital)
+</code></pre>
+<h3 id="12-show-the-name-and-the-capital-where-the-first-letters-of-each-match-dont-include-countries-where-the-name-and-the-capital-are-the-same-word" tabindex="-1">12. Show the name and the capital where the first letters of each match. Don't include countries where the name and the capital are the same word</h3>
+<pre class="one-piece"><code>SELECT name, capital
+FROM world
+WHERE LEFT(name, 1)=LEFT(capital, 1) AND name &lt;&gt; capital
+</code></pre>
+<h3 id="13-find-the-country-that-has-all-the-vowels-and-no-spaces-in-its-name" tabindex="-1">13. Find the country that has all the vowels and no spaces in its name</h3>
+<pre class="one-piece"><code>
+</code></pre>
+<h2 id="参考" tabindex="-1">参考</h2>
+<ul>
+<li><a href="https://dev.mysql.com/doc/refman/8.0/en/string-functions.html">字符串操作</a></li>
+<li><a href="https://sqlzoo.net/wiki/FUNCTIONS">SQL Functions</a></li>
+</ul>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

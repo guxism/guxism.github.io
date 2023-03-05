@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>multicast.sh</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      <h1>组播</h1>
+<p>组播是指 IP 协议上, 一端可以让多端通信的的技术; 在互联网上基本没什么用, 因为它对网关有一定的要求. 网关需要具备识别流量应该单播, 还是组播, 还是广播, 通常通过识别 MAC 目标地址最高字节的最低位来实现.
+普通路由器做不到这一点, 因此组播只是局域网技术. 虽然我对互联网更感兴趣, 但这个主题也花了我一些时间, 所以还是整理出来.</p>
+<ul>
+<li><a href="https://www.metaswitch.com/knowledge-center/reference/what-is-multicast-ip-routing#:~:text=Using%20multicast%2C%20a%20source%20can,an%20entire%20group%20of%20recipients.&amp;text=A%20source%20host%20sends%20data,be%20the%20multicast%20group%20address.">metaswitch</a></li>
+<li><a href="http://www.firewall.cx/networking-topics/general-networking/107-network-multicast.html">firewall</a></li>
+<li><a href="http://www.steves-internet-guide.com/introduction-multicasting/">Steves-internet-guide</a></li>
+<li><a href="https://stackoverflow.com/questions/10692956/what-does-it-mean-to-bind-a-multicast-udp-socket">SO:what-does-it-mean-to-bind-a-multicast-udp-socket</a></li>
+<li><a href="https://tldp.org/HOWTO/Multicast-HOWTO-6.html">tldp: Multicast-HOWTO</a></li>
+<li><a href="https://www.ibm.com/docs/en/i/7.2?topic=designs-examples-using-multicasting-af-inet">Example</a></li>
+</ul>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      <h2>实验</h2>
+<p>用 <a href="https://www.ibm.com/docs/en/i/7.2?topic=inet-example-sending-multicast-datagrams">https://www.ibm.com/docs/en/i/7.2?topic=inet-example-sending-multicast-datagrams</a> 编译一个组播客户端</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>// <span class="c1">#include &lt;arpa/inet.h&gt;</span>
+// <span class="c1">#include &lt;netinet/in.h&gt;</span>
+// <span class="c1">#include &lt;stdio.h&gt;</span>
+// <span class="c1">#include &lt;stdlib.h&gt;</span>
+// <span class="c1">#include &lt;sys/socket.h&gt;</span>
+// <span class="c1">#include &lt;sys/types.h&gt;</span>
+
+struct in_addr localInterface<span class="p">;</span>
+struct sockaddr_in groupSock<span class="p">;</span>
+int sd<span class="p">;</span>
+int datalen<span class="p">;</span>
+char databuf<span class="o">[</span><span class="m">1024</span><span class="o">]</span><span class="p">;</span>
+
+int main<span class="o">(</span>int argc, char *argv<span class="o">[])</span>
+<span class="o">{</span>
+
+    /* ------------------------------------------------------------*/
+    /*                                                             */
+    /* Send Multicast Datagram code example.                       */
+    /*                                                             */
+    /* ------------------------------------------------------------*/
+
+    /*
+     * Create a datagram socket on which to send.
+     */
+    <span class="nv">sd</span> <span class="o">=</span> socket<span class="o">(</span>AF_INET, SOCK_DGRAM, <span class="m">0</span><span class="o">)</span><span class="p">;</span>
+    <span class="k">if</span> <span class="o">(</span>sd &lt; <span class="m">0</span><span class="o">)</span>
+    <span class="o">{</span>
+        perror<span class="o">(</span><span class="s2">"opening datagram socket"</span><span class="o">)</span><span class="p">;</span>
+        exit<span class="o">(</span><span class="m">1</span><span class="o">)</span><span class="p">;</span>
+    <span class="o">}</span>
+
+    /*
+     * Initialize the group sockaddr structure with a
+     * group address of <span class="m">225</span>.1.1.1 and port <span class="m">5555</span>.
+     */
+    memset<span class="o">((</span>char *<span class="o">)</span><span class="p">&amp;</span>groupSock, <span class="m">0</span>, sizeof<span class="o">(</span>groupSock<span class="o">))</span><span class="p">;</span>
+    groupSock.sin_family <span class="o">=</span> AF_INET<span class="p">;</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>目标组地址为 224.0.0.42:5555</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>    groupSock.sin_addr.s_addr <span class="o">=</span> inet_addr<span class="o">(</span><span class="s2">"224.0.0.42"</span><span class="o">)</span><span class="p">;</span>
+    groupSock.sin_port <span class="o">=</span> htons<span class="o">(</span><span class="m">5555</span><span class="o">)</span><span class="p">;</span>
+
+    /*
+     * Disable loopback so you <span class="k">do</span> not receive your own datagrams.
+     */
+    <span class="o">{</span>
+        char <span class="nv">loopch</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="o">(</span>setsockopt<span class="o">(</span>sd, IPPROTO_IP, IP_MULTICAST_LOOP, <span class="o">(</span>char *<span class="o">)</span><span class="p">&amp;</span>loopch,
+                       sizeof<span class="o">(</span>loopch<span class="o">))</span> &lt; <span class="m">0</span><span class="o">)</span>
+        <span class="o">{</span>
+            perror<span class="o">(</span><span class="s2">"setting IP_MULTICAST_LOOP:"</span><span class="o">)</span><span class="p">;</span>
+            close<span class="o">(</span>sd<span class="o">)</span><span class="p">;</span>
+            exit<span class="o">(</span><span class="m">1</span><span class="o">)</span><span class="p">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    /*
+     * Set <span class="nb">local</span> interface <span class="k">for</span> outbound multicast datagrams.
+     * The IP address specified must be associated with a local,
+     * multicast-capable interface.
+     */</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      <p>设置源地址为 0.0.0.0, 协议栈会挑一个最合适的 IP 将其替换</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>    localInterface.s_addr <span class="o">=</span> inet_addr<span class="o">(</span><span class="s2">"0.0.0.0"</span><span class="o">)</span><span class="p">;</span>
+    <span class="k">if</span> <span class="o">(</span>setsockopt<span class="o">(</span>sd, IPPROTO_IP, IP_MULTICAST_IF, <span class="o">(</span>char *<span class="o">)</span><span class="p">&amp;</span>localInterface,
+                   sizeof<span class="o">(</span>localInterface<span class="o">))</span> &lt; <span class="m">0</span><span class="o">)</span>
+    <span class="o">{</span>
+        perror<span class="o">(</span><span class="s2">"setting local interface"</span><span class="o">)</span><span class="p">;</span>
+        exit<span class="o">(</span><span class="m">1</span><span class="o">)</span><span class="p">;</span>
+    <span class="o">}</span>
+
+    /*
+     * Send a message to the multicast group specified by the
+     * groupSock sockaddr structure.
+     */
+    <span class="nv">datalen</span> <span class="o">=</span> <span class="m">10</span><span class="p">;</span>
+    <span class="k">if</span> <span class="o">(</span>sendto<span class="o">(</span>sd, databuf, datalen, <span class="m">0</span>, <span class="o">(</span>struct sockaddr *<span class="o">)</span><span class="p">&amp;</span>groupSock,
+               sizeof<span class="o">(</span>groupSock<span class="o">))</span> &lt; <span class="m">0</span><span class="o">)</span>
+    <span class="o">{</span>
+        perror<span class="o">(</span><span class="s2">"sending datagram message"</span><span class="o">)</span><span class="p">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      <hr>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-5">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-5">#</a>
+      </div>
+      <p>开启组播</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤  ip addr add <span class="m">224</span>.0.0.0/4 dev enp1s0
+╰─➤  ip maddr show</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-6">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-6">#</a>
+      </div>
+      <p>运行组播客户端, 抓包, 查看本机发出去的包</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤  tcpdump host <span class="m">224</span>.0.0.0 -ne
+tcpdump: verbose output suppressed, use -v or -vv <span class="k">for</span> full protocol decode
+listening on enp1s0, link-type EN10MB <span class="o">(</span>Ethernet<span class="o">)</span>, capture size <span class="m">262144</span> bytes
+<span class="m">02</span>:58:29.023020 bc:e9:2f:fa:33:56 &gt; <span class="m">01</span>:00:5e:00:00:00, ethertype IPv4 <span class="o">(</span>0x0800<span class="o">)</span>, length <span class="m">52</span>: <span class="m">10</span>.2.3.4.51149 &gt; <span class="m">224</span>.0.0.0.5555: UDP, length <span class="m">10</span>
+<span class="m">02</span>:58:30.602133 bc:e9:2f:fa:33:56 &gt; <span class="m">01</span>:00:5e:00:00:00, ethertype IPv4 <span class="o">(</span>0x0800<span class="o">)</span>, length <span class="m">52</span>: <span class="m">10</span>.2.3.4.55985 &gt; <span class="m">224</span>.0.0.0.5555: UDP, length <span class="m">10</span>
+<span class="m">02</span>:58:31.602798 bc:e9:2f:fa:33:56 &gt; <span class="m">01</span>:00:5e:00:00:00, ethertype IPv4 <span class="o">(</span>0x0800<span class="o">)</span>, length <span class="m">52</span>: <span class="m">10</span>.2.3.4.38775 &gt; <span class="m">224</span>.0.0.0.5555: UDP, length <span class="m">10</span>
+<span class="m">02</span>:58:32.592040 bc:e9:2f:fa:33:56 &gt; <span class="m">01</span>:00:5e:00:00:00, ethertype IPv4 <span class="o">(</span>0x0800<span class="o">)</span>, length <span class="m">52</span>: <span class="m">10</span>.2.3.4.46724 &gt; <span class="m">224</span>.0.0.0.5555: UDP, length <span class="m">10</span>
+<span class="m">02</span>:58:33.353078 bc:e9:2f:fa:33:56 &gt; <span class="m">01</span>:00:5e:00:00:00, ethertype IPv4 <span class="o">(</span>0x0800<span class="o">)</span>, length <span class="m">52</span>: <span class="m">10</span>.2.3.4.44591 &gt; <span class="m">224</span>.0.0.0.5555: UDP, length <span class="m">10</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-7">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-7">#</a>
+      </div>
+      <p>在另外一台机器抓包</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>root@NanoPi-R2S:~# tcpdump -i eth1 host <span class="m">224</span>.0.0.0 -ne
+tcpdump: verbose output suppressed, use -v or -vv <span class="k">for</span> full protocol decode
+listening on eth1, link-type EN10MB <span class="o">(</span>Ethernet<span class="o">)</span>, capture size <span class="m">262144</span> bytes
+<span class="m">19</span>:08:41.453142 bc:e9:2f:fa:33:56 &gt; <span class="m">01</span>:00:5e:00:00:00, ethertype IPv4 <span class="o">(</span>0x0800<span class="o">)</span>, length <span class="m">60</span>: <span class="m">10</span>.2.3.4.55357 &gt; <span class="m">224</span>.0.0.0.5555: UDP, length <span class="m">10</span>
+<span class="m">19</span>:08:43.182438 bc:e9:2f:fa:33:56 &gt; <span class="m">01</span>:00:5e:00:00:00, ethertype IPv4 <span class="o">(</span>0x0800<span class="o">)</span>, length <span class="m">60</span>: <span class="m">10</span>.2.3.4.56582 &gt; <span class="m">224</span>.0.0.0.5555: UDP, length <span class="m">10</span>
+<span class="m">19</span>:08:44.898096 bc:e9:2f:fa:33:56 &gt; <span class="m">01</span>:00:5e:00:00:00, ethertype IPv4 <span class="o">(</span>0x0800<span class="o">)</span>, length <span class="m">60</span>: <span class="m">10</span>.2.3.4.45305 &gt; <span class="m">224</span>.0.0.0.5555: UDP, length <span class="m">10</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-8">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-8">#</a>
+      </div>
+      <hr>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-9">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-9">#</a>
+      </div>
+      <h2>实验 2</h2>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-10">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-10">#</a>
+      </div>
+      <p>过了几天, 实验 1 失败了</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-11">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-11">#</a>
+      </div>
+      <p>这次不用 <code>224.0.0.0/4</code> 作为组 IP</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤  ip addr add <span class="m">224</span>.0.0.2/32 dev enp1s0
+╰─➤  ip route add <span class="m">224</span>.0.0.2/32 dev enp1s0
+╰─➤  ip route
+<span class="m">10</span>.3.3.0/24 dev enp1s0 proto kernel scope link src <span class="m">10</span>.3.3.4 metric <span class="m">100</span>
+<span class="m">169</span>.254.0.0/16 dev docker0 scope link metric <span class="m">1000</span> linkdown
+<span class="m">172</span>.17.0.0/16 dev docker0 proto kernel scope link src <span class="m">172</span>.17.0.1 linkdown
+<span class="m">224</span>.0.0.2 dev enp1s0 scope link
+╰─➤  ip maddr show
+<span class="m">1</span>: lo
+ inet  <span class="m">224</span>.0.0.251
+ inet  <span class="m">224</span>.0.0.1
+ inet6 ff02::fb
+ inet6 ff02::1
+ inet6 ff01::1
+<span class="m">2</span>: enp1s0
+ link  <span class="m">01</span>:00:5e:00:00:01
+ link  <span class="m">01</span>:00:5e:00:00:fb
+ link  <span class="m">33</span>:33:00:00:00:01
+ link  <span class="m">33</span>:33:ff:fa:33:56
+ link  <span class="m">33</span>:33:00:00:00:fb
+ inet  <span class="m">224</span>.0.0.1
+ inet  <span class="m">224</span>.0.0.251 users <span class="m">3</span>
+ inet6 ff02::fb
+ inet6 ff02::1:fffa:3356
+ inet6 ff02::1
+ inet6 ff01::1</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-12">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-12">#</a>
+      </div>
+      <p>问题出现了, 没看到 <code>224.0.0.2</code></p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤  ip maddr add <span class="m">224</span>.0.0.2 dev enp1s0
+╰─➤  ip maddr show enp1s0
+<span class="m">2</span>: enp1s0
+ link  <span class="m">01</span>:00:5e:00:00:01
+ link  <span class="m">01</span>:00:5e:00:00:fb
+ link  <span class="m">33</span>:33:00:00:00:01
+ link  <span class="m">33</span>:33:ff:fa:33:56
+ link  <span class="m">33</span>:33:00:00:00:fb
+ link  e0:00:00:02:00:00 static
+ inet  <span class="m">224</span>.0.0.1
+ inet  <span class="m">224</span>.0.0.251 users <span class="m">3</span>
+ inet6 ff02::fb
+ inet6 ff02::1:fffa:3356
+ inet6 ff02::1
+ inet6 ff01::1
+╰─➤  ip addr show enp1s0
+<span class="m">2</span>: enp1s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span class="m">1500</span> qdisc fq_codel state UP group default qlen <span class="m">1000</span>
+    link/ether bc:e9:2f:fa:33:56 brd ff:ff:ff:ff:ff:ff
+    inet <span class="m">10</span>.3.3.4/24 brd <span class="m">10</span>.3.3.255 scope global noprefixroute enp1s0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::bee9:2fff:fefa:3356/64 scope link
+       valid_lft forever preferred_lft forever</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-13">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-13">#</a>
+      </div>
+      <p>这时候实验 1 成功, 虽然没看到 <code>224.0.0.2</code></p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-14">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-14">#</a>
+      </div>
+      <p>用 strace 打印系统调用情况</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤  strace ip maddr add <span class="m">224</span>.0.0.42 dev enp1s0
+execve<span class="o">(</span><span class="s2">"/usr/sbin/ip"</span>, <span class="o">[</span><span class="s2">"ip"</span>, <span class="s2">"maddr"</span>, <span class="s2">"add"</span>, <span class="s2">"224.0.0.42"</span>, <span class="s2">"dev"</span>, <span class="s2">"enp1s0"</span><span class="o">]</span>, 0x7ffe6eed06e8 /* <span class="m">77</span> vars */<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+socket<span class="o">(</span>AF_NETLINK, SOCK_RAW<span class="p">|</span>SOCK_CLOEXEC, NETLINK_ROUTE<span class="o">)</span> <span class="o">=</span> <span class="m">3</span>
+setsockopt<span class="o">(</span><span class="m">3</span>, SOL_SOCKET, SO_SNDBUF, <span class="o">[</span><span class="m">32768</span><span class="o">]</span>, <span class="m">4</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+setsockopt<span class="o">(</span><span class="m">3</span>, SOL_SOCKET, SO_RCVBUF, <span class="o">[</span><span class="m">1048576</span><span class="o">]</span>, <span class="m">4</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+setsockopt<span class="o">(</span><span class="m">3</span>, SOL_NETLINK, NETLINK_EXT_ACK, <span class="o">[</span><span class="m">1</span><span class="o">]</span>, <span class="m">4</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+bind<span class="o">(</span><span class="m">3</span>, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_NETLINK, <span class="nv">nl_pid</span><span class="o">=</span><span class="m">0</span>, <span class="nv">nl_groups</span><span class="o">=</span><span class="m">00000000</span><span class="o">}</span>, <span class="m">12</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+getsockname<span class="o">(</span><span class="m">3</span>, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_NETLINK, <span class="nv">nl_pid</span><span class="o">=</span><span class="m">1563809</span>, <span class="nv">nl_groups</span><span class="o">=</span><span class="m">00000000</span><span class="o">}</span>, <span class="o">[</span><span class="m">12</span><span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+setsockopt<span class="o">(</span><span class="m">3</span>, SOL_NETLINK, NETLINK_DUMP_STRICT_CHK, <span class="o">[</span><span class="m">1</span><span class="o">]</span>, <span class="m">4</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+socket<span class="o">(</span>AF_INET, SOCK_DGRAM, IPPROTO_IP<span class="o">)</span> <span class="o">=</span> <span class="m">4</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-15">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-15">#</a>
+      </div>
+      <p>这一行表示开启组播选项</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>ioctl<span class="o">(</span><span class="m">4</span>, SIOCADDMULTI, 0x7ffe574333d0<span class="o">)</span>  <span class="o">=</span> <span class="m">0</span>
+
+╰─➤  strace ip addr add <span class="m">224</span>.0.0.42 dev enp1s0 
+execve<span class="o">(</span><span class="s2">"/usr/sbin/ip"</span>, <span class="o">[</span><span class="s2">"ip"</span>, <span class="s2">"addr"</span>, <span class="s2">"add"</span>, <span class="s2">"224.0.0.42"</span>, <span class="s2">"dev"</span>, <span class="s2">"enp1s0"</span><span class="o">]</span>, 0x7ffdc8d304a8 /* <span class="m">77</span> vars */<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+socket<span class="o">(</span>AF_NETLINK, SOCK_RAW<span class="p">|</span>SOCK_CLOEXEC, NETLINK_ROUTE<span class="o">)</span> <span class="o">=</span> <span class="m">3</span>
+setsockopt<span class="o">(</span><span class="m">3</span>, SOL_SOCKET, SO_SNDBUF, <span class="o">[</span><span class="m">32768</span><span class="o">]</span>, <span class="m">4</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+setsockopt<span class="o">(</span><span class="m">3</span>, SOL_SOCKET, SO_RCVBUF, <span class="o">[</span><span class="m">1048576</span><span class="o">]</span>, <span class="m">4</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+setsockopt<span class="o">(</span><span class="m">3</span>, SOL_NETLINK, NETLINK_EXT_ACK, <span class="o">[</span><span class="m">1</span><span class="o">]</span>, <span class="m">4</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+bind<span class="o">(</span><span class="m">3</span>, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_NETLINK, <span class="nv">nl_pid</span><span class="o">=</span><span class="m">0</span>, <span class="nv">nl_groups</span><span class="o">=</span><span class="m">00000000</span><span class="o">}</span>, <span class="m">12</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+getsockname<span class="o">(</span><span class="m">3</span>, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_NETLINK, <span class="nv">nl_pid</span><span class="o">=</span><span class="m">1564719</span>, <span class="nv">nl_groups</span><span class="o">=</span><span class="m">00000000</span><span class="o">}</span>, <span class="o">[</span><span class="m">12</span><span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+setsockopt<span class="o">(</span><span class="m">3</span>, SOL_NETLINK, NETLINK_DUMP_STRICT_CHK, <span class="o">[</span><span class="m">1</span><span class="o">]</span>, <span class="m">4</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+socket<span class="o">(</span>AF_NETLINK, SOCK_RAW<span class="p">|</span>SOCK_CLOEXEC, NETLINK_ROUTE<span class="o">)</span> <span class="o">=</span> <span class="m">4</span>
+setsockopt<span class="o">(</span><span class="m">4</span>, SOL_SOCKET, SO_SNDBUF, <span class="o">[</span><span class="m">32768</span><span class="o">]</span>, <span class="m">4</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+setsockopt<span class="o">(</span><span class="m">4</span>, SOL_SOCKET, SO_RCVBUF, <span class="o">[</span><span class="m">1048576</span><span class="o">]</span>, <span class="m">4</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+setsockopt<span class="o">(</span><span class="m">4</span>, SOL_NETLINK, NETLINK_EXT_ACK, <span class="o">[</span><span class="m">1</span><span class="o">]</span>, <span class="m">4</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+bind<span class="o">(</span><span class="m">4</span>, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_NETLINK, <span class="nv">nl_pid</span><span class="o">=</span><span class="m">0</span>, <span class="nv">nl_groups</span><span class="o">=</span><span class="m">00000000</span><span class="o">}</span>, <span class="m">12</span><span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+getsockname<span class="o">(</span><span class="m">4</span>, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_NETLINK, <span class="nv">nl_pid</span><span class="o">=</span>-671861546, <span class="nv">nl_groups</span><span class="o">=</span><span class="m">00000000</span><span class="o">}</span>, <span class="o">[</span><span class="m">12</span><span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+
+...
+sendmsg<span class="o">(</span><span class="m">3</span>, <span class="o">{</span><span class="nv">msg_name</span><span class="o">={</span><span class="nv">sa_family</span><span class="o">=</span>AF_NETLINK, <span class="nv">nl_pid</span><span class="o">=</span><span class="m">0</span>, <span class="nv">nl_groups</span><span class="o">=</span><span class="m">00000000</span><span class="o">}</span>, <span class="nv">msg_namelen</span><span class="o">=</span><span class="m">12</span>, 
+    <span class="nv">msg_iov</span><span class="o">=[{</span><span class="nv">iov_base</span><span class="o">=</span><span class="nv">len</span><span class="o">=</span><span class="m">40</span>, <span class="nv">type</span><span class="o">=</span>RTM_NEWADDR, <span class="nv">flags</span><span class="o">=</span>NLM_F_REQUEST<span class="p">|</span>NLM_F_ACK<span class="p">|</span>NLM_F_EXCL<span class="p">|</span>NLM_F_CREATE, 
+    <span class="nv">seq</span><span class="o">=</span><span class="m">1623432069</span>, <span class="nv">pid</span><span class="o">=</span><span class="m">0</span><span class="o">}</span>, <span class="o">{</span><span class="nv">ifa_family</span><span class="o">=</span>AF_INET, <span class="nv">ifa_prefixlen</span><span class="o">=</span><span class="m">32</span>, <span class="nv">ifa_flags</span><span class="o">=</span><span class="m">0</span>, 
+    <span class="nv">ifa_scope</span><span class="o">=</span>RT_SCOPE_UNIVERSE, <span class="nv">ifa_index</span><span class="o">=</span>if_nametoindex<span class="o">(</span><span class="s2">"enp1s0"</span><span class="o">)}</span>, 
+    <span class="o">[</span><span class="nv">nla_len</span><span class="o">=</span><span class="m">8</span>, <span class="nv">nla_type</span><span class="o">=</span>IFA_LOCAL<span class="o">}</span>, inet_addr<span class="o">(</span><span class="s2">"224.0.0.42"</span><span class="o">)</span>, 
+    <span class="nv">nla_len</span><span class="o">=</span><span class="m">8</span>, <span class="nv">nla_type</span><span class="o">=</span>IFA_ADDRESS<span class="o">}</span>, inet_addr<span class="o">(</span><span class="s2">"224.0.0.42"</span><span class="o">)]</span>,
+     <span class="nv">iov_len</span><span class="o">=</span><span class="m">40</span><span class="o">}]</span>, <span class="nv">msg_iovlen</span><span class="o">=</span><span class="m">1</span>, <span class="nv">msg_controllen</span><span class="o">=</span><span class="m">0</span>, <span class="nv">msg_flags</span><span class="o">=</span><span class="m">0</span><span class="o">}</span>, <span class="m">0</span><span class="o">)</span> <span class="o">=</span> <span class="m">40</span>
+...</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-16">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-16">#</a>
+      </div>
+      <p>可以看到通过 <code>ip addr</code> 添加一个单播地址发出一条组播消息, 告诉新地址的存在, 但 socket 并未开启组播!</p>
+<p>因此不能通过 <code>ip addr</code> 加入组播</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-17">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-17">#</a>
+      </div>
+      <p>同时可以看到, 在另一个局域网的 R2S 也能收到组播消息, 这意味着我的路由器支持组播</p>
+<p><img alt="" src="/images/multicast.png"></p>
+<p>可以看到不同频道的组播在传输着不为人知的秘密, 比如 5353 是 chinadns 服务, 它在组播 DNS 信息, 这有点意外, 它想跟多个 chinadns 交流?</p>
+<p>网络拓扑:</p>
+<pre><code>+---------------------+     +--------+     +---------------+     +--------------+
+| logicgate(10.3.3.4) | --&gt; | router | --&gt; | r2s(10.2.3.1) | --&gt; | msi(10.2.3.2 |
++---------------------+     +--------+     +---------------+     +--------------+
+</code></pre>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-18">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-18">#</a>
+      </div>
+      <h2>结论</h2>
+<ol>
+<li>组播 socket 需要开启特殊的选项</li>
+<li>用 <code>ip maddr</code> 加入组</li>
+</ol>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+</div>
+
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+</html>

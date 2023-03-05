@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>rabbitmq.sh</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      <h1>RabbitMQ’s First Soft Touch</h1>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      <p>RabbitMQ 是高级消息队列协议的一个实现, 简单来说它是生产消费者模式中的队列, 要求客户端使用异步 I/O, 加速组件之间的资源调用;
+面对这样的集大成者, 我认为只需会用就可以了, 原理可以等有必要的时候再学.</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>这篇文章用 <code>╰─➤</code> 表示运行 RabbitMQ 的远程主机, <code>➜</code> 表示本地</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      <p>安装 RabbitMQ <a href="https://www.rabbitmq.com/download.html">https://www.rabbitmq.com/download.html</a>, 注意发行版版本</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu <span class="m">20</span>.04.1 LTS
+Release:	<span class="m">20</span>.04
+Codename:	focal
+╰─➤ curl -1sLf <span class="s2">"https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA"</span> <span class="se">\</span>
+    <span class="p">|</span> sudo gpg --dearmor &gt; /usr/share/keyrings/com.rabbitmq.team.gpg
+╰─➤ curl -1sLf https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.E495BB49CC4BBE5B.key <span class="se">\</span>
+    <span class="p">|</span> sudo gpg --dearmor &gt; /usr/share/keyrings/io.cloudsmith.rabbitmq.E495BB49CC4BBE5B.gpg
+╰─➤ curl -1sLf https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.9F4587F226208342.key <span class="se">\</span>
+    <span class="p">|</span> sudo gpg --dearmor &gt; /usr/share/keyrings/io.cloudsmith.rabbitmq.9F4587F226208342.gpg</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      <p>创建文件 <code>/etc/apt/sources.list.d/rabbitmq.list</code></p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>deb <span class="o">[</span>signed-by<span class="o">=</span>/usr/share/keyrings/io.cloudsmith.rabbitmq.E495BB49CC4BBE5B.gpg<span class="o">]</span>     <span class="se">\</span>
+    https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/ubuntu  focal main
+deb-src <span class="o">[</span>signed-by<span class="o">=</span>/usr/share/keyrings/io.cloudsmith.rabbitmq.E495BB49CC4BBE5B.gpg<span class="o">]</span> <span class="se">\</span>
+    https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/ubuntu  focal main
+
+deb <span class="o">[</span>signed-by<span class="o">=</span>/usr/share/keyrings/io.cloudsmith.rabbitmq.9F4587F226208342.gpg<span class="o">]</span>     <span class="se">\</span>
+    https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/ubuntu  focal main
+deb-src <span class="o">[</span>signed-by<span class="o">=</span>/usr/share/keyrings/io.cloudsmith.rabbitmq.9F4587F226208342.gpg<span class="o">]</span> <span class="se">\</span>
+    https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/ubuntu  focal main
+╰─➤ apt update -y  
+╰─➤ sudo apt-get install -y erlang-base <span class="se">\</span>
+                        erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets  <span class="se">\</span>
+                        erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key <span class="se">\</span>
+                        erlang-runtime-tools erlang-snmp erlang-ssl <span class="se">\</span>
+                        erlang-syntax-tools erlang-tftp erlang-tools erlang-xmerl</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-5">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-5">#</a>
+      </div>
+      <p>Install rabbitmq-server and its dependencies</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤ sudo apt-get install rabbitmq-server -y --fix-missing</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-6">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-6">#</a>
+      </div>
+      <p>装完后自动运行, 查看状态</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤ systemctl status rabbitmq-server
+╰─➤ journalctl -u rabbitmq-server.service -f</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-7">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-7">#</a>
+      </div>
+      <p>安装管理插件 <a href="https://www.rabbitmq.com/management.html">https://www.rabbitmq.com/management.html</a>, 
+在浏览器上打开 <code>http://192.168.42.2:15672</code>, 用户名 <code>full_access</code> 密码 <code>s3crEt</code> 登录;</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤ rabbitmq-plugins <span class="nb">enable</span> rabbitmq_management
+╰─➤ rabbitmqctl add_user full_access s3crEt
+╰─➤ rabbitmqctl set_user_tags full_access administrator</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-8">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-8">#</a>
+      </div>
+      <p>除此之外, 默认用户名和密码都是 guest, 没有登录 UI 的权限, 只能在 localhost 登录;
+因此, 需要创建一个 localhost 之外使用的用户</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤ rabbitmqctl add_user guest2 guest2</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-9">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-9">#</a>
+      </div>
+      <h2>Hello World</h2>
+<p><a href="https://www.rabbitmq.com/tutorials/tutorial-one-go.html">https://www.rabbitmq.com/tutorials/tutorial-one-go.html</a></p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ git clone https://github.com/rabbitmq/rabbitmq-tutorials.git
+➜ <span class="nb">cd</span> rabbitmq-tutorials/go
+➜ <span class="nv">http_proxy</span><span class="o">=</span>http://127.0.0.1:1090/ <span class="nv">https_proxy</span><span class="o">=</span>http://127.0.0.1:1090/
+    <span class="nv">no_proxy</span><span class="o">=</span>localhost,127.0.0.0/8,::1 go get github.com/rabbitmq/amqp091-go</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-10">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-10">#</a>
+      </div>
+      <p>如果 rabbitmq 不是装在本地, 就需要修改代码上的地址</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ sed -i <span class="s1">'s/guest:guest@localhost/guest2:guest2@192.168.42.2/g'</span> send.go
+➜ sed -i <span class="s1">'s/guest:guest@localhost/guest2:guest2@192.168.42.2/g'</span> receive.go</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-11">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-11">#</a>
+      </div>
+      <p><code>amqp.Dial("amqp://guest2:guest2@192.168.42.2:5672/")</code> 表示 <code>vhost</code> 为 <code>/</code> <a href="https://www.rabbitmq.com/uri-spec.html">https://www.rabbitmq.com/uri-spec.html</a></p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-12">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-12">#</a>
+      </div>
+      <p>添加权限 <a href="https://www.rabbitmq.com/access-control.html">https://www.rabbitmq.com/access-control.html</a></p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤ rabbitmqctl set_permissions -p <span class="s2">"/"</span> <span class="s2">"guest2"</span> <span class="s2">".*"</span> <span class="s2">".*"</span> <span class="s2">".*"</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-13">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-13">#</a>
+      </div>
+      <p>运行, send.go 发布一条消息, receive.go 接收, 不是即时通讯; <code>tcpdump -i wlp2s0 port 5672 -n</code> 抓包, 可看到 amqp 是基于 TCP 的协议;
+receive.go 不在线, send.go 发出数据, 也能收到 ACK, 说明 RabbitMQ 起到中间人(broker,  (买卖的)中间人,代理人)的作用</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ go run send.go
+<span class="m">2021</span>/09/10 <span class="m">19</span>:08:20  <span class="o">[</span>x<span class="o">]</span> Sent Hello World!
+➜ go run receive.go 
+<span class="m">2021</span>/09/10 <span class="m">19</span>:08:51  <span class="o">[</span>*<span class="o">]</span> Waiting <span class="k">for</span> messages. To <span class="nb">exit</span> press CTRL+C
+<span class="m">2021</span>/09/10 <span class="m">19</span>:08:51 Received a message: Hello World!</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-14">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-14">#</a>
+      </div>
+      <h2>Work Queues</h2>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-15">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-15">#</a>
+      </div>
+      <p><a href="https://www.rabbitmq.com/tutorials/tutorial-two-go.html">https://www.rabbitmq.com/tutorials/tutorial-two-go.html</a></p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-16">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-16">#</a>
+      </div>
+      <p>修改所有代码的通讯地址</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ sed -i <span class="s1">'s/guest:guest@localhost/guest2:guest2@192.168.42.2/g'</span> *.go</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-17">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-17">#</a>
+      </div>
+      <p>发布 20 个任务, 有几个 <code>.</code>, 消费者就要睡眠多少秒</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ <span class="k">for</span> i <span class="k">in</span> <span class="k">$(</span>seq <span class="m">1</span> <span class="m">20</span><span class="k">)</span><span class="p">;</span> <span class="k">do</span> go run new_task.go <span class="s2">"..."</span><span class="p">;</span> <span class="k">done</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-18">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-18">#</a>
+      </div>
+      <p>打开多个终端, 运行消费者</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ go run worker.go
+<span class="m">2021</span>/09/10 <span class="m">20</span>:39:33  <span class="o">[</span>*<span class="o">]</span> Waiting <span class="k">for</span> messages. To <span class="nb">exit</span> press CTRL+C
+<span class="m">2021</span>/09/10 <span class="m">20</span>:39:33 Received a message: ...
+<span class="m">2021</span>/09/10 <span class="m">20</span>:39:36 Done
+<span class="m">2021</span>/09/10 <span class="m">20</span>:39:36 Received a message: ...</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-19">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-19">#</a>
+      </div>
+      <h2>Publish/Subscribe</h2>
+<p>目前为止, 没发现有什么特别的地方, 你不用配置 RabbitMQ 都能使用, 
+所以还是要看看卷比们的意见: <a href="https://cloud.tencent.com/developer/article/1816305">https://cloud.tencent.com/developer/article/1816305</a></p>
+<blockquote>
+<p>由于是专门应对面试的，肯定不会对每个知识点都细说，我们只要找到被问的概率相关对高的知识点和题目</p>
+</blockquote>
+<p>面试出题者怎么说也是用过 RabbitMQ 的, 这和 Leetcode 不一样, 工具, 操作系统类的问题某种程度上有一定的现实意义.</p>
+<p>这一节对应了以下面试题:</p>
+<ul>
+<li>
+<ol>
+<li>说说 Broker 服务节点、Queue 队列、Exchange 交换器？</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>说说生产者 Producer 和消费者 Consumer? </li>
+</ol>
+</li>
+<li>
+<ol>
+<li>Binding绑定？ </li>
+</ol>
+</li>
+<li>
+<ol>
+<li>交换器4种类型？</li>
+</ol>
+</li>
+</ul>
+<p>publish/subscribe 模式是指将消息 (message) 发送给不同的消费者, 
+<a href="/e/public/posts/rabbitmq.html#section-9">上一节</a> 虽然启动了多个终端运行多个 worker.go,
+但依然被视作是同一消费者, 因为教程写道: </p>
+<blockquote>
+<p>In this part we’ll do something completely different – we’ll deliver a message to multiple consumers.</p>
+</blockquote>
+<p>生产者 (producer) 发送的消息并非马上就到达队列 (queue), 
+抓包时看到的 TCP ACK, 是 exchange 回复的, 即, exchange 和 producer
+直接通信; exchange 决定消息如何分配到 queue: 发送给特定队列, 还是多个队列, 或者丢弃;</p>
+<p>交换器的 4 种类型? 草, 教程提了 <code>direct</code>, <code>topic</code>, <code>header</code>, <code>fanout</code> 四种, 只讲最后一种.</p>
+<p><code>fanout</code> 指将信息广播到与 exchange 关联的队列, 那么也不难猜测其他类型:(未验证)</p>
+<ol>
+<li>direct: unicast</li>
+<li>topic: multicast</li>
+<li>header: 查看首部信息</li>
+</ol>
+<p>不好意思啊, 匿名和非匿名 exchange 也是考点,
+就跟 Linux 匿名队列一样: <a href="https://en.wikipedia.org/wiki/Anonymous_pipe">https://en.wikipedia.org/wiki/Anonymous_pipe</a>,
+匿名的意义是什么? 方便不在乎过程的人使用, 比如 <code>command | grep pat</code>, <code>command</code> 通过匿名管道到达 <code>grep</code>;
+为什么它会成为面试题? 因为没人想得到平时敲的那些 <code>|</code> 和 <code>pipe(2)</code> 是一个东西; 你要是答出了, 还会问怎么实现.
+知道怎么实现是好事, 但把实现记在脑子里 15 秒内反应出来真 TM 是疯了. 不过, 我认为对基本原理的记忆是有必要的.
+虽然和 RabbitMQ 无关, 话说到这了, 就顺便把答案找出来, <a href="https://unix.stackexchange.com/a/436880">https://unix.stackexchange.com/a/436880</a>,</p>
+<ol>
+<li>终端读取 <code>command | grep pat</code>, 申请一个匿名管道, 返回 2 个描述符 <code>fd1</code>, <code>fd2</code></li>
+<li><code>fork()</code> 一个进程 <code>A</code> 执行 <code>command</code>, <code>A</code> 将 <code>fd2</code> 通过 <code>dup2()</code> 与 <code>stdout</code> 关联起来, 关掉 <code>fd1</code></li>
+<li>主进程通过 <code>fd1</code> 接收 <code>A</code> 的输入, 然后 <code>fork()</code> 进程 <code>B</code></li>
+<li>进程 <code>B</code> 如法炮制, 将 <code>stdin</code> 与 <code>fd2</code> 绑定, 主进程从 <code>fd1</code> 写入 <code>A</code> 的输出, <code>B</code> 通过 <code>fd2</code> 作为 <code>stdin</code> 收到输入</li>
+</ol>
+<p>不匿名的意义是什么? 让管道像文件一样使用. 原理一样.</p>
+<p>匿名 exchange, nameless exchange, 名字是空字符串 <code>""</code>, 在 new_task.go 中可以找到这段代码</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="nv">err</span> <span class="o">=</span> ch.Publish<span class="o">(</span>
+  <span class="s2">""</span>,     // exchange
+  q.Name, // routing key
+  false,  // mandatory
+  false,  // immediate
+  amqp.Publishing<span class="o">{</span>
+    ContentType: <span class="s2">"text/plain"</span>,
+    Body:        <span class="o">[]</span>byte<span class="o">(</span>body<span class="o">)</span>,
+<span class="o">})</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-20">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-20">#</a>
+      </div>
+      <p>回答本节最后一个面试问题, 什么是 Bindings? Bindings 绑定 exchange 和 queue;</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-21">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-21">#</a>
+      </div>
+      <p>先运行这一节的例子</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ go run receive_logs.go
+➜ go run emit_log.go</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-22">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-22">#</a>
+      </div>
+      <p>查看 bindings</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤ rabbitmqctl list_bindings
+Listing bindings <span class="k">for</span> vhost /...
+source_name	source_kind	destination_name	destination_kind	routing_key	arguments
+	exchange	hello	queue	hello	<span class="o">[]</span>
+	exchange	task_queue	queue	task_queue	<span class="o">[]</span>
+	exchange	amq.gen-x8SKeqIOxiH00PdAJDYDkQ	queue	amq.gen-x8SKeqIOxiH00PdAJDYDkQ	<span class="o">[]</span>
+logs	exchange	amq.gen-x8SKeqIOxiH00PdAJDYDkQ	queue		<span class="o">[]</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-23">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-23">#</a>
+      </div>
+      <p>列举所有 exchange</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>╰─➤ rabbitmqctl list_exchanges
+Listing exchanges <span class="k">for</span> vhost / ...
+name	<span class="nb">type</span>
+amq.rabbitmq.trace	topic
+amq.direct	direct
+amq.match	headers
+amq.topic	topic
+amq.fanout	fanout
+	direct
+amq.headers	headers
+logs	fanout</pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-24">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-24">#</a>
+      </div>
+      <p>再看代码: logs 是 exchange 的名字, logs 是 queue 名, 类型是 <code>fanout</code>;</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="nv">err</span> <span class="o">=</span> ch.ExchangeDeclare<span class="o">(</span>
+	<span class="s2">"logs"</span>,   // name
+	<span class="s2">"fanout"</span>, // <span class="nb">type</span>
+	true,     // durable
+	false,    // auto-deleted
+	false,    // internal
+	false,    // no-wait
+	nil,      // arguments
+<span class="o">)</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-25">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-25">#</a>
+      </div>
+      <h2>Routing</h2>
+<p>路由是指 exchange 充当路由角色, 有选择地分配消息, 而不是广播 (<code>fanout</code>), 
+  这时候需要用到 <code>direct</code> 类型的 exchange</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="nv">err</span> <span class="o">=</span> ch.ExchangeDeclare<span class="o">(</span>
+  <span class="s2">"logs_direct"</span>, // name
+  <span class="s2">"direct"</span>,      // <span class="nb">type</span>
+  true,          // durable
+  false,         // auto-deleted
+  false,         // internal
+  false,         // no-wait
+  nil,           // arguments
+<span class="o">)</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-26">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-26">#</a>
+      </div>
+      <p>发布</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="nv">err</span> <span class="o">=</span> ch.Publish<span class="o">(</span>
+  <span class="s2">"logs_direct"</span>,         // exchange
+  severityFrom<span class="o">(</span>os.Args<span class="o">)</span>, // routing key
+  false,                 // mandatory
+  false,                 // immediate
+  amqp.Publishing<span class="o">{</span>
+    ContentType: <span class="s2">"text/plain"</span>,
+    Body:        <span class="o">[]</span>byte<span class="o">(</span>body<span class="o">)</span>,
+<span class="o">})</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-27">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-27">#</a>
+      </div>
+      <p>运行, <code>receive_log_direct.go</code> 只订阅 <code>info, warning, error</code> 类型的消息,
+通过 <code>emit_log_direct.go</code> 发送 <code>error</code>, <code>info</code>, <code>debug</code> 类型的消息, <code>debug</code> 发出去之后,
+<code>receive_log_direct.go</code> 不会收到消息</p>
+<pre><code>+---------------------+  publish   +--------------------------------+     +-------+
+| client(routing-key) | ---------&gt; | exchange(routing key)(bounded) | --&gt; | queue |
++---------------------+            +--------------------------------+     +-------+
+</code></pre>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ go run receive_logs_direct.go info warning error
+➜ go run emit_log_direct.go error <span class="s2">"Run. Run. Or it will explode."</span>
+➜ go run emit_log_direct.go info <span class="s2">"Run. Run. Or it will explode."</span>
+➜ go run emit_log_direct.go debug <span class="s2">"Run. Run. Or it will explode."</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-28">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-28">#</a>
+      </div>
+      <h2>Topic</h2>
+<p>正则匹配, 和上一节区别不大, 只不过扩展了 routing key 的匹配方法.</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-29">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-29">#</a>
+      </div>
+      <p>订阅 routing key 为 <code>.critical</code> 结尾的消息</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ go run receive_logs_topic.go <span class="s2">"*.critical"</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-30">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-30">#</a>
+      </div>
+      <p>订阅方可以收到这条消息</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ go run emit_log_topic.go <span class="s2">"kern.critical"</span> <span class="s2">"A critical kernel error"</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-31">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-31">#</a>
+      </div>
+      <p>订阅方不能收到这条消息</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ go run emit_log_topic.go <span class="s2">"kern.debug"</span> <span class="s2">"A kernel debug message"</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-32">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-32">#</a>
+      </div>
+      <h2>RPC (Remote Procedure Call)</h2>
+<p><a href="https://www.rabbitmq.com/tutorials/tutorial-six-go.html">https://www.rabbitmq.com/tutorials/tutorial-six-go.html</a></p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-33">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-33">#</a>
+      </div>
+      <p>RPC 的关键在于发出去的消息, 必须有回应, 比如让远程主机执行 <code>ls</code>, 如果不接收结果, 那这种 RPC 没什么意义.
+RPC 客户端 和服务端的实现是通过建立两个队列, 建立全双工通信.</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>➜ go run rpc_server.go
+<span class="m">2021</span>/09/11 <span class="m">02</span>:08:52  <span class="o">[</span>*<span class="o">]</span> Awaiting RPC requests
+<span class="m">2021</span>/09/11 <span class="m">02</span>:08:58  <span class="o">[</span>.<span class="o">]</span> fib<span class="o">(</span><span class="m">30</span><span class="o">)</span>
+<span class="m">2021</span>/09/11 <span class="m">02</span>:09:02  <span class="o">[</span>.<span class="o">]</span> fib<span class="o">(</span><span class="m">30</span><span class="o">)</span>
+➜ go run rpc_client.go <span class="m">30</span>
+<span class="m">2021</span>/09/11 <span class="m">02</span>:09:02  <span class="o">[</span>x<span class="o">]</span> Requesting fib<span class="o">(</span><span class="m">30</span><span class="o">)</span>
+<span class="m">2021</span>/09/11 <span class="m">02</span>:09:02  <span class="o">[</span>.<span class="o">]</span> Got <span class="m">832040</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-34">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-34">#</a>
+      </div>
+      <p>最后一节 <a href="https://www.rabbitmq.com/tutorials/tutorial-seven-java.html">Publisher Confirms</a>, 没有 Go 代码, 跳过了,
+讲的是”确认机制”, exchange 和生产者的互动</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-35">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-35">#</a>
+      </div>
+      <h2>面试问题</h2>
+<p>看完 RabbitMQ 教程, 之后再回来看看面试题, 发现错过了一些信息</p>
+<h3>Dead-Letter-Exchange(死信队列)</h3>
+<p><a href="https://www.rabbitmq.com/dlx.html">https://www.rabbitmq.com/dlx.html</a></p>
+<p>一种应用层的可靠传输机制, exchange 往 queue 发送任务/消息, queue 会回复, 回复包括错误警告, 
+  触发错误的消息被称为 Dead-Lettered, 这些消息可以重新发送给一个 exchange, 这个 exchange 被称为 Dead Letter Exchanges;</p>
+<p>queue 的回复包括</p>
+<ol>
+<li>NAK</li>
+<li>超时(没有回复也是一种回复)</li>
+<li>队列满了, 信息被丢弃</li>
+</ol>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-36">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-36">#</a>
+      </div>
+      <p>客户端发出消息之后, 不再处理失败的情况, 
+相当于把这些事委托给 RabbitMQ, 所以, 客户端需要声明失败后, 
+目标 exchange 应该往哪个 dead-lettered-exchanged 重新发送消息</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>args.put<span class="o">(</span><span class="s2">"x-dead-letter-routing-key"</span>, <span class="s2">"some-routing-key"</span><span class="o">)</span><span class="p">;</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-37">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-37">#</a>
+      </div>
+      <h2>结论</h2>
+<p>RabbitMQ 是消息中间件, 客户端将消息发布到 RabbitMQ 之后, RabbitMQ 确保消息能妥善地发送到服务端.
+RabbitMQ 是一个反向代理, 因为客户端作为生产者直接跟 RabbitMQ 的 exchange 通信, 而不是服务器. 服务器通过订阅
+获取任务. 服务器和客户端仅仅是单向通信时候的角色, 如果服务器需要向客户端发送反馈消息, 则需要一条逆向的通信;
+由于 RabbitMQ 能合理地安排请求调度, 所以服务端只需要专注业务逻辑, 这就完成了物理和逻辑的”解耦”.
+从教程的内容来看, RabbitMQ 的基本原理比 Leetcode 简单得多,
+生产消费者模式, 分配策略, 网络可靠传输的基本原则, 等; 
+如果需要了解它的细节, 可以查文档.</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+</div>
+
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+</html>

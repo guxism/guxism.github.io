@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>gmock.cpp</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      <h1>Google Mock</h1>
+<p>我以前用过 googletest, 没用过 googlemock, 看到网上有人提到 unittest,
+就研究一下.</p>
+<p>关于 mock 的文章, Google 自己的 <a href="http://google.github.io/googletest/gmock_for_dummies.html">Mocking for
+Dummies</a>
+属于字都认识连起来不知道什么意思的写作风格, 举了一个不够形象的例子,
+它仅仅告诉我们怎么写 Mock, 并没解释到底什么是 Mock, 意义是什么;</p>
+<p>SO 上有一个答案说得比较清楚 - <a href="https://stackoverflow.com/questions/2665812/what-is-mocking">What is
+Mocking?</a>:
+简而言之, mock 用来模拟一个不利于单元测试的组件, 比如网络, 数据库.</p>
+<p>Mock 某种程度上只适用于”组合”的编程范式, 只有组件才方便测试,
+测试方式是通过依赖注入将 mock 注入到待测代码;</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      <h2>Mocking for Dummies</h2>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>先看 <em>Mocking for Dummies</em> 的代码, 先对 mock 有个初步印象</p>
+<pre><code>#include &lt;gmock/gmock.h&gt;
+#include &lt;gtest/gtest.h&gt;
+// A 组的业务代码: turtle.h
+class Turtle
+{
+
+  public:
+    virtual ~Turtle() {}
+    virtual void PenUp() = 0;
+    virtual void PenDown() = 0;
+    virtual void Forward(int distance) = 0;
+    virtual void Turn(int degrees) = 0;
+    virtual void GoTo(int x, int y) = 0;
+    virtual int GetX() const = 0;
+    virtual int GetY() const = 0;
+};
+
+// A 组人员提供测试头文件: mockturtle.h
+class MockTurtle : public Turtle
+{
+  public:
+    MOCK_METHOD0(PenUp, void());
+    MOCK_METHOD0(PenDown, void());
+    MOCK_METHOD1(Forward, void(int distance));
+    MOCK_METHOD1(Turn, void(int degrees));
+    MOCK_METHOD2(GoTo, void(int x, int y));
+    MOCK_CONST_METHOD0(GetX, int());
+    MOCK_CONST_METHOD0(GetY, int());
+};
+
+// B 组业务代码: painter.h
+#include "turtle.h"
+class Painter
+{
+    Turtle *turtle;
+
+  public:
+    Painter(Turtle *turtle) : turtle(turtle) {}
+
+    bool DrawCircle(int, int, int)
+    {
+        turtle-&gt;PenDown();
+        return true;
+    }
+};
+
+// B 组自己写的业务测试代码: test_painter.cpp
+#include "painter.h"
+#include "mockturtle.h"
+using ::testing::AtLeast;
+TEST(PainterTest, CanDrawSomething)
+{
+    MockTurtle turtle;
+    EXPECT_CALL(turtle, PenDown()).Times(AtLeast(1));
+
+    Painter painter(&amp;turtle);
+
+    EXPECT_TRUE(painter.DrawCircle(0, 0, 10));
+}
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleMock(&amp;argc, argv);
+    return RUN_ALL_TESTS();
+}
+</code></pre>
+
+<p>模拟 Turtle 的理由是, 现实中的 Turtle 可能涉及到 Opengl, DirectX,
+这种复杂的图形 API, 而通过模拟可以避免外部实现的影响, 把注意力集中在 Painter
+的逻辑测试上.</p>
+<p>说到这, 可能各位会觉得 mock 就这么一点内容. 事实上它的目的不难理解.
+我建议看 <a href="http://donsoft.io/gmock-presentation/#/3/1">一个 Mock 例子: Coin
+Flipper</a> 加深了解.</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      <h2>另一个 Mock 例子: Coin Flipper</h2>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Rng</span>
+<span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-5">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-5">#</a>
+      </div>
+      <p>必须是虚函数, 否则如果通过基类指针释放派生类对象,
+则不会调用派生类的析构函数, 导致内存泄漏</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>    <span class="k">virtual</span> <span class="o">~</span><span class="n">Rng</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="k">virtual</span> <span class="kt">double</span> <span class="n">generate</span><span class="p">(</span><span class="kt">double</span> <span class="n">min</span><span class="p">,</span> <span class="kt">double</span> <span class="n">max</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-6">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-6">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CoinFlipper</span>
+<span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-7">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-7">#</a>
+      </div>
+      <p>依赖注入</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>    <span class="n">Rng</span> <span class="o">*</span><span class="n">d_rng</span><span class="p">;</span> <span class="c1">// held, not owned</span>
+
+  <span class="k">public</span><span class="o">:</span>
+    <span class="k">enum</span> <span class="nc">Result</span>
+    <span class="p">{</span>
+        <span class="n">HEADS</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">TAILS</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">};</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-8">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-8">#</a>
+      </div>
+      <p>需要测试 CoinFlipper 的业务能力, 但是 CoinFlipper
+依赖一个随机的随机数生成者, 为了便于测试, 我们需要注入一个可以确定结果的
+“mocking 随机数生成者”</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>    <span class="n">CoinFlipper</span><span class="p">(</span><span class="n">Rng</span> <span class="o">*</span><span class="n">rng</span><span class="p">)</span> <span class="o">:</span> <span class="n">d_rng</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="n">Result</span> <span class="n">flipCoin</span><span class="p">()</span> <span class="k">const</span>
+    <span class="p">{</span>
+        <span class="k">const</span> <span class="kt">double</span> <span class="n">val</span> <span class="o">=</span> <span class="n">d_rng</span><span class="o">-&gt;</span><span class="n">generate</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">val</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">?</span> <span class="nl">HEADS</span> <span class="p">:</span> <span class="n">TAILS</span><span class="p">;</span>
+    <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;gmock/gmock.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;gtest/gtest.h&gt;</span><span class="cp"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-9">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-9">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">MockRng</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Rng</span>
+<span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-10">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-10">#</a>
+      </div>
+      <p>如果接口有 2 个参数, 就用 <code>MOCK_METHOD2</code>, 3 个就 <code>MOCK_METHOD3</code>, 如此类推</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>    <span class="n">MOCK_METHOD2</span><span class="p">(</span><span class="n">generate</span><span class="p">,</span> <span class="kt">double</span><span class="p">(</span><span class="kt">double</span><span class="p">,</span> <span class="kt">double</span><span class="p">));</span>
+<span class="p">};</span>
+
+<span class="k">using</span> <span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">AtLeast</span><span class="p">;</span>
+<span class="k">using</span> <span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">DoubleEq</span><span class="p">;</span>
+<span class="k">using</span> <span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">Exactly</span><span class="p">;</span>
+<span class="k">using</span> <span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">Return</span><span class="p">;</span>
+
+<span class="n">TEST</span><span class="p">(</span><span class="n">CoinFlipper</span><span class="p">,</span> <span class="n">ShouldReturnHeadsIfRandValueIsLessThanProbability</span><span class="p">)</span>
+<span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-11">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-11">#</a>
+      </div>
+      <p>1) Create mock objects (collaborators)</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>    <span class="n">MockRng</span> <span class="n">rng</span><span class="p">;</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-12">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-12">#</a>
+      </div>
+      <p>2) Specify your expectations of them</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">generate</span><span class="p">(</span><span class="n">DoubleEq</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">DoubleEq</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)))</span>
+        <span class="p">.</span><span class="n">Times</span><span class="p">(</span><span class="n">Exactly</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">WillOnce</span><span class="p">(</span><span class="n">Return</span><span class="p">(</span><span class="mf">0.25</span><span class="p">));</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-13">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-13">#</a>
+      </div>
+      <p>3) Construct object(s) under test, passing mocks</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>    <span class="n">CoinFlipper</span> <span class="nf">coinFlipper</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rng</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-14">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-14">#</a>
+      </div>
+      <p>4) Run code under test</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>    <span class="n">CoinFlipper</span><span class="o">::</span><span class="n">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">coinFlipper</span><span class="p">.</span><span class="n">flipCoin</span><span class="p">();</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-15">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-15">#</a>
+      </div>
+      <p>5) Check output (using Google Test or some other framework)</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre>    <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">CoinFlipper</span><span class="o">::</span><span class="n">HEADS</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-16">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-16">#</a>
+      </div>
+      <p>6) Let gmock automatically check mock expectations were met at end of
+test</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-17">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-17">#</a>
+      </div>
+      <h3>Value-Parameterized Tests</h3>
+<p>属于<a href="https://github.com/google/googletest/blob/master/docs/advanced.md#value-parameterized-tests">进阶测试技巧</a></p>
+<p>P 表示 Test Patterns</p>
+<p>这时候这例子的源码就失效了, 所以直接看文档 <a href="https://github.com/google/googletest/blob/master/docs/advanced.md#how-to-write-value-parameterized-tests">How to Write
+Value-Parameterized
+Tests</a>;</p>
+<p>Value-Parameterized Tests 的作用是批量写测试, 看下面代码, 可以看出它的模式,
+<code>Values</code> 的代码通过 <code>GetParam()</code> 获得, <code>GetParam()</code> 实际上是
+<code>CoinFlipperTest</code> 的成员函数, <code>CoinFlipperTest</code> 是一个 fixture class,
+必须继承 <code>testing::Test</code> and <code>testing::WithParamInterface&lt;T&gt;</code>,</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-18">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-18">#</a>
+      </div>
+      <p>什么是 fixture?
+<a href="https://en.wikipedia.org/wiki/Test_fixture">https://en.wikipedia.org/wiki/Test_fixture</a>,
+fixture 类都有 <code>SetUp()</code>, <code>TearDown()</code> 接口, 这两个接口分别准备和回收上下文,
+这种机械的固定的操作模式就叫做 fixture;</p>
+<blockquote>
+<p>Examples of fixtures include loading a database with a specific known set
+of data, erasing a hard disk and installing a known clean operating system
+installation, copying a specific known set of files, or the preparation of
+input data as well as set-up and creation of mock objects.</p>
+</blockquote>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-19">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-19">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CoinFlipperTest</span> <span class="o">:</span> <span class="k">public</span> <span class="n">testing</span><span class="o">::</span><span class="n">Test</span><span class="p">,</span>
+                        <span class="k">public</span> <span class="n">testing</span><span class="o">::</span><span class="n">WithParamInterface</span><span class="o">&lt;</span>
+                            <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="k">const</span> <span class="kt">double</span><span class="p">,</span> <span class="k">const</span> <span class="n">CoinFlipper</span><span class="o">::</span><span class="n">Result</span><span class="o">&gt;&gt;</span>
+<span class="p">{</span>
+<span class="p">};</span>
+
+<span class="n">TEST_P</span><span class="p">(</span><span class="n">CoinFlipperTest</span><span class="p">,</span> <span class="n">CoinFlip</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="kt">double</span> <span class="n">randomVal</span> <span class="o">=</span> <span class="n">GetParam</span><span class="p">().</span><span class="n">first</span><span class="p">;</span>
+    <span class="k">const</span> <span class="n">CoinFlipper</span><span class="o">::</span><span class="n">Result</span> <span class="n">expectedResult</span> <span class="o">=</span> <span class="n">GetParam</span><span class="p">().</span><span class="n">second</span><span class="p">;</span>
+
+    <span class="n">MockRng</span> <span class="n">rng</span><span class="p">;</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">generate</span><span class="p">(</span><span class="n">DoubleEq</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">DoubleEq</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)))</span>
+        <span class="p">.</span><span class="n">Times</span><span class="p">(</span><span class="n">Exactly</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">WillOnce</span><span class="p">(</span><span class="n">Return</span><span class="p">(</span><span class="n">randomVal</span><span class="p">));</span>
+
+    <span class="n">CoinFlipper</span> <span class="nf">coinFlipper</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rng</span><span class="p">);</span>
+    <span class="n">CoinFlipper</span><span class="o">::</span><span class="n">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">coinFlipper</span><span class="p">.</span><span class="n">flipCoin</span><span class="p">();</span>
+
+    <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">expectedResult</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">using</span> <span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">Values</span><span class="p">;</span>
+<span class="n">INSTANTIATE_TEST_CASE_P</span><span class="p">(</span><span class="n">ValidRandomNumberGenerated</span><span class="p">,</span> <span class="n">CoinFlipperTest</span><span class="p">,</span>
+                        <span class="n">Values</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">CoinFlipper</span><span class="o">::</span><span class="n">HEADS</span><span class="p">),</span>
+                               <span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">CoinFlipper</span><span class="o">::</span><span class="n">HEADS</span><span class="p">),</span>
+                               <span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="mf">0.49999</span><span class="p">,</span> <span class="n">CoinFlipper</span><span class="o">::</span><span class="n">HEADS</span><span class="p">),</span>
+                               <span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">CoinFlipper</span><span class="o">::</span><span class="n">TAILS</span><span class="p">),</span>
+                               <span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">CoinFlipper</span><span class="o">::</span><span class="n">TAILS</span><span class="p">),</span>
+                               <span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">CoinFlipper</span><span class="o">::</span><span class="n">TAILS</span><span class="p">)));</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">InitGoogleMock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">RUN_ALL_TESTS</span><span class="p">();</span>
+<span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-20">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-20">#</a>
+      </div>
+      <p>结果:</p>
+<pre><code>➜ ./test_mocking
+[==========] Running 7 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 1 test from CoinFlipper
+[ RUN      ] CoinFlipper.ShouldReturnHeadsIfRandValueIsLessThanProbability
+[       OK ] CoinFlipper.ShouldReturnHeadsIfRandValueIsLessThanProbability (1
+ms)
+[----------] 1 test from CoinFlipper (1 ms total)
+
+[----------] 6 tests from ValidRandomNumberGenerated/CoinFlipperTest
+[ RUN      ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/0
+[       OK ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/0 (0 ms)
+[ RUN      ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/1
+[       OK ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/1 (0 ms)
+[ RUN      ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/2
+[       OK ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/2 (0 ms)
+[ RUN      ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/3
+[       OK ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/3 (1 ms)
+[ RUN      ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/4
+[       OK ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/4 (0 ms)
+[ RUN      ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/5
+[       OK ] ValidRandomNumberGenerated/CoinFlipperTest.CoinFlip/5 (0 ms)
+[----------] 6 tests from ValidRandomNumberGenerated/CoinFlipperTest (1 ms
+total)
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 2 test suites ran. (2 ms total)
+[  PASSED  ] 7 tests.
+</code></pre>
+
+<p>可以看出, 以上代码作为模板套用并不难, 难点在于了解测试接口, 像
+<code>.Times(Exactly(1)).WillOnce(Return(randomVal));</code>. 难点在于文档.</p>
+<h2>结论</h2>
+<ul>
+<li>Mock 是一种模拟 (mimic), 用于取代结果不可预测的外部依赖;</li>
+<li>GoogleMock 提供了快速创建 mock class 的接口;</li>
+<li>被 mock 的类的析构函数必须是虚函数</li>
+<li>可以结合 fixture 使用</li>
+</ul>
+<h2>其他资源:</h2>
+<ul>
+<li><a href="http://martinfowler.com/articles/mocksArentStubs.html">Mocks Aren’t Stubs</a><ul>
+<li>classical vs. mockist testing</li>
+</ul>
+</li>
+<li><a href="http://google.github.io/googletest/gmock_cheat_sheet.html">gMock Cheat
+Sheet</a></li>
+<li><a href="http://google.github.io/googletest/gmock_cook_book.html">gMock Cookbook</a></li>
+</ul>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-21">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-21">#</a>
+      </div>
+      
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+</div>
+
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+</html>

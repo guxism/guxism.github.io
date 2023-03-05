@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>compare-and-swap.c</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      <h1>Compare And Swap</h1>
+<p><a href="https://en.wikipedia.org/wiki/Compare-and-swap">维基</a>: CAS is an atomic instruction.</p>
+<pre><code class="language-python"># cas 是原子操作的意思是以下几行操作通过一条 CPU 指令就能完成
+def cas(p: ptr, old, new):
+    if *p != old
+        return false
+    *p = new
+    return true
+
+
+def add(p, a) {
+    done = false;
+    while not done:
+        old = *p
+        new = old + a
+        done = cas(p, old, new)
+}
+</code></pre>
+<p><code>cas()</code> 是原子操作, 需要特殊的<strong>硬件支持</strong>;
+<code>add()</code> 不是原子操作, <code>while</code> 的使用表明: 如果要使用 cas, 就要 busy waiting.</p>
+<p>我们可以体会到 compare-and-swap 和 <a href="test-and-set.c.html">test-and-set</a> 是同一本质的东西,
+ 都是将多个逻辑操作压缩成一个原子操作; 它们的调用者需要反复检查返回结果, 直到条件满足,
+ 好处是尽可能避免上下文切换, 坏处是 busy waiting.</p>
+<p>本文将 <a href="https://www.cs.rochester.edu/research/synchronization/pseudocode/queues.html">Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorithms</a>
+翻译成 C 代码. </p>
+<blockquote>
+<p>Their construction expanded the lock-free queue of Michael and Scott,[18] which is an efficient queue often used in practice</p>
+<p>—  https://en.wikipedia.org/wiki/Non-blocking_algorithm#Wait-freedom</p>
+</blockquote>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      <h2>ABA 问题</h2>
+<p>用链表实现队列</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">struct</span><span class="w"> </span><span class="nc">node</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>重新定义指针类型 <code>pointer_t</code>, 防止 ABA 问题;</p>
+<p>首先观察队列如何通过 CAS 增加节点:</p>
+<pre><code>new = create_new();
+CAS(&amp;(tail-&gt;next)), old, new);
+</code></pre>
+<p>队列的尾端的 next 是一个指针, 值是 NULL, 因此 old 等于 NULL, new 是新分配的内存,
+追加的方式是: 将 next 设置为 new</p>
+<p>出现 ABA 问题的原因是线程切换, 问题不在于原子操作 CAS,
+而在于调用者, 读取旧值和调用 CAS 之间, 当前线程完全可能被其他线程抢占,
+导致指针所指的内容和旧值虽然一样, 但本质已改变;</p>
+<p>队列新增元素是怎么导致 ABA 的产生的?
+假设, 在队列新增元素 C 的操作中, 取队列最后一个元素 A 的指针, old 等于 A,
+在 CAS 之前, 另外一个线程抢占, 依次插入两个元素 B, A, CAS 发现指针所指是 A, 和旧值一样,
+就将 A 的 next 设置为新节点的地址,
+导致队列从 ABA 变成 AC, 损失了线程切换之间新增的元素;</p>
+<p>另一种取 CAS 第一个参数的策略, 是用 <code>queue-&gt;tail-&gt;next</code>,</p>
+<pre><code>  ┌────── 创建 C, 取 old = A
+  │
+┌─│── 追加 B, A, 在更新 queue-&gt;tail-&gt;next 为 *A 之后, 突然被打断
+│ 2
+│ └───  CAS, queue-&gt;tail-&gt;next 的值为 *A, 旧值为 A,
+1          将 queue-&gt;tail-&gt;next 设置为 *C,  将 queue-&gt;tail 设置为 *C,
+│                     queue-&gt;tail-&gt;next = NULL
+│
+└───  更新 queue-&gt;tail 为 queue-&gt;tail-&gt;next
+</code></pre>
+<p>导致了 <code>queue-&gt;tail = NULL</code>;</p>
+<p>不管你怎么取第一个参数, 你都要面对被抢占带来的不确定因素;</p>
+<p>解决问题的方法之一: 引入一个记数, 参考<a href="https://en.wikipedia.org/wiki/Compare-and-swap">维基</a></p>
+<p>这样的话, old 变成 {A, 1}, 追加 BA 之后,
+最后一个比较值是 {A, 3}, 那么这一轮就作废, 就不会把 C 放在 {A, 1} 后面导致 {B, 2} {A, 3} 丢失</p>
+<p>即使是这样, 如果另一个线程在一瞬间把记数加到溢出, 变成 1, 导致</p>
+<pre><code>{A, 1} {B, 2} {A, 3} ... {A, 0xFF...FF} {A, 1}
+=&gt;
+{A, 1} {C, 2}
+</code></pre>
+<p>丢了 <code>0xFF..FF - 2 + 1</code> 个元素;</p>
+<p>会出现各种情况, 但作为例子, 不必考虑如此周到, 只需要体现防止 ABA 的基本思想</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">node</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      <h2>__sync_bool_compare_and_swap</h2>
+<p>首先封装 __sync_bool_compare_and_swap</p>
+<pre><code class="language-c">bool __sync_bool_compare_and_swap (type *ptr, type oldval type newval, ...)
+type __sync_val_compare_and_swap (type *ptr, type oldval type newval, ...)
+</code></pre>
+<p><a href="https://gcc.gnu.org/onlinedocs/gcc-4.1.1/gcc/Atomic-Builtins.html">文档</a>: type 只支持
+int, long, long long as well as their unsigned counterparts</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">union</span><span class="w"> </span><span class="nc">cas_wrapper</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">p</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">CAS</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">old</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">new</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      <p>避免 aggregate value used where an integer was expected</p>
+<pre><code> long long old_ = (long long)old;
+ long long new_ = (long long)new;
+</code></pre>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="nc">cas_wrapper</span><span class="w"> </span><span class="n">old_</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">old_</span><span class="p">.</span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">old</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="nc">cas_wrapper</span><span class="w"> </span><span class="n">new_</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">new_</span><span class="p">.</span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">__sync_bool_compare_and_swap</span><span class="p">((</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">old_</span><span class="p">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">new_</span><span class="p">.</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">is_equal</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">ptr</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">ptr</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">.</span><span class="n">count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">count</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">node</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">next</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">queue</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">head</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">tail</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-5">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-5">#</a>
+      </div>
+      <p>初始化队列</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">queue</span><span class="w"> </span><span class="o">*</span><span class="n">Q</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">node</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">node</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">.</span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">.</span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">tail</span><span class="p">.</span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-6">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-6">#</a>
+      </div>
+      <p>因为没有锁的保护, 清空队列十分麻烦;
+设想, 删到一半的时候, 如果另一个线程以不低于删除的速度增加节点, 那删除过程就是无穷无尽;
+所以需要让队列的使用者知道什么时候停止使用;</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kt">void</span><span class="w"> </span><span class="nf">destroy</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">queue</span><span class="w"> </span><span class="o">*</span><span class="n">Q</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">node</span><span class="w"> </span><span class="o">*</span><span class="n">curr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">.</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">tmp</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">curr</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">.</span><span class="n">ptr</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">curr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">.</span><span class="n">ptr</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">free</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-7">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-7">#</a>
+      </div>
+      <h2>测试</h2>
+<p>让两个线程分别入列和出列同样的次数, 预期结果是队列为空</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kt">void</span><span class="w"> </span><span class="nf">enqueue</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">queue</span><span class="w"> </span><span class="o">*</span><span class="n">Q</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">dequeue</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">queue</span><span class="w"> </span><span class="o">*</span><span class="n">Q</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">inc</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">dec</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">);</span><span class="w"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_t</span><span class="w"> </span><span class="n">attr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">shared</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_t</span><span class="w"> </span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="n">t2</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">queue</span><span class="w"> </span><span class="n">q</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">inc</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">t2</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">dec</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">ctx_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">ctx_destroy</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="n">ctx</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ctx_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">run</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">ctx_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_exit</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;strings.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;limits.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">ctx_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">bzero</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_setdetachstate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">PTHREAD_CREATE_JOINABLE</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">initialize</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">q</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;assert.h&gt;</span><span class="cp"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">ctx_destroy</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_join</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_join</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">t2</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_attr_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-8">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-8">#</a>
+      </div>
+      <p>最后应该是空队列</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">is_equal</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">q</span><span class="p">.</span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">q</span><span class="p">.</span><span class="n">tail</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">q</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+<span class="cp">#define ITER 5</span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">inc</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ITER</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-9">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-9">#</a>
+      </div>
+      <p>入列</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="n">enqueue</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">"enqueue %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-10">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-10">#</a>
+      </div>
+      <p>必须睡眠, 否则printf 函数的顺序可能不对;
+同时让入列慢一些, 测试 dequeue;</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_exit</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">dec</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">context</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">val</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ITER</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-11">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-11">#</a>
+      </div>
+      <p>弹出</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dequeue</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">val</span><span class="p">))</span><span class="w"></span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">"dequeue %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">val</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-12">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-12">#</a>
+      </div>
+      <p>如果弹出失败, 忽略这一轮</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">"✗ dequeue failed</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="o">--</span><span class="n">i</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">pthread_exit</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-13">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-13">#</a>
+      </div>
+      <h2>实现无锁队列</h2>
+<p>进入正题,</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-14">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-14">#</a>
+      </div>
+      <p>入列要经历 2 个步骤</p>
+<ol>
+<li><code>tail = q-&gt;tail</code></li>
+<li><code>q-&gt;tail = new_node</code></li>
+</ol>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">enqueue</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">queue</span><span class="w"> </span><span class="o">*</span><span class="n">Q</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-15">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-15">#</a>
+      </div>
+      <p>创建新节点</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">node</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">node</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">.</span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-16">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-16">#</a>
+      </div>
+      <p>使用 CAS 的范式: 循环</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-17">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-17">#</a>
+      </div>
+      <p>根据上面的<a href="/blog/code/concurrency/compare-and-swap.c.html#section-2">解释</a>:
+CAS 的第一个参数, 无论是 <code>Q-&gt;tail-&gt;next</code>, 还是 <code>tail-&gt;next</code>, 都一样会出问题;
+选择 <code>tail = Q-&gt;tail</code>, 是其中一种方法</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">tail</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tail</span><span class="p">.</span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-18">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-18">#</a>
+      </div>
+      <p>检查 1, 2 步骤之间是否被打断:</p>
+<ol>
+<li>被其他线程彻底完成插入新元素的整个步骤, <code>Q-&gt;tail != tail</code></li>
+<li>被其他线程清空队列, <code>Q-&gt;tail == NULL</code></li>
+</ol>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_equal</span><span class="p">(</span><span class="n">tail</span><span class="p">,</span><span class="w"> </span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">tail</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-19">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-19">#</a>
+      </div>
+      <pre><code>                       +---------+
+                       | Q-&gt;tail |
+                       +---------+
+                         |
+                         |
+                         v
++------+     +---+     +---------+     +-------+     +---------+
+| next | --&gt; | B | &lt;-- |    A    | &lt;-- | front | &lt;-- | Q-&gt;head |
++------+     +---+     +---------+     +-------+     +---------+
+                         ^
+                         |
+                         |
+                       +---------+
+                       |  tail   |
+                       +---------+
+</code></pre>
+<p>如果 next 指向 NULL 而不是 B, 则说明没有新元素插入</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">next</span><span class="p">.</span><span class="n">ptr</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">new_next</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">{</span><span class="w"></span>
+<span class="w">                        </span><span class="n">node</span><span class="p">,</span><span class="w"> </span><span class="n">next</span><span class="p">.</span><span class="n">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-20">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-20">#</a>
+      </div>
+      <p>将尾部的 next 指针指向当前线程创建的新元素</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">CAS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tail</span><span class="p">.</span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">,</span><span class="w"> </span><span class="n">next</span><span class="p">,</span><span class="w"> </span><span class="n">new_next</span><span class="p">))</span><span class="w"></span>
+<span class="w">                </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-21">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-21">#</a>
+      </div>
+      <p>更新完 next 之后, 更新 Q.tail</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                    </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">new_tail</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                        </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-22">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-22">#</a>
+      </div>
+      <p>新节点</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                            </span><span class="n">node</span><span class="p">,</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-23">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-23">#</a>
+      </div>
+      <p>tail 的记数 +1</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                            </span><span class="n">tail</span><span class="p">.</span><span class="n">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span><span class="w"></span>
+<span class="w">                    </span><span class="n">CAS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">tail</span><span class="p">,</span><span class="w"> </span><span class="n">tail</span><span class="p">,</span><span class="w"> </span><span class="n">new_tail</span><span class="p">);</span><span class="w"></span>
+<span class="w">                    </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-24">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-24">#</a>
+      </div>
+      <p>如果另一个线程追加了元素,
+但来不及更新 Q-&gt;tail 就被打断, 则帮那线程完成更新, 并放弃自己的这轮更新</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">            </span><span class="k">else</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">new_tail</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">{</span><span class="w"></span>
+<span class="w">                        </span><span class="n">next</span><span class="p">.</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">tail</span><span class="p">.</span><span class="n">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-25">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-25">#</a>
+      </div>
+      <p>如果 Q.tail 指向 tail, 就将它更新为 tail 的 next;
+如果 Q.tail 并不指向 tail, 说明某一瞬间, 另一个线程抢占了 CPU, 完成了 Q.tail,
+那么 <code>__sync_bool_compare_and_swap</code> 失败, 但结果符合与其; 所以在此并不在乎它的返回值</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                </span><span class="n">CAS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">tail</span><span class="p">,</span><span class="w"> </span><span class="n">tail</span><span class="p">,</span><span class="w"> </span><span class="n">new_tail</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-26">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-26">#</a>
+      </div>
+      <p>如果被打断, 且队列被修改, 则从头开始</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="k">else</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">dequeue</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">queue</span><span class="w"> </span><span class="o">*</span><span class="n">Q</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">value</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">tail</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">head</span><span class="p">.</span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-27">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-27">#</a>
+      </div>
+      <p>在取出 head, 到对比之间可能被抢占</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_equal</span><span class="p">(</span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-28">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-28">#</a>
+      </div>
+      <p>如果队列为空, 则头尾指针指向同一个节点</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">head</span><span class="p">.</span><span class="n">ptr</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">tail</span><span class="p">.</span><span class="n">ptr</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-29">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-29">#</a>
+      </div>
+      <p>就在一瞬间, 其他线程可能入列</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">next</span><span class="p">.</span><span class="n">ptr</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-30">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-30">#</a>
+      </div>
+      <p>已确定, 是空队列</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="k">else</span><span class="w"></span>
+<span class="w">                </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-31">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-31">#</a>
+      </div>
+      <p>否则就是被其他线程加了一个元素</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                    </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">new_tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                        </span><span class="n">next</span><span class="p">.</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">tail</span><span class="p">.</span><span class="n">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span><span class="w"></span>
+<span class="w">                    </span><span class="n">CAS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">tail</span><span class="p">,</span><span class="w"> </span><span class="n">tail</span><span class="p">,</span><span class="w"> </span><span class="n">new_tail</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-32">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-32">#</a>
+      </div>
+      <p>队列不为空的情况</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">            </span><span class="k">else</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-33">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-33">#</a>
+      </div>
+      <p>更新头部</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                </span><span class="o">*</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next</span><span class="p">.</span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="k">struct</span><span class="w"> </span><span class="nc">pointer_t</span><span class="w"> </span><span class="n">new_head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="n">next</span><span class="p">.</span><span class="n">ptr</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="n">head</span><span class="p">.</span><span class="n">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span><span class="w"></span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">CAS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="n">new_head</span><span class="p">))</span><span class="w"></span>
+<span class="w">                </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-34">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-34">#</a>
+      </div>
+      <p>释放内存</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                    </span><span class="n">free</span><span class="p">(</span><span class="n">head</span><span class="p">.</span><span class="n">ptr</span><span class="p">);</span><span class="w"></span>
+<span class="w">                    </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-35">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-35">#</a>
+      </div>
+      <pre><code>➜  gcc -g -O0 -o compare-and-swap compare-and-swap.c -pthread
+➜  ./compare-and-swap
+✗ dequeue failed
+enqueue 0
+dequeue 0
+✗ dequeue failed
+✗ dequeue failed
+✗ dequeue failed
+enqueue 1
+dequeue 1
+✗ dequeue failed
+✗ dequeue failed
+✗ dequeue failed
+✗ dequeue failed
+enqueue 2
+dequeue 2
+✗ dequeue failed
+✗ dequeue failed
+✗ dequeue failed
+✗ dequeue failed
+enqueue 3
+dequeue 3
+✗ dequeue failed
+✗ dequeue failed
+✗ dequeue failed
+✗ dequeue failed
+enqueue 4
+dequeue 4
+</code></pre>
+<p>编写无锁数据结构的难点在于列举”读取变量”到 “CAS” 之间, 可能发生哪些事情, 导致不一致.
+人脑能否处理这种问题? 据说有对应的数学工具, TLA+,
+作者花了 27 年研究无锁编程(<a href="http://people.csail.mit.edu/bushl2/rpi/portfolio/lockfree-grape/writeup/project_writeup_das.pdf">第二页</a>);
+然而, 到现在, 无锁编程已经变成 2 天就能精通的烂大街面试问题.</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+
+                    <div class="section" id="section-links">
+                        <div class="docs">
+                            <div class="octowrap">
+                                <a class="octothorpe" href="#section-links">#</a>
+                            </div>
+                            <p><a href="raw/compare-and-swap.c">raw source</a></p>
+                        </div>
+                    </div>
+                    <div class="clearall"></div>
+                </div>
+            
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+            
+</html>

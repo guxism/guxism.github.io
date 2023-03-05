@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>用 Rust 实现 Lua(2): 代码生成和 Stack Machine</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>用 Rust 实现 Lua(2): 代码生成和 Stack Machine</h1>
+        <h2 id="stack-based-虚拟机" tabindex="-1">Stack-based 虚拟机</h2>
+<p><a href="/e/public/posts/nom.html">&gt;&gt;第一篇文章&lt;&lt;</a> 中我写了 parser，parser 生成 抽象语法树 AST，AST 由编译器编译成可执行文件，可执行文件在虚拟机上运行。如下面代码所示。</p>
+<pre class="one-piece"><code>let raw: Vec&lt;char&gt; = contents.chars().collect();
+let tokens = lex::lex(&amp;raw);
+let ast = parse::parse(&amp;raw, tokens);
+let pgrm = eval::compile(&amp;raw, ast);
+eval::eval(pgrm);
+</code></pre>
+<p>可执行文件由指令和符号组成，参考 ELF 文件格式。<br>
+虚拟机执行可执行文件，将指令 decode 成栈操作，所以这种虚拟机也叫 stack-based 虚拟机或者 stack machine。</p>
+<p>用栈来执行树并不是陌生操作，最简单的例子是用非递归的方式去遍历树，这时候要么用队列，要么用栈。用栈来实现中序遍历和后序遍历。而一般语法树使用 reverse Polish notion, 这种记法只能用后序遍历。此外像数据库常用的 DAG (directed acyclic graph) 也只能后序遍历。</p>
+<blockquote>
+<p>Stack machine 避免使用处理器的寄存器，我在<a href="/blog/code/algorithms/recursion-to-iteration.cpp.html">&gt;&gt;另外一篇文章&lt;&lt;</a>实现了递归到栈运算的转换，用栈空间替代了寄存器。但这并不是彻底的 stack machine, 因为我用栈之外的存储空间模拟了寄存器，保存了 eax 和 edi。这也不难解决，直接将这两个寄存器放入栈中即可，创造另外一个 calling convention。另外我用 goto hack 了 rip (program counter)，这也完全可以用 vector + 偏移量代替。</p>
+</blockquote>
+<p>虽然这不是陌生操作，但将栈抽象成虚拟机，则是罕见的。我觉得这种概念分层很重要，抽象意味着更广泛的应用。</p>
+<h2 id="龙书" tabindex="-1">龙书</h2>
+<p>讲真，开始动手之后，发现自己严重欠缺相关知识，于是看了龙书的 8.1-8.7。<br>
+不看优化和寄存器相关章节，所以阅读难度相对较小。</p>
+<p>收获： 0, 除了知道 three-address code, activation record(栈的另一种说法) 这些牛逼名词，龙书实现的是 register-based VM, 和我的目标 stack-based VM 不一样。</p>
+<p>结论：继续自己设计 calling convention</p>
+<h2 id="指令" tabindex="-1">指令</h2>
+<p>我们只运行这一段 Lua 代码：</p>
+<pre class="one-piece"><code>function fib(n)
+   if n &lt; 2 then
+      return n;
+   end
+   local n1 = fib(n-1);
+   local n2 = fib(n-2);
+   return n1 + n2;
+end
+fib(30);
+</code></pre>
+<p>涉及到的汇编指令为：</p>
+<ul>
+<li>ADD(<code>+</code>)</li>
+<li>SUBTRACT(<code>-</code>)</li>
+<li>LESS_THAN(<code>&lt;</code>)</li>
+<li>RETURN(<code>return</code>)</li>
+<li>COMPARE(<code>if n &lt; 2</code>)</li>
+<li>MOVE(<code>local n1 = ...</code>)</li>
+<li>CALL(<code>fib</code>)</li>
+</ul>
+<p>初步定这几个指令，边写边改</p>
+<h2 id="parser-的改进" tabindex="-1">Parser 的改进</h2>
+<p>本来 <code>exp binop exp</code> 的 AST 应该是:</p>
+<pre class="one-piece"><code>    pub struct Binop {
+        pub lhs: Box&lt;Exp&gt;,
+        pub op: Op,
+        pub rhs: Box&lt;Exp&gt;,
+    }
+</code></pre>
+<p>最后只能递归成如下所示, 问题在于, 在编译的时候还得把它还原成非递归的 vector 才好操作, 因此不如在 parsing 阶段直接将 Binop 解析成 vector。这里还有一个问题，即 <code>1+2+3</code> 只能解析成 <code>1+(2+3)</code></p>
+<pre class="one-piece"><code>Binop {
+        lhs: Number(
+            Integer(
+                1,
+            ),
+        ),
+        op: Plus,
+        rhs: Binop(
+            Binop {
+                lhs: Number(
+                    Integer(
+                        2,
+                    ),
+                ),
+                op: Plus,
+                rhs: Binop(
+                    Binop {
+                        lhs: Number(
+                            Integer(
+                                3,
+                            ),
+                        ),
+                        op: Plus,
+                        rhs: Binop(
+                            Binop {
+                                lhs: Number(
+                                    Integer(
+                                        4,
+                                    ),
+                                ),
+                                op: Plus,
+                                rhs: Number(
+                                    Integer(
+                                        5,
+                                    ),
+                                ),
+                            },
+                        ),
+                    },
+                ),
+            },
+        ),
+
+</code></pre>
+<p>改成这样:</p>
+<pre class="one-piece"><code>    pub struct Binop {
+        exps: Vec&lt;Exp&gt;,
+        ops:  Vec&lt;Op&gt;
+    }
+</code></pre>
+<p>Parsers:</p>
+<pre class="one-piece"><code>    pub fn binop(input: LocatedSpan) -&gt; IResult&lt;(Vec&lt;Exp&gt;, Vec&lt;Op&gt;)&gt; {
+        let parser = tuple((ws(simple_exp), op, ws(exp_rec)));
+        map(ws(parser), |(lhs, op, mut rhs)| {
+            rhs.0.push(lhs);
+            rhs.1.push(op);
+            rhs
+        })(input)
+    }
+
+    fn simple_exp(input: LocatedSpan) -&gt; IResult&lt;Exp&gt; {
+        alt((map(funccall, Exp::FuncCall), number, ident))(input)
+    }
+
+    pub fn exp_rec(input: LocatedSpan) -&gt; IResult&lt;(Vec&lt;Exp&gt;, Vec&lt;Op&gt;)&gt; {
+        alt((binop, map(simple_exp, |e| (vec![e], vec![]))))(input)
+    }
+
+    pub fn exp(input: LocatedSpan) -&gt; IResult&lt;Exp&gt; {
+        map(exp_rec, |(mut exps, mut ops)| {
+            if ops.is_empty() {
+                exps.pop().unwrap()
+            } else {
+                Exp::Binop(Binop { exps, ops })
+            }
+        })(input)
+    }
+</code></pre>
+<p>不用树的形式表示 IR 并没有错，树只是 IR 的一种表现形式（龙书说的）。nom 提供的 combinator 就只能这么用，See for yourself: <a href="https://github.com/Geal/nom/blob/main/doc/choosing_a_combinator.md">https://github.com/Geal/nom/blob/main/doc/choosing_a_combinator.md</a> 。这让我想起许多年前高考作文指南说：高考作文是戴上锁链跳舞。不一样的是，高考作文在对人的启发或教育上毫无意义。</p>
+<h2 id="虚拟机" tabindex="-1">虚拟机</h2>
+<p>先写一个简单的虚拟机：</p>
+<pre class="one-piece"><code>        fn run(&amp;mut self) {
+            while self.pc &lt; self.prog.commands.len() {
+                let cmd = &amp;self.prog.commands[self.pc];
+                self.pc += 1;
+                match cmd.instruction {
+                    Instruction::Push =&gt; {
+                        self.prog
+                            .stack
+                            .push(cmd.operands.as_ref().unwrap().last().unwrap().clone());
+                    }
+                    Instruction::Add =&gt; {
+                        let rhs = self.prog.stack.pop().unwrap();
+                        let lhs = self.prog.stack.pop().unwrap();
+                        let res = lhs + rhs;
+                        self.prog.stack.push(res);
+                    }
+                    Instruction::Subtract =&gt; {
+                        let rhs = self.prog.stack.pop().unwrap();
+                        let lhs = self.prog.stack.pop().unwrap();
+                        let res = lhs - rhs;
+                        self.prog.stack.push(res);
+                    }
+                    _ =&gt; {}
+                }
+            }
+        }
+</code></pre>
+<p>写法就是这样</p>
+<h2 id="calling-convention" tabindex="-1">Calling Convention</h2>
+<p>由于我们不参考任何资料，自己设计一个 calling convention，那么就不能想得太周全，写一点测一点</p>
+<h3 id="1-最简单的开始" tabindex="-1">1. 最简单的开始</h3>
+<p>将这段代码</p>
+<pre class="one-piece"><code>                function f(n)
+                    return n+1;
+                end
+                f(n);
+</code></pre>
+<p>翻译成：</p>
+<pre class="one-piece"><code>jmp 5
+push n
+push 1
+add
+ret
+call 1
+</code></pre>
+<p>为什么第一步是 <code>jmp 5</code> ? 说来话长，因为 <code>call 1</code> 的存在。我希望一次性翻译完毕（one-pass), 而不是像上面提到的写汇编器的时候那样 two-pass。因此必须要固定函数定义的位置，那么，唯一的做法就是，在遇到函数的时候，提前将定义写入，调用者可以查符号表，填写 call 的 operand。<br>
+单元测试：</p>
+<pre class="one-piece"><code>        #[test]
+        fn test_simple_func() {
+            let arithmetic = parse(
+                r#"
+                function f(n)
+                    return n+1;
+                end
+                f(n);
+            "#,
+            );
+            let mut compiler = Compiler::new();
+            let res = compiler.compile(&amp;arithmetic.0);
+            let  = disassemble(res.as_ref().unwrap());
+            assert_eq!(
+                ,
+                r#"jmp 5
+push n
+push 1
+add
+ret
+call 1
+"#
+            );
+</code></pre>
+<h3 id="2-从函数中返回需要指定-pc-ip" tabindex="-1">2. 从函数中返回需要指定 pc/ip</h3>
+<p>当代码执行到 <code>call 1</code> 的时候，虚拟机知道 pc = 5, 但是，代码跳到 <code>f()</code> 的时候，不可能给他加一个 <code>jmp 5</code>， 因为可能在 pc = 100 处也有一个 <code>call 1</code>，如果写死，加一个 <code>jmp 100</code>, 那函数就是失去了通用的意义。所以，只能将 pc 记录在栈中, 改写 <code>f()</code> 的代码：</p>
+<pre class="one-piece"><code>push n
+push 1
+add
+restore pc &lt;= stack_top(+1)
+</code></pre>
+<p>实际上， 不能将 pc 设置为 5， 不然重新执行一遍 <code>f()</code></p>
+<p><img src="images/0xfeff_e29fd993a81142dda32d9d1161ef80c6.png" alt=""></p>
+<p>这样， <code>ret</code> 将根据我们定的协议(calling convention/protocol)，指导虚拟机恢复 pc。为什么不把 pc 放在下面？如下图所示</p>
+<p><img src="images/0xfeff_5152698d32844199be1bf9850ec4a332.png" alt=""><br>
+因为这么做违反了 stack-based VM 的原则：每一个指令执行的结果必须在栈顶。但是，你非要这么做也行，只是多了许多无谓的 push/pop, 比如从第一帧到第二帧，至少有：</p>
+<pre class="one-piece"><code>pop pc =&gt; memory
+push n
+push 1
+push pc
+</code></pre>
+<p>于是，我们得出结论，当执行 <code>call</code> 的时候，将 pc 放入栈中，这部分逻辑不需要体现在汇编中，在虚拟机的实现中实现即可。</p>
+<pre class="one-piece"><code>Instruction::Call =&gt; {
+                        self.prog.stack.push(Operand::Offset(self.pc));
+                        self.pc = cmd.operands.as_ref().unwrap()[0].to_offset().unwrap();
+                    }
+</code></pre>
+<p>问题又来了：那么 ret 应该怎么实现？这里有一个方法：如图所示</p>
+<p><img src="images/0xfeff_3eb39b76d2bb4a788aeb9ca896c8e249.png" alt=""></p>
+<pre class="one-piece"><code>Instruction::Ret =&gt; {
+                        self.pc = self.prog.stack[self.prog.stack.len() -2].to_offset().unwrap();
+                        let res = self.prog.stack.pop().unwrap();
+                        self.prog.stack.pop();
+                        self.prog.stack.push(res);
+                    }
+</code></pre>
+<h3 id="3-必须有-bp" tabindex="-1">3. 必须有 %bp</h3>
+<p>上面的 lua 代码有很严重的问题，就是我们不知道 n 是什么，但编译器也翻译了，那么，当 pc 跳转到 1 的时候，怎么知道 <code>f()</code> 的参数是什么？我应该在这设置一个逻辑：检测到未声明的变量的时候报错。但目前最重要的，是如何 interpret <code>call 1</code> ，让函数代码知道参数的存在。</p>
+<p>完全可以将函数的信息，包括参数，记录在一个哈希表中，创造一个指令 <code>LOAD</code>, 从哈希表中读取数值，将 <code>push n</code> 改成 <code>load n</code><br>
+这样一来，速度比寄存器还慢，因为哈希表在内存中。内存比寄存器慢。</p>
+<p>但是 stack-based VM 的目的就是丢弃寄存器，某种程度上，内存可以说是大寄存器，如果大量利用内存，那效率肯定是极低的，造成不少 cache miss, 特别是哈希表这种东西的涉及到非连续内存。</p>
+<p>因此，必须将参数放在栈中。已知，目前放在栈中的信息包括 ip/pc。参数和 pc 的位置无所谓先后，只要将协议确定下来就行。</p>
+<p><img src="images/0xfeff_46b2d261ce3d4137babf67dea52baf51.png" alt=""></p>
+<p>既然将信息保存在栈中，就必须在退场的时候清场。那么多个参数的时候如何处理？pop 多个参数？因为参数的数量是固定的，所以确实能够写死。但是，一个参数数量为 2 的函数的 ret 和参数数量为 3 的函数的 ret 表达一样的语义吗？虚拟机是无法理解的，因此，必须把参数的数量也 push 到栈中。</p>
+<p><img src="images/0xfeff_738e54f684da4fe1a00623c8698da745.png" alt=""><br>
+另外一种方法，和作弊一样，那就是借鉴 x86 的 calling convention, 用一个 frame pointer 作为每一个函数栈帧的起始点，那么在清场的时候，直接将 stack pointer 指向以前的 frame pointer，根本不需要 pop。</p>
+<p>栈帧的方法非常的经济，而且即使是对 Rust 这么远离指针，不够直截了当的语言而言，仅仅需要执行 <code>stack.resize()</code>，同时，由于不需要运行多次 pop 来清场，因此不需要将函数参数放入栈中。</p>
+<p>有人会说，这 TM 还不是用了 %bp 寄存器了么？ 对，是，正是如此，我们发誓不用这东西，但不代表我们的逻辑没有 %bp 的概念，只是说它不用物理高速缓存，即便我不用一个变量表示 %rbp, 我依然可以偷偷用一个概念表示 stack_pointer 减去某个偏移量，也就是说，非物理的模拟的 %bp 依然存在。既然这样，不如就光明正大地声明一个 %bp。你无法做到虚拟机完全无状态。</p>
+<p>另外，我们也无法避免使用 %ip, 否则，无法处理函数跳转。既然我们能接受将 %ip, 放入栈中，并认为它是虚拟机的一个状态，那么，%bp 为何不可？</p>
+<p>但有人连逻辑上的 %bp 也不能接受。这样不是没有办法。但会导致汇编异常复杂：</p>
+<pre class="one-piece"><code>1. load 3
+2. load 5
+3. load 6
+4. load 2
+5. load 2
+6. add
+7. load 1
+8. add
+9. ret
+</code></pre>
+<ul>
+<li><code>load 2</code> 表示从当前 sp 往上 2 个单元提取数值</li>
+</ul>
+<p>以上代码实现了:</p>
+<pre class="one-piece"><code>function f(a, b, c)
+	return a + b + c;
+end
+</code></pre>
+<p>这就过于复杂了，我也这么尝试过，我在实现的过程中，发现无法精准地定位 <code>load</code>，以及 <code>store</code>这些指令的偏移量，每一个位置的计算都和当前所在的 pc 有关，而且，这还是处在编译阶段，pc 只是一种预测。总而言之，涉及的状态太多了，没必要这么自讨苦吃。</p>
+<pre class="one-piece"><code>        fn compile_funcdef(&amp;mut self, funcdef: &amp;FuncDef) -&gt; Result&lt;Vec&lt;Command&gt;&gt; {
+            self.symtable.insert(
+                Sym {
+                    name: funcdef.name.clone(),
+                    sym_type: SymType::Func,
+                },
+                SymInfo {
+                    i_offset: self.commands.len(),
+                    digest: Digest::FuncSign(FuncSign {
+                        params: funcdef.body.params.to_vec(),
+                    }),
+                },
+            );
+            let mut param_code = Vec::new();
+            let mut i = funcdef.body.params.iter().peekable();
+            let bp = 0;
+            let mut sp = bp;
+            let mut arg_offset = 2;
+            while i.peek().is_some() {
+                let var = i.next();
+                param_code.push(Command {
+                    instruction: Instruction::Load,
+                    operands: Some(vec![Operand::Offset(
+                        sp - bp + arg_offset
+                    )]),
+                });
+                sp += 1;
+                arg_offset += 1;
+            }
+            let mut block = self.compile_block(&amp;funcdef.body.block).unwrap();
+            self.commands.append(&amp;mut param_code);
+            self.commands.append(&amp;mut block);
+            Ok(Vec::new())
+        }
+        fn compile_local(&amp;mut self, local: &amp;Local) -&gt; Result&lt;Vec&lt;Command&gt;&gt; {
+            let mut res: Vec&lt;Command&gt; = Vec::new();
+            let lhs = &amp;local.lhs;
+            let rhs = &amp;local.rhs[0];
+            res.push(Command {
+                instruction: Instruction::Push,
+                operands: Some(vec![Operand::Ident(lhs.clone())])
+            });
+            res.append(&amp;mut self.compile_exp(rhs).unwrap());
+            res.push(Command {
+                instruction: Instruction::Store,
+                operands: Some(vec![Operand::Offset(1)])
+            });
+            Ok(res)
+        }
+</code></pre>
+<p>这种实现是没有前途的，因此，必须有 %bp。</p>
+<h3 id="4-实现-call-ret" tabindex="-1">4. 实现 call, ret</h3>
+<p>修改测试语句，造出 3 参数函数：</p>
+<pre class="one-piece"><code>function f(a, b, c)
+	local d = a+b+c;
+    return d;
+end
+f(1, 2, 3);
+</code></pre>
+<p>使用 %bp，call 可以写成</p>
+<pre class="one-piece"><code>push c
+push b
+push a
+push N ; N 为参数数量
+push %ip
+push %bp
+</code></pre>
+<p><code>f()</code> 写成：</p>
+<pre class="one-piece"><code>load 3
+load 4
+load 5
+load -1
+load -2
+add
+load -3
+add
+ret
+</code></pre>
+<p><code>ret</code> 实现为：</p>
+<ul>
+<li>缓存栈顶的元素 e</li>
+<li>提取以前的 bp，将 stack resize 到 bp 位置</li>
+<li>获取往上一个偏移量的 ip, 还原虚拟机的 ip/pc</li>
+<li>根据参数数目弹出参数</li>
+<li>将 e 放入栈顶</li>
+</ul>
+<p>注： 将 argument 和 parameter 反方向排放没有任何理由，只要你开心，你可以把第二个参数第一个入栈</p>
+<p><img src="images/0xfeff_ee2d53264f974a9bb6433357718c7924.png" alt=""></p>
+<p>最后：</p>
+<p><img src="images/0xfeff_8beb3730da344064aa286b195eb2abc7.png" alt=""></p>
+<p>最后测试：</p>
+<pre class="one-piece"><code>        fn test_simple_func() {
+            let arithmetic = parse(
+                r#"
+                function f(a, b, c)
+                    local d = a + b + c;
+                    return d;
+                end
+                f(1, 2, 3);
+            "#,
+            );
+            let mut compiler = Compiler::new();
+            let res = compiler.compile(&amp;arithmetic.0);
+            let  = disassemble(res.as_ref().unwrap());
+            assert_eq!(
+                ,
+                r#"jmp 13
+load -3
+load -4
+load -5
+pushe
+load 1
+load 2
+add
+load 3
+add
+store 4
+load 4
+ret
+push 3
+push 2
+push 1
+push 3
+call 1
+halt
+"#
+            );
+            assert_eq!(
+                eval(res.as_ref().unwrap()),
+                Operand::Number(Number::Integer(6))
+            );
+        }
+    }
+}
+</code></pre>
+<p>可以看到编译出来的汇编非常操蛋，但是幸运的是，测试通过了。</p>
+<h3 id="5-最后一块拼图：if-else" tabindex="-1">5. 最后一块拼图：if-else</h3>
+<p>需要给 <code>jmp</code> 确定地址，对于这一块，只能用相对地址，毕竟我们的设计是 one-pass translation。</p>
+<p><img src="images/0xfeff_51e106dc92684333b5b0ffa4d91801c9.png" alt=""><br>
+实现:</p>
+<pre class="one-piece"><code>        fn compile_cond(&amp;mut self, cond: &amp;Cond) -&gt; Result&lt;Vec&lt;Command&gt;&gt; {
+            let mut exps = Vec::new();
+            let mut blks = Vec::new();
+            let mut e_tt = 0;
+            let mut b_tt = 0;
+
+            for (exp, block) in &amp;cond.pairs {
+                let r = self.compile_exp(exp).unwrap();
+                e_tt += r.len();
+                exps.push(r);
+                let r = self.compile_block(block).unwrap();
+                b_tt += r.len();
+                blks.push(r);
+            }
+
+            e_tt += exps.len();
+            b_tt += blks.len();
+            let end_of_exps = Command {
+                instruction: Opcode::Jmpr,
+                operands: Some(vec![Operand::Offset(b_tt as i32 + 1)]),
+            };
+
+            let mut blk_depth = 0;
+
+            for i in (0..exps.len()) {
+                // current span = plus one jmp inst.
+                let n = exps[i].len() + 1;
+                dbg!(n);
+                e_tt -= n;
+                // plus one final jump to exit the condition block
+                let offset = e_tt + blk_depth + 1 + 1;
+
+                exps[i].push(Command {
+                    instruction: Opcode::Jgr,
+                    operands: Some(vec![Operand::Offset(offset as i32)]),
+                });
+
+                let n = blks[i].len() + 1;
+                b_tt -= n;
+                let offset = b_tt + 1;
+
+                blks[i].push(Command {
+                    instruction: Opcode::Jgr,
+                    operands: Some(vec![Operand::Offset(offset as i32)]),
+                });
+
+                blk_depth += n;
+            }
+            let mut res = Vec::new();
+            for mut e in exps {
+                res.append(&amp;mut e);
+            }
+            res.push(end_of_exps);
+            for mut b in blks {
+                res.append(&amp;mut b);
+            }
+
+            Ok(res)
+        }
+</code></pre>
+<p>这个逻辑实现起来出乎意料地轻松。<br>
+结果：</p>
+<pre class="one-piece"><code>        fn fib(n: i32) -&gt; i32 {
+            if n &lt; 2 {
+                return n;
+            }
+            fib(n - 1) + fib(n - 2)
+        }
+	    #[test]
+        fn test_fib() {
+            let arithmetic = parse(
+                r#"
+                function fib(n)
+                    if n &lt; 2 then
+                        return n;
+                    end
+                    local n1 = fib(n-1);
+                    local n2 = fib(n-2);
+                    return n1+n2;
+                end
+                fib(10);
+            "#,
+            );
+            let mut compiler = Compiler::new();
+            let res = compiler.compile(&amp;arithmetic.0);
+            let  = disassemble(res.as_ref().unwrap());
+            for i in .1 {
+                println!("{}", i);
+            }
+            assert_eq!(
+                eval(res.as_ref().unwrap()),
+                Operand::Number(Number::Integer(fib(10)))
+            );
+        }
+</code></pre>
+<p>汇编为：</p>
+<pre class="one-piece"><code>jmp 28
+load -3
+pushe
+pushe
+load 1
+push 2
+subtract
+jgr 2
+jmpr 4
+load 1
+ret
+jgr 1
+load 1
+push 1
+subtract
+push 1
+call 1
+store 2
+load 1
+push 2
+subtract
+push 1
+call 1
+store 3
+load 2
+load 3
+add
+ret
+push 10
+push 1
+call 1
+halt
+</code></pre>
+<p>搞定！</p>
+<p>这是 <a href="https://github.com/8DbVT4xJHMUS4ph7ay89/yet-another-lua-interpreter/tree/v2-simple-compiler">代码</a><br>
+这是 <code>fib(3)</code> 的 <a href="https://gist.github.com/8DbVT4xJHMUS4ph7ay89/e3ba3be3c37afe93b17b875a99c59643">执行过程</a></p>
+<p>代码写得一团遭，也不像在写 Rust，我也只针对一小块 Lua 代码写了实现，不过最关键的部分 calling convention 已经完成。根据 <em>Engineering A Compiler</em>: 编译器的编写原则有二，一是实现源代码的语义，二是做出优化。这篇文章或者这个练习至少符合第一个原则。优化则是下一个话题，到时候我将另起炉灶，从 scanner 开始写起。</p>
+<h2 id="结论" tabindex="-1">结论</h2>
+<ul>
+<li>Parsing 是最简单的事情，唯一的难点在于使用 nom</li>
+<li>强迫自己设计一个 calling convention 颇有好处，更加理解了 compile time 和 run time 的区别</li>
+<li>这一切的意义源自对 nom 的学习，但进而行驶到 compiler 这个深奥的领域，以前我都在隔岸观火，现在水到渠成，我的下一个目标是继续深入。</li>
+<li>对 stack machine 还需要更多了解，我唯一的了解就是将栈顶 2 个元素投入 ALU 计算，结果放入栈中，避免使用寄存器。但在具体实现中我无法避免用到状态变量。</li>
+</ul>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

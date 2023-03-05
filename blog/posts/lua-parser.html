@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>用 Rust 实现 Lua(1): 语法解析</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>用 Rust 实现 Lua(1): 语法解析</h1>
+        <nav class="table-of-contents"><ol><li><a href="#目的">目的</a></li><li><a href="#lua-语法">Lua 语法</a></li><li><a href="#lexer">Lexer?</a></li><li><a href="#先看-nom-怎么用">先看 nom 怎么用</a><ol><li><a href="#verify">verify</a></li><li><a href="#recognize">recognize</a></li><li><a href="#delimited">delimited</a></li><li><a href="#map">map</a></li><li><a href="#terminated">terminated</a></li><li><a href="#alt">alt</a></li><li><a href="#all_consuming">all_consuming</a></li><li><a href="#其他">其他</a></li></ol></li><li><a href="#一个简单的例子">一个简单的例子</a></li><li><a href="#另外一个例子">另外一个例子</a></li><li><a href="#定义错误类型">定义错误类型</a><ol><li><a href="#locatedspan">LocatedSpan</a></li><li><a href="#错误类型推断">错误类型推断</a></li></ol></li><li><a href="#写代码-地狱的入口">写代码: 地狱的入口</a><ol><li><a href="#目标">目标</a></li><li><a href="#定义-locatedspan-iresult-error">定义 LocatedSpan, IResult, Error</a></li><li><a href="#parser-生成器">Parser 生成器</a></li><li><a href="#定义-ast">定义 AST</a></li><li><a href="#parser">Parser</a></li><li><a href="#测试">测试</a></li><li><a href="#生成-ast">生成 AST</a></li></ol></li><li><a href="#结论">结论</a></li><li><a href="#参考">参考</a></li></ol></nav><h2 id="目的" tabindex="-1">目的</h2>
+<p>我已经纯手写过若干遍 lexer, parser, 包括<a href="https://github.com/8DbVT4xJHMUS4ph7ay89/nand2tetris/blob/master/projects/06/assembler/src/model/parser.rs">这个汇编器</a>. 现在的问题是：最 idiomatic 的方法是什么？如果要马上投入使用，你肯定不能从头开始手写，必须使用成熟的工具。我用过 yacc &amp; lex, 和 C++ 的 <a href="/blog/code/algorithms/graph.h.html">peglib</a>。现在用 Rust 的 nom。</p>
+<p>这篇文章的目的是用 <a href="https://docs.rs/nom/latest/nom/">nom</a> 模仿<a href="https://notes.eatonphil.com/lua-in-rust.html">&gt;&gt;这篇文章&lt;&lt;</a>写一个 Lua 解释器。区别是我不手写 lexer, 能用 nom 的地方就用 nom.</p>
+<p>这篇文章的思路非常清晰，值得一读。</p>
+<pre class="one-piece"><code>let raw: Vec&lt;char&gt; = contents.chars().collect();
+let tokens = lex::lex(&amp;raw);
+let ast = parse::parse(&amp;raw, tokens);
+let pgrm = eval::compile(&amp;raw, ast);
+eval::eval(pgrm);
+</code></pre>
+<h2 id="lua-语法" tabindex="-1">Lua 语法</h2>
+<p>看 <a href="https://www.lua.org/manual/5.1/manual.html">https://www.lua.org/manual/5.1/manual.html</a> 官方手册, 第八节</p>
+<p>然而我们不需要实现所有语法, 只需要解析以下代码:</p>
+<pre class="one-piece"><code>-- stat
+-- function
+function fib(n) -- funcname
+	-- funcbody
+	-- if exp then
+   if n &lt; 2 then
+	   -- block
+      return n;
+   end
+
+	-- local namelist [`=´ explist] 
+   local n1 = fib(n-1);
+   local n2 = fib(n-2);
+	-- return explist
+   return n1 + n2;
+end
+
+print(fib(30));
+</code></pre>
+<p>因此我们只需要以下 BNF:</p>
+<pre class="one-piece"><code>chunk ::= {stat [`;´]} [laststat [`;´]]
+block ::= chunk
+stat ::= functioncall | 
+	if exp then block {elseif exp then block} [else block] end |
+	function funcname funcbody | 
+	local namelist [`=´ explist] 
+funcbody ::= `(´ [parlist] `)´ block end
+parlist ::= namelist [`,´]
+namelist ::= Name {`,´ Name}
+laststat ::= return [explist] | break
+explist ::= {exp `,´} exp
+exp ::=  true | Number | function | exp binop exp
+binop ::= `+´ | `-´ | `*´ | `/´ | `&lt;´ 
+</code></pre>
+<h2 id="lexer" tabindex="-1">Lexer?</h2>
+<p>用 nom 则用不上 lexer, 不需要将 tokenization 和 parsing 分离开来. 也不知道是好事还是坏事. 不声明语法让人有点不踏实. 但 yacc&amp;lex 生成的东西就没有语法. 我的理解是 nom 让你直接写代码, 而不是写 parser 生成器. 事实上, 写 yacc 是非常怪异的体验, 像在写脚本又像在写 C, 你还要自己掌握一套专业的 boilerplate.</p>
+<p>手写 lexer 是不专业和浪费生命的做法.</p>
+<h2 id="先看-nom-怎么用" tabindex="-1">先看 nom 怎么用</h2>
+<p>首先要硬着头皮把文档看完</p>
+<ul>
+<li><a href="https://docs.rs/nom/latest/nom/">https://docs.rs/nom/latest/nom/</a></li>
+<li><a href="https://github.com/Geal/nom/tree/main/doc">https://github.com/Geal/nom/tree/main/doc</a></li>
+</ul>
+<p>There are a few <a href="https://github.com/Geal/nom/tree/master/doc">guides</a> with more details
+about <a href="https://github.com/Geal/nom/blob/master/doc/making_a_new_parser_from_scratch.md">how to write parsers</a>,
+or the <a href="https://github.com/Geal/nom/blob/master/doc/error_management.md">error management system</a>.
+You can also check out the <a href="recipes/index.html" title="recipes">recipes</a> module that contains examples of common patterns.</p>
+<p>要点:</p>
+<ul>
+<li>返回结果的形式: <code>&lt;剩余 input, 自定义结果&gt;</code></li>
+<li>用 <code>tuple</code> 组合多个 parser</li>
+<li><code>take_while</code> 及其衍生接口</li>
+<li>Parser combinators 和 lex, yacc 很不一样</li>
+<li>用 <code>delimited(char('('), is_not(")"), char(')'))(input)</code> 识别括号之间的文本, 不包括括号, 可见接口的第二个参数是目标值的匹配模式</li>
+<li><code>take</code> 函数</li>
+<li><code>alt</code> combinator, provides a choice between multiple parsers, if one branch fails, it tries the next.</li>
+<li><code>opt</code> combinator, 如果 child parser 返回错误, 则会返回 <code>None</code></li>
+<li><code>many0</code> 使用 parser 0+ 次, 返回一个 vector 结果</li>
+<li><code>many1</code> 1+ 次</li>
+<li>知道怎么写 imperative style</li>
+<li>解析流的时候可能返回 <code>Incomplete</code> 结果</li>
+</ul>
+<p>例子怎么写:</p>
+<ul>
+<li><a href="https://github.com/Geal/nom/blob/main/doc/making_a_new_parser_from_scratch.md">https://github.com/Geal/nom/blob/main/doc/making_a_new_parser_from_scratch.md</a>
+<ul>
+<li><code>proceded</code>: <a href="https://docs.rs/nom/latest/nom/sequence/fn.preceded.html">https://docs.rs/nom/latest/nom/sequence/fn.preceded.html</a></li>
+</ul>
+</li>
+<li>recipes: <a href="https://github.com/Geal/nom/blob/main/doc/nom_recipes.md">https://github.com/Geal/nom/blob/main/doc/nom_recipes.md</a>
+<ul>
+<li>学会使用 <code>delimited</code></li>
+<li><code>value</code>:　<a href="https://docs.rs/nom/latest/nom/combinator/fn.value.html">https://docs.rs/nom/latest/nom/combinator/fn.value.html</a> : return the provided value if the child parser succeeds.</li>
+<li>如何解析 Identifiers?</li>
+<li>学会使用 <code>pair</code>, 看起来是 <code>tuple</code> 的特例</li>
+</ul>
+</li>
+</ul>
+<p>常用 combinators</p>
+<h3 id="verify" tabindex="-1">verify</h3>
+<p><code>verify(F, G)</code>:  <code>G</code> 是一个函数, 返回值为真, 则返回 <code>F</code> 的结果:<br>
+(有时候很难用程序语言去理解程序)</p>
+<pre class="one-piece"><code>// 构造一个函数 parser
+let mut parser = verify(alpha1, |s: &amp;str| s.len() == 4);
+// 将参数 abcd 传给 parser, 实现是:
+//  - 如果 abcd 的长度是 4, 那么将 alpha1 应用到 abcd 上 
+assert_eq!(parser("abcd"), Ok(("", "abcd")));
+//  - 如果 abcde 长度为 4, 则使用函数 alpha1, 但在这, 到不了那一步
+assert_eq!(parser("abcde"), Err(Err::Error(("abcde", ErrorKind::Verify))));
+</code></pre>
+<p>用于判断第一个字母是否符合标识符的标准</p>
+<pre class="one-piece"><code>let first = verify(anychar, |c| c.is_ascii_alphabetic() || *c == '_');
+</code></pre>
+<h3 id="recognize" tabindex="-1">recognize</h3>
+<p>如果 child parser 成功, 则返回被消费的 input 部分</p>
+<pre class="one-piece"><code>// 创建一个函数, 识别: "字母,字母" 模式
+let mut parser = recognize(separated_pair(alpha1, char(','), alpha1));
+// 如果成功, 则返回识别的 "abcd, efgh", 已知, 匹配结果在第二个位置
+assert_eq!(parser("abcd,efgh"), Ok(("", "abcd,efgh")));
+</code></pre>
+<h3 id="delimited" tabindex="-1">delimited</h3>
+<p>扔掉第一个 parser 的结果, 保留第二个 parser 的结果, 扔掉第三个 parser 的结果</p>
+<pre class="one-piece"><code>let paren = delimited(
+        char('('),
+        expect(expr, "expected expression after `(`"),
+        expect(char(')'), "missing `)`"),
+    );
+</code></pre>
+<p>这个例子中, 取第二个 parser 结果, 去掉 <code>(</code> 和 <code>)</code></p>
+<h3 id="map" tabindex="-1">map</h3>
+<p>将函数应用到一个 parser 的结果. 通常 parser 是用来摆设的, 这也是 declarative programming 的精髓, 只声明, 不知道里面怎么运行</p>
+<pre class="one-piece"><code>// 将函数 |s: &amp;str| s.len() 应用到 digit1 的结果, 也就是 123456 上
+let mut parser = map(digit1, |s: &amp;str| s.len());
+assert_eq!(parser.parse("123456"), Ok(("", 6)));
+</code></pre>
+<h3 id="terminated" tabindex="-1">terminated</h3>
+<p>一共两个 parser, 保留第一个 parser 的结果, 匹配第二个 parser, 然后丢弃第二个结果</p>
+<pre class="one-piece"><code>// 显然, 第一个 parser 匹配 "abc", 第二个 parser 匹配 "efg"
+let mut parser = terminated(tag("abc"), tag("efg"));
+// 只保留第一个结果, 第二个结果抛弃
+assert_eq!(parser("abcefg"), Ok(("", "abc")));
+</code></pre>
+<h3 id="alt" tabindex="-1">alt</h3>
+<p>如果语法是:</p>
+<pre class="one-piece"><code>expr -&gt; paren | ident | error;
+</code></pre>
+<p>那么可以写成</p>
+<pre class="one-piece"><code>alt((paren, ident, error))(input)
+</code></pre>
+<h3 id="all_consuming" tabindex="-1">all_consuming</h3>
+<p>如果所有的输入都被消费完, 则返回成功, 否则失败</p>
+<pre class="one-piece"><code>let mut parser = all_consuming(alpha1);
+assert_eq!(parser("abcd"), Ok(("", "abcd")));
+</code></pre>
+<h3 id="其他" tabindex="-1">其他</h3>
+<ul>
+<li><code>value</code>: 如果 child parser 成功, 返回调用者提供的参数</li>
+<li><code>separated_list0</code> 返回一个 vector</li>
+</ul>
+<h2 id="一个简单的例子" tabindex="-1">一个简单的例子</h2>
+<pre class="one-piece"><code>pub(self) mod example {
+    use super::*;
+    fn expr(input: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
+        sum(input)
+    }
+
+    fn sum(input: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
+        let op = alt((char('+'), char('-')));
+        recognize(pair(product, many0(pair(op, product))))(input)
+    }
+
+    fn product(input: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
+        let op = alt((char('*'), char('/')));
+        recognize(pair(value, many0(pair(op, value))))(input)
+    }
+
+    fn value(input: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
+        recognize(alt((digit1, delimited(char('('), expr, char(')')))))(input)
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        #[test]
+        fn test_expr() {
+            assert_eq!(expr("1+2 +3"), Ok(("", "1+2 +3")));
+        }
+    }
+}
+</code></pre>
+<p>单元测试中,  <code>1+2 +3</code> 解析失败, 只识别 <code>1+2</code>, 当你真正去处理空格的时候, 你会发现这件事非常的麻烦</p>
+<p>要改成这样:</p>
+<pre class="one-piece"><code>    fn sum(input: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
+        let op = alt((char('+'), char('-')));
+        recognize(tuple((
+            multispace0,
+            product,
+            many0(tuple((multispace0, op, multispace0, product))),
+            multispace0,
+        )))(input)
+    }
+
+    fn product(input: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
+        let op = alt((char('*'), char('/')));
+        recognize(tuple((
+            multispace0,
+            value,
+            many0(tuple((multispace0, op, value))),
+            multispace0,
+        )))(input)
+    }
+	// ...
+        fn test_expr() {
+            assert_eq!(expr("1+2 +3"), Ok(("", "1+2 +3")));
+            assert_eq!(
+                expr("     1 +    2 +   3    "),
+                Ok(("", "     1 +    2 +   3    "))
+            );
+        }
+</code></pre>
+<p>这么写不如写语法.</p>
+<h2 id="另外一个例子" tabindex="-1">另外一个例子</h2>
+<p>这个例子是纯文字描述, 没有代码</p>
+<ul>
+<li>创建错误类型, 用一个数组来装所有的错误</li>
+<li>用 <code>LocatedSpan</code> 封装"字符输入"</li>
+<li>用 <code>all_comsuming</code> 作为顶级入口</li>
+<li>对于每一个 non-terminal, 用 <code>map</code> 将 parser 结果传给一个另外一个解析函数, 作为 non-terminal 的解析终点. (When in Rome, do as the Romans do, when using nom, do some funcional programming)</li>
+</ul>
+<h2 id="定义错误类型" tabindex="-1">定义错误类型</h2>
+<p>提到这个问题, 是因为代码写到一半的时候, 发现必须要有一个错误类型, 就像你需要自定义 C++ Exception 一样. 这不像 C 语言, 你定义一个枚举类型就行. 即便是 C++ Exception, 你只需要继承 <code>std::exception</code>, 加上一个 <code>std::string</code> 成员. 但 Rust?</p>
+<h3 id="locatedspan" tabindex="-1">LocatedSpan</h3>
+<p>用 <a href="https://docs.rs/nom_locate/latest/nom_locate/struct.LocatedSpan.html">nom_locate</a><br>
+定义:</p>
+<pre class="one-piece"><code>pub struct LocatedSpan&lt;T, X = ()&gt; {
+    pub extra: X,
+    // some fields omitted
+}
+</code></pre>
+<p>一个现实中的例子:</p>
+<pre class="one-piece"><code>struct State&lt;'a&gt;(&amp;'a RefCell&lt;Vec&lt;Error&gt;&gt;);
+type LocatedSpan&lt;'a&gt; = nom_locate::LocatedSpan&lt;&amp;'a str, State&lt;'a&gt;&gt;;
+</code></pre>
+<p>相当于</p>
+<pre class="one-piece"><code>pub struct LocatedSpan&lt;T, X = State&lt;'a&gt;&gt; {
+    pub extra: State&lt;'a&gt;,
+    // 此时 extra 携带一连串错误信息
+}
+</code></pre>
+<p>报错的时候:</p>
+<pre class="one-piece"><code>(foo))  (Paren(Ident(Ident("foo"))), [Error(5..6, "expected EOF")])
+</code></pre>
+<p>可以看到 <code>5..6</code>, 这是代码的位置信息</p>
+<h3 id="错误类型推断" tabindex="-1">错误类型推断</h3>
+<pre class="one-piece"><code>IResult&lt;T&gt; 
+= nom::IResult&lt;LocatedSpan, T, nom::Error::Error&lt;LocatedSpan&gt;&gt;
+= Result&lt;(LocatedSpan, T), Err&lt;nom::Error::Error&lt;LocatedSpan&gt;&gt;&gt;
+// 出错时的错误类型
+Err&lt;nom::Err::Error&lt;LocatedSpan&gt;&gt;
+</code></pre>
+<h2 id="写代码-地狱的入口" tabindex="-1">写代码: 地狱的入口</h2>
+<p>费了很大的劲终于把 <a href="https://github.com/8DbVT4xJHMUS4ph7ay89/yet-another-lua-interpreter/tree/v1-messy-parser">代码</a> 写出来了, 只是 parsing, 没有 interpreting.<br>
+简单写写过程, 思路在上述篇幅中各位早就知晓, 思路是简单的, 写起来难. 我的感受是, 一旦你开始写, 你就无法逃离煎熬, 如果你放弃, 那你就不知道怎么用 nom 写 parser, 煎熬之一; 如果不放弃, 这个过程极其繁琐且并无实际意义, 但你又做不了其他事，煎熬之二.</p>
+<h3 id="目标" tabindex="-1">目标</h3>
+<p>我已经说了, 我只解析这一部分代码:</p>
+<pre class="one-piece"><code>function fib(n)
+   if n &lt; 2 then
+      return n;
+   end
+
+   local n1 = fib(n-1);
+   local n2 = fib(n-2);
+   return n1 + n2;
+end
+
+print(fib(30));
+</code></pre>
+<h3 id="定义-locatedspan-iresult-error" tabindex="-1">定义 LocatedSpan, IResult, Error</h3>
+<pre class="one-piece"><code>    type LocatedSpan&lt;'a&gt; = nom_locate::LocatedSpan&lt;&amp;'a str, State&lt;'a&gt;&gt;;
+    type IResult&lt;'a, T&gt; = nom::IResult&lt;LocatedSpan&lt;'a&gt;, T&gt;;
+
+    #[derive(Debug, PartialEq)]
+    struct PosInfo(u32, Range&lt;usize&gt;);
+    trait Position {
+        fn to_position(&amp;self) -&gt; PosInfo;
+    }
+
+    impl&lt;'a&gt; Position for LocatedSpan&lt;'a&gt; {
+        fn to_position(&amp;self) -&gt; PosInfo {
+            let start = self.location_offset();
+            let end = start + self.fragment().len();
+            PosInfo {
+                0: self.location_line(),
+                1: start..end,
+            }
+        }
+    }
+
+    #[derive(Debug, PartialEq)]
+    struct Error(PosInfo, String);
+
+    #[derive(Clone, Debug)]
+    struct State&lt;'a&gt;(&amp;'a RefCell&lt;Vec&lt;Error&gt;&gt;);
+
+    impl&lt;'a&gt; State&lt;'a&gt; {
+        pub fn report_error(&amp;self, error: Error) {
+            self.0.borrow_mut().push(error);
+        }
+    }
+</code></pre>
+<ul>
+<li>用 <code>State</code> 来追踪所有的错误, 但我在这目前, 并不考虑这个问题, 用栈来追踪, 是要建造一个 fault tolerant parser. 目前并不在乎是否 fault tolerant. 能顺利通过 Parsing 测试已经算不错.</li>
+<li>位置信息: <code>PosInfo</code>, 第一个成员是行数, 第二个成员是偏移量位置</li>
+</ul>
+<h3 id="parser-生成器" tabindex="-1">Parser 生成器</h3>
+<pre class="one-piece"><code>    fn ws&lt;'a, F, T&gt;(parser: F) -&gt; impl FnMut(LocatedSpan&lt;'a&gt;) -&gt; IResult&lt;T&gt;
+    where
+        F: FnMut(LocatedSpan&lt;'a&gt;) -&gt; IResult&lt;T&gt;,
+    {
+        delimited(multispace0, parser, multispace0)
+    }
+
+    fn expect&lt;'a, F, E, T&gt;(
+        mut parser: F,
+        error_msg: E,
+    ) -&gt; impl FnMut(LocatedSpan&lt;'a&gt;) -&gt; IResult&lt;Option&lt;T&gt;&gt;
+    where
+        F: FnMut(LocatedSpan&lt;'a&gt;) -&gt; IResult&lt;T&gt;,
+        E: ToString,
+    {
+        move |input| match parser(input) {
+            Ok((remaining, out)) =&gt; Ok((remaining, Some(out))),
+            Err(nom::Err::Error(nom::error::Error { input: i, .. }))
+            | Err(nom::Err::Failure(nom::error::Error { input: i, .. })) =&gt; {
+                let err = Error(i.to_position(), error_msg.to_string());
+                i.extra.report_error(err);
+                Ok((i, None))
+            }
+            Err(err) =&gt; Err(err),
+        }
+    }
+</code></pre>
+<ul>
+<li>相当于 wrap 了一个函数, 输出另外一个函数, 可能是装饰器模式? 在此我们称之为 <a href="https://docs.google.com/presentation/d/140T3z263TiyIAwOLlizltFyi_NO18VC8CJ13fs4dlF0/edit#slide=id.gae71e54223_0_26">Parser 生成器</a>, <code>ws</code> 作用是 eat 空格符, 避免每个 parser 都要手写, 只需 <code>ws(parser)(input)</code> 即可使用</li>
+<li><code>expect</code> 更改了 <code>parser</code> 的签名, 可认为是一种适配行为</li>
+</ul>
+<h3 id="定义-ast" tabindex="-1">定义 AST</h3>
+<p>定义数据结构</p>
+<pre class="one-piece"><code>
+    #[derive(Debug)]
+    struct Chunk {
+        stats: Vec&lt;Stat&gt;,
+        laststat: Option&lt;LastStat&gt;,
+    }
+
+    #[derive(Debug)]
+    enum Stat {
+        FuncCall(FuncCall),
+        FuncDef(FuncDef),
+        Cond(Cond),
+        Local(Local),
+        Error,
+    }
+
+    #[derive(Debug)]
+    struct Cond(Vec&lt;(Exp, Block)&gt;);
+
+    #[derive(Debug)]
+    struct Local((Exp, Vec&lt;Exp&gt;));
+
+    #[derive(Debug)]
+    enum LastStat {
+        Return(Return),
+        Break(String),
+    }
+
+    #[derive(Debug)]
+    struct Return {
+        exps: Vec&lt;Exp&gt;,
+    }
+
+    #[derive(Debug)]
+    struct FuncDef {
+        name: String,
+        body: FuncBody,
+    }
+
+    #[derive(Debug)]
+    struct FuncCall {
+        name: String,
+        args: Vec&lt;Exp&gt;,
+    }
+
+    #[derive(Debug)]
+    struct FuncBody {
+        params: Vec&lt;String&gt;,
+        block: Block,
+    }
+
+    #[derive(Debug)]
+    enum Block {
+        Chunk(Chunk),
+        Error,
+    }
+
+    #[derive(Debug)]
+    enum Number {
+        U32(u32),
+        Error,
+    }
+
+    #[derive(Debug)]
+    enum Exp {
+        Number(Number),
+        String(String),
+        Ident(String),
+        Binop,
+        Error,
+        FuncCall(FuncCall),
+        True,
+    }
+
+    #[derive(Debug)]
+    enum Lua {
+        Chunk(Chunk),
+        Error,
+    }
+
+    impl From&lt;Exp&gt; for String {
+        fn from(exp: Exp) -&gt; Self {
+            match exp {
+                Exp::Ident(i) =&gt; i,
+                Exp::String(i) =&gt; i,
+                _ =&gt; "Error conversion".to_owned(),
+            }
+        }
+    }
+
+</code></pre>
+<ul>
+<li>这完全是按照上面的 BNF 定义的, 可以看到, 这么一小段 BNF 就需要写这么多代码</li>
+</ul>
+<h3 id="parser" tabindex="-1">Parser</h3>
+<p>需要指导 nom 如何匹配每一个 AST 节点</p>
+<pre class="one-piece"><code>
+    fn funccall(input: LocatedSpan) -&gt; IResult&lt;FuncCall&gt; {
+        let call = tuple((ws(ident), ws(char('(')), many0(exp), ws(char(')'))));
+        map(call, |(name, _, args, _)| FuncCall {
+            name: name.into(),
+            args,
+        })(input)
+    }
+
+    fn number(input: LocatedSpan) -&gt; IResult&lt;Exp&gt; {
+        map(digit1, |span: LocatedSpan| {
+            Exp::Number(match span.fragment().parse::&lt;u32&gt;() {
+                Ok(n) =&gt; Number::U32(n),
+                Err(_) =&gt; Number::Error,
+            })
+        })(input)
+    }
+
+    fn ident(input: LocatedSpan) -&gt; IResult&lt;Exp&gt; {
+        let first = verify(anychar, |c| c.is_ascii_alphabetic() || *c == '_');
+        let rest = take_while(|c: char| c.is_ascii_alphanumeric() || "_-'".contains(c));
+        let ident2 = recognize(preceded(first, rest));
+        map(ws(ident2), |span: LocatedSpan| {
+            Exp::Ident(span.fragment().to_string())
+        })(input)
+    }
+
+    fn binop(input: LocatedSpan) -&gt; IResult&lt;Exp&gt; {
+        let parser = recognize(tuple((
+            alt((number, ident)),
+            ws(alt((char('+'), char('-'), char('*'), char('/'), char('&lt;')))),
+            alt((number, ident)),
+        )));
+        map(ws(parser), |span: LocatedSpan| {
+            Exp::Ident(span.fragment().to_string())
+        })(input)
+    }
+
+    fn exp(input: LocatedSpan) -&gt; IResult&lt;Exp&gt; {
+        alt((binop, map(funccall, Exp::FuncCall), number, ident))(input)
+    }
+
+    fn ret(input: LocatedSpan) -&gt; IResult&lt;LastStat&gt; {
+        map(tuple((tag("return"), multispace1, exp)), |(_, _, e)| {
+            LastStat::Return(Return { exps: vec![e] })
+        })(input)
+    }
+
+    fn brk(input: LocatedSpan) -&gt; IResult&lt;LastStat&gt; {
+        map(tag("break"), |span: LocatedSpan| {
+            LastStat::Break(span.fragment().to_string())
+        })(input)
+    }
+
+    fn laststat(input: LocatedSpan) -&gt; IResult&lt;LastStat&gt; {
+        ws(alt((ret, brk)))(input)
+    }
+
+    fn namelist(input: LocatedSpan) -&gt; IResult&lt;Vec&lt;String&gt;&gt; {
+        map(separated_list0(char(','), ws(ident)), |v| {
+            v.into_iter().map(|x| x.into()).collect()
+        })(input)
+    }
+
+    fn block(input: LocatedSpan) -&gt; IResult&lt;Block&gt; {
+        alt((
+            map(chunk, Block::Chunk),
+            map(take(0usize), |_| Block::Error),
+        ))(input)
+    }
+
+    fn funcbody(input: LocatedSpan) -&gt; IResult&lt;FuncBody&gt; {
+        let paramlist = delimited(ws(char('(')), namelist, ws(char(')')));
+        map(tuple((paramlist, block)), |(v, b)| -&gt; FuncBody {
+            FuncBody {
+                params: v,
+                block: b,
+            }
+        })(input)
+    }
+
+    fn funcdef(input: LocatedSpan) -&gt; IResult&lt;Stat&gt; {
+        let is_function = |i| {
+            map(ws(tag("function")), |span: LocatedSpan| {
+                span.fragment().eq(&amp;"function")
+            })(i)
+        };
+
+        let is_end = |i| {
+            map(ws(tag("end")), |span: LocatedSpan| {
+                span.fragment().eq(&amp;"end")
+            })(i)
+        };
+
+        map(
+            tuple((is_function, ident, funcbody, is_end)),
+            |(def_begin, name, body, def_end)| {
+                if (def_begin &amp;&amp; def_end) {
+                    Stat::FuncDef(FuncDef {
+                        body,
+                        name: name.into(),
+                    })
+                } else {
+                    Stat::Error
+                }
+            },
+        )(input)
+    }
+
+    fn cond(input: LocatedSpan) -&gt; IResult&lt;Stat&gt; {
+        let first_cond = map(
+            tuple((ws(tag("if")), exp, ws(tag("then")), block)),
+            |(_, e, _, b)| (e, b),
+        );
+        let mid_conds = map(
+            tuple((ws(tag("elseif")), exp, ws(tag("then")), block)),
+            |(_, e, _, b)| (e, b),
+        );
+        let last_cond = map(tuple((ws(tag("else")), block)), |(_, b)| (Exp::True, b));
+
+        map(
+            tuple((first_cond, many0(mid_conds), opt(last_cond), ws(tag("end")))),
+            |(f, m, last, _)| {
+                let mut result = vec![f];
+                for t in m {
+                    result.push(t);
+                }
+                if let Some(l) = last {
+                    result.push(l)
+                };
+                Stat::Cond(Cond(result))
+            },
+        )(input)
+    }
+
+    fn local(input: LocatedSpan) -&gt; IResult&lt;Stat&gt; {
+        map(
+            tuple((ws(tag("local")), ident, ws(tag("=")), many1(exp))),
+            |(_, name, _, explist)| Stat::Local(Local((name, explist))),
+        )(input)
+    }
+
+    fn stat(input: LocatedSpan) -&gt; IResult&lt;Stat&gt; {
+        terminated(
+            alt((funcdef, map(funccall, Stat::FuncCall), cond, local)),
+            ws(opt(char(';'))),
+        )(input)
+    }
+
+    fn chunk(input: LocatedSpan) -&gt; IResult&lt;Chunk&gt; {
+        let chunk_parser = tuple((many0(stat), opt(laststat)));
+        map(
+            terminated(chunk_parser, ws(opt(char(';')))),
+            |(stats, last_stat)| Chunk {
+                stats,
+                laststat: last_stat,
+            },
+        )(input)
+    }
+</code></pre>
+<ul>
+<li>写了这么多, 心得只有一个: 使用 <code>map</code> 处理 parser 结果, 但实际上, 并没有马上处理, 而是定义了回调函数, 上面的代码胜过一千字的解释, 因为都是统一的模式, 写法, 等等</li>
+</ul>
+<h3 id="测试" tabindex="-1">测试</h3>
+<p>为了测试每一个 Parser, 需要写一个适配器:</p>
+<pre class="one-piece"><code>        fn test_parse&lt;T, P&gt;(source: &amp;str, parser: P) -&gt; (T, Vec&lt;Error&gt;)
+        where
+            P: FnMut(LocatedSpan) -&gt; IResult&lt;T&gt;,
+        {
+            let errors = RefCell::new(Vec::new());
+            let input = LocatedSpan::new_extra(source, State(&amp;errors));
+            let (_, output) = all_consuming(parser)(input).expect("parser cannot fail");
+            (output, errors.into_inner())
+        }
+</code></pre>
+<p>测试的写法:</p>
+<pre class="one-piece"><code>assert_eq!(&amp;test_parse(r#"
+	function fib(n)
+		if n &lt; 2 then
+	        return n;
+        end
+
+		local n1 = fib(n-1);
+        local n2 = fib(n-2);
+
+		return n1 + n2;
+    end
+
+        print(fib(30));
+	    "#, source_file).1[..],
+    &amp;empty
+);
+</code></pre>
+<h3 id="生成-ast" tabindex="-1">生成 AST</h3>
+<p>我用 <code>dbg!</code> 打印语法树, 但是否正确, 在这里不重要, 我请各位看这一系列的第二篇文章, 关于解释器, 如果语法树不正确, 则不能解释.</p>
+<p>注: 至少有一个错误: 即把 <code>n1 + n2</code> 解析为 <code>Ident</code> (Identifier), 这是错的.</p>
+<pre class="one-piece"><code>[src/parser.rs:453] test_parse(r#"
+                function fib(n)
+               if n &lt; 2 then
+                  return n;
+               end
+            
+               local n1 = fib(n-1);
+               local n2 = fib(n-2);
+
+               return n1 + n2;
+            end
+
+            print(fib(30));
+        "#,
+           source_file) = (
+    Chunk(
+        Chunk {
+            stats: [
+                FuncDef(
+                    FuncDef {
+                        name: "fib",
+                        body: FuncBody {
+                            params: [
+                                "n",
+                            ],
+                            block: Chunk(
+                                Chunk {
+                                    stats: [
+                                        Cond(
+                                            Cond(
+                                                [
+                                                    (
+                                                        Ident(
+                                                            "n &lt; 2",
+                                                        ),
+                                                        Chunk(
+                                                            Chunk {
+                                                                stats: [],
+                                                                laststat: Some(
+                                                                    Return(
+                                                                        Return {
+                                                                            exps: [
+                                                                                Ident(
+                                                                                    "n",
+                                                                                ),
+                                                                            ],
+                                                                        },
+                                                                    ),
+                                                                ),
+                                                            },
+                                                        ),
+                                                    ),
+                                                ],
+                                            ),
+                                        ),
+                                        Local(
+                                            Local(
+                                                (
+                                                    Ident(
+                                                        "n1",
+                                                    ),
+                                                    [
+                                                        FuncCall(
+                                                            FuncCall {
+                                                                name: "fib",
+                                                                args: [
+                                                                    Ident(
+                                                                        "n-1",
+                                                                    ),
+                                                                ],
+                                                            },
+                                                        ),
+                                                    ],
+                                                ),
+                                            ),
+                                        ),
+                                        Local(
+                                            Local(
+                                                (
+                                                    Ident(
+                                                        "n2",
+                                                    ),
+                                                    [
+                                                        FuncCall(
+                                                            FuncCall {
+                                                                name: "fib",
+                                                                args: [
+                                                                    Ident(
+                                                                        "n-2",
+                                                                    ),
+                                                                ],
+                                                            },
+                                                        ),
+                                                    ],
+                                                ),
+                                            ),
+                                        ),
+                                    ],
+                                    laststat: Some(
+                                        Return(
+                                            Return {
+                                                exps: [
+                                                    Ident(
+                                                        "n1 + n2",
+                                                    ),
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                        },
+                    },
+                ),
+                FuncCall(
+                    FuncCall {
+                        name: "print",
+                        args: [
+                            FuncCall(
+                                FuncCall {
+                                    name: "fib",
+                                    args: [
+                                        Number(
+                                            U32(
+                                                30,
+                                            ),
+                                        ),
+                                    ],
+                                },
+                            ),
+                        ],
+                    },
+                ),
+            ],
+            laststat: None,
+        },
+    ),
+    [],
+)
+
+</code></pre>
+<h2 id="结论" tabindex="-1">结论</h2>
+<p>费了这么大劲我的结论是:</p>
+<ul>
+<li>nom 十分深奥, 需要将 nom 文档, 网上文章看一遍才能写得出来, 但一旦会写, 就是在写 recursive descent parser, 那本厚厚的 <em>Parsing Techniques: A Practical Guide</em> 完全不需要看</li>
+<li>还没写 interpreter, 此 parsing 代码还需要调整</li>
+<li>我没解析注释的原因是, <code>ws</code> 需要多个变种, 将换行符和其他空格符区分开来, 各个 parser 需要局部微调, 因此暂时不处理(也可能永远不处理).</li>
+<li>函数式编程, 定义函数, 将函数作为参数传给另一函数, 写 JS 的朋友们可能比较熟悉这种套路, 缺点是非常难以调试, 出错后, 容易无从下手</li>
+<li>错误定义是非常关键的一部分, 只是这里还没到输出"友好"的错误的环节</li>
+<li>能让它跑起来已经十分不容易, 因此这篇文章就不再更新 parser 的代码, 保持变得更复杂之前的一丝残留的理智. Parser 的代码将在写 interpreter 的时候更新, 但不在本文代码所在分支.</li>
+</ul>
+<h2 id="参考" tabindex="-1">参考</h2>
+<ul>
+<li><a href="https://iximiuz.com/en/posts/rust-writing-parsers-with-nom/">https://iximiuz.com/en/posts/rust-writing-parsers-with-nom/</a></li>
+<li><a href="https://github.com/benkay86/nom-tutorial">https://github.com/benkay86/nom-tutorial</a></li>
+<li><a href="https://www.kirillvasiltsov.com/writing/parsing-indentation-with-nom">https://www.kirillvasiltsov.com/writing/parsing-indentation-with-nom</a></li>
+<li><a href="https://eyalkalderon.com/blog/nom-error-recovery">https://eyalkalderon.com/blog/nom-error-recovery</a></li>
+<li><a href="https://medium.com/clevyio/using-rust-and-nom-to-create-an-open-source-programming-language-for-chatbots-12fe67582af5">https://medium.com/clevyio/using-rust-and-nom-to-create-an-open-source-programming-language-for-chatbots-12fe67582af5</a></li>
+<li><a href="https://blog.logrocket.com/parsing-in-rust-with-nom/">https://blog.logrocket.com/parsing-in-rust-with-nom/</a></li>
+<li><a href="https://github.com/Geal/nom/blob/main/doc/error_management.md">https://github.com/Geal/nom/blob/main/doc/error_management.md</a></li>
+<li><a href="https://docs.google.com/presentation/d/140T3z263TiyIAwOLlizltFyi_NO18VC8CJ13fs4dlF0/edit#slide=id.gae71e54223_0_26">https://docs.google.com/presentation/d/140T3z263TiyIAwOLlizltFyi_NO18VC8CJ13fs4dlF0/edit#slide=id.gae71e54223_0_26</a></li>
+</ul>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

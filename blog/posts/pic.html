@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>位置无关代码</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>位置无关代码</h1>
+        <p>今天看到一行编译命令 <code>gcc $^ -no-pie -o $@ </code>, 就想到常见的 "recompile with -fPIE" 错误，但没有了解过</p>
+<blockquote>
+<p><a href="https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html#Link-Options">https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html#Link-Options</a></p>
+<p>-pie<br>
+Produce a dynamically linked position independent executable on targets that support it. For predictable results, you must also specify the same set of options used for compilation (-fpie, -fPIE, or model suboptions) when you specify this linker option.</p>
+<p><a href="https://gcc.gnu.org/onlinedocs/gcc/Code-Gen-Options.html">https://gcc.gnu.org/onlinedocs/gcc/Code-Gen-Options.html</a></p>
+<p>-fpie<br>
+-fPIE<br>
+These options are similar to -fpic and -fPIC, but the generated position-independent code can be only linked into executables. Usually these options are used to compile code that will be linked using the -pie GCC option.</p>
+<p>-fpie and -fPIE both define the macros <strong>pie</strong> and <strong>PIE</strong>. The macros have the value 1 for -fpie and 2 for -fPIE.</p>
+<p><a href="https://stackoverflow.com/a/50615370">https://stackoverflow.com/a/50615370</a></p>
+<p>-no-pie: That flag is telling gcc not to make a <a href="https://access.redhat.com/blogs/766093/posts/1975793">position independent executable</a> (PIE). PIE is a precodition to enable address space layout randomization (ASLR). ASLR is a security feature where the kernel loads the binary and dependencies into a random location of virtual memory each time it's run.</p>
+<p><a href="https://stackoverflow.com/a/46493456">https://stackoverflow.com/a/46493456</a></p>
+<ol>
+<li>gcc 默认开启 pie: <code>--enable-default-pie</code></li>
+<li>出现 <code>recompile with -fPIC</code> 是因为 gcc 默认不开启 pie 的时候, 将 <code>gcc -c</code> 编译的中间文件, 试图链接用 <code>gcc -shared -o foo.so  *.o</code> 的中间文件. 大概率发生在链接"手写汇编"的时候</li>
+</ol>
+</blockquote>
+<p><code>-pie</code> 是链接选项, <code>-fpie</code> 是 codegen 选项, 意思是用 <code>-fpic</code> 生成中间文件(<code>gcc -c</code>) 或者汇编(<code>gcc -S</code>), 用 <code>-pie</code> 链接成执行文件</p>
+<p>就以下两点谈谈我的理解</p>
+<ol>
+<li>PIC/PIE 的理由</li>
+<li>PIC/PIE 机制</li>
+</ol>
+<h2 id="pic-pie-的理由" tabindex="-1">PIC/PIE 的理由</h2>
+<p>TLDR: 使生成的指令码可重复利用</p>
+<p>首先要从两个中间文件将其, main.o, sum.o, main.o 引用 <code>sum()</code> 函数, 定义在 sum.o, 这时候链接器执行两个步骤:</p>
+<ol>
+<li>符号解析(symbol resolution): 在 sum.o 找到定义</li>
+<li>重定位(relocation): 将 main.o 的 <code>sum()</code> 引用换成真实的地址</li>
+</ol>
+<p>如果 main.o 需要引用更多函数呢? 比如 <code>printf()</code>.链接器默认加载 libc.a , 在后者内部查找符号定义. <code>.a</code> 文件是 <code>.o</code> 文件的改良版, 对于 <code>.a</code>, 链接器只拷贝 main.o 用到的函数定义, 而对 <code>.o</code> , 链接器则把整个 <code>.o</code> 拷到内存里面.</p>
+<p>在 <code>.a</code> 或 <code>.o</code> 中找符号定义并<strong>重写符号引用</strong>的过程又被称为静态链接(static linking),</p>
+<p>静态链接的问题在于, 如果改了静态库, 那么相关的文件都要重新编译一遍. 这个问题的解决方法是动态链接(dynamic linking).</p>
+<p>为什么要发明动态库? 因为静态链接不利于软件迭代和发布. 有动态链接, 就有 PIC. 这就是 PIC 存在的理由. 为什么动态链接需要 PIC? 因为非 PIC 需要重定位,意味着代码之间有相对位移, 意味着需要花费资源去维护这种秩序.</p>
+<h2 id="pic-机制" tabindex="-1">PIC 机制</h2>
+<p>TLDR: 动态链接尚未发生，不知道函数的具体位置，在这种情况下完成编译，需要给函数地址预设一个位置</p>
+<p>PIE 是 PIC 的一个特殊形式, 用于生成执行文件. 这里以 PIE 为例, 运行 <code>gcc -Q -v</code> 就能看到 <code>--enable-default-pie</code>, 效果是只要执行程序和动态链接有关, 编译器就给它生成 got, plt section. PIC 也一样.</p>
+<p>以进程的角度来看, 动态库的代码必然要拷贝至进程内存空间, 设想, main.o 引用 <a href="http://libfoo.so">libfoo.so</a> 的 <code>foo()</code>, 那么链接器必须要将 main.o 的 <code>call &lt;foo&gt;</code> 中的 <code>&lt;foo&gt;</code> 指向 <code>foo</code> 在内存的位置. 但是当你单独把 main.o 编译成 main 执行文件的这个过程, 由于不涉及链接器, 所以 <code>call &lt;foo&gt;</code>  的 <code>&lt;foo&gt;</code> 未定. 为了完成编译, 编译器必须给 <code>&lt;foo&gt;</code> 预留一个位置.</p>
+<p>这个位置叫 <code>&lt;foo@plt&gt;</code>, 处于 main 二进制的一个固定位置, 有具体的地址, 这一操作满足了汇编, 或者机器码的语法要求, 至少 call 有了参数.</p>
+<p>回顾静态链接是怎么配置 <code>call</code> :</p>
+<pre class="one-piece"><code>call 0x05
+</code></pre>
+<p>0x05 不是绝对位置, 是相对位移, 需要将 %rip + 0x05 得到函数的位置, 这是因为符号是 <code>R_X86_64_PC32</code> 类型, PC 表示相对 PC 的位移</p>
+<p><code>foo()</code> 则是 <code>R_X86_64_JUMP_SLO</code> 类型, 遇到这个类型的时候, CPU 直接跳到 <code>&lt;foo@plt&gt;</code>, 这时候出现两种清空:</p>
+<ol>
+<li>首次跳到这个函数, <code>foo()</code> 还没加载, <code>GOT[foo]</code> 指向动态链接器. 链接器加载 <a href="http://libfoo.so">libfoo.so</a>, 修改 <code>GOT[foo]</code>, 并跳转到 <code>GOT[foo]</code>, 实现调用 <code>foo()</code> 的效果</li>
+<li>非首次调到这个函数, 这是 <code>GOT[foo]</code>  指向  <code>foo()</code>, 所以不需要动态链接器干预</li>
+</ol>
+<p>从中可以看出, PTL 起到一个跳板的作用, GOT 的每个符号默认指向动态链接器, 解析之后, 指向真实的变量, 或者函数地址, 这个过程又称为懒绑定(lazy binding).</p>
+<p>本来在这应该举个例子, 但是到目前为止, 查了大量研究 PLT, GOT 的文章, 也复现不了 GOT 的懒绑定过程; 我怀疑编译的时候存在默认的优化选项(Ubuntu 20.04), 导致 <code>GOT[foo]</code> 一步到位, 没有动态链接的过程.</p>
+<h3 id="实验" tabindex="-1">实验</h3>
+<p>编译这几个文件:</p>
+<pre class="one-piece"><code>// main.c
+#include "foo.h"
+int main()
+{
+    foo();
+}
+// foo.h
+void foo();
+// foo.c
+void foo()
+{   
+}
+</code></pre>
+<p>makefile:</p>
+<pre class="one-piece"><code>main: main.c libfoo.so
+	gcc -O0 -g $^ -o $@ -I. -L. -lfoo -Wl,-rpath=.
+	objdump --disassemble-all $@ &gt;&gt; $@.
+
+libfoo.so: foo.c
+	gcc -O0 -g -shared -fpic -o $@ $^ 
+	objdump --disassemble-all $@ &gt;&gt; $@.
+</code></pre>
+<p>打开 <code>main.</code></p>
+<pre class="one-piece"><code>0000000000001149 &lt;main&gt;:
+    1149:	f3 0f 1e fa          	endbr64 
+    114d:	55                   	push   %rbp
+    114e:	48 89 e5             	mov    %rsp,%rbp
+    1151:	b8 00 00 00 00       	mov    $0x0,%eax
+    1156:	e8 f5 fe ff ff       	callq  1050 &lt;foo@plt&gt;
+    115b:	b8 00 00 00 00       	mov    $0x0,%eax
+    1160:	5d                   	pop    %rbp
+    1161:	c3                   	retq   
+    1162:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+    1169:	00 00 00 
+    116c:	0f 1f 40 00          	nopl   0x0(%rax)
+0000000000001050 &lt;foo@plt&gt;:
+    1050:	f3 0f 1e fa          	endbr64 
+    1054:	f2 ff 25 75 2f 00 00 	bnd jmpq *0x2f75(%rip)        # 3fd0 &lt;foo&gt;
+    105b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+0000000000003fb8 &lt;_GLOBAL_OFFSET_TABLE_&gt;:
+    3fb8:	a8 3d                	test   $0x3d,%al
+	...
+    3fce:	00 00                	add    %al,(%rax)
+    3fd0:	30 10                	xor    %dl,(%rax)
+    ...
+</code></pre>
+<p>可以看出:</p>
+<ol>
+<li>调用 foo 的时候, 首先跳到 <code>&lt;foo.plt&gt;</code></li>
+<li>跳到 <code>&lt;_GLOBAL_OFFSET_TABLE_&gt;</code> 即 GOT 的 3fd0, 意思是清空 <code>%dl</code></li>
+</ol>
+<p>到这里就断了, 因此需要借助 gdb</p>
+<pre class="one-piece"><code>(gdb) display /100i 0x3fd0
+4: x/100i 0x3fd0
+   0x3fd0 &lt;foo@got.plt&gt;:        xor    %dl,(%rax)
+   0x3fd2 &lt;foo@got.plt+2&gt;:      add    %al,(%rax)
+   0x3fd4 &lt;foo@got.plt+4&gt;:      add    %al,(%rax)
+   0x3fd6 &lt;foo@got.plt+6&gt;:      add    %al,(%rax)
+   0x3fd8:      add    %al,(%rax)
+   0x3fda:      add    %al,(%rax)
+   0x3fdc:      add    %al,(%rax)
+   0x3fde:      add    %al,(%rax)
+   0x3fe0:      add    %al,(%rax)
+   0x3fe2:      add    %al,(%rax)
+</code></pre>
+<p>看不出什么意思, 用 pwndbg:</p>
+<pre class="one-piece"><code>pwndbg&gt; b foo@plt
+Breakpoint 1 at 0x1050
+pwndbg&gt; r
+Starting program: /tmp/main
+
+Breakpoint 1, 0x0000555555555050 in foo@plt ()
+LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA
+────────────────────────────────────────────────────────────────────────────────────────────────[ REGISTERS ]─────────────────────────────────────────────────────────────────────────────────────────────────
+ RAX  0x0
+ RBX  0x555555555170 (__libc_csu_init) ◂— endbr64 
+ RCX  0x555555555170 (__libc_csu_init) ◂— endbr64 
+ RDX  0x7fffffffd7f8 —▸ 0x7fffffffdc23 ◂— 'LC_TELEPHONE=zh_CN.UTF-8'
+ RDI  0x1
+ RSI  0x7fffffffd7e8 —▸ 0x7fffffffdbe5 ◂— '/tmp/main'
+ R8   0x0
+ R9   0x7ffff7fe0d50 ◂— endbr64 
+ R10  0x7ffff7ffcf68 ◂— 0x6ffffff0
+ R11  0x202
+ R12  0x555555555060 (_start) ◂— endbr64 
+ R13  0x7fffffffd7e0 ◂— 0x1
+ R14  0x0
+ R15  0x0
+ RBP  0x7fffffffd6f0 ◂— 0x0
+ RSP  0x7fffffffd6e8 —▸ 0x55555555515b (main+18) ◂— mov    eax, 0
+ RIP  0x555555555050 (foo@plt) ◂— endbr64 
+──────────────────────────────────────────────────────────────────────────────────────────────────[ DISASM ]──────────────────────────────────────────────────────────────────────────────────────────────────
+ ► 0x555555555050 &lt;foo@plt&gt;      endbr64 
+   0x555555555054 &lt;foo@plt+4&gt;    bnd jmp qword ptr [rip + 0x2f75]     &lt;foo&gt;
+    ↓
+   0x7ffff7fc30f9 &lt;foo&gt;          endbr64 
+   0x7ffff7fc30fd &lt;foo+4&gt;        push   rbp
+   0x7ffff7fc30fe &lt;foo+5&gt;        mov    rbp, rsp
+   0x7ffff7fc3101 &lt;foo+8&gt;        nop    
+   0x7ffff7fc3102 &lt;foo+9&gt;        pop    rbp
+   0x7ffff7fc3103 &lt;foo+10&gt;       ret    
+    ↓
+   0x55555555515b &lt;main+18&gt;      mov    eax, 0
+   0x555555555160 &lt;main+23&gt;      pop    rbp
+   0x555555555161 &lt;main+24&gt;      ret    
+
+</code></pre>
+<p>马上就跳到 foo, 没有加载过程. 把 foo 换成 <code>printf()</code>, 出现同样的现象, 这个实验宣告失败, 以后找到原因再更新.</p>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

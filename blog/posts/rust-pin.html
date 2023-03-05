@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Pin</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Pin</h1>
+        <p>The <code>Pin</code> type troubled me a lot when I read about <code>Future</code>, <a href="https://doc.rust-lang.org/std/pin/index.html">the official document</a> of <code>Pin</code> is extremely hard, I got the impression that <code>Pin</code> was invented to solve the referential problem of <code>Future</code>, but the concept of <code>Future</code> is another huge topic which requires an understanding of generators. I decided not to follow the endless chain blindly. If <code>Pin</code> solves the problem of moving, then we should first investigate what is wrong with moving. Turns out even the most obvious concepts have a lot of detail I was not aware of. This post will start with moving, and explain my discovery on Rust memory management until it reaches the point where <code>Pin</code> makes sense.</p>
+<nav class="table-of-contents"><ol><li><a href="#moving">Moving</a></li><li><a href="#the-difference-between-clone-and-copy">The difference between Clone and Copy</a></li><li><a href="#pin">Pin</a></li><li><a href="#references">References</a></li></ol></nav><h2 id="moving" tabindex="-1">Moving</h2>
+<pre class="one-piece"><code>#[derive(Clone, Copy)]
+struct A {
+    x: i32,
+}
+
+fn func(mut a: A, i: i32) {
+    a.x = i;
+    println!("address: {:p}", &amp;a);
+
+}
+
+fn main() {
+    let a = A { x: 1 };
+    println!("address: {:p}", &amp;a);
+    func(a, 1);
+    func(a, 2);
+}
+</code></pre>
+<p>Pritns:</p>
+<pre class="one-piece"><code>address: 0x7ffd79ed16bc
+address: 0x7ffd79ed1644
+address: 0x7ffd79ed1644
+</code></pre>
+<p>ASM:</p>
+<pre class="one-piece"><code>playground::main:
+	subq	$104, %rsp
+	movl	$1, 28(%rsp)
+	leaq	28(%rsp), %rax
+	movq	%rax, 96(%rsp)
+	leaq	96(%rsp), %rdi
+	callq	core::fmt::ArgumentV1::new_pointer
+	movq	%rax, 8(%rsp)
+	movq	%rdx, 16(%rsp)
+	movq	16(%rsp), %rax
+	movq	8(%rsp), %rcx
+	movq	%rcx, 80(%rsp)
+	movq	%rax, 88(%rsp)
+	leaq	80(%rsp), %rcx
+	leaq	32(%rsp), %rdi
+	leaq	.L__unnamed_5(%rip), %rsi
+	movl	$2, %edx
+	movl	$1, %r8d
+	callq	core::fmt::Arguments::new_v1
+	leaq	32(%rsp), %rdi
+	callq	*std::io::stdio::_print@GOTPCREL(%rip)
+	movl	28(%rsp), %edi
+	movl	$1, %esi
+	callq	playground::func
+	movl	28(%rsp), %edi
+	movl	$2, %esi
+	callq	playground::func
+	addq	$104, %rsp
+	retq
+</code></pre>
+<p>What we see here is that the first arguments to both <code>func</code> calls are the same, both are <code>28(%rsp)</code>, in <code>func</code>, the first argument is stored at <code>20(%rsp)</code>, and its address is loaded into <code>%rax</code>, the same routine happens to the two <code>func</code> calls, therefore we observe two identical address.</p>
+<pre class="one-piece"><code>playground::func:
+	subq	$104, %rsp
+	movl	%edi, 20(%rsp)
+	movl	%esi, 100(%rsp)
+	movl	%esi, 20(%rsp)
+	leaq	20(%rsp), %rax
+	...
+</code></pre>
+<p>However, no matter how we adjust the order of the parameters, or defining different functions that take the same argument, the results remain the same</p>
+<pre class="one-piece"><code>leaq	88(%rsp), %rdi
+</code></pre>
+<p>Define two different functions as blow:</p>
+<pre class="one-piece"><code>fn func(mut a: A, i: i32) {
+    a.x = i;
+    println!("address: {:p}", &amp;a);
+
+}
+
+fn func2(j: i32, i: i32, mut a: A) {
+    a.x = i + j;
+    println!("address: {:p}", &amp;a);
+
+}
+</code></pre>
+<p>Here is their assembly code:</p>
+<pre class="one-piece"><code>playground::func:
+	subq	$104, %rsp
+	movl	%edi, 20(%rsp)
+	movl	%esi, 100(%rsp)
+	movl	%esi, 20(%rsp)
+	leaq	20(%rsp), %rax
+	movq	%rax, 88(%rsp)
+	leaq	88(%rsp), %rdi
+	callq	core::fmt::ArgumentV1::new_pointer
+	...
+playground::func2:
+	subq	$104, %rsp
+	movl	%edx, 20(%rsp)
+	movl	%edi, 96(%rsp)
+	movl	%esi, 100(%rsp)
+	addl	%edi, %esi
+	movl	%esi, 16(%rsp)
+	seto	%al
+	testb	$1, %al
+	jne	.LBB18_2
+	movl	16(%rsp), %eax
+	movl	%eax, 20(%rsp)
+	leaq	20(%rsp), %rax
+	movq	%rax, 88(%rsp)
+	leaq	88(%rsp), %rdi
+	callq	core::fmt::ArgumentV1::new_pointer
+</code></pre>
+<p>When the first <code>func</code> call finishes, it doesn't matter if the the second <code>func</code> call affect the first one. There is a sense of symmetry here, the first call and the second call happen at the same location, with the same logic, although not at the same time.</p>
+<p>With that in mind, we can accept the fact that the addresses of two different arguments are the same. Now we just look at the first two addresses:</p>
+<pre class="one-piece"><code>address: 0x7ffd79ed16bc
+address: 0x7ffd79ed1644
+</code></pre>
+<p>Now let's remove the <code>Clone</code> and <code>Copy</code> traits from <code>struct A</code>.</p>
+<p>When moving happens, the object at <code>0x7ffd79ed16bc</code> still exists as in the stack, but it has no sematic meaning anymore, the compiler forbids us from using it again, its value is now transferred to the object at location <code>0x7ffd79ed1644</code></p>
+<h2 id="the-difference-between-clone-and-copy" tabindex="-1">The difference between Clone and Copy</h2>
+<p>To clone a type, you must explicitly call its<code>.clone()</code> method. To copy a type, just put the type at the right hand side of the assignment operation, but if the type does not implements <code>Copy</code>, it will then be moved.</p>
+<h2 id="pin" tabindex="-1">Pin</h2>
+<p>We have seen that in the process of moving, Rust actually move a value from one address to another. Consider a struct, which contains a reference that refers to one of its member, if that struct is moved, then the inner reference should be changed correspondingly.</p>
+<p>Rust gives this kind of struct the name "self-referential struct".</p>
+<p>However, without manual interposition, the reference will not point to the correct object. Rust consider directly interact with the memory violates safety, therefore, after moving a self-referential struct, we have to use <code>unsafe</code> block to correct the references in self-referential structs.</p>
+<p>I think the programmers always have the flexibility that the compiler can't anticipate and interfere. There are some behaviors that can be detected by the compiler, some can not, the latter requires a calling convention in the form of document, I believe <code>Pin</code> belongs to the latter kind.</p>
+<p><a href="https://rust-lang.github.io/async-book/04_pinning/01_chapter.html">The async book</a> has a detail description on <code>Pin</code>. Make sure you read it if you want an official introduction. In the rest of the post I</p>
+<p>First off we put the following code into <code>main.rs</code></p>
+<pre class="one-piece"><code>use std::marker::PhantomPinned;
+
+#[derive(Debug)]
+struct Test {
+    a: String,
+    b: *const String,
+    _marker: PhantomPinned,
+}
+
+fn main() {
+    let mut test = Test {
+        a: "Hey".to_string(),
+        b: std::ptr::null(),
+        _marker: PhantomPinned,
+    };
+    let ptr: *const String = &amp;test.a;
+    test.b = ptr;
+    unsafe {
+        println!("{}", *test.b);
+    }
+}
+</code></pre>
+<p>Notice the line <code>_marker: PhantomPinned</code> which marks the <code>Test</code> as <code>!Unpin</code>, since <code>Test</code> is not a generic type, we can't add type bounds to it using <code>T: !Unpin</code>,</p>
+<p>OK, so, the code compiles, and Rust considers accessing raw pointers unsafe.</p>
+<p>Now we add a few lines to move the <code>test</code>:</p>
+<pre class="insert-before"><code>use std::marker::PhantomPinned;
+
+#[derive(Debug)]
+struct Test {
+    a: String,
+    b: *const String,
+    _marker: PhantomPinned,
+}
+
+fn main() {
+    let mut test = Test {
+        a: "Hey".to_string(),
+        b: std::ptr::null(),
+        _marker: PhantomPinned,
+    };
+    let ptr: *const String = &amp;test.a;
+    test.b = ptr;
+    unsafe {
+        println!("{}", *test.b);
+    }
+</code></pre><pre class="insert"><code>    func(test);
+}
+
+fn func(test: Test) {
+    unsafe {
+        println!("func: {}", *test.b);
+    }
+}
+</code></pre><pre class="insert-after"><code></code></pre>
+<p>The code still compiles, we are still able to move the struct marked as <code>!Unpin</code>. That means I am using it the wrong way. Change the code to this:</p>
+<pre class="insert-before"><code>use std::{marker::PhantomPinned, pin::Pin};
+
+#[derive(Debug)]
+struct Test {
+    a: String,
+    b: *const String,
+    _marker: PhantomPinned,
+}
+
+fn main() {
+    let mut test = Test {
+        a: "Hey".to_string(),
+        b: std::ptr::null(),
+        _marker: PhantomPinned,
+    };
+    let ptr: *const String = &amp;test.a;
+    test.b = ptr;
+    unsafe {
+        println!("{}", *test.b);
+    }
+
+</code></pre><pre class="insert"><code>    let test = unsafe { Pin::new_unchecked(&amp;mut test) };
+
+    func(test);
+}
+
+fn func(test: Pin&lt;&amp;mut Test&gt;) {
+    unsafe {
+        println!("func: {}", *test.b);
+    }
+}
+</code></pre><pre class="insert-after"><code></code></pre>
+<p>Notice the type of <code>test</code> is now <code>Pin&lt;&amp;mut Test&gt;</code>, the interior type is a reference, if we pass object by reference, the object is not moved, that sounds logical.</p>
+<p><a href="https://rust-lang.github.io/async-book/04_pinning/01_chapter.html">The async book</a> example use <code>std::mem::swap</code> to show it is not possible to move the value that a reference is pointing to to another address. Good to know, but that is not the primary concern now, because the type system has added a shell to the original type, in the form of <code>Pin&lt;&amp;mut T&gt;</code>, we can't use <code>T</code> directly, but this is not enforced by the compiler, but by our discipline.</p>
+<p>We can still move the original type if we want to：</p>
+<pre class="insert-before"><code>use std::{marker::PhantomPinned, pin::Pin};
+
+#[derive(Debug)]
+struct Test {
+    a: String,
+    b: *const String,
+    _marker: PhantomPinned,
+}
+
+
+fn main() {
+    let mut test = Test {
+        a: "Hey".to_string(),
+        b: std::ptr::null(),
+        _marker: PhantomPinned,
+    };
+    let ptr: *const String = &amp;test.a;
+    test.b = ptr;
+    unsafe {
+        println!("{}", *test.b);
+    }
+
+</code></pre><pre class="insert"><code>    let test2 = unsafe { Pin::new_unchecked(&amp;mut test) };
+
+    func(test2);
+    func2(test);
+}
+
+fn func(test: Pin&lt;&amp;mut Test&gt;) {
+    unsafe {
+        println!("func: {}", *test.b);
+    }
+}
+
+fn func2(test: Test) {
+    unsafe {
+        println!("func: {}", *test.b);
+    }
+}
+</code></pre><pre class="insert-after"><code></code></pre>
+<p>So the point is to use the "Pinned" type, rather than the original type, when a type is "self-referential". The <code>Pin&lt;&amp;mut T&gt;</code> is a protection from behaviors that move the contents out of <code>T</code>. Simply <code>&amp;mut T</code> or <code>&amp;T</code> is not enough. The async book use the word "contract" for "pin". Now it makes sense to me, it surely is a contract that requires understanding and cooperation.</p>
+<h2 id="references" tabindex="-1">References</h2>
+<ul>
+<li><a href="https://rust-lang.github.io/async-book/04_pinning/01_chapter.html">https://rust-lang.github.io/async-book/04_pinning/01_chapter.html</a></li>
+<li><a href="https://blog.cloudflare.com/pin-and-unpin-in-rust/">https://blog.cloudflare.com/pin-and-unpin-in-rust/</a></li>
+</ul>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

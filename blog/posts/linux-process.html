@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Linux 进程模型</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Linux 进程模型</h1>
+        <p>本文主要起源于一个问题: goroutine 在主进程退出之后也被回收, <a href="https://talks.golang.org/2012/concurrency.slide#15">这篇讲义</a> 类比了 goroutine 和命令行 <code>./script &amp;</code>. 问题在于, 为什么主进程关了之后, 它的线程和子进程也被关了? 相对这些, 更广为流传的 double fork 容易理解一些: 第二次 fork 出来的进程由于父进程退出变成孤儿进程, 继而被 init 进程回收. 这一事实带来以下思考:</p>
+<ol>
+<li>已知 goroutine 是一种轻量线程, 一个可能的实现方式是通过劫持寄存器来实现(以后可能会写一篇 green thread 的实现方式), 即线程调度是在用户态代码中完成, 所以一旦进程退出, goroutine 的栈就被摧毁, goroutine 也随之销毁.</li>
+<li><code>./script &amp;</code> 是主线程 fork 出来的子进程, 为什么也随着主进程销毁而销毁, 不是说主进程退出之后, 它被 init 进程回收吗?</li>
+</ol>
+<p>第二个想法导致了本文需要从根源上理清 Linux 的进程模型. 我们需要从终端开始, 因为终端是 double fork 与 <code>./script &amp;</code> 区别的所在.</p>
+<nav class="table-of-contents"><ol><li><a href="#什么是-tty">什么是 tty?</a><ol><li><a href="#tty-命令行工具">tty 命令行工具</a></li><li><a href="#逻辑上解决问题">逻辑上解决问题</a></li></ol></li><li><a href="#进程状态">进程状态</a></li><li><a href="#jobs-sessions-group">Jobs, Sessions, Group</a></li><li><a href="#sighup">SIGHUP</a></li><li><a href="#创建-daemon-进程">创建 Daemon 进程</a></li><li><a href="#进程的内核形态">进程的内核形态</a><ol><li><a href="#任务调度">任务调度</a></li></ol></li><li><a href="#结论">结论</a></li><li><a href="#参考">参考</a></li></ol></nav><h2 id="什么是-tty" tabindex="-1">什么是 tty?</h2>
+<p>tty = teletype terminals = <em>TeleTYpes</em>, 推荐阅读 <a href="http://www.linusakesson.net/programming/tty/index.php">The TTY demystified</a></p>
+<p>大意:</p>
+<ul>
+<li>1869 年, 一种由打字机, 线, 纸条带打印机组成的装置问世, 最后进化成一种更快的 ASCII-base <em>teletypes</em>, 用于连接一种叫做 <em>Telex</em> 的大型商业网络, 目的是传输商业电报,</li>
+<li>早期计算机用户用 <em>teletypes</em> 和计算机交互</li>
+<li>1970 期间出现可视化终端 (video terminals), 比如 VT-100</li>
+<li>物理终端:
+<ul>
+<li>终端通过传输线与计算机的 <em>UART</em> (Universal Asynchronous Receiver and Transmitter) 连接, 计算机内核需要有 UART 驱动处理处理终端的输入, 输入通过内存拷贝以及 TTY 驱动到达进程</li>
+</ul>
+</li>
+<li>Desktop system
+<ul>
+<li>包括: VGA 驱动, 键盘驱动, Terminal emulator 模拟器 (模拟以前的 video terminals)</li>
+</ul>
+</li>
+<li>用户进程可以通过操作 tty 设备在 /dev 目录下对应的文件描述符与用户交互, 比如标准输出, 就是输出到终端</li>
+</ul>
+<p>总而言之, tty 是指人机交互终端, 我们平时用的命令行终端是终端模拟器</p>
+<p><img src="/images/tty.png" alt=""></p>
+<p>注意到上图的 <strong>"A terminal emulator"</strong></p>
+<h3 id="tty-命令行工具" tabindex="-1">tty 命令行工具</h3>
+<pre class="one-piece"><code>~ ➤ tty                                                                        
+/dev/pts/3
+</code></pre>
+<p>打印的是终端的文件描述符, 终端是一种设备, 终端模拟器也是一种设备, 设备也是文件. 所谓标准输出; 进程的输入输出都来自这个文件 <code>/dev/pts/3</code></p>
+<pre class="one-piece"><code>~ ➤ ps     
+    PID TTY          TIME CMD
+  72055 pts/3    00:00:00 zsh
+  72933 pts/3    00:00:00 ps
+~ ➤ readlink -f /proc/72055/fd/1                                                                     
+/dev/pts/3
+~ ➤ readlink -f /proc/72055/fd/0                                                                     
+/dev/pts/3
+~ ➤ readlink -f /proc/72055/fd/2                                                                     
+/dev/pts/3
+</code></pre>
+<p>可见标准输入(0), 标准输出(1), stderr(2) 都是 <code>/dev/pts/3</code></p>
+<h3 id="逻辑上解决问题" tabindex="-1">逻辑上解决问题</h3>
+<p>到这, 问题就解决了, 终端对应文件描述符是 <code>/dev/pts/3</code>, 如果终端退出, <code>/dev/pts/3</code> 也就不存在了(可以到 <code>/dev/pts</code> 目录验证), 那么依赖它的进程也会被内核杀死.</p>
+<p>接下来看操作系统实际上如何处理.</p>
+<h2 id="进程状态" tabindex="-1">进程状态</h2>
+<p>通过 <code>ps l</code> 可以看到进程状态</p>
+<pre class="one-piece"><code>F   UID     PID    PPID PRI  NI    VSZ   RSS WCHAN  STAT TTY        TIME COMMAND
+0  1000    2403    2064  20   0  18228  3892 wait_w Ss+  pts/10     0:00 /usr/bin/zsh
+4  1000   36316   36302  20   0 167104  6760 poll_s Ssl+ tty2       0:00 /usr/lib/gdm3/gdm-x-session --run-script env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-ses
+4  1000   36318   36316  20   0 1489704 149124 ep_pol Sl+ tty2     63:48 /usr/lib/xorg/Xorg vt2 -displayfd 3 -auth /run/user/1000/gdm/Xauthority -background none -nores
+0  1000   36340   36316  20   0 191436 14060 poll_s Sl+  tty2       0:00 /usr/libexec/gnome-session-binary --systemd --systemd --session=ubuntu
+0  1000   36415   36340  20   0      0     0 -      Z+   tty2       0:00 [fcitx] &lt;defunct&gt;
+0  1000   44575   44568  20   0  21824 10424 wait_w Ss+  pts/0      0:00 zsh
+0  1000   48366   43839  20   0  18036  8132 sigsus Ss   pts/4      0:00 /usr/bin/zsh
+0  1000   48607   48366  20   0 817900 44844 ep_pol Sl+  pts/4      0:00 npm
+0  1000   48930   43839  20   0  18300  8268 sigsus Ss   pts/5      0:00 /usr/bin/zsh
+0  1000   71773   44568  20   0  18340  8644 wait_w Ss+  pts/1      0:00 zsh
+0  1000   88392   45586  20   0 818140 45148 ep_pol Sl+  pts/2      0:00 npm
+0  1000   88438   88437  20   0 948068 102308 ep_pol Sl+ pts/2      0:10 gulp watch
+4  1000   94449   48930  20   0  14508  3412 -      R+   pts/5      0:00 ps l
+</code></pre>
+<p>根据 <a href="https://man7.org/linux/man-pages/man1/ps.1.html">https://man7.org/linux/man-pages/man1/ps.1.html</a></p>
+<ul>
+<li>F: PROCESS FLAGS, 4 表示使用了 super-user privileges, 即以 root 的身份运行</li>
+<li>UID: user ID, 通过 <code>id</code> 查看</li>
+<li>PID: 进程号</li>
+<li>PPID: parent process id</li>
+<li>PRI: priority of the process, 值越大优先级越低</li>
+<li>NI: nice value, 越 nice 运行的机会就越少</li>
+<li>VSZ: virtual memory size in 1024-byte units</li>
+<li>RSS: resident set size, 没被交换到硬盘的物理内存</li>
+<li>WCHAN: wait channel, 表示进程在哪个函数进入睡眠状态
+<ul>
+<li><code>-</code> 表示进程正在运行, 上面 <code>ps l</code> 结果显示 fcitx 正在运行</li>
+<li><code>*</code>: 进程处于多线程状态</li>
+</ul>
+</li>
+<li>STAT: 进程状态
+<ul>
+<li>State specifiers:
+<ul>
+<li>D: uniterruptible sleep, 比如 IO</li>
+<li>I: Idle kernel thread</li>
+<li>R: running or runnable</li>
+<li>S: interruptible sleep</li>
+<li>T: stopped by job control signal</li>
+<li>t: stopped by debugger during the tracing</li>
+<li>W: paging</li>
+<li>X: dead</li>
+<li>Z: defunct("Zombie") process, terminated but not reaped by its parent</li>
+</ul>
+</li>
+<li>additional characters:
+<ul>
+<li><code>&lt;</code>: high-priority</li>
+<li><code>N</code>: low-priority</li>
+<li><code>L</code>: has pages locked into memory</li>
+<li><code>s</code>: is a session leader</li>
+<li><code>l</code>: is multi-threaded</li>
+<li><code>+</code>: is in the foreground process group</li>
+</ul>
+</li>
+<li><code>poll_s Ssl+ /usr/lib/gdm3/gdm-x-session...</code> 表示 gdm-x-session 处于可打断的睡眠状态(在 <code>poll_s...</code> 函数中睡眠), 是一个 session leader, 同时是多线程, 在前台运行</li>
+</ul>
+</li>
+</ul>
+<h2 id="jobs-sessions-group" tabindex="-1">Jobs, Sessions, Group</h2>
+<p>参考 <a href="https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/">The Open Group Base Specifications</a></p>
+<ul>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/basedefs/V1_chap03.html#tag_03_202">Job</a>
+<ul>
+<li>进程的集合, <code>ls | cat</code> 涉及到 2 个进程</li>
+<li>Job control 是指:
+<ul>
+<li>通过 ctrl + Z 挂起一个进程</li>
+<li>
+<ul>
+<li>通过后缀 <code>&amp;</code> 让进程在后台运行</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/basedefs/V1_chap03.html#tag_03_296">Process Group</a>
+<ul>
+<li>A collection of process that permits the signaling of relative processes, 即一个信号可以影响一组进程, 比如 ctrl + C 可以杀死当前前台进程和后台进程, 前台进程 + 后台进程 = 进程组</li>
+<li>每个进程组有一个 ID</li>
+<li>Process Group Leader: 此进程的进程 ID 为进程组的 ID</li>
+<li>Foreground process group: <code>ls | cat</code>, 两个进程, 一个组(foreground process group), 当你敲下 ctrl+Z 的时候, 这两个进程都被挂起, 但后台运行的 <code>sleep&amp;</code> 不受影响, 因为它不属于 <code>ls | cat</code> 进程组</li>
+</ul>
+</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/basedefs/V1_chap03.html#tag_03_115">Controlling Terminal</a>
+<ul>
+<li>Each session may have at most one controlling terminal associated with it, and a controlling terminal is associated with exactly one session.</li>
+<li>Deamons 是属于某个 session, 但没有 controlling terminal</li>
+</ul>
+</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/basedefs/V1_chap03.html#tag_03_343">Session</a>
+<ul>
+<li>进程的集合, 和 job control 有关, session 要么绑定 tty(controlling terminals)</li>
+<li>和 Process Group 的关系: 前台和后台进程(组)都在一个终端上运行, 因此它们都属于同一个 session.</li>
+<li>Session 是指与系统的会话</li>
+</ul>
+</li>
+</ul>
+<pre class="one-piece"><code>~ ➤ sleep 1000 &amp; 
+~ ➤ sleep 1000 &amp; 
+~ ➤ ps -A -o 'pid,pgid,sess,args'|grep sleep                                                                                                                       
+ 127204  127204   99565 sleep 1000
+ 127207  127207   99565 sleep 1000
+</code></pre>
+<p>2 个 sleep 后台进程都属于 id 为 99565 的 session, 分别是各自的 group leader</p>
+<pre class="one-piece"><code>~ ➤ tail -f /tmp/access.log| cat &amp;                                                                                                                                 
+[4] 128133 128134
+~ ➤ ps -o 'pid,pgid,args'                                                                                                                                          
+    PID    PGID COMMAND
+ 128133  128133 tail -f /tmp/access.log
+ 128134  128133 cat
+~ ➤ kill -9 128133                                                                                                                                                 
+~ ➤                                                                                                                                                                
+[4]  + 128133 killed     tail -f /tmp/access.log | 
+       128134 done       cat
+</code></pre>
+<p>tail 和 cat 都属于 128133 进程组, 其中 tail 是组长, 发送 KILL 信号给组长就会一石二鸟</p>
+<h2 id="sighup" tabindex="-1">SIGHUP</h2>
+<p>关掉终端的时候(exit, 或者 x 按钮), 内核发送 SIGHUP 给以此终端为 controlling terminal 的所有进程, 即一个 session 内的所有进程</p>
+<p>这就解释了为什么关掉终端会导致后台进程退出.</p>
+<p>man 7 signal:</p>
+<pre class="one-piece"><code>Signal      Standard   Action   Comment
+────────────────────────────────────────────────────────────────────────
+SIGHUP       P1990      Term    Hangup detected on controlling terminal
+                                       or death of controlling process
+</code></pre>
+<p>内核检查到终端退出的时候, 给终端下的 session leader 发送 SIGHUP, session leader 将此信号发送给它的子进程组们 (job), 进程对 SIGHUP 默认的处理方式就是退出;</p>
+<p>Linux 有个工具 <code>nohup</code> 可以屏蔽 SIGHUP</p>
+<pre class="one-piece"><code>~ ➤ nohup sleep 1000&amp;                                                          
+[1] 138583
+nohup: ignoring input and appending output to 'nohup.out' 
+</code></pre>
+<p>关掉终端之后, 你会发现它依然在运行</p>
+<pre class="one-piece"><code>~ ➤ ps -A -o 'pid,ppid,args' | grep sleep                                      
+ 138583    2860 sleep 1000
+~ ➤ ps -p 2860 -o command                                                      
+COMMAND
+/lib/systemd/systemd --user
+</code></pre>
+<p>这就说明, 后台进程之所以退出, 是因为对 SIGHUP 作出默认处理, 如果屏蔽终端, 后台进程最后被 systemd 接管, 变成 <a href="https://www.freedesktop.org/software/systemd/man/daemon.html">"systemd daemon"</a></p>
+<h2 id="创建-daemon-进程" tabindex="-1">创建 Daemon 进程</h2>
+<ol>
+<li>Double fork, traditional SysV daemon, <a href="https://stackoverflow.com/a/17955149">1</a>, <a href="http://www.netzmafia.de/skripten/unix/linux-daemon-howto.html">2</a></li>
+<li>systemd, new style deamons, 写 .service 文件</li>
+<li><code>nohup sleep 10000 &amp;&gt;/dev/null</code>, 脱离 controlling terminal</li>
+<li><code>setsid myscript.sh &gt;/dev/null 2&gt;&amp;1 &lt; /dev/null &amp;</code>, 创建一个新的 session, 并重新输入输出</li>
+</ol>
+<h2 id="进程的内核形态" tabindex="-1">进程的内核形态</h2>
+<p>这涉及到八股文之一: 进程和线程的区别是什么?</p>
+<p>有个误区是认为线程是一个实体, 因为每个线程都有一个独立的栈, 用来管理函数调用. 那什么叫内核线程? 有内核线程就有用户态线程. 这就造成一些混乱, 就好象真的有至少 2 个线程在 1GB 分界线两边运转. 造成这种误解的原因是翻译, 让人无意之间把两个"程"归为同类; 我认为应该把线程理解为一连串指令的集合, 如果一个集合叫做内核线程, 那是因为它的指令全都来自内核, 用户态线程的指令来自用户的 ELF 文件, 有必要的时候通过 <code>syscall</code> 陷入内核态, 没有纯粹的用户态线程, 因为避免不了系统调用.</p>
+<p>那么进程和线程的区别是什么? 区别在于进程是一个实体, 它是线程的宿主, 线程除了指令还需要内存空间, 内存空间由进程提供, 进程能运行完全是因为它至少有一条线程, 而不是说进程本身就能运行;</p>
+<p>线程的本质是执行任务, 因此在内核中, 它也叫做 task, 有专门的数据结构: <a href="https://elixir.bootlin.com/linux/v4.3/source/arch/x86/include/asm/thread_info.h#L55"><code>task_struct</code></a>;</p>
+<pre class="one-piece"><code>struct thread_info {
+	struct task_struct	*task;		/* main task structure */
+	__u32			flags;		/* low level flags */
+	__u32			status;		/* thread synchronous flags */
+	__u32			cpu;		/* current CPU */
+	int			saved_preempt_count;
+	mm_segment_t		addr_limit;
+	void __user		*sysenter_return;
+	unsigned int		sig_on_uaccess_error:1;
+	unsigned int		uaccess_err:1;	/* uaccess failed */
+};
+</code></pre>
+<p>如果只有一个 CPU, 即使创建了无数个线程, 一个时间段也只有一个线程能运行.</p>
+<h3 id="任务调度" tabindex="-1">任务调度</h3>
+<p>Linux 的 CFS(Completely Fair Scheduler) 算法:</p>
+<ul>
+<li>每个 task 有一个 <code>vruntime</code> 字段, 记录了任务的执行时间</li>
+<li>内核通过红黑数管理 task 集合, 调度的时候, 找到 <code>vruntime</code> 最少的任务, 让它运行</li>
+<li>如果一个线程达到了<a href="https://elixir.bootlin.com/linux/v4.3/source/include/linux/sched.h#L1302">运行时间上限</a>, 则它的 <code>vruntime</code> 会被清零, 重新进入任务集合</li>
+</ul>
+<p>由于时间关系, 就不再继续深入了</p>
+<h2 id="结论" tabindex="-1">结论</h2>
+<ol>
+<li>tty 是指控制终端, 我们常用的命令行窗口是控制终端模拟器</li>
+<li>Job 是指一个或多个线程组成任务</li>
+<li>Session 是指同一个控制终端之下的进程集合</li>
+<li>Group 是指对 session 之下能通过同一个信号控制的进程集合</li>
+<li><code>./script &amp;</code> 未必随父进程的退出而退出, 但如果子进程在控制终端控制范围, 则会因为 SIGHUP 影响而退出</li>
+</ol>
+<h2 id="参考" tabindex="-1">参考</h2>
+<ul>
+<li><a href="http://www.linusakesson.net/programming/tty/index.php">http://www.linusakesson.net/programming/tty/index.php</a></li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/">https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/</a></li>
+<li><a href="https://unix.stackexchange.com/a/14853">https://unix.stackexchange.com/a/14853</a></li>
+<li>man credential</li>
+<li>man 7 signal</li>
+<li><a href="https://en.wikipedia.org/wiki/SIGHUP">https://en.wikipedia.org/wiki/SIGHUP</a></li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/daemon.html">https://www.freedesktop.org/software/systemd/man/daemon.html</a></li>
+<li><a href="https://stackoverflow.com/a/17955149">https://stackoverflow.com/a/17955149</a></li>
+<li><a href="http://www.netzmafia.de/skripten/unix/linux-daemon-howto.html">http://www.netzmafia.de/skripten/unix/linux-daemon-howto.html</a></li>
+<li><a href="https://unix.stackexchange.com/a/278157">https://unix.stackexchange.com/a/278157</a></li>
+<li><a href="https://tldp.org/LDP/abs/html/subshells.html">bash subshell</a></li>
+<li><a href="https://thorstenball.com/blog/2014/06/13/where-did-fork-go/">https://thorstenball.com/blog/2014/06/13/where-did-fork-go/</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">https://en.wikipedia.org/wiki/Completely_Fair_Scheduler</a></li>
+</ul>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

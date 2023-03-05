@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>minstack.cpp</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      <h1>最小栈</h1>
+<blockquote>
+<p>定义栈的数据结构, 请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中, 调用 min、push 及 pop 的时间复杂度都是 O(1).</p>
+<p>示例:</p>
+<p>MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.min();   –&gt; 返回 -3.
+minStack.pop();
+minStack.top();      –&gt; 返回 0.
+minStack.min();   –&gt; 返回 -2.</p>
+<p>提示：</p>
+<pre><code>各函数的调用总次数不超过 20000 次
+</code></pre>
+<p>来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/bao-han-minhan-shu-de-zhan-lcof
+著作权归领扣网络所有. 商业转载请联系官方授权, 非商业转载请注明出处.</p>
+</blockquote>
+<p>这题的思路： 1 个栈 + 未知变量, 出入栈的时候都要维护这个未知变量, 根据什么原则（不变量）来维护则是一个问题.</p>
+<p>以下是思路的渐进(Asymptotic!).</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      <h2>1. 用 1 个栈存储数据, 1 个变量表示最小值</h2>
+<p>执行用时：24 ms, 在所有 C++ 提交中击败了71.85% 的用户</p>
+<p>内存消耗：14.7 MB, 在所有 C++ 提交中击败了48.02% 的用户</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">class</span><span class="w"> </span><span class="nc">MinStack</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="cm">/** initialize your data structure here. */</span><span class="w"></span>
+<span class="w">    </span><span class="n">MinStack</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">push</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">min_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">min_value</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">min_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">data</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">pop</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">data</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">min_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">min_element</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">end</span><span class="p">());</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">top</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">back</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">min</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">min_value</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">min_value</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>思路很简单, 在 <code>push</code> 的时候”巧妙地“维护 <code>min_value</code>, 在 <code>pop</code> 的时候暴力地维护 <code>min_value</code>, 时间复杂度 O(n), 空间复杂度 O(n), <code>push</code> 的时候也可以简单粗暴地遍历所有值求最小值, 这样就更没意思了…</p>
+<h2>2. 1 个变量不适用于 <code>pop</code> 场景</h2>
+<p>1 个变量可以适应 <code>push</code> 场景, 因为就像一次普通的遍历求最小值一样, 但是 <code>pop</code> 可能导致最小值弹出, 那么下一个最小值是什么, 就不知道了. 所以用栈来记录最小值的变迁历史.</p>
+<pre><code>// 执行用时：24 ms, 在所有 C++ 提交中击败了71.85% 的用户
+// 内存消耗：14.6 MB, 在所有 C++ 提交中击败了79.57% 的用户
+</code></pre>
+<p>和第一节的方法相比, 时间复杂度变成了 O(1), 空间依然是 O(n), 按 Theta 记法, 复杂度的上限从 <code>n+1</code> 变成 <code>2n</code></p>
+<h2>3. 残差法：1 个变量可以应对 <code>pop</code></h2>
+<p>我认为, 我们无法从以上 2 种方法中推导出来这种思路, 所以它是一种变异物种.</p>
+<p>当然我们事后诸葛亮：我们必须要知道最小值的历史, 既然一个变量无法提供这种历史, 那么另外一个数据栈是否能提供记录历史的功能呢？</p>
+<p>最小值有 2 种状态： 1 是保持不变, 2 是变小; 是什么导致最小值变化？输入. 输入有两种状态, 1 是 等于或大于最小值, 2 是小于最小值, 第二种情况导致最小值变小, 第一种情况导致最小值不变.</p>
+<pre><code>in0  | ge_min    | lt_min
+min0 | stay_put  | min1 &lt;- in0
+</code></pre>
+<p>我们需要提供一种方法：</p>
+<ol>
+<li>转化： <code>f: (in0, min0) -&gt; (y, min1)</code></li>
+<li>还原： <code>g: (y, min1) -&gt; (in0, min0)</code></li>
+</ol>
+<p>”残差法“意识到:</p>
+<pre><code>f:
+if in0 &lt; min0 then          (1)
+    let min1 = in0
+    (1) =&gt; in0 - min0 &lt; 0
+    let y = in0 - min0,
+    then y &lt; 0              (2)
+if in0 &gt;= min0 then         (3)
+    then in0 - min0 &gt;= 0
+    let y = in0 -min0
+    min1 = min0
+    then y &gt;= 0             (4)
+
+由于 in0 只有 2 种状态, 2 种状态分别导致没有交集的结论(y)
+那么从结论(y)开始也可以反向推导出原来的状态
+(1) =&gt; (2)
+(3) =&gt; (4)
+(2) =&gt; (1)
+(4) =&gt; (3)
+
+g:
+如果 y &gt;=0 (4) 那么说明了 (3)
+    min1 = min0
+    y = in0 - min0
+    y = in0 - min1
+    in0 = y + min1 (*)
+如果 y &lt; 0 (2) 说明 (1)
+    min1 = in0
+    in0 = min1     (*)
+    y = in0 - min0
+    y = min1 - min0
+    min0 = min1 - y (*)
+</code></pre>
+<p>星号标注的是还原. 这种方法让数据栈同时也记录了最小值的历史.</p>
+<p>只要做到一个数字进去和出来后 <code>MinStack</code> 状态不变, 那么就可以确保在它进 N 个数字, 弹出 N 个也能保证状态不变, 因为State(N) 是 State(N-1) + N1 转换而来的, State(N-1) = State(N-2) + N2, so on so forth, 最后从 State(N) 也能还原到 State(1).</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      <p>执行用时：20 ms, 在所有 C++ 提交中击败了92.14% 的用户
+内存消耗：14.8 MB, 在所有 C++ 提交中击败了28.76% 的用户</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      <p>执行用时：28 ms, 在所有 C++ 提交中击败了39.84% 的用户
+内存消耗：14.8 MB, 在所有 C++ 提交中击败了30.68% 的用户</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">class</span><span class="w"> </span><span class="nc">MinStack</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="cm">/** initialize your data structure here. */</span><span class="w"></span>
+<span class="w">    </span><span class="n">MinStack</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">push</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">in0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">hybrid</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">min_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">in0</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="kt">long</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">in0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">min_value</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">hybrid</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">y</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">min_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">in0</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">pop</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="kt">long</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hybrid</span><span class="p">.</span><span class="n">back</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">min_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">min_value</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">hybrid</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">top</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="kt">long</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hybrid</span><span class="p">.</span><span class="n">back</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="kt">long</span><span class="w"> </span><span class="n">in0</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">in0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">min_value</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">in0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">min_value</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">in0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">min</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">min_value</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span><span class="w"> </span><span class="n">hybrid</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="n">min_value</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-5">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-5">#</a>
+      </div>
+      <p>hybrid 表示现在这个栈记录的不仅是数据还有历史.</p>
+<p>用 long 是因为两个 int 相减可能会导致溢出.</p>
+<p>这种方法时间空间复杂度分别是 O(1), O(n)</p>
+<h2>4. 另外一种做法</h2>
+<p>外网广泛使用一种类似的方法, <code>y = 2 * in - min_value</code>, 甚至没出现过第 3 节所用的形式, 可能是文化不同导致.</p>
+<p>一个印度人的推理：https://stackoverflow.com/a/55987195</p>
+<pre><code>in0 入栈：
+in0 要么 &lt; min0 要么 &gt;= min0
+if in0 &lt; min0 then                   (1)
+    in0 - min0 &lt; 0
+    in0 - min0 + in0 &lt; in0
+    2 * in0 - min0 &lt; in0
+    min1 = in0
+    let y = 2 * in0 - min0
+    y &lt; in0
+    因为 (1), 所以 y &lt; min1           (2)
+if in0 &gt;= min0 then                  (3)
+    min1 = min0
+    let y = in0
+    y &gt;= min1                        (4)
+
+将 y 放入栈中
+
+如果 (1) 则 (2)
+如果 (3) 则 (4)
+如果 (2) 则 (1)
+如果 (4) 则 (3)
+
+
+y 出栈:(每次出栈之前, MinStack 的状态, 和入栈之后的状态一样)
+
+根据：
+1. 如果 (2) 则 (1)
+2. 如果 (4) 则 (3)
+
+如果 y &lt; min1(2), 就说明 in0 &lt; min0(1),也就有
+y = 2 * in0 - min0, min1 就是 in0, min0 = 2 * in0 - y
+
+如果 y &gt;= min1(4) 说明 y = in0 (3), 也就有 in0 = y
+
+</code></pre>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-6">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-6">#</a>
+      </div>
+      <p>执行用时：56 ms, 在所有 Python3 提交中击败了96.11% 的用户</p>
+<p>内存消耗：18 MB, 在所有 Python3 提交中击败了22.87% 的用户</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="k">class</span><span class="w"> </span><span class="nc">MinStack</span><span class="w"> </span><span class="o">:</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-7">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-7">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">""</span><span class="w"></span>
+<span class="w">                         </span><span class="s">"</span>
+<span class="w">                         </span><span class="n">initialize</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">structure</span><span class="w"> </span><span class="n">here</span><span class="p">.</span><span class="s">""</span><span class="w"></span>
+<span class="w">                                                             </span><span class="s">"</span>
+<span class="w">                         </span><span class="n">self</span><span class="p">.</span><span class="n">stack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-8">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-8">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                                                          </span><span class="n">def</span><span class="w"> </span><span class="n">push</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
+<span class="w">                                                                   </span><span class="o">:</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"></span>
+<span class="w">                                                              </span><span class="o">-&gt;</span><span class="n">None</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">stack</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">stack</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="w"></span>
+<span class="w">                                                                                                                                                                                      </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">stack</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">stack</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-9">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-9">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">                                                                                                                                                                                                                                         </span><span class="n">def</span><span class="w"> </span><span class="n">pop</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="w"></span>
+<span class="w">                                                                                                                                                                                                                                             </span><span class="o">-&gt;</span><span class="n">None</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">stack</span><span class="p">[</span><span class="mi">-1</span><span class="p">]</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="p">)</span><span class="o">:</span><span class="w"></span>
+<span class="w">             </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="w"></span>
+<span class="w">             </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w"></span>
+<span class="n">self</span><span class="p">.</span><span class="n">stack</span><span class="p">.</span><span class="n">pop</span><span class="p">()</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-10">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-10">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">top</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="o">-&gt;</span><span class="kt">int</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">stack</span><span class="p">[</span><span class="mi">-1</span><span class="p">]</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="p">)</span><span class="o">:</span><span class="w"></span>
+<span class="w">             </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="w"></span>
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-11">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-11">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">     </span><span class="n">def</span><span class="w"> </span><span class="n">min</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kt">int</span><span class="o">:</span><span class="w"></span>
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">min_value</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-12">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-12">#</a>
+      </div>
+      <h2>5. 状态对比</h2>
+<p>第 3 节我假设有前后两种状态, 数字后缀表示前后</p>
+<ol>
+<li>转化： <code>f: (in0, min0) -&gt; (y, min1)</code></li>
+<li>还原： <code>g: (y, min1) -&gt; (in0, min0)</code></li>
+</ol>
+<p><img alt="" src="/images/fuck-leetcode/a43a14b8686f4d9ebcb3780ae67f7c56_.png"></p>
+<p>状态从 1 到 2 最后到 3, 状态不变, 需要设计好转换关系, 但是怎么设计, 从 3, 4 节的推导来看, 似乎需要依靠一些临场发挥, 比如, 我知道 i 有多种状态, 我通过不断尝试, 设计好每个状态导致什么结论, 这些状态必须是每个结论的充分必要条件, 这样才能从结论推回到初始状态. </p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+
+                    <div class="section" id="section-links">
+                        <div class="docs">
+                            <div class="octowrap">
+                                <a class="octothorpe" href="#section-links">#</a>
+                            </div>
+                            <p><a href="raw/minstack.cpp">raw source</a></p>
+                        </div>
+                    </div>
+                    <div class="clearall"></div>
+                </div>
+            
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+            
+</html>

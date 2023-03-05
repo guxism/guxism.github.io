@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>An Experiment On The Protocol</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>An Experiment On The Protocol</h1>
+        <p>Had a little conversation about jailbreaking and found myself ignorant of that notorious protocol, without this knowledge I can't fully explain why the fuck do we need a service that abides by this protocol but the egress traffic uses another protocol. Just think of how many options do we have when we want to use a proxy protocol? Yeah, so whatever fancy protocol comes to play the service must provide an adaptor. Still, my gut forces me to do a research about its detail. In my young age I did that once, but back then my brain was not prepared for this kind of  knowledge.</p>
+<p>Unless otherwise noted, the protocol takes on an alias "sv" in this article, and the most famous software across this land until recently takes on "sihouette". There is no point in risking one's neck for a name.</p>
+<p>To conduct the experiment I have to setup a server and client, I don't use sihouette although it actually works, but that it works with a pair of sihouette processes doesn't imply that it implements the original protocol. I recall that when I read its code in the past I decided not to trust it because the code looked like child's play. I use OpenSSH instead, I have a server(192.168.42.2) in the LAN, I run the following command on my laptop to build a tunnel between the laptop and the server:</p>
+<pre class="one-piece"><code>ssh -D 10020 -q -c -N root@192.168.42.2
+</code></pre>
+<p>On my laptop I change my proxychains4.conf to use <code>localhost:10020</code> as the translating proxy, and send an HTTP request:</p>
+<pre class="one-piece"><code>proxychains4 wget bing.com
+</code></pre>
+<p>It works as expected. Now it's time to capture some traffic, HTTP requests turn out to be too noisy, so I use plain TCP with netcat. On another computer whose IP is 192.168.42.23 I run this command to launch a TCP server:</p>
+<pre class="one-piece"><code>ncat -l 9000 -v
+</code></pre>
+<p>Now on my laptop I run the following command and confirm the connection is established:</p>
+<pre class="one-piece"><code>proxychains4 nc 192.168.42.23 9000
+</code></pre>
+<p>What happend? My laptop asked 192.168.42.2 to forward traffic to 192.168.42.23. But firstly proxychains4 doesn't know a thing about who is the proxy, it just know there is a local service on port 10020, anything thrown at that port is somehow forwarded and replies return from the same port. I have no means to watch the tunnel, it is encrypted. The only observation I can carry out is to watch local to local connections, in this case, it's between <code>localhost:&lt;some-port&gt;</code> and <code>localhost:10020</code>:</p>
+<pre class="one-piece"><code>╰─➤  tcpdump -i lo port 10020 -nt 
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on lo, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+IP 127.0.0.1.50262 &gt; 127.0.0.1.10020: Flags [S], seq 3958481367, win 65495, options [mss 65495,sackOK,TS val 4096509676 ecr 0,nop,wscale 7], length 0
+IP 127.0.0.1.10020 &gt; 127.0.0.1.50262: Flags [S.], seq 1764618219, ack 3958481368, win 65483, options [mss 65495,sackOK,TS val 4096509676 ecr 4096509676,nop,wscale 7], length 0
+IP 127.0.0.1.50262 &gt; 127.0.0.1.10020: Flags [.], ack 1, win 512, options [nop,nop,TS val 4096509676 ecr 4096509676], length 0
+IP 127.0.0.1.50262 &gt; 127.0.0.1.10020: Flags [P.], seq 1:4, ack 1, win 512, options [nop,nop,TS val 4096509676 ecr 4096509676], length 3
+IP 127.0.0.1.10020 &gt; 127.0.0.1.50262: Flags [.], ack 4, win 512, options [nop,nop,TS val 4096509676 ecr 4096509676], length 0
+IP 127.0.0.1.10020 &gt; 127.0.0.1.50262: Flags [P.], seq 1:3, ack 4, win 512, options [nop,nop,TS val 4096509676 ecr 4096509676], length 2
+IP 127.0.0.1.50262 &gt; 127.0.0.1.10020: Flags [.], ack 3, win 512, options [nop,nop,TS val 4096509676 ecr 4096509676], length 0
+IP 127.0.0.1.50262 &gt; 127.0.0.1.10020: Flags [P.], seq 4:14, ack 3, win 512, options [nop,nop,TS val 4096509676 ecr 4096509676], length 10
+IP 127.0.0.1.10020 &gt; 127.0.0.1.50262: Flags [.], ack 14, win 512, options [nop,nop,TS val 4096509676 ecr 4096509676], length 0
+IP 127.0.0.1.10020 &gt; 127.0.0.1.50262: Flags [P.], seq 3:13, ack 14, win 512, options [nop,nop,TS val 4096509683 ecr 4096509676], length 10
+IP 127.0.0.1.50262 &gt; 127.0.0.1.10020: Flags [.], ack 13, win 512, options [nop,nop,TS val 4096509683 ecr 4096509683], length 0
+IP 127.0.0.1.50262 &gt; 127.0.0.1.10020: Flags [F.], seq 14, ack 13, win 512, options [nop,nop,TS val 4096543489 ecr 4096509683], length 0
+IP 127.0.0.1.10020 &gt; 127.0.0.1.50262: Flags [F.], seq 13, ack 15, win 512, options [nop,nop,TS val 4096543495 ecr 4096543489], length 0
+IP 127.0.0.1.50262 &gt; 127.0.0.1.10020: Flags [.], ack 14, win 512, options [nop,nop,TS val 4096543495 ecr 4096543495], length 0
+</code></pre>
+<p>The above lines are the result of a complete conversation between netcat programs. There is a handshake, of course, but it has nothing to with the way the tunnel is established, the tunnel is not our concern. Obviously the netcat client talks to local protocol server with the address <code>127.0.0.1:50262</code>.</p>
+<p>But as I related sihouette to the facts above, I was confused: is what happens between two sihouette programs analogous to that between two OpenSSH programs? Then, which is the protocol client? Netcat? Of course not! Proxychains4 is the translate proxy that translate TCP traffic through another proxy, that is to say, what proxychains4 receives is TCP traffic and no more.</p>
+<p>Take a look at the connection information, it shows that it's netcat, not proxychains4 that does the talking. But it is possible that traffic is translated by proxychains4 into sv traffic. So in the end it's actually proxychains4 that leads the s5 connection.</p>
+<pre class="one-piece"><code>➜  ~ ss -an4p|grep 50272
+tcp   ESTAB     0      0                 127.0.0.1:50272       127.0.0.1:10020 users:(("nc",pid=374366,fd=7))            
+tcp   ESTAB     0      0                 127.0.0.1:10020       127.0.0.1:50272 users:(("ssh",pid=363564,fd=6))     
+</code></pre>
+<p>Restart tcpdump with a <code>-X</code> option. The reason I don't use wireshark is that I want to keep those little details in mind, like in most case, TCP header is 20-bytes in size, while udp is 8-bytes, and the payload appears 44 bytes from the start, in hexadecimal it's 0x2c, you may look at the third row of the packet's representation in read the payload starting from the second to last column. But the most reliable way is to read the length value which is always at the end of the first line of the packet manifest.</p>
+<p>We skip the TCP handshake. The first sv packet says:</p>
+<pre class="one-piece"><code>IP 127.0.0.1.50270 &gt; 127.0.0.1.10020: Flags [P.], seq 1:4, ack 1, win 512, options [nop,nop,TS val 4097191818 ecr 4097191818], length 3
+	0x0000:  4500 0037 4a41 4000 4006 f27d 7f00 0001  E..7JA@.@..}....
+	0x0010:  7f00 0001 c45e 2724 fcc5 161d 16b0 f2c5  .....^'$........
+	0x0020:  8018 0200 fe2b 0000 0101 080a f436 2f8a  .....+.......6/.
+	0x0030:  f436 2f8a 0501 00     
+</code></pre>
+<p>The length is 3, so we go directy to the last 3 bytes: <code>0501 00</code></p>
+<p>According to  <a href="https://datatracker.ietf.org/doc/rfc1928/">RFC 1928</a>, it is the version identifier/method selection message:</p>
+<pre class="one-piece"><code>                   +----+----------+----------+
+                   |VER | NMETHODS | METHODS  |
+                   +----+----------+----------+
+                   | 1  |    1     | 1 to 255 |
+                   +----+----------+----------+
+</code></pre>
+<p>In this case, the ver field is set to 0x05. NMETHODS is 0x01 meaning only one method will be used. METHODS field is set to 0x00 which means "NO AUTHENTICATION REQUIRED".</p>
+<p>The server, in this connection is addressed as <code>localhost:10020</code>. It returns an empty TCP reply:</p>
+<pre class="one-piece"><code>IP 127.0.0.1.10020 &gt; 127.0.0.1.50270: Flags [.], ack 4, win 512, options [nop,nop,TS val 4097191818 ecr 4097191818], length 0
+</code></pre>
+<p>Don't panic, It is just a TCP ACK. Moving on, we see the server push something back, now this is the sv-related reply:</p>
+<pre class="one-piece"><code>IP 127.0.0.1.10020 &gt; 127.0.0.1.50270: Flags [P.], seq 1:3, ack 4, win 512, options [nop,nop,TS val 4097191818 ecr 4097191818], length 2
+	0x0000:  4500 0036 1b79 4000 4006 2147 7f00 0001  E..6.y@.@.!G....
+	0x0010:  7f00 0001 2724 c45e 16b0 f2c5 fcc5 1620  ....'$.^........
+	0x0020:  8018 0200 fe2a 0000 0101 080a f436 2f8a  .....*.......6/.
+	0x0030:  f436 2f8a 0500   
+</code></pre>
+<p>It says: <code>0500</code>. 0x05 is the VER field. <code>0x00</code> is the method selection.</p>
+<pre class="one-piece"><code>                         +----+--------+
+                         |VER | METHOD |
+                         +----+--------+
+                         | 1  |   1    |
+                         +----+--------+
+</code></pre>
+<p>Move on, and skip sv non-related packets. Until this one:</p>
+<pre class="one-piece"><code>IP 127.0.0.1.50270 &gt; 127.0.0.1.10020: Flags [P.], seq 4:14, ack 3, win 512, options [nop,nop,TS val 4097191818 ecr 4097191818], length 10
+	0x0000:  4500 003e 4a43 4000 4006 f274 7f00 0001  E..&gt;JC@.@..t....
+	0x0010:  7f00 0001 c45e 2724 fcc5 1620 16b0 f2c7  .....^'$........
+	0x0020:  8018 0200 fe32 0000 0101 080a f436 2f8a  .....2.......6/.
+	0x0030:  f436 2f8a 0501 0001 c0a8 2a17 2328       .6/.......*.#(
+</code></pre>
+<p>It says: <code>0501 0001 c0a8 2a17 2328</code>, which is decoded as:</p>
+<ul>
+<li>0x05 as always is the VER</li>
+<li>0x01, CMD, this is a "CONNECT" command</li>
+<li>0x00, reserved byte</li>
+<li>0x01, ATYP, the address type is IPV4</li>
+<li><code>c0a8 2a17</code>, 192.168.42.23, the address of the computer that runs a netcate server as mentioned above.</li>
+<li><code>2328</code>, 9000, the port that the netcat server is listening to.</li>
+</ul>
+<pre class="one-piece"><code>        +----+-----+-------+------+----------+----------+
+        |VER | CMD |  RSV  | ATYP | DST.ADDR | DST.PORT |
+        +----+-----+-------+------+----------+----------+
+        | 1  |  1  | X'00' |  1   | Variable |    2     |
+        +----+-----+-------+------+----------+----------+
+</code></pre>
+<p>It is not difficult, I wonder why I didn't understand it the first time I read about it. Oh, it was the sihouette code, it muddled my head. When you were young, you just went straightly to the code and got yourself killed by the overwhelming details. But there is no rocket science in this specific area, the bravest man was not necessarily the smartest. Tea is the consequence of showing off, although blood needs to be shed, tea needs to be drunken. But people never learn, they just want to show off. I saw someone who implements a similiar protocol displays his CSDN blog in his github biography. This is so stupid, but what can we expect from a CSDN blogger? Just let them die. The point I want to make here is that we should ignore the implementations and read the protocol RFC first. The RFC was published in 1996 by Marcus Leech from Bell.</p>
+<p>Let's move on, the server replies the "CONNECT" request with:</p>
+<pre class="one-piece"><code>IP 127.0.0.1.10020 &gt; 127.0.0.1.50270: Flags [P.], seq 3:13, ack 14, win 512, options [nop,nop,TS val 4097191826 ecr 4097191818], length 10
+	0x0000:  4500 003e 1b7b 4000 4006 213d 7f00 0001  E..&gt;.{@.@.!=....
+	0x0010:  7f00 0001 2724 c45e 16b0 f2c7 fcc5 162a  ....'$.^.......*
+	0x0020:  8018 0200 fe32 0000 0101 080a f436 2f92  .....2.......6/.
+	0x0030:  f436 2f8a 0500 0001 0000 0000 0000       .6/...........
+</code></pre>
+<p><code>0500 0001 0000 0000 0000</code></p>
+<pre class="one-piece"><code>        +----+-----+-------+------+----------+----------+
+        |VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |
+        +----+-----+-------+------+----------+----------+
+        | 1  |  1  | X'00' |  1   | Variable |    2     |
+        +----+-----+-------+------+----------+----------+
+</code></pre>
+<p>It means the server accepts the request but the BND.ADDR and BND.PORT are all zeros, because the request is about "CONNECT", not "BIND". As far as I can recall, sihouette did not implement "BIND" command, and according to <a href="https://en.wikipedia.org/wiki/SOCKS#Software">wikipedia</a></p>
+<blockquote>
+<p><a href="https://en.wikipedia.org/wiki/OpenSSH" title="OpenSSH">OpenSSH</a> allows dynamic creation of tunnels, specified via a subset of the SOCKS protocol, supporting the CONNECT command.</p>
+</blockquote>
+<p>It seems the sv connection is thus established. The rest of the RFC is about details of "CONNECT", "BIND", etc..</p>
+<p>Now, on the netcat client side I type "hello" and ENTER and let it loose. Tcpdumps shows:</p>
+<pre class="one-piece"><code>IP 127.0.0.1.50270 &gt; 127.0.0.1.10020: Flags [P.], seq 14:20, ack 13, win 512, options [nop,nop,TS val 4097197531 ecr 4097191826], length 6
+	0x0000:  4500 003a 4a45 4000 4006 f276 7f00 0001  E..:JE@.@..v....
+	0x0010:  7f00 0001 c45e 2724 fcc5 162a 16b0 f2d1  .....^'$...*....
+	0x0020:  8018 0200 fe2e 0000 0101 080a f436 45db  .............6E.
+	0x0030:  f436 2f92 6865 6c6c 6f0a                 .6/.hello.
+</code></pre>
+<p>The final dot is <code>LF</code> (NL line feed, new line).</p>
+<p>The server says nothing sv-related in return. I send another word "world", it causes the same effect as "hello".</p>
+<p>Finally I close the netcat client and a normal TCP termination takes place.</p>
+<p>Why, that is it? "hello world" in plain text? Yeah,  I don't see anything about encryption in the RFC. Then how about aes-256-cfb? Sihouette uses libsodium as means of encryption, but don't mess up, the connection between two sihouette processes has nothing to do with sv protocol, think of it the way you think of ssh tunnel, whatever is used to encrypt the tunnel is definitely not sv-related.</p>
+<p>The impression I get from the RFC is that the author seemed to assume the server is not on localhost, but on the other side of a firewall. After taking a hard look at the it I seem to understand, that the aim of the protocol is to embed the target address in the initiation packet, telling the proxy server to do whatever the client wants to do in its stead, and every packet that follows is as inocent as a lamb, as we have seen in the "hello world" example above. It costs nothing to construct a sv packet, just some extra header in the first packet, why not? The browsers would do this ten times harder and are still happier than wasting time in futile retransmission towards unreachable ends. The reason sihouette processes must run in pairs is to form a tunnel, which may be lighter than its OpenSSH counterpart. Again, like I said, tunnel is not part of the sv protocol. Perhaps in 1990s there were no firewall so powerful, malicious, and hateful to scan each network packet to for suspicious revolts.</p>
+<p>You may study the protocol with a non-local server, for example, <a href="https://www.inet.no/dante/index.html">dante</a> , it's quick to setup, the reason I end up writing this is that I misunderstood the protocol and blindly wanted to set up a sihouette-like mechanism. Nonetheless, it doen't hurt to know about this software.</p>
+<pre class="one-piece"><code>apt install dante-server
+</code></pre>
+<p>Open /etc/danted.conf and add these lines:</p>
+<pre class="one-piece"><code>logoutput: /var/log/dante.log
+internal: enp8s0 port = 10020
+external: enp8s0
+clientmethod: none
+socksmethod: none
+user.privileged: root
+user.notprivileged: nobody
+
+client pass {
+        from: 0.0.0.0/0 to: 0.0.0.0/0
+        log: error connect disconnect
+}
+client block {
+        from: 0.0.0.0/0 to: 0.0.0.0/0
+        log: connect error
+}
+socks pass {
+        from: 0.0.0.0/0 to: 0.0.0.0/0
+        log: error connect disconnect
+}
+socks block {
+        from: 0.0.0.0/0 to: 0.0.0.0/0
+        log: connect error
+}&gt;)
+</code></pre>
+<p>Test it with curl:</p>
+<pre class="one-piece"><code>➜  ~ curl -vx "sv"://192.168.42.2:10020 https://www.bing.com     
+*   Trying 192.168.42.2:10020...
+* SV connect to IPv4 202.89.233.101:443 (locally resolved)
+* SV request granted.
+* Connected to 192.168.42.2 (192.168.42.2) port 10020 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* ...
+</code></pre>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

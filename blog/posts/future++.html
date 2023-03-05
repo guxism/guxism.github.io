@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Rust Futures Explained in 200 lines of C++</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Rust Futures Explained in 200 lines of C++</h1>
+        <nav class="table-of-contents"><ol><li><a href="#to-begin-with">To begin with</a></li><li><a href="#futures-are-state-machines">Futures are state machines</a></li><li><a href="#the-future-interface">The Future interface</a></li><li><a href="#the-rationale-of-wakers">The Rationale of Wakers</a></li><li><a href="#who-holds-the-waker">Who holds the waker?</a></li><li><a href="#other-concerns-why-pin">Other concerns: why Pin?</a></li><li><a href="#closing">Closing</a></li></ol></nav><h2 id="to-begin-with" tabindex="-1">To begin with</h2>
+<p>You probably have read <a href="https://rust-lang.github.io/async-book/01_getting_started/01_chapter.html">The official Asyc book</a> and  <a href="https://cfsamson.github.io/books-futures-explained/introduction.html">Futures Explained in 200 Lines of Rust</a>, both are excellent writings. If you are new to Futures, you should read <a href="https://github.com/rust-lang/rfcs/blob/master/text/2592-futures.md">this RFC</a> as well. To be honest, it is the RFC that got me started to understand the concepts of Future and asynchronous mechanism, and implementing them in another language make them clearer. I assume you have read a lot before this post, if not, please read the materials mentioned above, get familiar with the concepts, after that, I sincerely recommend you to implement a timer in other languages that you feel comfortable with, so as to steer clear of the distraction presented by the Rust syntax.</p>
+<h2 id="futures-are-state-machines" tabindex="-1">Futures are state machines</h2>
+<p><a href="https://www.reddit.com/r/cpp/comments/5jtngf/stackless_coroutines_in_c98/">This reddit thread</a> describes how to implement generators in C++, it's a good starter, we can see how <code>yield</code> is translated into the combination of <code>return</code> and <code>case</code>, moreover, it provides the point of view that some of the advanced language features are essentially syntax sugar. The <a href="https://cfsamson.github.io/books-futures-explained/4_generators_async_await.html">Generators and async/await chapter from Future Explained in 200 Lines of Rust</a> also provides the detail of generators. All in all, we can't implement them by hand, unless we write a transpiler that compile a domain specific language to C++/Rust. But knowing that futures are state machines is assuring, to implement them is simply a matter of coding. Another thing to note is that they are stackless, because their states are stored in a fixed location, each time they resume they look at the progress status and proceed. For sophisticated implementation you can check out the C++ library <a href="https://github.com/jamboree/co2">CO2</a>.</p>
+<p>There are tools that can desugar the Rust futures, HIR is the layer of desugared Rust, running the following command reveals the underlying Rust:</p>
+<pre class="one-piece"><code>rustup defautl nightly
+cargo rustc -- -Z unpretty=hir
+</code></pre>
+<p>or use cargo-inspect</p>
+<pre class="one-piece"><code>cargo install cargo-inspect
+cargo inspect
+</code></pre>
+<p>or view their <a href="https://blog.rust-lang.org/2016/04/19/MIR.html">MIR</a> in a workflow form:</p>
+<pre class="one-piece"><code>cargo rustc -- -Z unpretty=mir-cfg &gt; mir-cfg.dot
+sudo apt install graphviz
+dot -Tpng mir-cfg.dot &gt; output.png
+</code></pre>
+<p>For example, for the following normal Rust code:</p>
+<pre class="one-piece"><code>use futures::{executor::block_on, FutureExt};
+async fn one() -&gt; i32 { 1 }
+async fn two() -&gt; i32 { 2 }
+async fn runtime() {
+    one().await;
+    two().await;
+}
+fn main() {
+    block_on(runtime());
+}
+</code></pre>
+<p>We have the corresponding HIR as:</p>
+<pre class="one-piece"><code>async fn runtime() -&gt;
+    /*impl Trait*/ #[lang = "from_generator"](move |mut _task_context|
+{
+    {
+let _t = {
+    match #[lang = "into_future"](one()) {
+        mut __awaitee =&gt;
+            loop {
+            match unsafe {
+                #[lang = "poll"]
+                (#[lang = "new_unchecked"]
+                (&amp;mut __awaitee),
+                #[lang = "get_context"]
+                (_task_context))
+                } {
+                    #[lang = "Ready"] { 0: result } =&gt; break result,
+                    #[lang = "Pending"] {} =&gt; { }
+                }
+                _task_context = (yield ());
+            },
+            };
+    match #[lang = "into_future"](two()) {
+        mut __awaitee =&gt;
+            loop {
+            match unsafe {
+                #[lang = "poll"]
+                (#[lang = "new_unchecked"]
+                (&amp;mut __awaitee),
+                #[lang = "get_context"]
+                (_task_context))
+                } {
+                    #[lang = "Ready"] { 0: result } =&gt; break result,
+                    #[lang = "Pending"] {} =&gt; { }
+                }
+                _task_context = (yield ());
+            },
+            };
+        };
+        _t
+    }
+})
+</code></pre>
+<p>They are at heart a bunch of conditionals, each coroutine yields control volutarily, but that is only safe if the code is generated by a compiler, otherwise a hacker can write code that never yields.</p>
+<h2 id="the-future-interface" tabindex="-1">The Future interface</h2>
+<p>We implement the Future the Rust way, <code>Poll</code> represents the state of a future, it's self-explaining. The weird part is <code>Waker</code>, I didn't know the intention of using a waker that is has everything to do with the <code>future</code> but is not embeded in it, until, of course, when I myself try to get rid of the <code>waker</code> parameter in <code>poll</code> method.</p>
+<pre class="one-piece"><code>enum State { Pending, Ready };
+template &lt;class T&gt; struct Poll {
+  Poll(T i, State state = State::Pending) : data(i), state(state) {}
+  T data;
+  State state;
+};
+
+struct Waker {
+  virtual void wake() = 0;
+};
+
+template &lt;class T&gt; class Future {
+public:
+  virtual Poll&lt;T&gt; poll(std::shared_ptr&lt;Waker&gt; waker) = 0;
+};
+</code></pre>
+<h2 id="the-rationale-of-wakers" tabindex="-1">The Rationale of Wakers</h2>
+<p>I tried not to put a waker in my future system, as I was not convinced of its necessity, later it occurred to me that there must be a mechanism for the task to get back to the game, as implied in <a href="https://aturon.github.io/tech/2016/09/07/futures-design/">this artical - Designing futures in Rust</a>, either by callback function, the completion-based approach, or the readiness-based approach. The callback approach is basically making use of closure, therefore it must allocate memory for captured variables, the overhead is unacceptable for a system language. Hence Rust adopted the readiness-based approach.</p>
+<p>But to wake up the task, we still need something similar to the closures, a struct with methods is almost the same thing as closures, remember what we learned about generators whose states are saved in a fixed location. We let the future hold the states, <strong>as it's the state machine</strong>:</p>
+<pre class="one-piece"><code>class TimerFuture : Future&lt;int&gt; {
+public:
+  // ...
+  SharedStatePtr shared_state;
+  TimerFuture(int sec) : sec(sec) {
+    shared_state = SharedState::create();
+  // ...
+}
+</code></pre>
+<p>The future takes the full responsibity of manage the underlying task. The task should report to the future after it finishes, the way the task runs is trivial, in this timer demo, a thread sleeps for a certain amount of time then reports back to the future via a shared state, because, let us think, the future is not a service that listens to events, it's a generator/state machine that is passively polled by some external force(which is the executor that we will elaborate later on).</p>
+<p>The reason why future can't be the working thread is that it can be <code>poll</code> any time, unless it process the task extremely fast, it should do the work itself, it plays the role that should be always ready to yield the state of the task, no blocking is allowed.</p>
+<p>The next time <code>future</code> is polled, the executor will examinate the state of future by checking the return value of the its <code>poll</code> method. If the result is <code>Ready</code>, then the executor can happily announce the job related to the <code>future</code> is done, otherwise, it will let the <code>future</code> continue. Here is the problem, how can the <code>future</code> arrange itself to be polled again?</p>
+<p>The executor is probably supervising hundreds of <code>future</code>s, so naturally a task queue is desirable to keep them in order, because one executor can only process one future at a time. An executor without a task queue can be thought as an executor with a task queue whose capacity is 1. We are talking about task queues because the demos in many posts have a task queue, but that is distracting, we might as well put off the idea, and address the problem in a more general way, as is said before:  how can the <code>future</code> arrange itself to be polled again?</p>
+<p>The design of  Rust <code>Future</code> employes the <code>Waker</code> mechanism. When <code>future</code> finds itself in the <code>Pending</code> state, it continues its work, but there is a hook function at the end of the work, that is the <code>waker</code> function, so you see, when the work is done, the task thread/worker changes the state of the future, in this demo, the <code>shared_state</code> in <code>TimerFuture</code>, and then call the <code>waker</code> function, which then let the executor sees the <code>future</code>, so that the executor can do something about it.</p>
+<h2 id="who-holds-the-waker" tabindex="-1">Who holds the waker?</h2>
+<p>It's the task thread/worker that should hold the waker, so that when it finishes, it unleash the waker. It's OK to have the worker thread hold the instance of waker:</p>
+<pre class="one-piece"><code>TimerFuture(int sec) : sec(sec) {
+    shared_state = SharedState::create();
+    std::thread t([=] {
+      std::this_thread::sleep_for(std::chrono::seconds(sec));
+      std::lock_guard&lt;std::mutex&gt; guard(shared_state-&gt;mutex);
+      shared_state-&gt;completed = true;
+      waker-&gt;wake();
+    });
+    t.detach();
+  }
+</code></pre>
+<p>When we write code like this, we realize the <code>waker</code> is passed by <code>TimerFuture</code> and captured by the thread, so after all, the waker is first initialized somewhere else, perhaps in the <code>TimerFuture</code>. It's logical for <code>TimerFuture</code> to do that. And we shouldn't be surprised to see some implementations pass the waker through <code>shared_state</code>, the idea is the same, we won't even be surprised if we see the worker thread receives the waker via grpc.</p>
+<p>OK, then, we accept that strategy of passing <code>waker</code> through <code>shared_state</code>, among other possible methods. The advantage of not intalling a <code>waker</code> to the worker thread at the beginning is that if the worker thread finishes the work fast enough before the executor polls the <code>future</code>, then there is no need to install a <code> waker</code> in it.</p>
+<p>So we go ahead and implement the <code>poll</code> method:</p>
+<pre class="one-piece"><code>  Poll&lt;int&gt; poll(std::shared_ptr&lt;Waker&gt; waker) {
+    std::lock_guard&lt;std::mutex&gt; guard(shared_state-&gt;mutex);
+    if (shared_state-&gt;completed) {
+      return Poll&lt;int&gt;(42, State::Ready);
+    } else {
+      shared_state-&gt;waker = waker;
+      return Poll&lt;int&gt;(42, State::Pending);
+    }
+  }
+</code></pre>
+<p>Here is the way <code>poll</code> is called:</p>
+<pre class="one-piece"><code>class Executor {
+public:
+  Executor(ReceiverPtr&lt;TaskPtr&gt; chan) : chan(chan) {}
+  void run() {
+    while (!chan-&gt;closed()) {
+      TaskPtr task = chan-&gt;recv();
+      auto res = task-&gt;future-&gt;poll(/*what is this?*/);
+      if (res.state == State::Ready) {
+        ...
+      } else {
+        ...
+      }
+    }
+  }
+
+private:
+  std::shared_ptr&lt;Receiver&lt;TaskPtr&gt;&gt; chan;
+};
+</code></pre>
+<p>There is something to consider then implementing <code>run</code> method, first, what is passed to <code>poll</code>? A <code>waker</code>. Yes, where do we get the <code>waker</code> from? You see, the Executor don't know anything about <code>waker</code> because it's simply a channel wrapper. What the executor sees is the <code>Task</code> type. So the <code>waker</code> comes from <code>Task</code>, it's easy to get a waker from <code>Task</code>, for example, we can design an method that yields <code>waker</code>.</p>
+<p>Now let's focus on what we have known: the <code>Task</code> is the context of <code>future</code>. The Executor is a merciless <code>future</code> processor that doesn't care a thing about <code>future</code>, as long as the <code>future</code> is pollable. We might have mulitiple types of <code>future</code>s running on the same system. Then general idea is to let the <code>future</code> holds the <code>waker</code> itself. Each <code>waker</code> type is specific to one <code>future</code> type.</p>
+<p>I found it will make things complicated if we insist not defining a <code>waker</code> parameter. We will have to get the <code>waker</code> from the future, like this:</p>
+<pre class="one-piece"><code>class TimerFuture {
+	Poll&lt;int&gt; poll() {
+	    std::lock_guard&lt;std::mutex&gt; guard(shared_state-&gt;mutex);
+	    if (shared_state-&gt;completed) {
+	      return Poll&lt;int&gt;(42, State::Ready);
+	    } else {
+	      shared_state-&gt;waker = this-&gt;waker;
+	      return Poll&lt;int&gt;(42, State::Pending);
+	    }
+  }
+}
+</code></pre>
+<p>Taking this way we will make <code>TimeFuture</code> a giant and complex class. There are thousands of ways to deal with the <code>future</code>s, for example, sending them back to executor through a channel. But as a matter of software engineering, we probably don't want the channel to be embedded in a <code>future</code>. The channel together with the <code>future</code> is aggregated in a wrapper called <code>Task</code>.</p>
+<p>The <code>task</code>, as said in <a href="https://github.com/rust-lang/rfcs/blob/master/text/2592-futures.md">RFC 2592</a>, <em>task is fundamental mechanism for asynchronous computation in Rust</em>, we adopt the design from  <a href="https://rust-lang.github.io/async-book/01_getting_started/01_chapter.html">The official Asyc book</a>, here is the layout of a task:</p>
+<pre class="one-piece"><code>class Task : std::enable_shared_from_this&lt;Task&gt; {
+public:
+  // ...
+  std::unique_ptr&lt;TimerFuture&gt; future;
+  SenderPtr&lt;TaskPtr&gt; task_sender;
+  // some other task-related things
+};
+</code></pre>
+<p>It make senses, each component has a clear definition. The <code>future</code>  is for <code>poll</code>ing, the <code>task_sender</code> is for sending the <code>task</code>(including to the future).</p>
+<p>That is to say, we don't embed <code>waker</code> inside the <code>future</code>, as the <code>waker</code> involves complex functionalities, we let the <code>Task</code> to take the responsibility of making <code>waker</code>s.</p>
+<p>The <code>Task</code> is also a general concept. It is the container for different kinds of <code>future</code>, therefore, it should be as neutral as possible. It's able to make up different kinds of <code>waker</code> for different kinds of <code>future</code>, as long as the <code>waker</code> has the <code>wake</code> method. That is why <a href="https://github.com/rust-lang/rfcs/blob/master/text/2592-futures.md">RFC 2592</a> designed the <code>Waker</code> as a struct with a virtual table, able to be dynamically dispatched. See the RFC for more detail. It's a heavy design, where the <code>RawWaker</code> is wrapped by a <code>Waker</code> that is copyable so that we can pass it around, but the virtual table is inside <code>RawWaker</code>.</p>
+<p>However, to make the idea of <code>waker</code> understandable, we might just define the <code>Waker</code> as an abstract class:</p>
+<pre class="one-piece"><code>struct Waker {
+  virtual void wake() = 0;
+};
+</code></pre>
+<p>The final piece is tricky and weird:</p>
+<pre class="one-piece"><code>class Task : std::enable_shared_from_this&lt;Task&gt;, public Waker {
+public:
+  void wake() override {
+    std::shared_ptr&lt;Task&gt; task =
+        Task::create(std::move(this-&gt;future), this-&gt;task_sender);
+    this-&gt;task_sender-&gt;send(task);
+  }
+</code></pre>
+<p>We let the task inherit the <code>Waker</code> class and send itself to the executor, since the base class of <code>Task</code> is <code>Waker</code>, then it's possible to pass the task itself to the <code>poll</code></p>
+<pre class="one-piece"><code>class Executor {
+  void run() {
+	while (!chan-&gt;closed()) {
+      TaskPtr task = chan-&gt;recv();
+      auto sec = task-&gt;future-&gt;sec;
+      auto res = task-&gt;future-&gt;poll(task);
+      if (res.state == State::Ready) {
+        std::cout &lt;&lt; sec &lt;&lt; " seconds has expired!" &lt;&lt; std::endl;
+      } else {
+      }
+    }
+</code></pre>
+<p>Recall the signature of <code>poll</code> is this:</p>
+<pre class="one-piece"><code>Poll&lt;int&gt; poll(std::shared_ptr&lt;Waker&gt; waker);
+</code></pre>
+<p>Rust make the parameter more general by providing a <code>Context</code> concept which is basically a container that wrap more things than waker in case the <code>poll</code> method needs more information to make progress.</p>
+<h2 id="other-concerns-why-pin" tabindex="-1">Other concerns: why Pin?</h2>
+<p>Defining the type of <code>future</code> as <code>unique_ptr</code> doesn't explain why in Rust the future is referred to as <code>Pin&lt;&amp;mut self&gt;</code>. <code>Pin</code> doesn't prevent the data from moving, it just shadows the variable that contains the data, so we can't use it anymore, by doing that we are deceiving ourselves.</p>
+<pre class="one-piece"><code>class Task : std::enable_shared_from_this&lt;Task&gt; {
+public:
+  // ...
+  std::unique_ptr&lt;TimerFuture&gt; future;
+  SenderPtr&lt;TaskPtr&gt; task_sender;
+  // some other task-related things
+};
+</code></pre>
+<p>In fact, the use of <code>.await</code> hides the detail of <code>Pin</code>, check out <a href="https://tokio.rs/tokio/tutorial/async">this example provided by tokio</a>, we don't call <code>poll</code> directly unless we implement our own runtime.</p>
+<p>There is a lot to concern with in depth, we talked about transpiler and syntax sugar before. The normal Rust code we write can be desugared as self-referential structs, in that case, Rust provides a mechanism to mark the structs as unmovable, as the official async book says: <em>The type system prevents us from moving the data</em>. Think of <code>std::move</code> from C++, is it really moving things? Or it is also a marker? A marker that marks a type as xvalue. But the compiler don't generate code that move a xvalue, it's us the programmers who write code that handles an xvalue.</p>
+<h2 id="closing" tabindex="-1">Closing</h2>
+<p>The definition of <code>Future</code> is relatively simple, but to build an asynchronous mechanism based on it is complicated. Luckily we don't have to interact with wakers and executors directly, libraries like tokio enable us to write efficient code without worrying about implementations.</p>
+<p>But overall, if you have time and are curious about how asynchronous Rust works, you should seriously build your own timer(or anything else), I feel that writing C++ is simpler compared to Rust. With Rust, you have a lot to take care of, sometimes in order to take good care of things you must study the history of the language. Are you satified with not knowing <code>Pin</code>, for instance? As someone who are not but still can't understand the feature thoroughly, implementing the <code>Future</code> in another language helps me to sleep peacefully.</p>
+<p>Feel free to check out the <a href="https://github.com/tenheadedlion/future-explained">code</a> of the post.</p>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

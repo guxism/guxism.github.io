@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Elixir</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Elixir</h1>
+        <nav class="table-of-contents"><ol><li><a href="#安装-elixir">安装 elixir</a></li><li><a href="#基本类型">基本类型</a></li><li><a href="#调用函数">调用函数</a></li><li><a href="#进制">进制</a></li><li><a href="#查看文档">查看文档</a></li><li><a href="#匿名函数">匿名函数</a><ol><li><a href="#closure">Closure</a></li></ol></li><li><a href="#lists">Lists</a><ol><li><a href="#lists-or-tuples">Lists or tuples?</a></li></ol></li><li><a href="#quotes">quotes</a></li><li><a href="#基本操作">基本操作</a></li><li><a href="#pattern-matching">Pattern Matching</a><ol><li><a href="#the-pin-operator">The Pin Operator</a></li><li><a href="#_">_</a></li></ol></li><li><a href="#control-flow">Control-flow</a><ol><li><a href="#case">case</a></li><li><a href="#cond">cond</a></li><li><a href="#其他">其他</a></li></ol></li><li><a href="#binaries-strings-and-charlists">Binaries, strings, and charlists</a><ol><li><a href="#operator">？ operator</a></li><li><a href="#null-byte">Null byte</a></li><li><a href="#bitstrings">Bitstrings</a></li><li><a href="#binaries">Binaries</a></li><li><a href="#charlists">Charlists</a></li></ol></li><li><a href="#keyword-lists-and-maps">Keyword Lists and Maps</a><ol><li><a href="#map">Map</a></li><li><a href="#如何写-one-liner">如何写 one-liner</a></li><li><a href="#do-和-do-block">do: 和 do-block</a></li></ol></li><li><a href="#modules-and-functions">Modules and functions</a><ol><li><a href="#modules">Modules</a></li><li><a href="#文件管理">文件管理</a></li><li><a href="#函数">函数</a></li><li><a href="#模式匹配">模式匹配</a></li><li><a href="#function-capturing">Function capturing</a></li><li><a href="#default-arguments">Default arguments</a></li><li><a href="#私有函数private">私有函数(private)</a></li></ol></li><li><a href="#recursion">Recursion</a><ol><li><a href="#reduce-and-map-algorithms">Reduce and map algorithms</a></li><li><a href="#reduce">Reduce</a></li></ol></li><li><a href="#enumerables-and-streams">Enumerables and Streams</a><ol><li><a href="#eager-vs-lazy">Eager vs Lazy</a></li><li><a href="#the-pipe-operator">The pipe operator</a></li><li><a href="#streams">Streams</a></li></ol></li><li><a href="#processes">Processes</a><ol><li><a href="#send-and-receive">send and receive</a></li><li><a href="#links">Links</a></li><li><a href="#tasks">Tasks</a></li><li><a href="#state">State</a></li><li><a href="#registration">Registration</a></li></ol></li><li><a href="#io-and-the-file-system">IO and the file system</a></li><li><a href="#alias-require-and-import">Alias, require, and import</a></li><li><a href="#module-attributes">Module attributes</a></li><li><a href="#struct">Struct</a><ol><li><a href="#defining-structs">Defining Structs</a></li><li><a href="#update-syntax">update syntax |</a></li><li><a href="#structs-are-bare-maps-underneath">Structs are bare maps underneath</a></li></ol></li><li><a href="#protocols">Protocols</a><ol><li><a href="#protocols-and-structs">Protocols and structs</a></li><li><a href="#implementing-any">Implementing Any</a></li><li><a href="#fallback-to-any">Fallback to Any</a></li></ol></li><li><a href="#comprehensions">Comprehensions</a><ol><li><a href="#generators-and-filters">Generators and filters</a></li><li><a href="#the-into-option">The :into Option</a></li></ol></li><li><a href="#sigils">Sigils</a><ol><li><a href="#regular-expressions">Regular expressions</a></li><li><a href="#strings-char-lists-and-word-lists-sigils">Strings, char lists, and word lists sigils</a></li><li><a href="#interpolation-and-escaping-in-string-sigils">Interpolation and escaping in string sigils</a></li><li><a href="#calendar-sigils">Calendar sigils</a></li></ol></li><li><a href="#try-catch-and-rescue">try, catch, and rescue</a><ol><li><a href="#throws">Throws</a></li><li><a href="#exits">Exits</a></li><li><a href="#after">After</a></li><li><a href="#else">Else</a></li><li><a href="#variables-scope">Variables scope</a></li></ol></li><li><a href="#typespecs-and-behaviours">Typespecs and behaviours</a><ol><li><a href="#types-and-specs">Types and specs</a></li><li><a href="#defining-custom-types">Defining custom types</a></li><li><a href="#static-code-analysis">Static code analysis</a></li><li><a href="#behaviours">Behaviours</a></li><li><a href="#adopting-behaviours">Adopting behaviours</a></li><li><a href="#dynamic-dispatch">Dynamic dispatch</a></li></ol></li><li><a href="#optional-syntax-sheet">Optional syntax sheet</a></li><li><a href="#debugging">Debugging</a></li><li><a href="#erlang-libraries">Erlang libraries</a></li><li><a href="#结论">结论</a></li><li><a href="#quoting-and-unquoting">Quoting and unquoting</a><ol><li><a href="#escape">Escape</a></li></ol></li><li><a href="#macros">Macros</a></li></ol></nav><h2 id="安装-elixir" tabindex="-1">安装 elixir</h2>
+<pre class="one-piece"><code>wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb &amp;&amp; sudo dpkg -i erlang-solutions_2.0_all.deb
+
+sudo apt-get update
+sudo apt-get install esl-erlang
+sudo apt-get install elixir
+</code></pre>
+<h2 id="基本类型" tabindex="-1">基本类型</h2>
+<p>Nothing special, <code>[]</code> 用来表示 list, <code>{}</code> 表示 tuple, <code>:</code> 表示 atom/symbol</p>
+<h2 id="调用函数" tabindex="-1">调用函数</h2>
+<p>可以去掉括号</p>
+<pre class="one-piece"><code>iex(18)&gt; div 10, 2
+5
+</code></pre>
+<p><code>div 10, 2</code> 相当于 <code>div(10, 2)</code></p>
+<p>不知道括号有什么意思, 去掉有什么意思。括号永远是 delimiter, 没有这种 delimiter, 还会有其他 delimiter, 比如空格。</p>
+<p>文档：</p>
+<blockquote>
+<p>This feature gives a cleaner syntax when writing declarations and control-flow constructs. However, Elixir developers generally prefer to use parentheses.</p>
+</blockquote>
+<h2 id="进制" tabindex="-1">进制</h2>
+<p><code>0b</code> 表示 binary, <code>0o</code> octal, <code>0x</code> Hexadecimal</p>
+<h2 id="查看文档" tabindex="-1">查看文档</h2>
+<p><code>h</code>, 顾名思义，表示 help, 和 Linux 的 man 同类效果</p>
+<h2 id="匿名函数" tabindex="-1">匿名函数</h2>
+<p>Anonymous functions</p>
+<p>语法:</p>
+<pre class="one-piece"><code>iex(1)&gt; add = fn a,b -&gt; a+b end
+#Function&lt;43.65746770/2 in :erl_eval.expr/5&gt;
+iex(2)&gt; add.(1, 2)
+3
+iex(3)&gt; add(1, 2)
+** (CompileError) iex:3: undefined function add/2 (there is no such import)
+
+iex(3)&gt; is_function(add)
+true
+</code></pre>
+<p>点的作用:</p>
+<blockquote>
+<p>Note that a dot (<code>.</code>) between the variable and parentheses is required to invoke an anonymous function.</p>
+</blockquote>
+<p>用来区分匿名和非匿名函数</p>
+<blockquote>
+<p>For now, just remember that Elixir makes a clear distinction between anonymous functions and named functions.</p>
+</blockquote>
+<h3 id="closure" tabindex="-1">Closure</h3>
+<blockquote>
+<p>Finally, anonymous functions can also access variables that are in scope when the function is defined. This is typically referred to as closures, as they close over their scope.</p>
+</blockquote>
+<h2 id="lists" tabindex="-1">Lists</h2>
+<pre class="one-piece"><code>iex(4)&gt; length([1,2,3])
+3
+iex(5)&gt; length [1,2,3]
+3
+iex(6)&gt; [1, 2, 3] ++ [4, 5, 6]
+[1, 2, 3, 4, 5, 6]
+iex(7)&gt; [1, 2, 3] -- [1, 2]
+[3]
+</code></pre>
+<h3 id="lists-or-tuples" tabindex="-1">Lists or tuples?</h3>
+<blockquote>
+<p>Lists are stored in memory as linked lists<br>
+Tuples, on the other hand, are stored contiguously in memory.</p>
+</blockquote>
+<p>函数返回值通常是 tuple, 第一个为状态码, 第二个是内容</p>
+<h2 id="quotes" tabindex="-1">quotes</h2>
+<blockquote>
+<p>Keep in mind single-quoted and double-quoted representations are not equivalent in Elixir as they are represented by different types:</p>
+</blockquote>
+<h2 id="基本操作" tabindex="-1">基本操作</h2>
+<ul>
+<li><code>++</code>, <code>--</code>, 集合操作, 并集或者?</li>
+<li><code>&lt;&gt;</code> 拼接字符串</li>
+<li><code>and</code> 顾名思义, 而且必然有 <code>or</code></li>
+<li>各种 "trait class": <code>is_atom</code></li>
+<li><code>||</code>, <code>&amp;&amp;</code>, <code>!</code></li>
+<li>The difference between <code>==</code> and <code>===</code> is that the latter is more strict when comparing integers and floats</li>
+</ul>
+<h2 id="pattern-matching" tabindex="-1">Pattern Matching</h2>
+<p>Pattern Match 的使用场景有限:</p>
+<blockquote>
+<p>Although pattern matching allows us to build powerful constructs, its usage is limited</p>
+</blockquote>
+<p><code>=</code> 通常理解为赋值符号, 但在 Elixir 中叫做 <em>match operator</em><br>
+当 variable 出现在 <code>=</code> 的左边时, 效果等于赋值</p>
+<pre class="one-piece"><code>iex&gt; [a, b, c] = [1, 2, 3]
+[1, 2, 3]
+</code></pre>
+<p>然后玩出各种花样</p>
+<pre class="one-piece"><code>iex&gt; [head | tail] = [1, 2, 3]
+</code></pre>
+<p><code>head</code> 占据第一个元素, <code>tail</code> 匹配剩下的元素</p>
+<h3 id="the-pin-operator" tabindex="-1">The Pin Operator</h3>
+<p>变量可以多次赋值, 但 elixir 不把这种行为称作多次赋值(re-assign), 而是 "rebound"</p>
+<p>某些时候你不希望变量 rebound, 你希望模式匹配(pattern matching), 这是因为 <code>=</code> 有歧义, 为了避免歧义, 你用 <code>^x = 2</code> 表示这不是 rebound, 而是 pattern matching</p>
+<h3 id="_" tabindex="-1">_</h3>
+<p>和 Rust pattern match 的 <code>_</code> 一个意思</p>
+<h2 id="control-flow" tabindex="-1">Control-flow</h2>
+<h3 id="case" tabindex="-1">case</h3>
+<pre class="one-piece"><code>x = 1
+case 10 do
+	^x -&gt; "Won't match"
+	_  -&gt; "Will match"
+end
+</code></pre>
+<p>注意到古老的 <code>end</code>, 和 Pascal, Lua 差不多</p>
+<p><code>^x</code> 排除了 rebound 的可能, 剩下纯粹是模式匹配</p>
+<h3 id="cond" tabindex="-1">cond</h3>
+<pre class="one-piece"><code>cond do
+	2 + 2 == 5 -&gt; "This will not be true"
+	2 * 2 == 3 -&gt; "Nor this"
+	true -&gt; "This is always true"
+end
+</code></pre>
+<h3 id="其他" tabindex="-1">其他</h3>
+<p>和其他语言没什么区别</p>
+<h2 id="binaries-strings-and-charlists" tabindex="-1">Binaries, strings, and charlists</h2>
+<h3 id="？-operator" tabindex="-1"><code>？</code> operator</h3>
+<p>用 <code>?</code> 显示 character 的<strong>数字(<a href="https://codepoints.net/">code point</a>)</strong></p>
+<h3 id="null-byte" tabindex="-1">Null byte</h3>
+<pre class="one-piece"><code>iex&gt; "hełło" &lt;&gt; &lt;&lt;0&gt;&gt;
+&lt;&lt;104, 101, 197, 130, 197, 130, 111, 0&gt;&gt;
+</code></pre>
+<h3 id="bitstrings" tabindex="-1">Bitstrings</h3>
+<p>用 <code>&lt;&lt;&gt;&gt;</code> 表示，上面的 <code>&lt;&lt;0&gt;&gt;</code></p>
+<p>Elixir 默认每个数字用 8 bits 来存储，但你可以用 <code>::n</code> <strong>modifier</strong> 设定(override) 这个单位</p>
+<p><code>&lt;&lt;3::4&gt;&gt;</code> 意思是用 4 个 Bit 存储 3(0b011)</p>
+<p>可能会溢出:</p>
+<pre class="one-piece"><code>iex(10)&gt; &lt;&lt;0::1&gt;&gt;
+&lt;&lt;0::size(1)&gt;&gt;
+iex(11)&gt; &lt;&lt;1::1&gt;&gt;
+&lt;&lt;1::size(1)&gt;&gt;
+iex(12)&gt; &lt;&lt;2::1&gt;&gt;
+&lt;&lt;0::size(1)&gt;&gt;
+iex(13)&gt; &lt;&lt;3::1&gt;&gt;
+&lt;&lt;1::size(1)&gt;&gt;
+</code></pre>
+<p>组合形式</p>
+<pre class="one-piece"><code>iex&gt; &lt;&lt;0::1, 0::1, 1::1, 1::1&gt;&gt; == &lt;&lt;3::4&gt;&gt;
+true
+</code></pre>
+<h3 id="binaries" tabindex="-1">Binaries</h3>
+<p>如何定义二进制（这他妈这个”制“字是有问题的)：</p>
+<blockquote>
+<p>a binary is a bitstring where the number of bits is divisaible by 8</p>
+</blockquote>
+<p>也就是说，首先 binary 是 bitstring, 其次，如果要用 <code>::n</code> modifier, 那么 <code>n</code> 必须整除于 8</p>
+<p>也就说，一个默认的 bitsring 本身就是 binary</p>
+<p>"trait class": <code>is_binary</code>, <code>is_bitstring</code></p>
+<p>什么时候使用二进制：</p>
+<blockquote>
+<p>a string is a UTF-8 encoded binary, where the code point for each character is encoded using 1 to 4 bytes</p>
+</blockquote>
+<h3 id="charlists" tabindex="-1">Charlists</h3>
+<blockquote>
+<p>A charlists is a list of integers where all the integers are valid code points.</p>
+</blockquote>
+<pre class="one-piece"><code>iex&gt; [?h, ?e, ?l, ?l, ?o]
+'hello'
+</code></pre>
+<p>可以联想到 C++ 的 <code>std::string</code> 也是一个容器，也有迭代器，可能是一个 vector。</p>
+<h2 id="keyword-lists-and-maps" tabindex="-1">Keyword Lists and Maps</h2>
+<pre class="one-piece"><code>iex&gt; String.split("1  2  3", " ", [trim: true])
+["1", "2", "3"]
+</code></pre>
+<p>keyword list 是一个列表, <code>trim: true</code> 是一个 option, 表示这个字符串会被 trimmed</p>
+<p>这些 list 没有除了序号之外的索引，而有些 list 有</p>
+<pre class="one-piece"><code>iex&gt; list = [a: 1, b: 2]
+[a: 1, b: 2]
+</code></pre>
+<p>keys, 和其他语言的 keys 一样。这里的 key 必须是 atom, <code>:a</code> 就是 atom，而且是 ordered, 因此可能是红黑树，可以有多个相同的 key, 也就是要么判断 key 的 uniqueness 不是单单一个 key，或者实现可能是 linked-list</p>
+<h3 id="map" tabindex="-1">Map</h3>
+<blockquote>
+<p>A map is created using the <code>%{}</code> syntax</p>
+</blockquote>
+<pre class="one-piece"><code>map = %{:a =&gt; 1, 2 =&gt; :b}
+</code></pre>
+<p>可以看出 <code>=&gt;</code> 是货真价实的 mapping</p>
+<h3 id="如何写-one-liner" tabindex="-1">如何写 one-liner</h3>
+<p>和 bash 有点像，换行符用逗号，分号，或者 <code>:</code> 代替，不同的是 bash 只用分号</p>
+<pre class="one-piece"><code>if true, do: "bla", else: "bla bla"
+</code></pre>
+<p>one-liner 没有 end</p>
+<h3 id="do-和-do-block" tabindex="-1">do: 和 do-block</h3>
+<p>上一节说得 one-liner 实际上只是 <code>do:</code> 语法，把它称作 <code>do:</code> syntax, 与之对应的是 <code>do</code>-block syntax。</p>
+<p>Translation is for insects.</p>
+<h2 id="modules-and-functions" tabindex="-1">Modules and functions</h2>
+<h3 id="modules" tabindex="-1">Modules</h3>
+<p>Modules 可能是和 OOP 区分开来的一个关键特点, but what the fuck is Modules? C++ 的命名空间，Rust 的 <code>mod</code>，library？我从来不理解这东西。Elixir 也没说什么。个人理解，编译单元 &lt; mod &lt; 命令空间。但是这些概念并不是从属关系，一个 module 可以跨越多个动态库，多个文件，可以这么做，也可以不这么做，命名空间同理，如果没有明确的定义，如何管理它们的关系只是审美问题。</p>
+<p>Elixir 用 <code>defmodule</code> 定义 module, 和 Rust 的 <code>mod</code> 如出一辙。</p>
+<p>这时候让人出戏的是，elixirc 可以编译一个独立的 module，这也不禁让人想到 library，或者中间文件。</p>
+<h3 id="文件管理" tabindex="-1">文件管理</h3>
+<p><code>.ex</code> 是普遍的 Elixir 文件，要么输出 library 要么输出执行文件，<code>.exs</code> 必然输出执行文件，<code>s</code> 表示 scripting</p>
+<h3 id="函数" tabindex="-1">函数</h3>
+<p>可能是某种意义上的泛型，只要没有类型，就是泛型，动态语言某种程度上是模板语言</p>
+<p>类型约束以两种形式存在，一是显式的类型定义，二是 "trait class"</p>
+<pre class="one-piece"><code>def zero?(x) when is_integer(x) do
+    false
+end
+</code></pre>
+<blockquote>
+<p><em>The trailing question mark in <code>zero?</code> means that this function returns a boolean; see <a href="https://hexdocs.pm/elixir/main/naming-conventions.html#trailing-question-mark-foo">Naming Conventions</a>.</em></p>
+</blockquote>
+<h3 id="模式匹配" tabindex="-1">模式匹配</h3>
+<p>在 Phoenix 中可以经常看到这种函数：</p>
+<pre class="one-piece"><code>def show(conn, %{"id" =&gt; id}) do
+	...
+</code></pre>
+<pre class="one-piece"><code>iex(1)&gt; defmodule M do
+...(1)&gt; def f(%{"id" =&gt; id }), do: id
+...(1)&gt; end
+
+iex(2)&gt; M.f(2)
+** (FunctionClauseError) no function clause matching in M.f/1    
+    
+    The following arguments were given to M.f/1:
+    
+        # 1
+        2
+    
+    iex:2: M.f/1
+iex(2)&gt; M.f(%{"id" =&gt; 3})
+3
+iex(3)&gt; M.f(%{"id2" =&gt; 3})
+** (FunctionClauseError) no function clause matching in M.f/1    
+    
+    The following arguments were given to M.f/1:
+    
+        # 1
+        %{"id2" =&gt; 3}
+    
+    iex:2: M.f/1
+
+iex(4)&gt; M.f(%{"id" =&gt; 3, "id2" =&gt; 4})
+3
+
+</code></pre>
+<p>根据文档 <a href="https://hexdocs.pm/elixir/patterns-and-guards.html#maps">https://hexdocs.pm/elixir/patterns-and-guards.html#maps</a> :</p>
+<blockquote>
+<p>Opposite to lists and tuples, maps perform a subset match. This means a map pattern will match any other map that has at least all of the keys in the pattern.</p>
+</blockquote>
+<h3 id="function-capturing" tabindex="-1">Function capturing</h3>
+<p>看别人怎么表达的：</p>
+<blockquote>
+<p>The capture operator <code>&amp;</code> bridges this gap by allowing named functions to be assigned to variables and passed as arguments in the smae way we assign, invoke and pass anonymous functions.</p>
+</blockquote>
+<p>语法：</p>
+<blockquote>
+<ul>
+<li>&amp;Mod.fun/arity to capture a remote function, such as &amp;Enum.map/2</li>
+<li>&amp;fun/arity to capture a local or imported function, such as &amp;is_atom/1</li>
+<li>&amp;some_code(&amp;1, ...) containing at least one argument as &amp;1, such as &amp;List.flatten(&amp;1)</li>
+</ul>
+</blockquote>
+<p>Then, what is arity?</p>
+<blockquote>
+<p>Arity is the number of arguments or operands taken by a function, operation or relation in logic, mathematics, and computer science.</p>
+</blockquote>
+<blockquote>
+<p><code>:arity</code> - (integer) the number of arguments the function is to be called with.</p>
+</blockquote>
+<p>arity 意味着可以重载</p>
+<pre class="one-piece"><code>iex&gt; fun = fn x -&gt; x end
+iex&gt; info = Function.info(fun)
+iex&gt; Keyword.get(info, :arity)
+1
+</code></pre>
+<p>所谓 function capturing 是指将你想把函数作为指针传来传去，首先要抓住函数，才能传来传去，就是这个意思</p>
+<h3 id="default-arguments" tabindex="-1">Default arguments</h3>
+<pre class="one-piece"><code>def join(a, b, sep \\ " ") do
+	a &lt;&gt; sep &lt;&gt; b
+end
+</code></pre>
+<p>可见 <code>\\</code> 表示默认参数</p>
+<h3 id="私有函数private" tabindex="-1">私有函数(private)</h3>
+<p>用 <code>defp</code> 标注</p>
+<h2 id="recursion" tabindex="-1">Recursion</h2>
+<p>Nothing special, 但由于 Elixir 有独特的 trait class 因此有点像模板递归，最终要写一个 specification.</p>
+<pre class="one-piece"><code>defmodule Rec do
+  def fib(n) when n &gt; 2 do
+    n + fib(n - 1)
+  end
+
+  def fib(n) do
+    n
+  end
+end
+
+IO.puts(Rec.fib(100))
+</code></pre>
+<p>执行：</p>
+<pre class="one-piece"><code>elixirc rec.exs
+</code></pre>
+<h3 id="reduce-and-map-algorithms" tabindex="-1">Reduce and map algorithms</h3>
+<p>如果用 list, 可以利用 <code>[head | tail]</code> 的数据结构，不禁让人想起 lisp 的 car, cdr</p>
+<p>我不会重复文档中已有的例子，根据上一节的内容，完全可以知道应该怎么写。</p>
+<h3 id="reduce" tabindex="-1">Reduce</h3>
+<blockquote>
+<p>In <a href="https://en.wikipedia.org/wiki/Mathematics" title="Mathematics">mathematics</a>, <strong>reduction</strong> refers to the <a href="https://en.wikipedia.org/wiki/Rewriting" title="Rewriting">rewriting</a> of an <a href="https://en.wikipedia.org/wiki/Expression_(mathematics)" title="Expression (mathematics)">expression</a> into a simpler form.</p>
+</blockquote>
+<p>规约</p>
+<h2 id="enumerables-and-streams" tabindex="-1">Enumerables and Streams</h2>
+<ul>
+<li>map: 将函数应用到可迭代容器的每一个元素</li>
+<li>reduce: 遍历每一个元素，得出一个最终结果</li>
+<li>filter: 和 map 一样，将函数应用到每一个元素，但结果不必和原来的容器的容量一样</li>
+</ul>
+<p>怎样才算可迭代？</p>
+<blockquote>
+<p>any data type that implements the Enumerable protocol</p>
+</blockquote>
+<p>Very fucking well put. 你永远跟不上别人的语言，因为你根本没法创造任何词汇，除非你用仓颉，甚至你用仓颉，创造仓颉的人用的也是别人的词汇。你要独创，你就把人关在玻璃罩子里，像模拟生命起源实验一样，与世隔绝，看能否产生思想，大概率不能，因为人不可能摆脱他受过的教育，除非他从婴儿时期开始就生活在玻璃罩子里面，他有可能创造出思想，有可能不能，大概率是不能，因为历史上，知识是靠无数人的努力才能积累到现在的程度。你问：你要基数对吧，那我把所有人都放在玻璃罩子里面... 你危险了，你说了不该说的话。而且也绝不可能创造出彻底干净的实验环境。这就是永恒的悲剧。</p>
+<h3 id="eager-vs-lazy" tabindex="-1">Eager vs Lazy</h3>
+<blockquote>
+<p>Each operation is going to generate an intermediate list until we reach the result</p>
+</blockquote>
+<h3 id="the-pipe-operator" tabindex="-1">The pipe operator</h3>
+<p><code>|&gt;</code></p>
+<p>和 bash 的 <code>|</code> 可能有某些相似之处，可能和 Rust 的 <code>and_then</code> 差不多</p>
+<h3 id="streams" tabindex="-1">Streams</h3>
+<p>和 Enumerable protocol 相似，作为 alternative，不同的是，Enumerable 的函数是 Eager 函数，马上执行，而 Stream 里面的函数是 lazy 函数，不会产生 intermediate lists, 即，pipeline 中，Enumerable 的每一个操作都会产生中间产物，但是对于 Stream 而言，没有中间产物，只有一个 promise，而这个 promise(不是 Elixir 术语) 仅在它被传递给 Enumerable 的时候才开始执行。</p>
+<p>比如文件 stream，你不希望马上加载所有的数据到内存里面，你希望在需要它内容的时候才读取它内容，这时候你创建一个 <code>File.stream</code> ，需要的时候传给 <code>Enum.take/2</code></p>
+<h2 id="processes" tabindex="-1">Processes</h2>
+<p><code>spawn/1</code> return a PID, 也是 Eager 函数，意思是一旦执行到 <code>spawn</code> 马上就创建一个 Process，拿到 PID 的时候这个 Process 可能已经执行完毕。不确定是不是 OS Process。但至少不是线程：</p>
+<blockquote>
+<p>That's because processes are isolated</p>
+</blockquote>
+<h3 id="send-and-receive" tabindex="-1">send and receive</h3>
+<p>语法：</p>
+<pre class="one-piece"><code>send(pid, tuple)
+receive do
+	tuple-patterns -&gt; returned-value
+end
+</code></pre>
+<p>这里有一个有意思的概念：process mailbox</p>
+<p>信息发送给一个 process 的时候，信息放在 process mailbox 里面，可以认为是一个任务队列</p>
+<p>可以设置 timeout:</p>
+<pre class="one-piece"><code>receive do
+	{:hello, msg} -&gt; msg
+after
+	1_000 -&gt; "nothing after 1s"
+end
+</code></pre>
+<p>在电光火石之间，<code>receive</code> 检查了所有的 patterns, 如果没有匹配项，则进入 after, 名副其实的 after，进入 timeout 等待时间。</p>
+<p>脚本：</p>
+<pre class="one-piece"><code>defmodule Proc do
+  def run() do
+    parent = self()
+    spawn(fn -&gt; send(parent, {:hello, self()}) end)
+
+    receive do
+      {:hello, pid} -&gt; "Got hello from #{inspect(pid)}"
+    after
+      1_000 -&gt; "nothing after 1s"
+    end
+  end
+end
+
+IO.puts(Proc.run())
+</code></pre>
+<h3 id="links" tabindex="-1">Links</h3>
+<p>由于 processes 默认是 isolated 的，Links 提供一种破坏 isolated 状态的方式，如果一个 process 出问题退出，那么它可以通过 links 告诉其他 process，比如 supervisor process。</p>
+<p>可能是用信号实现，但这个不是我们用 elixir 时需要考虑的问题。</p>
+<p>创建和当前 process 有关联的 Process 的方法是 `spawn_link/1</p>
+<h3 id="tasks" tabindex="-1">Tasks</h3>
+<p>对 <code>spawn</code> 的抽象， 提供更好地 error reports。</p>
+<h3 id="state" tabindex="-1">State</h3>
+<p>所谓 state 是指你的程序是可配置的，配置项就是 state。配置的方法之一是配置文件，解析配置文件之后，把它放在一个字典里面，这个字典可能外在表现为一个 KV 数据库。</p>
+<p>数据库 DBMS, database manage system, 是一个独立的 process:</p>
+<pre class="one-piece"><code>defmodule KV do
+  def start_link do
+    Task.start_link(fn -&gt; loop(%{}) end)
+  end
+
+  defp loop(map) do
+    receive do
+      {:get, key, caller} -&gt;
+        send caller, Map.get(map, key)
+        loop(map)
+      {:put, key, value} -&gt;
+        loop(Map.put(map, key, value))
+    end
+  end
+end
+</code></pre>
+<h3 id="registration" tabindex="-1">Registration</h3>
+<p>Elixir 的常规操作:</p>
+<pre class="one-piece"><code>iex&gt; Process.register(pid, :kv)
+true
+iex&gt; send(:kv, {:get, :hello, self()})
+{:get, :hello, #PID&lt;0.41.0&gt;}
+iex&gt; flush()
+:world
+:ok
+</code></pre>
+<p>我的疑问是 <code>:kv</code> 是不是整个 Erlang 虚拟机可见</p>
+<h2 id="io-and-the-file-system" tabindex="-1">IO and the file system</h2>
+<p>Nothing special</p>
+<h2 id="alias-require-and-import" tabindex="-1">Alias, require, and import</h2>
+<p>专用于 "software reuse"</p>
+<p>Don't care</p>
+<h2 id="module-attributes" tabindex="-1">Module attributes</h2>
+<pre class="one-piece"><code>defmodule M do
+	@spec "specification"
+end
+</code></pre>
+<p><code>@</code> 和 annotation 关系很大，thanks to Java</p>
+<p>其他以后可以在看</p>
+<h2 id="struct" tabindex="-1">Struct</h2>
+<p>可能来到致命的关键点，和 OOP 的区别就体现在这。</p>
+<h3 id="defining-structs" tabindex="-1">Defining Structs</h3>
+<pre class="one-piece"><code>defmodule User do
+	defstruct name: "John", age: 27
+end
+</code></pre>
+<p>明显可以看到 struct 没有名字，Elixir 规定它和 module 同名</p>
+<blockquote>
+<p>Structs take the name of the module they're defined in.</p>
+</blockquote>
+<p>上面例子实际定义了一个名字叫做 <code>User</code> 的 struct</p>
+<p>估计有 exception, 凡事都有 exception, 估计有一套语法让你强制定义 struct 的名字, we will see</p>
+<h3 id="update-syntax-|" tabindex="-1">update syntax <code>|</code></h3>
+<pre class="one-piece"><code>iex&gt; john = %User{}
+%User{age: 27, name: "John"}
+iex&gt; john.name
+"John"
+iex&gt; jane = %{john | name: "Jane"}
+%User{age: 27, name: "Jane"}
+</code></pre>
+<p>当 jane 使用 <code>|</code> 的时候，注意到 john 在左边，右边是要覆盖的项，jane 和 john 共用其他部分，在这例子中就是 age</p>
+<h3 id="structs-are-bare-maps-underneath" tabindex="-1">Structs are bare maps underneath</h3>
+<p>完全可以理解，不是么，你看 <code>%User</code> 长什么样？</p>
+<p>元信息：</p>
+<pre class="one-piece"><code>iex&gt; john.__struct__
+User
+</code></pre>
+<p>Feels like python.</p>
+<p>注意到 bare maps 不是 barely maps, 或者 merely maps，而 bare map 并没有 "implemented any protocols"</p>
+<p>我们不需要知道怎么将 struct 转换成 map，怎么将 bare map 转换成 map, 肯定存在一个适配器，builder，等等，比如 <code>Map.merge/2</code>。你肯定不能在这些细节上浪费时间，因为等你要用的时候，你就有能力找到答案，如果你没有这种能力，那也许你是彻底的废柴。人应该相信自己不是废柴。</p>
+<h2 id="protocols" tabindex="-1">Protocols</h2>
+<blockquote>
+<p>Protocols are a mechanism to achieve polymorphism in Elixir when you want behavior to vary depending on the data type</p>
+</blockquote>
+<p>和 Rust 的 trait 差不多，甚至关键词也差不多：<code>defimpl</code></p>
+<pre class="one-piece"><code>defprotocol Trait do
+	def type(value)
+end
+defimpl Trait, for BitString do
+	def type(_value) do
+		"string"
+	end
+end
+defimpl Trait, for Integer do
+	def type(_value) do
+		"integer"
+	end
+end
+</code></pre>
+<blockquote>
+<p>dispatching on a protocol is available to any data type that has implemented the protocol</p>
+</blockquote>
+<p>说得好</p>
+<blockquote>
+<p>With protocols, however, we are no longer stuck having to continuously modify the same module to support more and more data types.</p>
+</blockquote>
+<p>可以在 module 之外追加 module 定义</p>
+<p>但用法不是 <code>3.type()</code> 而是 <code>Trait.type(3)</code>, 其实可以看函数签名：</p>
+<pre class="one-piece"><code>def type(value)
+</code></pre>
+<p>我认为这么做更好，因为摆脱了 self, this, 摆脱了这些语法糖，可以实现函数形式上的统一。</p>
+<h3 id="protocols-and-structs" tabindex="-1">Protocols and structs</h3>
+<blockquote>
+<p>The power of Elixir's extensibility comes when protocols and structs are used together.</p>
+</blockquote>
+<p>Extensibility.</p>
+<h3 id="implementing-any" tabindex="-1">Implementing Any</h3>
+<blockquote>
+<p>Manually implementing protocols for all types can quickly become repetitive and tedious.</p>
+</blockquote>
+<p>因此 Elixir 提供一种方式:</p>
+<pre class="one-piece"><code>defimpl YourProtocol, for: Any do
+	...
+end
+
+defmodule OtherUser do
+	@derive [YourProtocol]
+	defstruct [:name, :age]
+end
+</code></pre>
+<p><code>@derive</code> 给 <code>OtherUser</code> 实现了 <code>YourProtocol</code></p>
+<h3 id="fallback-to-any" tabindex="-1">Fallback to Any</h3>
+<pre class="one-piece"><code>defprotocol Size do
+	@fallback_to_any true
+	def size(data)
+end
+</code></pre>
+<p>当 <code>Size.size(sth)</code> 找不到定义的 <code>size</code> 时，Elixir 让你使用默认实现，也就是：</p>
+<pre class="one-piece"><code>defimpl Size, for: Any do
+	def size(_), do: 0
+end
+</code></pre>
+<p><code>@derive</code> 还是 <code>@fallback_to_any</code>？</p>
+<blockquote>
+<p>you may see many libraries pushing towards the @derive approach</p>
+</blockquote>
+<h2 id="comprehensions" tabindex="-1">Comprehensions</h2>
+<blockquote>
+<p>Comprehensions are syntactic sugar for such constructs: they group those common tasks into the for special form<br>
+A comprehension is made of three parts: generators, filters, and collectables.</p>
+</blockquote>
+<h3 id="generators-and-filters" tabindex="-1">Generators and filters</h3>
+<p>就好像给你一枚原子弹，但你没有使用它，没有让它产生破坏，但你知道它有这样的力量，因此可以把它称作 generator.</p>
+<pre class="one-piece"><code>for n &lt;- 1..4, do: n * n
+</code></pre>
+<p>后面跟着一个 "lambda", 目前为止 elixir 没有出现 lambda, 但为了便于理解我使用了这个词, 实际上叫做 "filter expression"</p>
+<p>那么，这是 map? 为什么叫 filter?</p>
+<blockquote>
+<p>Comprehensions discard all elements for which filter expression return <code>false</code> or <code>nil</code></p>
+</blockquote>
+<p>Right.</p>
+<p>同时，多个 generators 可以同时投入使用</p>
+<pre class="one-piece"><code>for i &lt;- [:a, :b, :c], j &lt;- [1, 2], do:  {i, j}
+</code></pre>
+<h3 id="the-into-option" tabindex="-1">The <code>:into</code> Option</h3>
+<blockquote>
+<p>In general, <code>:into</code> accepts any structure that implements the <a href="https://hexdocs.pm/elixir/Collectable.html"><code>Collectable</code></a> protocol.</p>
+</blockquote>
+<p>很熟悉: Rust <code>std::collections</code></p>
+<h2 id="sigils" tabindex="-1">Sigils</h2>
+<blockquote>
+<p>an inscribed or painted symbol considered to have magical power.</p>
+</blockquote>
+<p>出于 extensibility: Elixir 希望 developers 可以利用 Elixir 定制自己的语言</p>
+<blockquote>
+<p>extend the language to their relevant domains</p>
+</blockquote>
+<p>Sigils 用来处理 textual representations. 以 <code>~</code> 开头，外加一个 letter, 这个 letter 表示 sigil</p>
+<h3 id="regular-expressions" tabindex="-1">Regular expressions</h3>
+<p>最常见的 sigil 是正则表达式</p>
+<pre class="one-piece"><code>regex = ~r/foo|bar/
+</code></pre>
+<blockquote>
+<p>Perl-compatible</p>
+</blockquote>
+<p>后面可以加上 <strong>modifier</strong></p>
+<pre class="one-piece"><code>~r/hello/i
+</code></pre>
+<p>Indeed perl-compatible</p>
+<h3 id="strings-char-lists-and-word-lists-sigils" tabindex="-1">Strings, char lists, and word lists sigils</h3>
+<ul>
+<li><code>~s</code> 就像 C++ 的 <code>R(...)</code>, 或者 Rust 的 <code>r#...#</code></li>
+<li><code>~c</code> 声明 char lists</li>
+<li><code>~w</code> 声明 word lists</li>
+</ul>
+<pre class="one-piece"><code>iex&gt; ~w(foo bar bat)
+["foo", "bar", "bat"]
+</code></pre>
+<p>语法糖</p>
+<p>接受 modifier:</p>
+<ul>
+<li><code>c</code>: char lists</li>
+<li><code>s</code>: strings</li>
+<li><code>a</code>: atoms</li>
+</ul>
+<h3 id="interpolation-and-escaping-in-string-sigils" tabindex="-1">Interpolation and escaping in string sigils</h3>
+<blockquote>
+<p>in·ter·po·la·tion<br>
+/inˌtərpəˈlāSH(ə)n/<br>
+noun</p>
+<ol>
+<li>the insertion of something of a different nature into something else.<br>
+"the interpolation of songs into the piece"</li>
+<li>a remark interjected in a conversation.<br>
+"as the evening progressed their interpolations became more ridiculous"</li>
+</ol>
+</blockquote>
+<p>C 语言的 formatter 的 <code>%d</code> 就是 interpolation</p>
+<h3 id="calendar-sigils" tabindex="-1">Calendar sigils</h3>
+<pre class="one-piece"><code>~D[2019-10-31]
+</code></pre>
+<p>其他 sigils 暂时不管</p>
+<h2 id="try-catch-and-rescue" tabindex="-1">try, catch, and rescue</h2>
+<p>raise: throw</p>
+<p>Error 本身是一个 module, don't know why:</p>
+<pre class="one-piece"><code>defmodule MyError do
+	defexception message: "the yawning abyss"
+end
+</code></pre>
+<p>rescue 是个很有意思的词：</p>
+<blockquote>
+<p>Errors can be <strong>rescued</strong> using the <code>try/rescue</code> construct</p>
+</blockquote>
+<p>实际上很少用：</p>
+<blockquote>
+<p>In practice, Elixir developers rarely use the <code>try/rescue</code> construct</p>
+</blockquote>
+<p>因为很少用，所以不研究</p>
+<p>一般这么处理：和 Rust 的 <code>match</code> 差不多</p>
+<pre class="one-piece"><code>case File.read("hello") do
+	{:ok, body} -&gt; IO.puts("Success: #{body}")
+	{:error, reason} -&gt; IO.puts("Error: #{reason}")
+end
+</code></pre>
+<h3 id="throws" tabindex="-1">Throws</h3>
+<p>don't care</p>
+<h3 id="exits" tabindex="-1">Exits</h3>
+<p>don't care either</p>
+<h3 id="after" tabindex="-1">After</h3>
+<p>again, don't care</p>
+<h3 id="else" tabindex="-1">Else</h3>
+<h3 id="variables-scope" tabindex="-1">Variables scope</h3>
+<h2 id="typespecs-and-behaviours" tabindex="-1">Typespecs and behaviours</h2>
+<h3 id="types-and-specs" tabindex="-1">Types and specs</h3>
+<blockquote>
+<p>Elixir is a dynamically typed language, so all types in Elixir are checked at runtime. Nonetheless, Elixir comes with <strong>typespecs</strong>, which are a notation used for:</p>
+<ol>
+<li>declaring typed function signatures (also called specifications);</li>
+<li>declaring custom types.</li>
+</ol>
+</blockquote>
+<p>参考 <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">https://hexdocs.pm/elixir/typespecs.html#built-in-types</a></p>
+<p>其中有一点非常奇怪：<code>float()</code> 表示 <code>float</code> 类型，而不是调用 <code>float</code> 函数</p>
+<p>文档表示： <code>pid()</code>(or simply <code>pid</code>)</p>
+<h3 id="defining-custom-types" tabindex="-1">Defining custom types</h3>
+<pre class="one-piece"><code>@type year :: integer
+</code></pre>
+<p>和 C 的 <code>typedef int year</code> 一样</p>
+<p><code>@typedoc</code> 用来注释 custom types</p>
+<p><code>@spec</code> 用来写函数签名</p>
+<pre class="one-piece"><code>@spec current_age(year) :: integer
+def current_age(year_of_birth), do:
+</code></pre>
+<p>可以看到，elixir 不像其他语言那样可以一个表达式将函数的本质全部交代清楚，而是需要分为两个步骤：一是 declaration, 二是 definition, 这俩都是我自己引入的术语，和 elixir 文档无关</p>
+<h3 id="static-code-analysis" tabindex="-1">Static code analysis</h3>
+<blockquote>
+<p>he Erlang tool <a href="http://www.erlang.org/doc/man/dialyzer.html">Dialyzer</a>, for example, uses typespecs in order to perform static analysis of code</p>
+</blockquote>
+<h3 id="behaviours" tabindex="-1">Behaviours</h3>
+<p>看起来像在定义插件接口，实际上是定义 abstract class in OOP, 比 Elixir 的 module 更高一层</p>
+<blockquote>
+<ul>
+<li>define a set of functions that have to be implemented by modules;</li>
+<li>ensure that a module implements all the functions in that set</li>
+</ul>
+</blockquote>
+<pre class="one-piece"><code>defmodule Parser do
+	@doc """
+	Parses a string
+	"""
+	@callback parse(String.t) :: {:ok, term} | {:error, String.t}
+end
+</code></pre>
+<p><code>@doc</code> 表示注释，将来可能被解析成文档，html 那种</p>
+<p><code>@callback</code> 是一个属性 attribute. 后面跟着函数签名，不需要实际定义。任何采用(adopt, 类似于 OOP 的继承）此 behaviour 的 module 都不得不定义一个同样签名的函数。</p>
+<p>同时, 可以看到 <code>@callback</code> 和 <code>@spec</code> 有某些相似之处，可以认为后者是前者的子集。</p>
+<p>实际上， IDE 会自动给你生成 <code>@spec</code></p>
+<p><img src="images/0xfeff_ddd775bd65eb46f88aadab240410c1bb.png" alt=""></p>
+<h3 id="adopting-behaviours" tabindex="-1">Adopting behaviours</h3>
+<pre class="one-piece"><code>defmodule JSONParser do
+	@behaviour Parser
+
+	@impl Parser
+	def parse(str) do
+		{:ok, "some json" &lt;&gt; str}
+	end
+end
+</code></pre>
+<p>写法就是这样，可以看出和继承也没什么区别，区别还是有的，比如 OOP 的继承如果只写一层，只继承抽象类，那么和 behaviour 其实差不多，剩下的就是区别。</p>
+<p><code>@impl true</code> 表示如果编译器在所有采用的 behaviours 中都找不到一个同名 callback 的话，就报错。</p>
+<h3 id="dynamic-dispatch" tabindex="-1">Dynamic dispatch</h3>
+<p>Polymorphism 是不是 OOP 专属，答案肯定是否定的，我学 Elixir 是为了彻底摆脱 OOP，而看到 dynamic dispatch 的时候其实感到很失望.</p>
+<p>查证后发现多态并不是 OOP 专利/特有</p>
+<blockquote>
+<p>It is commonly employed in, and considered a prime characteristic of, object-oriented programming (OOP) languages and systems. — <a href="https://en.wikipedia.org/wiki/Dynamic_dispatch">Dynamic dispatch</a></p>
+</blockquote>
+<blockquote>
+<p>Functional programming, on the other hand, allows us to achieve the same polymorphism in a much more elegant way…by simply passing in a function that defines the desired runtime behavior. — <a href="https://betterprogramming.pub/object-oriented-programming-the-trillion-dollar-disaster-92a4b666c7c7">Object-Oriented Programming — The Trillion Dollar Disaster</a></p>
+</blockquote>
+<h2 id="optional-syntax-sheet" tabindex="-1">Optional syntax sheet</h2>
+<p>Elixir 允许某些语法可以忽略 delimiters</p>
+<p>太长不看，直接用 <a href="https://hexdocs.pm/mix/Mix.Tasks.Format.html">mix_format</a>得出最得体的语法形式</p>
+<p>直接安装在 Vscode 上： <a href="https://marketplace.visualstudio.com/items?itemName=animus-coop.vscode-elixir-mix-formatter">https://marketplace.visualstudio.com/items?itemName=animus-coop.vscode-elixir-mix-formatter</a></p>
+<h2 id="debugging" tabindex="-1">Debugging</h2>
+<p>同样，用 Vscode 插件:<br>
+<a href="https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls">https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls</a></p>
+<h2 id="erlang-libraries" tabindex="-1">Erlang libraries</h2>
+<p>Elixir 可以使用 Erlang 的库</p>
+<h2 id="结论" tabindex="-1">结论</h2>
+<p>感觉这种笔记形式没什么意义，不如做成小抄的样子。而且刷了一遍基本教程什么也记不住。不过刷了一遍，我记下了一些有意思或不常见的语言表达。</p>
+<p>Which begs the question: how to write a technical article? 代码是最简单但是最难读的方式，不应该贴代码，而是提炼模型。</p>
+<h2 id="quoting-and-unquoting" tabindex="-1">Quoting and unquoting</h2>
+<p>A new journey begins.</p>
+<blockquote>
+<p>The building block of an Elixir program is a tuple with three elements</p>
+</blockquote>
+<p>用 <code>quote</code> 揭露 "the representation of any expresssion"</p>
+<p><code>quote</code> 是一个 macro</p>
+<p>用法：</p>
+<pre class="one-piece"><code>iex&gt; quote &lt;expr&gt;
+</code></pre>
+<blockquote>
+<p>Many languages would call such representations an Abstract Syntax Tree. Elixir calls them <strong>quoted expressions</strong>.</p>
+</blockquote>
+<p>Quoted Expression 通常以 tuple 形式存在，这些 tuple 通常有 3 个组件：</p>
+<ol>
+<li>通常是函数，名字为 atom</li>
+<li>通常是 metadata, 包含 numbers 或者 context, 以 keyword list 存在(注意不是 map)</li>
+<li>通常以 list 或者 atom 形式存在，角色通常是函数的参数</li>
+</ol>
+<p>对应的 Unquoting 是指将变量展开到 terminal, Elixir 的文档并没有明确定义 unquoting，在这我的理解是：unquoting 是进一步解析语法树，让一个节点从 non-terminal 演变成 terminal</p>
+<p>而 Elixir 将这种演变称之为 injection</p>
+<p>这让人想起 Rust 的 <code>quote</code> 模块，<code>quote!</code> 生成一个 <code>TokenStream</code>, 里面的变量要用 <code>#</code> 表示：</p>
+<pre class="one-piece"><code>let builder = quote! {
+        impl #head {
+            #vis fn builder() {
+
+            }
+        }
+    };
+</code></pre>
+<p>在我看来 , Elixri 的 <code>quote</code> 可以类比 Rust 的 <code>quote!</code>，<code>unquote</code> 类比 <code>#</code>, 我怀疑 Rust 的 <code>quote</code> module 借鉴 Elixir，因为 <code>unquote</code> 总比 <code>#</code> 更符合直觉，直觉意味着原创，反直觉意味着掩饰。（我开玩笑的）</p>
+<h3 id="escape" tabindex="-1">Escape</h3>
+<p>不是所有变量都是 valid quoted expressions: 我不明白为什么不是。Map 就不是，a tuple with four elements 也不是。</p>
+<pre class="one-piece"><code>iex(7)&gt; a = %{hello: :world}  
+%{hello: :world}
+iex(8)&gt; quote do: a           
+{:a, [if_undefined: :apply], Elixir}
+iex(9)&gt; quote a
+** (CompileError) iex:9: invalid arguments for "quote"
+iex(9)&gt; quote do: %{:hello =&gt; :world}
+{:%{}, [], [hello: :world]}
+</code></pre>
+<p>这进一步说明 <code>quoted</code> 的参数应该是一个表达式，<code>a</code> 不是表达式, 但返回 <code>a</code> 则是一个表达式，返回一个字典也是一个表达式</p>
+<p>而用 <code>Macro.escape(a)</code> 则返回 <code>quote do: %{:hello =&gt; :world}</code> 的结果</p>
+<h2 id="macros" tabindex="-1">Macros</h2>
+<p>可以想想宏的处理器就是一个编译器，因为编译就是翻译的意思。</p>
+<pre class="one-piece"><code>defmodule Marlowe do
+  defmacro define_module(mod, func) do
+    quote do
+      defmodule unquote(mod) do
+        def unquote(func)() do
+          IO.puts("Hello this is #{inspect(unquote(Mod))}'s #{inspect(unquote(func))}")
+        end
+      end
+    end
+  end
+end
+
+defmodule Test do
+  require Marlowe
+  Marlowe.define_module Mod, :func
+  Marlowe.define_module :Mod, :func
+
+  def go do
+    Mod.func()
+    :Mod.func()
+  end
+end
+
+Test.go()
+</code></pre>
+<p>花了一小时终于编译过了，结论是 module 的名字可以是 <code>Mod</code>, 也可以是 <code>:Mod</code>, 但函数必须是 atom: <code>:func</code>, 但我完全不知道 <code>Mod</code> 是什么类型</p>
+<p>经检查，发现大写开头的都是 atom:</p>
+<pre class="one-piece"><code>iex(14)&gt; i Mod2
+Term
+  Mod2
+Data type
+  Atom
+Raw representation
+  :"Elixir.Mod2"
+Reference modules
+  Atom
+Implemented protocols
+  IEx.Info, Inspect, List.Chars, String.Chars
+</code></pre>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

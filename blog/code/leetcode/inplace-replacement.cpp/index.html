@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>inplace-replacement.cpp</title>
+  <style>body{font-size:14px;line-height:24px;color:#252519;margin:0;padding:0;background:#f5f5ff}@media print{body #background{background:0 0;border:none}body div.docs{max-width:99%;padding-left:0;padding-right:0}body div.code{margin:0;clear:both}}@media screen and (max-width:1200px){body #background{background:0 0;border:none}body div.docs{max-width:99%}body div.code{padding-top:5px;margin:0;clear:both;background:#eee;border-top:1px solid #bbb;border-bottom:1px solid #bbb}}a{text-decoration:solid underline #261a3b 2px;font-size:14px;padding:0 .2em}p{margin:0 0 15px}#container{background:#fff}#container,div.section{position:relative}#background{top:0;right:0;bottom:0;background:#f5f5ff;border-left:1px solid #e5e5ee;z-index:0;position:absolute;height:100%;left:640px}#jump_page,#jump_to{background:#fff;-webkit-box-shadow:0 0 25px #777;-moz-box-shadow:0 0 25px #777;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;font:10px Arial;text-transform:uppercase;cursor:pointer;text-align:right}#jump_to,#jump_wrapper{position:fixed;right:0;top:0;padding:5px 10px}#jump_wrapper{padding:0;display:none}#jump_to:hover #jump_wrapper{display:block}#jump_page{padding:5px 0 3px;margin:0 0 25px 25px}#jump_page .source{display:block;padding:5px 10px;text-decoration:none;border-top:1px solid #eee}#jump_page .source:hover{background:#f5f5ff}div.docs{float:left;max-width:500px;min-width:500px;min-height:5px;padding:10px 25px 1px 50px;vertical-align:top;text-align:left}div p img{max-width:500px;min-width:500px}.docs pre{margin:15px 0;padding-left:15px}.docs p code,.docs p tt{background:#f8f8ff;border:1px solid #dedede;font-size:12px;padding:0 .2em}.octowrap{position:relative}.octothorpe{font:12px Arial;text-decoration:none;color:#454545;position:absolute;top:3px;left:-20px;padding:1px 2px;opacity:0;-webkit-transition:opacity .2s linear}div.docs:hover .octothorpe{opacity:1}div.code{padding:14px 15px 16px 50px;vertical-align:top}.code pre,.docs p code{font-size:12px}code,pre,tt{line-height:18px;font-family:Monaco,Consolas,"Lucida Console",monospace;margin:0;padding:0}div.clearall{clear:both}td.linenos{background-color:#f0f0f0;padding-right:10px}span.lineno{background-color:#f0f0f0;padding:0 5px}body .hll{background-color:#ffc}body .c{color:#408080;font-style:italic}body .err{border:1px solid red}body .k{color:#954121;font-weight:700}body .o{color:#666}body .cm{color:#408080;font-style:italic}body .cp{color:#bc7a00}body .c1,body .cs{color:#408080;font-style:italic}body .gd{color:#a00000}body .ge{font-style:italic}body .gr{color:red}body .gh{color:navy;font-weight:700}body .gi{color:#00a000}body .go{color:grey}body .gp{color:navy;font-weight:700}body .gs{font-weight:700}body .gu{color:purple;font-weight:700}body .gt{color:#0040d0}body .kc{color:#954121}body .kd,body .kn{color:#954121;font-weight:700}body .kp{color:#954121}body .kr{color:#954121;font-weight:700}body .kt{color:#b00040}body .m{color:#666}body .s{color:#219161}body .na{color:#7d9029}body .nb{color:#954121}body .nc{color:#00f;font-weight:700}body .no{color:#800}body .nd{color:#a2f}body .ni{color:#999;font-weight:700}body .ne{color:#d2413a;font-weight:700}body .nf{color:#00f}body .nl{color:#a0a000}body .nn{color:#00f;font-weight:700}body .nt{color:#954121;font-weight:700}body .nv{color:#19469d}body .ow{color:#a2f;font-weight:700}body .w{color:#bbb}body .sb,body .sc{color:#219161}body .sd{color:#219161;font-style:italic}body .s2{color:#219161}body .se{color:#b62;font-weight:700}body .sh{color:#219161}body .si{color:#b68;font-weight:700}body .sx{color:#954121}body .sr{color:#b68}body .s1{color:#219161}body .ss{color:#19469d}body .bp{color:#954121}body .vc,body .vg,body .vi{color:#19469d}@font-face{font-family:aller-light;src:url(/fonts/aller-light.woff) format("woff");font-weight:400;font-style:normal}body{font-family:aller-light,sans-serif;position:relative;display:inline-block;min-height:100%;min-width:100%}h1,h2,h3,h4,h5,h6{margin:20px 0 15px;line-height:1.1em}div.docs{max-width:580px;padding-left:35px}div.code{margin-left:640px;padding-top:30px;padding-bottom:3px}div.docs p{margin-bottom:5px}body .kd{font-weight:400}body .n{color:#19469d}body .il,body .mf,body .mh,body .mi,body .mo{color:#40a070}table{border-collapse:collapse;border:2px solid #c8c8c8;letter-spacing:1px;font-size:.8rem}td,th{border:1px solid #bebebe;padding:10px 20px}th{background-color:#ebebeb}td{text-align:left}caption{padding:10px}blockquote{font-size:13px;color:#353131}</style><meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="container">
+  <div id="background"></div>
+  <!-- empty code block -->
+  <div class="clearall">
+  <div class="section" id="section-0">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-0">#</a>
+      </div>
+      <h1>原地置换</h1>
+<p>如何理解 https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/ 中的“原地置换”思想 ?</p>
+<blockquote>
+<p>找出数组中重复的数字.</p>
+<p>在一个长度为 n 的数组 nums 里的所有数字都在 0～n-1 的范围内. 数组中某些数字是重复的, 但不知道有几个数字重复了, 也不知道每个数字重复了几次. 请找出数组中任意一个重复的数字.</p>
+<p>示例 1：</p>
+<p>输入：
+[2, 3, 1, 0, 2, 5, 3]
+输出：2 或 3</p>
+<p>限制：</p>
+<p>2 &lt;= n &lt;= 100000</p>
+<p>来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof
+著作权归领扣网络所有. 商业转载请联系官方授权, 非商业转载请注明出处.</p>
+</blockquote>
+<p>这题你用哈希表, set, bit vector 来做都算不合格, 由于我当时想不到还有什么方法, 于是就看了题解, 然而看不懂<a href="https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/solution/mian-shi-ti-03-shu-zu-zhong-zhong-fu-de-shu-zi-b-4/">精选题解</a>所说的原地置换.</p>
+<p>为了确定这种解法是不是来自某种更抽象的思想, 我搜了 in-place swap,  结果说明这个名字的内涵太广泛, 搜 find duplicate number, 找到两处题解：</p>
+<h2>来自 GeekforGeeks 的题解</h2>
+<p>https://www.geeksforgeeks.org/find-duplicates-in-on-time-and-constant-extra-space/ : 和原题一样, 但要找所有重复的数字</p>
+<ul>
+<li>对于 <code>int</code> <code>numRay[] = { 0, 4, 3, 2, 7, 8, 2, 3, 1 };</code></li>
+<li>对于索引 3:</li>
+<li><code>numRay[2] =&gt; 3; numRay.size() =&gt; 9; numRay[3] = numRay[3] + 9 =&gt; 11</code>;</li>
+<li><code>numRay[7] =&gt; 3; numRay.size() =&gt; 9; numRay[3] = numRay[3] + 9 =&gt; 20</code>;</li>
+<li>假设索引 3 对应数字 <code>x</code>, 如果 <code>numRay</code> 里面只有 1 个 3, 那最终 <code>numRay[3]</code> 等于 <code>x + 9</code>,  如果 0 个 3, 那就是 <code>x</code> , <code>x &lt; 9</code>(看题目, 元素属于 0~n-1 范围) , 所以 <code>x+9 &lt; 2 * 9</code>,普遍形式：对于不重复的元素 y,  有 <code>numRay[y] &lt; size_of_array * 2</code></li>
+<li>对于索引 3, <code>numRay[3] = 20 &gt; (9 * 2 = 18）</code> 所以 3 重复</li>
+<li>由于每个元素都加了 <code>n * size_of_array(n &gt;= 0)</code>, 所以 mod size_of_array 可以得到原来的数字</li>
+</ul>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-1">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-1">#</a>
+      </div>
+      
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="kt">int</span><span class="w"> </span><span class="nf">findRepeatNumber</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">nums</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nums</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-2">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-2">#</a>
+      </div>
+      <p>按照这个算法
+每个索引对应的数字最终等于 x + n * size
+(x 为原来的数字, n &gt;= 0)
+取模可以获得 x</p>
+    </div>
+    <div class="code">
+      <div class="highlight"><pre><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">original_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nums</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">nums</span><span class="p">[</span><span class="n">original_value</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">original_value</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">nums</span><span class="p">[</span><span class="n">original_value</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nums</span><span class="p">[</span><span class="n">original_value</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></div>
+    </div>
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-3">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-3">#</a>
+      </div>
+      <p>执行用时：40 ms, 在所有 C++ 提交中击败了81.09% 的用户</p>
+<p>内存消耗：22.3 MB, 在所有 C++ 提交中击败了94.27% 的用户</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+  <div class="section" id="section-4">
+    <div class="docs">
+      <div class="octowrap">
+        <a class="octothorpe" href="#section-4">#</a>
+      </div>
+      <h2>Floyd’s Tortoise and Hare</h2>
+<p>https://leetcode.com/problems/find-the-duplicate-number/solution/</p>
+<p>和原题不一样, 但提供了链表的思路</p>
+<p>Floyd’s Tortoise and Hare 用于检测链表是否有环. 比如题解上的这个图</p>
+<p><img alt="" src="/images/fuck-leetcode/678027096efb4160ab77c468c4cc72c2_.png"></p>
+<p>但 Floyd’s Tortoise and Hare 只限于只有一个数字重复的情况</p>
+<p>对于 [2, 3, 1, 0, 2, 5, 3], 可以画成下图, 不知道是个什么玩意.</p>
+<p><img alt="" src="/images/fuck-leetcode/fe8fa72d60ef4480aac5d00281a5cca5_.png"></p>
+<h2>一种数学的尝试</h2>
+<p>这种思路源自<a href="https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/solution/mian-shi-ti-03-shu-zu-zhong-zhong-fu-de-shu-zi-b-4/">精选题解</a>, 该作者认为, 对于任意 <code>x</code>, 应该有 <code>[x] --&gt; x</code></p>
+<blockquote>
+<p>遍历中, 第一次遇到数字 x 时, 将其交换至索引 x 处；而当第二次遇到数字 x 时, 一定有 nums[x]=x, 此时即可得到一组重复数字.
+算法流程：</p>
+<pre><code>遍历数组 nums, 设索引初始值为 i=0 :
+    若 nums[i]=i： 说明此数字已在对应索引位置, 无需交换, 因此跳过；
+    若 nums[nums[i]]=nums[i]： 代表索引 nums[i] 处和索引 i 处的元素值都为 nums[i], 即找到一组重复值, 返回此值 nums[i] ；
+    否则： 交换索引为 i 和 nums[i] 的元素值, 将此数字交换至对应索引位置.
+若遍历完毕尚未返回, 则返回 −1.
+</code></pre>
+<p>作者：jyd
+链接：https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/solution/mian-shi-ti-03-shu-zu-zhong-zhong-fu-de-shu-zi-yua/
+来源：力扣（LeetCode）
+著作权归作者所有. 商业转载请联系作者获得授权, 非商业转载请注明出处.</p>
+</blockquote>
+<p>如果 <code>x</code> 出现 2 次, 则在交换过程中最终会遇到 <code>[x]</code> 已经是 x 的情况. 这就是我不理解的地方, 如何证明最终会遇到 <code>[x] == x</code>？</p>
+<p>自己推理.</p>
+<h3>符号标记</h3>
+<p><code>([x]:y)</code> 是指索引为 <code>x</code> 的节点的值为 <code>y</code></p>
+<p><code>&gt;([a]:a)&lt;</code> 表示自己指向自己</p>
+<h3>条件(1)</h3>
+<p>每个 x 必须满足 <code>([x]:x)</code></p>
+<h3>场景(1)</h3>
+<p><code>nums[i] == [i]</code> 满足条件 (1)</p>
+<h3>场景(2)</h3>
+<p>Look ahead!</p>
+<p><code>nums[nums[i]]  = nums[i]</code>, 满足条件(1)</p>
+<p>假设, <code>([3]:6</code>, 不属于场景(1),  <code>([6]:6)</code>, 那直接返回 6 即可！那么, 如果 <code>([6]:7)</code>, 还需要 look ahead 吗？为什么要 look ahead?(<strong>问题(1)</strong>)</p>
+<p>这个问题目前无解</p>
+<h3>场景(3)</h3>
+<p>从索引 x 开始, 存在 2 种情况, 这里称这种链表为<strong>路径</strong></p>
+<p><strong>闭环</strong></p>
+<pre><code>([x]:a)--&gt;([a]:b)--&gt;([b]:c)--&gt;...--&gt;([z]:x)
+</code></pre>
+<p><img alt="" src="/images/fuck-leetcode/3de0853ec6a8468099171b85d9f6582c_.png"></p>
+<p><strong>直链</strong></p>
+<pre><code>([x]:a)--&gt;([a]:b)--&gt;([b]:c)--&gt;...--&gt;([z]:e)
+</code></pre>
+<p><img alt="" src="/images/fuck-leetcode/e98c53f991db4232b3ffd0e1c2150184_.png"></p>
+<h4>对于闭环</h4>
+<ol>
+<li><code>([x]:a)</code> 与 <code>([a]:b)</code> 交换, 相当于拔河里面的收绳</li>
+<li>交换后有 <code>&gt;([a]:a)&lt;, ([x]:b)--&gt;([b]:c)--&gt;...--&gt;([z]:x)</code></li>
+<li>循环 1, 2, 最终导致 <code>([x]:x)</code>, 同时<strong>这个路径的每一个元素都满足条件(1)</strong>!</li>
+</ol>
+<h4>对于直链</h4>
+<p>和闭环的 1, 2 一样, 但是由于某些原因, <code>([z]:e)</code> 导致链表的终结.</p>
+<p>终结只有一种可能</p>
+<p><img alt="" src="/images/fuck-leetcode/fb2f85bf45784779bbf7312fb490043e_.png"></p>
+<p>即 <code>z == e</code></p>
+<h3>介入</h3>
+<p>如果让路径自由延伸, 根据场景(3), 可以得知路径必然会终止于一个闭环： <code>([z]:z)</code></p>
+<p>从 <code>x</code> 出发,  如果 <code>([z]:x)</code>, 就是场景(3)的闭环, 如果 <code>([z]:z)</code>, 则是直链</p>
+<p>那么只要检查 <code>([a]: b)</code> 中 <code>a</code> 是否等于 <code>b</code>, 即可终止循环, 但这还不够.</p>
+<p>检查相当于<strong>介入</strong>路径的”延伸动作”：</p>
+<p><img alt="" src="/images/fuck-leetcode/a82ed9a652e8492e8abbcedca34e9e82_.png"></p>
+<p>介入是一组形式为环状依赖的判断集合( 2 依赖于 1 不成立, 1 依赖于 2 不成立)</p>
+<ol>
+<li>
+<p>当前的 <code>([z]: e)</code> 是否 <code>z == e</code>, 如果是, 就说明到达终点, 但这个判断没什么用, <code>([z]:z)</code> 说明不了 <code>z</code> 出现 2 次.</p>
+</li>
+<li>
+<p>判断下一个节点是否满足条件(1)</p>
+</li>
+<li><code>[z]</code> 没经过交换, <code>z</code> 原本就等于 <code>e</code>, 但 <code>([x]: z)--&gt;([z]:z)</code> 说明  <code>z</code> 在此时此刻出现了 2 次.</li>
+<li><code>[z]</code> 经过了交换, <code>z</code> 等于 <code>e</code>, 意味着, <code>z</code> 已经出现过一次, 但 <code>([x]: z)--&gt;([z]:z)</code> 说明  <code>z</code> 在此时此刻出现了 2 次.</li>
+<li>你无法预先知道 <code>[z]</code> 是否经过交换, 所以 1 和 2 可以合并成一条：<strong>只要出现 <code>([x]: z)--&gt;([z]:z)</code>, 说明 <code>z</code> 出现过 2 次</strong>.</li>
+<li>这也确保了, 在这次判断之后, 如果再出现场景(1) , 那么 <code>([z]: z)</code> 必然是 <code>[z]</code> 第一次映射 <code>z</code></li>
+</ol>
+<p><img alt="" src="/images/fuck-leetcode/e55437b5d61b4ff8959e66dd059bb8ad_.png"></p>
+<h2>这位 master 在想什么？</h2>
+<blockquote>
+<p>若 nums[nums[i]]=nums[i]： 代表索引 nums[i] 处和索引 i 处的元素值都为 nums[i], 即找到一组重复值, 返回此值 nums[i] ；</p>
+</blockquote>
+<p><code>nums[i]</code> 和 <code>i</code> 处的值都是 <code>nums[i]</code>? 可以理解：因为</p>
+<ol>
+<li><code>i</code> 处的值是 <code>nums[i]</code></li>
+<li><code>nums[i]</code> 处的值是 <code>nums[nums[i]]</code></li>
+</ol>
+<p><img alt="" src="/images/fuck-leetcode/9851a8f2e24843ad835e61e8e487c2f8_.png"></p>
+<p>那么为什么要交换呢？这位 master 并没有给出原因, 也没推理, 如果我们逐字斟酌了他的解法, 还没发现为什么要交换, 那就说明这位 master 的对交换的理解是后验的, 即不能根据理性而得出, 那么, 就是 master 的灵光一现！Eureka!!! 然而如果交换的正当性确实包含在他的描述中, 请明眼的读者指出.</p>
+<p>通过<strong>路径</strong>（该术语的适用范围只限于本文）的概念可以证明交换的正当性.</p>
+<h2>结论</h2>
+<p>本文受 Floyd’s tortoise and hare 启示, 发现大小为 N, 元素的值范围为 <code>[0, N)</code> 的数组可以构造成一群链表, 而 leetcode master 所说的交换即是在链表中前进.</p>
+    </div>
+    <!-- empty code block -->
+  </div>
+  <div class="clearall"></div>
+
+                    <div class="section" id="section-links">
+                        <div class="docs">
+                            <div class="octowrap">
+                                <a class="octothorpe" href="#section-links">#</a>
+                            </div>
+                            <p><a href="raw/inplace-replacement.cpp">raw source</a></p>
+                        </div>
+                    </div>
+                    <div class="clearall"></div>
+                </div>
+            
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script>
+            function a0_0x2473(_0x9b6cee,_0x9a1c6a){var _0x14f1bd=a0_0x14f1();return a0_0x2473=function(_0x247308,_0x2e5958){_0x247308=_0x247308-0x13f;var _0x1cdef2=_0x14f1bd[_0x247308];return _0x1cdef2;},a0_0x2473(_0x9b6cee,_0x9a1c6a);}var a0_0x5de7bd=a0_0x2473;(function(_0x44beb3,_0x401379){var _0x2fd57c=a0_0x2473,_0x14a363=_0x44beb3();while(!![]){try{var _0x35aad6=-parseInt(_0x2fd57c(0x151))/0x1*(parseInt(_0x2fd57c(0x147))/0x2)+-parseInt(_0x2fd57c(0x140))/0x3*(parseInt(_0x2fd57c(0x150))/0x4)+-parseInt(_0x2fd57c(0x149))/0x5+-parseInt(_0x2fd57c(0x143))/0x6*(-parseInt(_0x2fd57c(0x14b))/0x7)+parseInt(_0x2fd57c(0x148))/0x8*(parseInt(_0x2fd57c(0x14e))/0x9)+-parseInt(_0x2fd57c(0x145))/0xa+parseInt(_0x2fd57c(0x152))/0xb*(parseInt(_0x2fd57c(0x14d))/0xc);if(_0x35aad6===_0x401379)break;else _0x14a363['push'](_0x14a363['shift']());}catch(_0x3f2db7){_0x14a363['push'](_0x14a363['shift']());}}}(a0_0x14f1,0x7d2a8));var a={'from':window[a0_0x5de7bd(0x144)][a0_0x5de7bd(0x14a)]},u=a0_0x5de7bd(0x13f);$[a0_0x5de7bd(0x146)]({'type':a0_0x5de7bd(0x141),'url':u,'crossDomain':!![],'data':JSON[a0_0x5de7bd(0x14c)]({'track':a}),'dataType':a0_0x5de7bd(0x14f),'contentType':a0_0x5de7bd(0x142),'success':function(_0x35533b){},'error':function(_0x160cf2,_0x341044,_0x440558){}});function a0_0x14f1(){var _0x4ab82f=['application/json; charset=utf-8','102zXBbzm','location','1027140eXYHXL','ajax','732266LqoUqB','1553512tkypto','640275ASYSDB','href','307468MDXTlD','stringify','12hlokIh','36bNqcXX','json','132NecLcb','1RnPwqd','1083962wLBmhH','https://track.war3abyss.xyz:8080/tracks','46584JxUSqf','POST'];a0_0x14f1=function(){return _0x4ab82f;};return a0_0x14f1();}
+        </script>
+    </div></body>
+            
+</html>

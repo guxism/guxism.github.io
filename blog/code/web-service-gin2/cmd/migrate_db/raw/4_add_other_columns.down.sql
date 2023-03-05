@@ -1,0 +1,5 @@
+ALTER TABLE tracks DROP COLUMN user_agent;
+ALTER TABLE tracks DROP COLUMN method;
+ALTER TABLE tracks DROP COLUMN referer;
+ALTER TABLE tracks DROP COLUMN host;
+ALTER TABLE tracks DROP COLUMN origin;

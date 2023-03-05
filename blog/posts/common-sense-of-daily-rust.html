@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Rust 通识</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Rust 通识</h1>
+        <p>记录 Rust 日常遇到的各种问题并尽可能给出合理的解释，如果问题涉及的篇幅过大，将迁出本文，独立为一个主题。</p>
+<nav class="table-of-contents"><ol><li><a href="#xx-doesnt-live-long-enough-borrowed-value-doesnt-live-long-enough">Xx doesn't live long enough, borrowed value doesn't live long enough</a></li><li><a href="#fnmut">FnMut</a></li><li><a href="#fnonce">FnOnce</a></li><li><a href="#refcell">RefCell</a></li><li><a href="#cons-list">Cons List</a></li><li><a href="#ellipsis">Ellipsis</a><ol><li><a href="#range">Range</a></li><li><a href="#struct-update-syntax">Struct Update Syntax</a></li></ol></li><li><a href="#destructing-structs">Destructing structs</a></li><li><a href="#duck-typing">Duck Typing</a></li><li><a href="#from-trait">From trait</a></li><li><a href="#into_iter-和-iter-的区别">into_iter 和 iter 的区别</a></li><li><a href="#cannot-borrow-self-as-mutable-because-it-is-also-borrowed-as-immutable">cannot borrow *self as mutable because it is also borrowed as immutable</a></li><li><a href="#不让把-struct-成员移出那么就用-swap">不让把 struct 成员移出，那么就用 swap()</a></li><li><a href="#sized">Sized</a></li><li><a href="#extension-traits">Extension Traits</a></li></ol></nav><h2 id="xx-doesnt-live-long-enough-borrowed-value-doesnt-live-long-enough" tabindex="-1">Xx doesn't live long enough, borrowed value doesn't live long enough</h2>
+<pre class="one-piece"><code>    let content = std::fs::read_to_string(path)
+        .with_context(|| format!("could not read file `{}`", path.display()))?;
+
+    let asm: String = "".to_string();
+    for line in content.lines() {
+        parse_line(line)?;
+    }
+
+    Ok(asm)
+</code></pre>
+<p>报错, 讲 <code>content</code> 生命周期不够长<br>
+原因是 <code>line</code> 是 <code>content</code> 元素的引用, 将 <code>line</code> 传给 <code>parse_line</code>, 后者签名是</p>
+<pre class="one-piece"><code>fn parse_line(ln: &amp;str) -&gt; IResult&lt;Span, Token&gt;
+</code></pre>
+<p>改成以下模样就没事:</p>
+<pre class="one-piece"><code>fn parse_line(ln: String) -&gt; IResult&lt;Span, Token&gt;
+</code></pre>
+<p>我并不是非要改成这样, 改这样是为了试验, 那么可以看到问题和 <code>line</code> 有关, 而实际报错却说离开了 <code>content</code> 的作用域, 称 content 是 borrowed 的</p>
+<pre class="one-piece"><code>20 |     for line in content.lines() {
+   |                 ^^^^^^^--------
+   |                 |
+   |                 borrowed value does not live long enough
+   |                 argument requires that `content` is borrowed for `'static`
+...
+26 | }
+   | - `content` dropped here while still borrowed
+</code></pre>
+<p>这是因为 <code>parse_line(line)?</code> 的 <code>?</code> 操作符实际上引用了 <code>line</code>, 返回的时候, content 离开了作用域, 而返回结果包含了对 content 的引用, 所以报错</p>
+<p>结论: 这就是内存安全?</p>
+<h2 id="fnmut" tabindex="-1">FnMut</h2>
+<p>需要理解这段代码是什么意思.</p>
+<pre class="one-piece"><code>let (input, (red, green, blue)) = tuple((hex_primary, hex_primary, hex_primary))(input)?;
+</code></pre>
+<p>首先, <code>tuple(xxx)</code> 肯定返回一个函数. <code>tuple</code> 原型是:</p>
+<pre class="one-piece"><code>pub fn tuple&lt;I, O, E: ParseError&lt;I&gt;, List: Tuple&lt;I, O, E&gt;&gt;(
+  mut l: List,
+) -&gt; impl FnMut(I) -&gt; IResult&lt;I, O, E&gt; {
+  move |i: I| l.parse(i)
+}
+
+</code></pre>
+<p>什么意思呢, 看起来像 C++ 的模板, 没错, 尖括号里面是类型, 重点是返回值</p>
+<pre class="one-piece"><code>impl FnMut(I) -&gt; IResult&lt;I, O, E&gt; {
+  move |i: I| l.parse(i)
+}
+</code></pre>
+<p><code>I</code> 是类型, <code>move</code> 表示 <a href="https://doc.rust-lang.org/rust-by-example/fn/closures/capture.html">capturing</a> 将同一行的变量移动到 closure 里面, <code>move</code> 的定义可以从基本推断起:</p>
+<pre class="one-piece"><code>fn create_fn() -&gt; impl Fn() {
+    let text = "Fn".to_owned();
+    move || println!("This is a: {}", text)
+}
+</code></pre>
+<p>需要一些推断:</p>
+<ul>
+<li><code>move || println!(xxxxxxx)</code> 的类型是 <code>impl Fn()</code></li>
+<li>那么, 同理, <code>move |i: I| l.parse(i)</code> 是一个 <code>impl xxx</code> 类型</li>
+<li><code>impl</code> 类似于多态, 或者说是多态的一种实现方式, 也许后者更严谨, 因为继承也是一种实现方式对吧? 但 <code>impl</code> 到底是什么? 看 <a href="https://oswalt.dev/2021/06/polymorphism-in-rust/">https://oswalt.dev/2021/06/polymorphism-in-rust/</a> , 特征, 比如, 你说动物是一种属性, OK, 但多态的 base class 可不这么认为, 多态意味着一个个体是由一层层的抽象叠加起来的, 而 trait 并没有层次感, 是扁平的, 也适合组合. 比如狮子的特征: 咆哮者, 毛, 猫, 等等, 这些特征没有等级关系. 我无法说明这两者区别, 甚至也不能叫你体会. 这是另外一个话题. 总而言之, 你可以像使用多态基类的方式一样, 使用 <code>impl</code></li>
+<li>那么, 也就是说 <code>Fn()</code> 是一种 trait? 这不看起来像是一个函数么? 但它不是函数, 因为没有定义, 所以最多是一个函数类型. 所以函数类型是一种 trait?</li>
+<li>函数类型是一种 trait 当然说得通, 因为类型本身就是一种 trait, <code>int</code> 是不是 trait? 是; 那么 <code>Fn()</code> 是一种函数类型, 接受空参数, 返回空结果, 名字未知, 因为类型不是具体的东西, 函数类型不是具体的函数;</li>
+</ul>
+<p>看文档 <a href="https://doc.rust-lang.org/stable/std/ops/trait.FnMut.html">https://doc.rust-lang.org/stable/std/ops/trait.FnMut.html</a> 怎么说:</p>
+<ul>
+<li>是什么: the version of the <strong>call operator</strong>(指函数) that takes a mutable receiver.
+<ul>
+<li>问题: receiver 是什么?
+<ul>
+<li><a href="https://doc.rust-lang.org/reference/expressions/method-call-expr.html">https://doc.rust-lang.org/reference/expressions/method-call-expr.html</a>
+<ul>
+<li>A <em>method call</em> consists of an expression (the <em>receiver</em>) followed by a single dot
+<ul>
+<li><code>"3.14".parse()</code> 中 <code>"3.14"</code> 是 receiver, 为什么这么命名? 不管了, 再追究下去就要反智了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>那么, 以 OOP 的视角来看, 类对象为 receiver, <code>FnMut</code> 是一个方法, 这个方法可以改变类对象</li>
+</ul>
+<p>至此, 可以理解 <code>FnMut</code> 的意图, 具体使用方法纯属背诵:</p>
+<pre class="one-piece"><code>fn do_twice&lt;F&gt;(mut func: F)
+	where F: FnMut() // 这里, F 是 FnMut 类型, 会改变 receiver
+{
+	func(); func();
+}
+let mut x: usize = 1;
+{
+	// 这个函数是 FnMut 类型, 但是 receiver 是谁? 不清楚, 这里认为是"全局"
+	let add_two_to_x = || x += 2;
+	do_twice(add_to_x);
+}
+</code></pre>
+<p>总而言之, <code>FnMut</code> 是一种函数类型;</p>
+<h2 id="fnonce" tabindex="-1">FnOnce</h2>
+<p><a href="https://doc.rust-lang.org/stable/std/ops/trait.FnOnce.html">https://doc.rust-lang.org/stable/std/ops/trait.FnOnce.html</a></p>
+<blockquote>
+<p>The version of the call operator that takes a by-value receiver</p>
+</blockquote>
+<p>对比 <code>FnMut</code>, 后者的 receiver 是 mutable receiver<br>
+顾名思义, Once 表示你不能调用这函数多次. 其中一个原因是, 函数移动了某个值.</p>
+<pre class="one-piece"><code>let x = String::from("x");
+let consume_and_return_x = move || x;
+consume_and_relish(consume_and_return_x);
+// consume_and_return_x 运行之后, x 将不复存在, 如果再次调用则报错
+</code></pre>
+<p>这显然是编译期的编码保证</p>
+<h2 id="refcell" tabindex="-1">RefCell</h2>
+<p><a href="https://doc.rust-lang.org/book/ch15-05-interior-mutability.html">https://doc.rust-lang.org/book/ch15-05-interior-mutability.html</a> 这里有一个很"专业"的名词: <em>interior mutability</em>, 是一个 <em>design patter</em>, 允许你改 <em>immutable references</em> 所指向的数据</p>
+<p>为什么有这么畸形的数据结构呢?</p>
+<ul>
+<li>首先, 不标注 <code>mut</code> 的变量都是不可改的(immutable)</li>
+<li>如果要改, 就要用 <code>unsafe</code>, 把这看作一种妥协</li>
+<li>Rust 的智能指针
+<ul>
+<li><code>Box&lt;T&gt;</code>: 指向堆数据: <code>Box::new(5)</code>
+<ul>
+<li>实现 <code>Deref</code> trait 以便解引用 <code>*y</code>
+<ul>
+<li><code>Deref</code></li>
+<li><code>DerefMut</code></li>
+</ul>
+</li>
+<li>我的问题是, <code>Box</code> 创建的类型怎么释放? 已知 Rust 没有 GC.
+<ul>
+<li>答: Rust 编译器给你补充析构函数</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>实现 RAII: <code>Drop</code> trait</li>
+<li><code>Rc&lt;T&gt;</code>, RC 是 reference counting
+<ul>
+<li>变量出了作用域就要被释放, 然而, 作为补充, <code>Rc&lt;T&gt;</code> 加入了条件判断, 即仅当引用次数为 0 时才释放内存</li>
+<li><code>Rc::new</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Rust 的 borrowing rules: multiple mutable borrows to the same place can cause data races and inconsistencies. <a href="https://doc.rust-lang.org/book/ch15-04-rc.html">https://doc.rust-lang.org/book/ch15-04-rc.html</a> 最后一段</li>
+<li>那也就是说, Rust 要那石头砸自己的脚</li>
+<li>等等, 是砸自己编译器的脚
+<ul>
+<li>编译器不允许多个 mutable borrows</li>
+<li>为了拥有多个 mutable borrows 但又能通过编译器审查, Rust 允许你用 <code>RefCell</code> 躲过编译器检查(compile time), 但如果在 runtime 出现两个 mutable borrows, 则报错</li>
+</ul>
+</li>
+<li>既然横竖都报错, 那么 <code>RefCell</code> 的意义是什么?
+<ul>
+<li>某些接口没有 mutable self(特别是对于 trait), 此时可以用 <code>RefCell</code> 定义内部 mutable 成员</li>
+</ul>
+</li>
+<li><code>borrow()</code> 和 <code>borrow_mut()</code> 是 <code>RefCell</code> 的引用</li>
+</ul>
+<h2 id="cons-list" tabindex="-1">Cons List</h2>
+<p><a href="https://doc.rust-lang.org/book/ch15-01-box.html#more-information-about-the-cons-list">https://doc.rust-lang.org/book/ch15-01-box.html#more-information-about-the-cons-list</a></p>
+<blockquote>
+<p>A <em>cons list</em> is a data structure that comes from the Lisp programming language and its dialects</p>
+</blockquote>
+<p>写过 Lisp(比如, Scheme) 的人知道 cons 的作用, <code>cons</code> 等于 construct function: constructs a new pair from its two arguments</p>
+<p>"cons x onto y" 意思是创建一个新的 container, 将 <code>x</code> 放在新容器的开头, <code>y</code> 随后. 结构是递归的, 对于每个节点, 都有: <code>(左手边, 右手边)</code></p>
+<p>其中左手边为 <code>x</code>, 右手边为 <code>(y)</code></p>
+<p>只有一个节点的 cons list:</p>
+<pre class="one-piece"><code>cons(1, List::new())
+</code></pre>
+<p><code>[2, 1]</code>:</p>
+<pre class="one-piece"><code>cons(2,
+	cons(1, List::new())
+)
+</code></pre>
+<p>在 Lisp 词汇中, <code>car</code> 表示左手边, <code>cdr</code> 表示右手边</p>
+<blockquote>
+<p>car = contents of address register<br>
+cdr = contents of decrement register<br>
+这两个寄存器分别是 IBM 704 计算机用来存储左右手变量的寄存器, IBM 704 是 Lisp 机的一个实现</p>
+</blockquote>
+<h2 id="ellipsis" tabindex="-1">Ellipsis</h2>
+<p>DC 版 007 第一部有一个暗号是 Ellipsis.<br>
+Rust 的省略号是两个点.</p>
+<pre class="one-piece"><code>assert_eq!(span.slice(3..).get_column(), 4);
+</code></pre>
+<p>签名:</p>
+<pre class="one-piece"><code>impl&lt;'a, T, R, X: Clone&gt; Slice&lt;R&gt; for LocatedSpan&lt;T, X&gt;
+where
+    T: Slice&lt;R&gt; + Offset + AsBytes + Slice&lt;RangeTo&lt;usize&gt;&gt;,
+fn slice(&amp;self, range: R) -&gt; Self
+</code></pre>
+<p><code>span.slice</code> 中 <code>self</code> 指向 <code>span</code>, <code>3..</code> 是 <code>R</code>, 没有指定 <code>R</code> 的定义</p>
+<h3 id="range" tabindex="-1">Range</h3>
+<p><a href="https://doc.rust-lang.org/std/ops/struct.Range.html">https://doc.rust-lang.org/std/ops/struct.Range.html</a></p>
+<pre class="one-piece"><code>let arr = [0, 1, 2, 3, 4];
+assert_eq!(arr[ ..  ], [0, 1, 2, 3, 4]);
+assert_eq!(arr[ .. 3], [0, 1, 2      ]);
+assert_eq!(arr[ ..=3], [0, 1, 2, 3   ]);
+assert_eq!(arr[1..  ], [   1, 2, 3, 4]);
+assert_eq!(arr[1.. 3], [   1, 2      ]); // This is a `Range`
+assert_eq!(arr[1..=3], [   1, 2, 3   ]);
+</code></pre>
+<h3 id="struct-update-syntax" tabindex="-1">Struct Update Syntax</h3>
+<p>省略号作为前缀: <a href="https://doc.rust-lang.org/stable/book/ch05-01-defining-structs.html#creating-instances-from-other-instances-with-struct-update-syntax">https://doc.rust-lang.org/stable/book/ch05-01-defining-structs.html#creating-instances-from-other-instances-with-struct-update-syntax</a></p>
+<pre class="one-piece"><code>let user2 = User {
+        active: user1.active,
+        username: user1.username,
+        email: String::from("another@example.com"),
+        sign_in_count: user1.sign_in_count,
+    };
+</code></pre>
+<p>可以用以下语句代替:</p>
+<pre class="one-piece"><code> let user2 = User {
+        email: String::from("another@example.com"),
+        ..user1
+    };
+</code></pre>
+<p>意思是除了 email 之外, 其他字段一律用 <code>user1</code> 的字段</p>
+<h2 id="destructing-structs" tabindex="-1">Destructing structs</h2>
+<p><a href="https://doc.rust-lang.org/stable/book/ch18-03-pattern-syntax.html#destructuring-structs">https://doc.rust-lang.org/stable/book/ch18-03-pattern-syntax.html#destructuring-structs</a><br>
+除了官方文档里的例子, 这里举一个现实中的例子:</p>
+<pre class="one-piece"><code>fn expect&lt;'a, F, E, T&gt;(mut parser: F, error_msg: E) -&gt; impl FnMut(LocatedSpan&lt;'a&gt;) -&gt; IResult&lt;Option&lt;T&gt;&gt;
+where
+    F: FnMut(LocatedSpan&lt;'a&gt;) -&gt; IResult&lt;T&gt;,
+    E: ToString,
+{
+    move |input| match parser(input) {
+        Ok((remaining, out)) =&gt; Ok((remaining, Some(out))),
+        Err(nom::Err::Error (nom::error::Error {input: i, code: _}))
+        | Err(nom::Err::Failure (nom::error::Error {input: i, code:_}))
+        =&gt; {
+            let err = Error(i.to_range(), error_msg.to_string());
+            i.extra.report_error(err);
+            Ok((i, None))
+        }
+        Err(err) =&gt; Err(err),
+    }
+}
+</code></pre>
+<p>其中, <code>nom::error::Error</code> 的定义为:</p>
+<pre class="one-piece"><code>pub struct Error&lt;I&gt; {
+  /// position of the error in the input data
+  pub input: I,
+  /// nom error code
+  pub code: ErrorKind,
+}
+</code></pre>
+<p>为了展开 <code>nom::error::Error</code>, 必须这么写:</p>
+<pre class="one-piece"><code>nom::error::Error {input: i, code: _}
+</code></pre>
+<p><code>code</code> 用不上, 所以用 <code>_</code> 表示</p>
+<h2 id="duck-typing" tabindex="-1">Duck Typing</h2>
+<p>在 Python 中, 你可以用 Monkey patch 直接覆盖库的某个方法:</p>
+<pre class="one-piece"><code>&gt;&gt;&gt; import math
+&gt;&gt;&gt; math.pi = 3.2
+&gt;&gt;&gt; math.pi
+3.2
+</code></pre>
+<p>但在 Rust 中你没法用 monkey patch, 因为编译器首先会禁止你这么做. 但你可以用 Duck Typing 的方法</p>
+<pre class="one-piece"><code>trait ToRange {
+    fn to_range(&amp;self) -&gt; Range&lt;usize&gt;;
+}
+
+impl&lt;'a&gt; ToRange for LocatedSpan&lt;'a&gt; {
+    fn to_range(&amp;self) -&gt; Range&lt;usize&gt; {
+        let start = self.location_offset();
+        let end = start + self.fragment().len();
+        start..end
+    }
+}
+</code></pre>
+<h2 id="from-trait" tabindex="-1">From trait</h2>
+<p>有时候需要将变量转化成字符串, 实现:</p>
+<pre class="one-piece"><code>    impl std::convert::Into&lt;std::string::String&gt; for Exp {
+        fn into(self) -&gt; std::string::String {
+            match self {
+                Exp::Ident(i) =&gt; i,
+                Exp::String(i) =&gt; i,
+                _ =&gt; "Error conversion".to_owned(),
+            }
+        }
+    }
+</code></pre>
+<p>但这样编译器会警告你:</p>
+<blockquote>
+<p>an implementation of <code>From</code> is preferred since it gives you <code>Into&lt;_&gt;</code> for free where the reverse isn't true<br>
+<code>#[warn(clippy::from_over_into)]</code> on by default<br>
+consider to implement <code>From&lt;parser::lua::Exp&gt;</code> instead</p>
+</blockquote>
+<p>改成</p>
+<pre class="one-piece"><code>    impl From&lt;Exp&gt; for String {
+        fn from(exp: Exp) -&gt; Self {
+            match exp {
+                Exp::Ident(i) =&gt; i,
+                Exp::String(i) =&gt; i,
+                _ =&gt; "Error conversion".to_owned(),
+            }
+        }
+
+    }
+</code></pre>
+<h2 id="into_iter-和-iter-的区别" tabindex="-1">into_iter 和 iter 的区别</h2>
+<p><a href="https://stackoverflow.com/a/57697614">https://stackoverflow.com/a/57697614</a></p>
+<p><code>into_iter</code> 来自 <code>IntoIterator</code> trait<br>
+某结构体若实现这一 trait, 则可以将它转换为 iterator, 可用于 for 循环</p>
+<p>for 循环的本质是：</p>
+<pre class="one-piece"><code>for x in my_vec
+// 相当于
+for x in my_vec.into_iter().for_each(|x| ...)
+// x 直接被 moved 到 ...
+</code></pre>
+<p><code>iter()</code> 和 <code>iter_mut</code> 用于查看和编辑，不涉及移动。</p>
+<h2 id="cannot-borrow-self-as-mutable-because-it-is-also-borrowed-as-immutable" tabindex="-1">cannot borrow <code>*self</code> as mutable because it is also borrowed as immutable</h2>
+<p>解答： <a href="https://stackoverflow.com/a/47619305">https://stackoverflow.com/a/47619305</a></p>
+<p>Rust 禁止你在对一个变量实施 immutable 引用的时候同时对其实施 mutable 引用，这会导致对 immutable 引用一方失信。</p>
+<p>换句话说，你已经向一个人承诺不修改某个变量，那就不能让它被另一个人修改</p>
+<pre class="one-piece"><code>// stone cold reference
+// 我没必要把指令拷贝出来
+let cmd = &amp;self.commands[self.pc];
+// 修改内部指针
+self.advanced();
+</code></pre>
+<p>我不想从 <code>commands</code> 中拷贝变量，怎么办呢: 把接口 <code>advanced()</code> 给去掉</p>
+<pre class="one-piece"><code>let cmd = &amp;self.commands[self.pc];
+self.pc += 1;
+</code></pre>
+<p>如何避免这种警告？必然存在一种范式，就是避免命令式编程。这个问题还在继续探索中。</p>
+<p><a href="https://stackoverflow.com/a/50253558%EF%BC%9A">https://stackoverflow.com/a/50253558：</a> 如何规避 lexical lifetime？ 按道理我用的 rustc 版本能用 NLL(non lexical lifetime), 那么也许对 self 无效因为它是在参数，而不是本地变量。这个链接提到：the entry pattern: 使用 hashmap 的 entry API，这是一个特例</p>
+<h2 id="不让把-struct-成员移出，那么就用-swap" tabindex="-1">不让把 struct 成员移出，那么就用 swap()</h2>
+<p>理由是:</p>
+<blockquote>
+<p>cannot move out of <code>self.commands</code> which is behind a mutable reference<br>
+move occurs because <code>self.commands</code> has type <code>std::vec::Vec&lt;compiler::lua::Command&gt;</code>, which does not implement the <code>Copy</code> traitrustc<a href="https://doc.rust-lang.org/error-index.html#E0507">E0507</a></p>
+</blockquote>
+<p>这说的是， 由于 <code>Vec&lt;Command&gt;</code> 没有拷贝的方法，所以不让你拷贝出来，仅当你是 immutable 的时候才能移动, 但实际 immutable 的时候则报另一个错误</p>
+<pre class="one-piece"><code>        fn f(&amp;self) -&gt; Result&lt;Vec&lt;Command&gt;&gt; {
+            Ok(self.commands)
+        }
+</code></pre>
+<blockquote>
+<p>cannot move out of <code>self.commands</code> which is behind a shared reference</p>
+</blockquote>
+<p>仔细思考， 你移动了别人的成员，首先要把对方设置成 <code>mut</code></p>
+<pre class="one-piece"><code>fn (&amp;mut self) -&gt; Vec&lt;Command&gt; {
+	// ...
+	let mut res: Vec&lt;Command&gt; = Vec::new();
+	std::mem::swap(&amp;mut self.commands, &amp;mut res);
+	Ok(res)
+}
+</code></pre>
+<p>那就只能 swap 出来。</p>
+<p>一个思路是，不移出来，因为这个成员可能会被多次调用，如果调用一次就失效(相当于 <code>FnOnce</code>), 那么它作为一个资源类，似乎太脆弱了。这就是通过逻辑来掩盖问题。</p>
+<p>但是， 由于这个类是一次性使用的，因此我坚持了 <code>swap</code> 的方式。</p>
+<h2 id="sized" tabindex="-1">Sized</h2>
+<p>Types with a constant size known at compile time</p>
+<p>All type parameters have an implicit bound of <code>Sized</code></p>
+<p><code>?Sized</code> 用来删除这个 bound</p>
+<p>有 <code>Sized</code> 好还是不好呢？在 trait 的世界中，trait object 需要兼容各种不同的实现，因此不能有具体的大小，因此如果用到 <code>dyn</code>，则必须去掉 <code>Sized</code></p>
+<h2 id="extension-traits" tabindex="-1">Extension Traits</h2>
+<p><a href="https://rust-lang.github.io/rfcs/0445-extension-trait-conventions.html">https://rust-lang.github.io/rfcs/0445-extension-trait-conventions.html</a></p>
+<p>简而言之，是用来给别人的库的类定义方法的 trait</p>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

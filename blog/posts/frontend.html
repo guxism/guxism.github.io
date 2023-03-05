@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Web 前端开发技术罗列</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Web 前端开发技术罗列</h1>
+        <p>这篇文章从我开始手写自己的网站(包括博客)开始, 持续更新我遇到的各门前端技术. 不掌握前端技术就少一种表达方式, 让别人写, 别人也没法表达你的观念, 用别人的框架也存在同样的问题, 用 Jekyll, Hexo, WordPress, 你要受制于人. 最好的方式是从 html, css, js 开始, 但这是最低效的做法, 以 js 为例, 前端开发已经进化不再以原生 js 为基本单元, 而是用 vue, react 为基础抽象层, 没人再去看原生 js, 就像没人再用 C 写应用. 我的出发点是超越 Hexo 等 CMS, 自己写一个, 但也不至于从 0 开始, 目前, 在 11ty 基础上, 我用 vue, sass, 加上工作流管理工具 gulp, 等.</p>
+<nav class="table-of-contents"><ol><li><a href="#electron">Electron</a><ol><li><a href="#ipc-架构">IPC 架构</a></li></ol></li><li><a href="#the-right-way">The right way</a></li><li><a href="#csp">CSP</a></li><li><a href="#-save-dev">--save-dev</a></li><li><a href="#private-packet">Private packet</a></li><li><a href="#dist">dist</a></li><li><a href="#bundle">bundle</a></li><li><a href="#webpack">Webpack</a></li><li><a href="#vite">Vite</a><ol><li><a href="#vite-的处理对象">Vite 的处理对象</a></li><li><a href="#配置-vite">配置 Vite</a><ol><li><a href="#resolve">resolve</a></li></ol></li><li><a href="#base">base</a></li><li><a href="#我的初步配置">我的初步配置</a></li><li><a href="#vitejs-plugin-electron">vitejs-plugin-electron</a></li><li><a href="#避免-tsc">避免 tsc</a></li></ol></li><li><a href="#资源加载优化">资源加载优化</a></li><li><a href="#11ty">11ty</a><ol><li><a href="#入口">入口</a></li><li><a href="#browser-sync">Browser Sync</a></li><li><a href="#linkifyjs">linkify.js</a></li></ol></li><li><a href="#gulp">Gulp</a><ol><li><a href="#glob">Glob</a></li></ol></li><li><a href="#nunjucks">Nunjucks</a></li><li><a href="#css">CSS</a><ol><li><a href="#grouping">Grouping</a></li><li><a href="#root">:root</a></li><li><a href="#伪元素">伪元素</a><ol><li><a href="#before">::before</a></li></ol></li><li><a href="#scss">SCSS</a></li><li><a href="#解决手机下拉到尽头时出现的白色断层的问题">解决手机下拉到尽头时出现的白色断层的问题</a></li></ol></li><li><a href="#html">HTML</a><ol><li><a href="#网页出现中文乱码">网页出现中文乱码</a></li></ol></li><li><a href="#pycco-一种-literate-programming-工具">Pycco: 一种 Literate programming 工具</a><ol><li><a href="#pycco-的-markdown-语法-httpsdaringfireballnetprojectsmarkdownsyntax">Pycco 的 Markdown 语法: https://daringfireball.net/projects/markdown/syntax</a></li></ol></li><li><a href="#yaml-语法">Yaml 语法</a><ol><li><a href="#数组">数组</a></li></ol></li></ol></nav><h2 id="electron" tabindex="-1">Electron</h2>
+<p>我在写 Eletron 桌面的时候版本是 13.1.7, 但网上许多文章都是基于 9.0 版本, 不适合最新版本. 参考了许多 Example APP 之后发现正确的项目架构方法来自下面我摘录的 Issue</p>
+<h3 id="ipc-架构" tabindex="-1">IPC 架构</h3>
+<p><a href="https://github.com/electron/electron/issues/9920#issuecomment-575839738">https://github.com/electron/electron/issues/9920#issuecomment-575839738</a></p>
+<blockquote>
+<h2 id="the-right-way" tabindex="-1">The right way</h2>
+<p>The right way of importing your <code>fs</code>/<code>ipcRenderer</code> into your renderer process is with IPC (inter-process-communication). This is Electron's way of allowing you to talk between main and renderer process. Broken down, this is how your app needs to look:</p>
+<ol>
+<li>A BrowserWindow has a <code>preload</code> property. This property is a js file that loads with access to <code>require</code> (which means you can require ipcRenderer)</li>
+<li>Your BrowserWindow will also have <code>contextIsolation: true</code> to prevent prototype pollution attacks, but this means you need to use the <a href="https://electronjs.org/docs/api/context-bridge">contextBridge</a> to pass the ipcRenderer to your renderer process</li>
+<li>Using the preload script and the contextBridge, you allow your renderer process to access the <code>ipcRenderer</code></li>
+<li>In your main script, you create listeners for the ipcRenderer (in the <a href="https://electronjs.org/docs/api/ipc-main">ipcMain</a> module). Within these listeners you can use the <code>fs</code> module</li>
+</ol>
+</blockquote>
+<p>例子:</p>
+<pre class="one-piece"><code>&lt;script type="module" src="/src/controller/window-controls.ts"&gt;&lt;/script&gt;
+</code></pre>
+<p>window-controls.ts:</p>
+<pre class="one-piece"><code>   document.getElementById('min-button')!.addEventListener("click", event =&gt; {
+      (window as any).api.send("toMain", "minimize");
+   });
+</code></pre>
+<p>electron.ts</p>
+<pre class="one-piece"><code>ipcMain.on("toMain", (event, args: string) =&gt; {
+  switch (args) {
+    case 'minimize':
+      mainWindow.minimize();
+      break;
+</code></pre>
+<p>preload.js</p>
+<pre class="one-piece"><code>contextBridge.exposeInMainWorld("api", {
+  send: (channel: string, data: string) =&gt; {
+    // whitelist channels
+    let validChannels = ["toMain"];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.send(channel, data);
+    }
+  },
+</code></pre>
+<p>这么做的原因就是限制页面 renderer 调用 node.js, 让底层提供一套接口供 renderer 使用. 如果不这么限制, node.js 可以做出很多恶意行为, 原理和细节不在本文讨论范围.</p>
+<h2 id="csp" tabindex="-1">CSP</h2>
+<pre class="one-piece"><code>  &lt;meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"&gt;
+  &lt;meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"&gt;
+</code></pre>
+<p>Refers to the origin from which the protected document is being served, including the same URL scheme and port number. You must include the single quotes. Some browsers specifically exclude <code>blob</code> and <code>filesystem</code> from source directives. Sites needing to allow these content types can specify them using the Data attribute.</p>
+<p>解决方法: 在 console 窗口将 sha256 hash 拷贝至 script-src</p>
+<p>错误:</p>
+<pre class="one-piece"><code>Refused to execute inline script because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-uxj+XXfIcV7lpyajaweGp4Zbu/5XnF/RDsBFiRrPAg0='), or a nonce ('nonce-...') is required to enable inline execution.
+</code></pre>
+<p>把 <code>'sha256-uxj+XXfIcV7lpyajaweGp4Zbu/5XnF/RDsBFiRrPAg0='</code> 拷贝至</p>
+<pre class="one-piece"><code>    &lt;meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-uxj+XXfIcV7lpyajaweGp4Zbu/5XnF/RDsBFiRrPAg0='"&gt;
+    &lt;meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"&gt;
+</code></pre>
+<h2 id="--save-dev" tabindex="-1"><code>--save-dev</code></h2>
+<p>开发的时候需要用到的依赖和产品运行的依赖不一样, 这一点可以理解, 比如一个项目开发时需要用到 bison 和 flex, 但运行的时候不需要, 和 glic 是两种不同的需求.</p>
+<pre class="one-piece"><code>  "devDependencies": {
+    "webpack": "^5.50.0",
+    "webpack-cli": "^4.7.2"
+  }
+</code></pre>
+<h2 id="private-packet" tabindex="-1">Private packet</h2>
+<pre class="one-piece"><code>- "main": "index.js"
++ "private": true
+</code></pre>
+<h2 id="dist" tabindex="-1">dist</h2>
+<p>distributable: 存放一切编译/资源, 最终产物</p>
+<h2 id="bundle" tabindex="-1">bundle</h2>
+<p>webpack 概念</p>
+<p>一个 bundle 是指相关代码放在一个单独的文件</p>
+<p>chunks 表达相反的意思, 是拆分的 bundle</p>
+<h2 id="webpack" tabindex="-1">Webpack</h2>
+<p><a href="https://webpack.js.org/guides/getting-started/">https://webpack.js.org/guides/getting-started/</a></p>
+<p>将 src/index.js 翻译成 dist/main.js</p>
+<p>src/index.js 是 entry point</p>
+<p>整个流程:</p>
+<ol>
+<li>
+<p>Getting started</p>
+<ol>
+<li>在 webpack.config.js 上写明源文件和目标文件</li>
+<li>运行 <code>npx webpack</code></li>
+<li>用 document 创建 div, 用 lodash</li>
+</ol>
+</li>
+<li>
+<p>Assert Management</p>
+<ol>
+<li>
+<p>后缀为 .css 的文件经 "style-loader" 和 "css-loader" 处理</p>
+<pre class="one-piece"><code>module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
+</code></pre>
+</li>
+<li>
+<p>将图片当作 assert/resource 处理</p>
+<pre class="one-piece"><code>{
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+},
+</code></pre>
+</li>
+<li>
+<p>字体同上</p>
+</li>
+<li>
+<p>json, csv, xml 同 1</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Output management</p>
+<ol>
+<li>
+<p>增加一个新的 js 文件</p>
+</li>
+<li>
+<p>修改 webpack.config.js, 源文件和目标文件 1 对 1 映射, clean 表示构建前清空, 用 HtmlWebPackPlugin 生成 html</p>
+<pre class="one-piece"><code>module.exports = {
+  entry: {
+    index: "./src/index.js",
+    print: "./src/print.js",
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Output Management',
+    }),
+  ],
+  output: {
+    filename: "[name].bundle.js",
+    path: path.resolve(__dirname, "dist"),
+    clean: true,
+  }
+};
+</code></pre>
+</li>
+</ol>
+</li>
+<li>
+<p>Development</p>
+<ol>
+<li>在 webpack.config.js 将 mode 设置为  development</li>
+<li>问题在于, 每次修改都要 npm run build, 非常麻烦, 所以加入了 webpack --watch 文件监测和浏览器刷新功能</li>
+<li>用 webpack-dev-middleware 以及 webpack.config.js 的参数(可以用 require), 这一点非常强大, 但细想, 其实也就是 <code>#include</code> 的意思, webpack-dev-middleware 开启一个服务, 包含了 webpack --watch 功能, 实际上即包装了 2 使用的 webpack-dev-server</li>
+</ol>
+</li>
+<li>
+<p>Code Splitting</p>
+<ol>
+<li>
+<p>概念</p>
+<ol>
+<li>
+<p>Entry Points: 就像 3 中的 index 和 print</p>
+</li>
+<li>
+<p>Prevent Duplication: dedupe: de-duplicate: 反重复, 构建依赖图谱</p>
+</li>
+<li>
+<p>Dynamic Imports: 动态库</p>
+<ol>
+<li>在运行的时候 <code>import("library")</code></li>
+<li>用异步 async, await</li>
+<li>prefetch. preload</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p>Caching</p>
+<ol>
+<li>webpack 可以记录每个源文件的哈希. 如果一个文件内容没改变, 那么它的哈希就和文件名里面的哈希一样, 如果不一样, 说明需要重新编译</li>
+<li>SplitChunkPlugin, 将模块切割成不同的 bundles, 一个模块的功能是松散的, 一部分代码根本用不到, 那就可以划分它们</li>
+</ol>
+<p>​</p>
+</li>
+</ol>
+<p>剩下没什么好看的了, 结论: webpack 的角色是将源代码生成目标代码, 管理资源文件, 在这过程中使用了大量的优化手段, 这些我不需要了解. webpack.config.js 是 webpack 的默认配置, 可以作为用户数据使用.</p>
+<h2 id="vite" tabindex="-1">Vite</h2>
+<p>Vite 的文档非常难看, 所以我从 webpack 了解前端工作流的逻辑,</p>
+<pre class="one-piece"><code>➜  yarn create vite my-vue-app --template vue
+➜  tree my-vue-app
+.
+├── index.html
+├── package.json
+├── public
+│   └── favicon.ico
+├── src
+│   ├── App.vue
+│   ├── assets
+│   │   └── logo.png
+│   ├── components
+│   │   └── HelloWorld.vue
+│   └── main.js
+└── vite.config.js
+</code></pre>
+<p>有工具则很方便, 但还需要了解 vite 项目的逻辑</p>
+<p><a href="https://vitejs.dev/guide/why.html#slow-server-start">https://vitejs.dev/guide/why.html#slow-server-start</a></p>
+<p>Vite 解决的问题是大量 js 文件导致编译时间过长.</p>
+<p>Vite 的方法: 将模块分成两种类型: 依赖和源码, 依赖基本上不会改变. Vite 用 go 写的 esbuild 处理依赖问题, 比 js 同类更快</p>
+<p>源码通常包含非 plain js, 需要编译. Vite 让浏览器负责编译工作, Vite 只需要负责回应浏览器的请求, 请求什么文件, 就提供什么文件.</p>
+<h3 id="vite-的处理对象" tabindex="-1">Vite 的处理对象</h3>
+<p>Vite 的处理对象是 index.html, vite 识别以下文本模式</p>
+<ol>
+<li><code>&lt;script type="module" src=""&gt;</code></li>
+<li><code>&lt;script type="module"&gt;</code></li>
+<li>
+<link href="">
+</li>
+</ol>
+<p>关键接口:</p>
+<ol>
+<li><code>vite</code>: 启动服务</li>
+<li><code>vite build</code>: build</li>
+</ol>
+<p>结论: vite 切割工程, 让编译更快, 需要用特殊的标记让 vite 识别它要处理的文件或者代码.</p>
+<h3 id="配置-vite" tabindex="-1">配置 Vite</h3>
+<p><a href="https://vitejs.dev/config/#config-file">https://vitejs.dev/config/#config-file</a></p>
+<p>不知道要到什么程度要能看懂这玩意, 但无论多复杂, 都别忘了这跟 makefile 是一回事.</p>
+<p>默认配置文件: vite.config.js, 也支持 TS config files, 需要在 vite.config.ts 上使用 defineConfig</p>
+<pre class="one-piece"><code>export default defineConfig(X);
+</code></pre>
+<p>export default 表示如果有人执行以下操作</p>
+<pre class="one-piece"><code>import A from "vite.config.ts"
+</code></pre>
+<p>那么 A 等于 defineConfig(X) 的结果</p>
+<h4 id="resolve" tabindex="-1">resolve</h4>
+<p>vite 默认你是前端老手, 因此不解释什么是 resolve. 所以还得去看 webpack 的文档.</p>
+<blockquote>
+<p>Configure how modules are resolved. For example, when calling <code>import 'lodash'</code> in ES2015, the <code>resolve</code> options can change where webpack goes to look for <code>'lodash'</code> (see <a href="https://webpack.js.org/configuration/resolve/#resolvemodules"><code>modules</code></a>).</p>
+</blockquote>
+<p>相当于 gcc 的 -L 选项, 指定去哪里找库</p>
+<pre class="one-piece"><code>  resolve: {
+    alias: {
+      '@': renderDir,
+    }
+  },
+</code></pre>
+<p><code>@</code> 是什么意思? 在 <a href="https://www.npmjs.com/package/vite-aliases">https://www.npmjs.com/package/vite-aliases</a> 找到答案:</p>
+<pre class="one-piece"><code>Example: src/components -&gt; @components src/pages/components -&gt; @pagesComponents src/test/new/partials/components -&gt; @testNewPartialsComponents and so on..
+</code></pre>
+<p><code>@</code> 等于 src</p>
+<p><a href="https://blog.gitscape.com/post/how-to-use-alias-in-a-vue-3-vite-project:">https://blog.gitscape.com/post/how-to-use-alias-in-a-vue-3-vite-project:</a></p>
+<pre class="one-piece"><code>import { resolve } from 'path'
+
+module.exports = {
+  alias: {
+    '/@/': resolve(__dirname, './src')
+  }
+}
+</code></pre>
+<p>作用: 免得写死根目录</p>
+<pre class="one-piece"><code>import './src/assets/css/style.css'
+import '/@/assets/css/style.css'
+</code></pre>
+<p>两者等价</p>
+<blockquote>
+<p>Turns out it's not possible to use @ in Vite because it doesn't work like Webpack. Instead you can use /@/ which is just as good.</p>
+</blockquote>
+<h3 id="base" tabindex="-1">base</h3>
+<p><a href="https://github.com/caoxiemeihao/electron-vue-vite/blob/main/vite.config.ts">https://github.com/caoxiemeihao/electron-vue-vite/blob/main/vite.config.ts</a></p>
+<blockquote>
+<p>index.html 中动态资源加载位置</p>
+</blockquote>
+<p>源码<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>: 提供一个接口</p>
+<p>看这个配置<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>, 分不清 root 是字段还是变量, 问号表示可有可无, 注意 env =&gt; { } 第二个参数, 不是写出 <code>root: "xxx"</code> 而是 <code>root,</code>,由于找不到证据支持这么写, 所以当作错误看待</p>
+<h3 id="我的初步配置" tabindex="-1">我的初步配置</h3>
+<p>package.json</p>
+<pre class="one-piece"><code>    "build": "vue-tsc --noEmit -p tsconfig.vue.json &amp;&amp; tsc &amp;&amp; vite build",
+
+</code></pre>
+<pre class="one-piece"><code>import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import path from 'path'
+import electron from 'vitejs-plugin-electron'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  base: './',
+  build: {
+    // prevent vite from cleaning up dist/
+    emptyOutDir: false
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
+
+  plugins: [
+    vue(),
+    electron(),
+  ]
+})
+</code></pre>
+<pre class="one-piece"><code>➜  git:(main) ✗ tree dist
+dist
+├── assets
+│   ├── index.373cfd15.js
+│   └── index.6a6d9f0c.css
+├── controller
+│   └── window-controls.js
+├── electron
+│   ├── electron.js
+│   └── preload.js
+├── favicon.ico
+├── index.html
+└── render
+    └── main.js
+</code></pre>
+<p>我不满意的地方是整个 transpilation 是 vite + tsc, vite 本该替代 tsc 但不知道为什么它根本不处理 ts 文件</p>
+<h3 id="vitejs-plugin-electron" tabindex="-1">vitejs-plugin-electron</h3>
+<p>The plugin is do only two things | 插件只做了两件事</p>
+<blockquote>
+<ol>
+<li>In the development phase, the modules related to <code>Electron</code> are compiled into <code>CommonJs</code> syntax 在开发期将 <code>Electron</code> 相关的模块编译成了 <code>CommonJs</code> 格式</li>
+<li>Add some config options into <code>vite.config.ts</code><br>
+增加了 <code>vite.config.ts</code> 默认配置</li>
+</ol>
+</blockquote>
+<p>由于这个插件很少人用, 所以排除</p>
+<h3 id="避免-tsc" tabindex="-1">避免 tsc</h3>
+<p>vue-tsc 仅仅是 typecheck 工具, vite 里面已经有 tsc 同等功能</p>
+<blockquote>
+<p><a href="https://vitejs.dev/guide/features.html#typescript">https://vitejs.dev/guide/features.html#typescript</a></p>
+<p>Vite uses <a href="https://github.com/evanw/esbuild">esbuild</a> to transpile TypeScript into JavaScript which is about 20~30x faster than vanilla <code>tsc</code>, and HMR updates can reflect in the browser in under 50ms.</p>
+</blockquote>
+<p><a href="https://juejin.cn/post/6949090471901659149">https://juejin.cn/post/6949090471901659149</a></p>
+<p>这篇博客的作者详细注释了 vite.config.js, 在 build 字段配置了 tsconfig.json 同等功能</p>
+<p>我的目标, ./src/render/a.ts 编译到 ./dist/render/a.js</p>
+<p>tsc 就可以做到这点, 但我忘了 vite 采用的是特殊的 js bundle 技术</p>
+<p>删掉 tsconfig.json 之后, 在 html 加入</p>
+<pre class="one-piece"><code>    &lt;script type="module" src="@/render/main.ts"&gt;&lt;/script&gt;
+    &lt;script type="module" src="@/controller/window-controls.ts"&gt;&lt;/script&gt;
+</code></pre>
+<p>编译成:</p>
+<pre class="one-piece"><code>&lt;script type="module" crossorigin src="./assets/index.69d86bf5.js"&gt;&lt;/script&gt;
+</code></pre>
+<p>前面说了 vite 的处理对象包括 <code>&lt;script type="module"</code>, 不需要像 tsconfig.json 那样指定编译哪些文件, vite 只处理涉及的文件</p>
+<p>但有个尴尬的问题是, package.json 需要 <code>main</code> 入口</p>
+<pre class="one-piece"><code>"main": "dist/electron/electron.js",
+</code></pre>
+<p>有个做法是避免 electron.ts, 但这样不符合 ts 价值观</p>
+<p>另外一个做法是用 start.js 间接引用 electron.ts</p>
+<p>还可以用 tsc 单方面编译 electron.ts, 这样就能将 electron.js 生成在预期位置</p>
+<p>我决定采用最后一种方法, 因此不能完全避免 tsc</p>
+<h2 id="资源加载优化" tabindex="-1">资源加载优化</h2>
+<ol>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Performance/Lazy_loading">https://developer.mozilla.org/zh-CN/docs/Web/Performance/Lazy_loading</a>
+<ul class="contains-task-list">
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox">  CSS
+<ul class="contains-task-list">
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox"> 使用媒体类型和查询实现非阻塞渲染</li>
+</ul>
+</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox"> Images and iframes
+<ul class="contains-task-list">
+<li class="task-list-item"><input class="task-list-item-checkbox" checked="" disabled="" type="checkbox"> <code>&lt;img src="image.jpg" alt="..." loading="lazy"&gt;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>js 用国内 cdn: <a href="https://cdn.bootcdn.net/ajax/libs/jquery/2.2.2/jquery.min.js">https://cdn.bootcdn.net/ajax/libs/jquery/2.2.2/jquery.min.js</a></li>
+</ol>
+<h2 id="11ty" tabindex="-1">11ty</h2>
+<p><s>误删了, 草</s> 重来</p>
+<h3 id="入口" tabindex="-1">入口</h3>
+<p><code>.eleventy.js</code> 指定入口</p>
+<pre class="one-piece"><code>  return {
+    markdownTemplateEngine: "njk",
+    dataTemplateEngine: "njk",
+    htmlTemplateEngine: "njk",
+    dir: {
+      input: "src",
+    },
+    templateFormats: ["md", "ejs", "css", "svg", "png", "mpds", "jpg"],
+    passthroughFileCopy: true,
+  };
+</code></pre>
+<h3 id="browser-sync" tabindex="-1">Browser Sync</h3>
+<blockquote>
+<p><strong>Important Note</strong>: <a href="https://browsersync.io/docs/#requirements">Browsersync requires a `` tag in your template</a> for live-reload to work properly.</p>
+<p><a href="https://www.11ty.dev/docs/usage/#re-run-eleventy-when-you-save">https://www.11ty.dev/docs/usage/#re-run-eleventy-when-you-save</a></p>
+</blockquote>
+<p>只要你的网页有 <code>&lt;body&gt;</code>, 11ty 就会插入一个 sync</p>
+<pre class="one-piece"><code>&lt;script id="__bs_script__"&gt;//&lt;![CDATA[
+    document.write("&lt;script async src='/browser-sync/browser-sync-client.js?v=2.27.5'&gt;&lt;\/script&gt;".replace("HOST", location.hostname));
+//]]&gt;&lt;/script&gt;
+</code></pre>
+<h3 id="linkifyjs" tabindex="-1">linkify.js</h3>
+<ul>
+<li><a href="https://github.com/Hypercontext/linkifyjs">https://github.com/Hypercontext/linkifyjs</a></li>
+<li><a href="https://markdown-it.github.io/linkify-it/">https://markdown-it.github.io/linkify-it/</a></li>
+</ul>
+<p>识别链接</p>
+<h2 id="gulp" tabindex="-1">Gulp</h2>
+<h3 id="glob" tabindex="-1">Glob</h3>
+<pre class="one-piece"><code>// gulp-task/images.js
+const images = () =&gt; {
+  return src(["./src/**/*.png", "./src/**/*.jpg"])
+    .pipe(dest('./dist'));
+};
+// gulp.js
+const watcher = () =&gt; {
+  watch(["./src/**/*.png", "./src/**/*.jpg"], { ignoreInitial: true }, images);
+};
+</code></pre>
+<h2 id="nunjucks" tabindex="-1">Nunjucks</h2>
+<pre class="one-piece"><code>&lt;div class="carousel__items" style="width: 0%"&gt;
+</code></pre>
+<h2 id="css" tabindex="-1">CSS</h2>
+<h3 id="grouping" tabindex="-1">Grouping</h3>
+<pre class="one-piece"><code>&lt;div class="[ panel dot-shadow ] [ bg-tertiary-glare ]"&gt;
+    &lt;div class="wrapper"&gt;
+      &lt;article class="[ gallery ] [ flow flow-space-800 ]"&gt;
+</code></pre>
+<p>什么语法?</p>
+<ul>
+<li><a href="https://csswizardry.com/2014/05/grouping-related-classes-in-your-markup/">Grouping related classes in your markup</a></li>
+</ul>
+<pre class="one-piece"><code>.a1 {
+  background: black;
+}
+
+.a2 {
+  color: red;
+}
+
+.a3 {
+  padding: 20px;
+}
+
+.a4 {
+  margin: 20px;
+}
+
+.a5 {
+  text-align: center;
+}
+</code></pre>
+<pre class="one-piece"><code>&lt;div class="[ a1 a2 a3 ] [ a4 a5 ]"&gt;
+  what is it?
+&lt;/div&gt;
+</code></pre>
+<p>和下面代码一样效果</p>
+<pre class="one-piece"><code>&lt;div class="[ a1 a2 ] [ a3 a4 a5 ]"&gt;
+  what is it?
+&lt;/div&gt;
+</code></pre>
+<h3 id="root" tabindex="-1"><code>:root</code></h3>
+<p>全局变量</p>
+<pre class="one-piece"><code>:root {
+  --main-bg-color: pink;
+}
+
+body {
+  background-color: var(--main-bg-color);
+}
+</code></pre>
+<h3 id="伪元素" tabindex="-1">伪元素</h3>
+<pre class="one-piece"><code>/* The first line of every &lt;p&gt; element. */
+p::first-line {
+  color: blue;
+  text-transform: uppercase;
+}
+</code></pre>
+<pre class="one-piece"><code>&lt;p&gt;
+  1st line&lt;br/&gt;
+  2nd line
+&lt;/p&gt;
+</code></pre>
+<p>只有第一行是蓝色</p>
+<p><code>::first-line</code> 作为伪元素指定了第一行</p>
+<h4 id="before" tabindex="-1"><code>::before</code></h4>
+<p>选择匹配元素的第一个</p>
+<h3 id="scss" tabindex="-1">SCSS</h3>
+<ul>
+<li>亮点是嵌套</li>
+<li>下划线在前表示不编译, 仅引用</li>
+</ul>
+<h3 id="解决手机下拉到尽头时出现的白色断层的问题" tabindex="-1">解决手机下拉到尽头时出现的白色断层的问题</h3>
+<pre class="one-piece"><code>html, body {
+  overflow-x: hidden;
+  background-color: rgb(41, 40, 45);
+}
+</code></pre>
+<p>解决起来很简单, 就是把它涂成不易识别的颜色</p>
+<h2 id="html" tabindex="-1">HTML</h2>
+<h3 id="网页出现中文乱码" tabindex="-1">网页出现中文乱码</h3>
+<p>很可能和 nginx 无关, 不需要在 nginx 加上 <code>charset utf-8;</code></p>
+<p>在 html 加上</p>
+<pre class="one-piece"><code>&lt;head&gt;&lt;meta charset="utf-8" /&gt;&lt;/head&gt;
+</code></pre>
+<p>就能解决问题</p>
+<h2 id="pycco-一种-literate-programming-工具" tabindex="-1">Pycco: 一种 Literate programming 工具</h2>
+<p>备选方案</p>
+<ul>
+<li><a href="https://github.com/jashkenas/docco">docco</a></li>
+<li><a href="https://github.com/mobily-enterprises/docco-next">docco-next</a></li>
+</ul>
+<h3 id="pycco-的-markdown-语法-https--daringfireballnet-projects-markdown-syntax" tabindex="-1">Pycco 的 Markdown 语法: <a href="https://daringfireball.net/projects/markdown/syntax">https://daringfireball.net/projects/markdown/syntax</a></h3>
+<h2 id="yaml-语法" tabindex="-1">Yaml 语法</h2>
+<h3 id="数组" tabindex="-1">数组</h3>
+<pre class="one-piece"><code>posts:
+    - title: a
+      file: b.c
+    - title: b
+      file: b.c
+</code></pre>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><pre class="one-piece"><code>export declare interface UserConfig {
+/**
+ * Project root directory. Can be an absolute path, or a path relative from
+ * the location of the config file itself.
+ * @default process.cwd()
+ */
+root?: string;
+/**
+ * Base public path when served in development or production.
+ * @default '/'
+ */
+base?: string;
+/**
+ * Directory to serve as plain static assets. Files in this directory are
+ * served and copied to build dist dir as-is without transform. The value
+ * can be either an absolute file system path or a path relative to &lt;root&gt;.
+ *
+ * Set to `false` or an empty string to disable copied static assets to build dist dir.
+ * @default 'public'
+ */
+publicDir?: string | false;
+/**
+ * Directory to save cache files. Files in this directory are pre-bundled
+ * deps or some other cache files that generated by vite, which can improve
+ * the performance. You can use `--force` flag or manually delete the directory
+ * to regenerate the cache files. The value can be either an absolute file
+ * system path or a path relative to &lt;root&gt;.
+ * @default 'node_modules/.vite'
+ */
+cacheDir?: string;
+/**
+ * Explicitly set a mode to run in. This will override the default mode for
+ * each command, and can be overridden by the command line --mode option.
+ */
+mode?: string;
+/**
+ * Define global variable replacements.
+ * Entries will be defined on `window` during dev and replaced during build.
+ */
+define?: Record&lt;string, any&gt;;
+/**
+ * Array of vite plugins to use.
+ */
+plugins?: (PluginOption | PluginOption[])[];
+/**
+ * Configure resolver
+ */
+resolve?: ResolveOptions &amp; {
+    alias?: AliasOptions;
+};
+/**
+ * CSS related options (preprocessors and CSS modules)
+ */
+css?: CSSOptions;
+/**
+ * JSON loading options
+ */
+json?: JsonOptions;
+/**
+ * Transform options to pass to esbuild.
+ * Or set to `false` to disable esbuild.
+ */
+esbuild?: ESBuildOptions | false;
+/**
+ * Specify additional files to be treated as static assets.
+ */
+assetsInclude?: string | RegExp | (string | RegExp)[];
+/**
+ * Server specific options, e.g. host, port, https...
+ */
+server?: ServerOptions;
+/**
+ * Build specific options
+ */
+build?: BuildOptions;
+/**
+ * Dep optimization options
+ */
+optimizeDeps?: DepOptimizationOptions;
+/* Excluded from this release type: ssr */
+/**
+ * Log level.
+ * Default: 'info'
+ */
+logLevel?: LogLevel;
+/**
+ * Default: true
+ */
+clearScreen?: boolean;
+/**
+ * Environment files directory. Can be an absolute path, or a path relative from
+ * the location of the config file itself.
+ * @default root
+ */
+envDir?: string;
+/**
+ * Import aliases
+ * @deprecated use `resolve.alias` instead
+ */
+alias?: AliasOptions;
+/**
+ * Force Vite to always resolve listed dependencies to the same copy (from
+ * project root).
+ * @deprecated use `resolve.dedupe` instead
+ */
+dedupe?: string[];
+}
+</code></pre>
+ <a href="#fnref1" class="footnote-backref">↩︎</a></li>
+<li id="fn2" class="footnote-item"><pre class="one-piece"><code>require('dotenv').config({ path: join(__dirname, '.env') })
+
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { join } from 'path'
+import electron from 'vitejs-plugin-electron'
+
+const root = join(__dirname, 'src/render')
+export default defineConfig(env =&gt; {
+  return {
+    plugins: [
+      vue(),
+      electron(),
+    ],
+    root,
+    base: './', // index.html 中静态资源加载位置
+    server: {
+      port: +process.env.PORT,
+    },
+    resolve: {
+      alias: {
+        '@render': join(__dirname, 'src/render'),
+        '@main': join(__dirname, 'src/main'),
+        '@src': join(__dirname, 'src'),
+        '@root': __dirname,
+      },
+    },
+    build: {
+      outDir: join(__dirname, 'dist/render'),
+      emptyOutDir: true,
+      minify: false,
+      commonjsOptions: {},
+      assetsDir: '', // 相对路径 加载问题
+      sourcemap: true,
+    },
+  }
+})
+</code></pre>
+ <a href="#fnref2" class="footnote-backref">↩︎</a></li>
+</ol>
+</section>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

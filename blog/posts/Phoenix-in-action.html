@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>构建 Phoenix 应用</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>构建 Phoenix 应用</h1>
+        <nav class="table-of-contents"><ol><li><a href="#目的">目的</a></li><li><a href="#创建项目">创建项目</a></li><li><a href="#配置数据库与数据迁移">配置数据库与数据迁移</a></li><li><a href="#第一批接口-知道如何渲染-html-或者-json">第一批接口: 知道如何渲染 HTML 或者 JSON</a></li><li><a href="#将数据库换成-sqlite">将数据库换成 SQLite</a></li><li><a href="#设计数据库">设计数据库</a></li><li><a href="#单元测试">单元测试</a></li><li><a href="#changset">Changset</a></li><li><a href="#通过工具生成-view-controller-template-schema">通过工具生成 view, controller, template, schema</a></li><li><a href="#部署">部署</a></li><li><a href="#参考">参考</a></li></ol></nav><h2 id="目的" tabindex="-1">目的</h2>
+<p>本文记录使用 Phoenix 过程中的一些发现和心得，新手可以直接去看<a href="https://hexdocs.pm/phoenix/overview.html">官方教程</a>或者这本书：<a href="https://www.manning.com/books/phoenix-in-action"><em>Phonix in Action</em></a>。跟着教程学一遍很有益处，但这样效率很低，<a href="https://jacobian.org/2009/nov/10/what-to-write/#tutorials">如果教程 30 分钟内无法让人体验成功那新手很容易就会放弃</a>，在我看来 Phoenix 和 Ecto 的文档都很容易让人产生放弃的念头。可以回头再看。</p>
+<p>这篇文档记录了我在使用 Phoenix 框架时认为新手应该关注的重点。</p>
+<h2 id="创建项目" tabindex="-1">创建项目</h2>
+<pre class="one-piece"><code>➜  mix new --umbrella clip_umbrella
+➜  cd apps
+</code></pre>
+<p>在 apps/ 目录下创建 web 项目, <code>--no-ecto</code> 表示 web 项目不考虑数据库操作逻辑，后者放在另外一个模块</p>
+<pre class="one-piece"><code>➜  mix phx.new.web clip_web --no-ecto
+</code></pre>
+<p>会提示你没有 PubSub Server，这时候要去 apps/clip_web/lib/clip_web/application.ex 的 <code>start()</code> 函数里面的 <code>children</code> 数组中加上</p>
+<pre class="one-piece"><code>{Phoenix.PubSub, name: ClipWeb.PubSub}
+</code></pre>
+<p>在任意目录启动：</p>
+<pre class="one-piece"><code>mix phx.server
+</code></pre>
+<p>确认成功后创建一个逻辑应用，和 web 应用分开</p>
+<p>在 apps 目录：</p>
+<pre class="one-piece"><code>➜  mix new clip --sup
+</code></pre>
+<p>创建 --sup 是为了方便创建 supervision tree，也意味着这个模块不是库，而是一个进程。</p>
+<h2 id="配置数据库与数据迁移" tabindex="-1">配置数据库与数据迁移</h2>
+<p>生成数据库中间层</p>
+<pre class="one-piece"><code>mix ecto.gen.repo -r Clip.Repo
+</code></pre>
+<p><strong>或者手动操作</strong>：在 apps/clip/lib/clip.ex 上加入</p>
+<pre class="one-piece"><code>defmodule Clip do
+  @repo Clip.Repo
+  def list_bookmarks do
+    @repo.all(Bookmark)
+  end
+end
+</code></pre>
+<p>可以看到依赖注入的影子：这里引用了一个 <code>Clip.Repo</code> 模块，用 <code>@repo</code> 表示。</p>
+<p>定义 Bookmark，Ecto 也需要知道 Bookmark 类型</p>
+<pre class="one-piece"><code>defmodule Clip.Bookmark do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  schema "bookmarks" do
+    field :url, :string
+    field :comment, :string
+    timestamps()
+  end
+
+  # ...
+end
+</code></pre>
+<p>暂时就这样，从简单开始。</p>
+<p>在 apps/clip/lib/clip/ 目录创建一个 repo.ex, 写入 boilerplate:</p>
+<pre class="one-piece"><code>defmodule Clip.Repo do
+  use Ecto.Repo,
+    otp_app: :clip,
+    adapter: Ecto.Adapters.Postgres
+end
+</code></pre>
+<p>以后就再也不需要修改这一文件，相当于直接用了 <code>Ecto.Repo</code>，你也可以直接把 clip.ex 的 <code>@repo</code> 直接指向 Ecto.repo</p>
+<p>这时候提示找不到 Ecto，需要在 mix.exs 加入：</p>
+<pre class="one-piece"><code>      {:ecto_sql, "~&gt; 3.8.3"},
+      {:postgrex, "~&gt; 0.16.3"}
+</code></pre>
+<p>用 <code>mix hex.search</code> 查看版本</p>
+<p>配置数据库，clip_umbrella/config/config.exs, 输入：</p>
+<pre class="one-piece"><code>config :clip, ecto_repos: [Clip.Repo]
+config :clip, Clip.Repo,
+  database: "clip",
+  username: "foo",
+  password: "123456",
+  hostname: "192.168.42.2",
+  port: "5432"
+</code></pre>
+<p>为什么是这个目录？有些项目的配置的数据库配置写在 clip_umbrella/apps/clip/config，但这样只能在 clip_umbrella/apps/clip 目录执行数据库操作, 这听起来就很傻，umbrella 还有什么意义呢？</p>
+<p>在 clip_umbrella 目录下：</p>
+<pre class="one-piece"><code>mix ecto.create
+</code></pre>
+<p>将 Ecto 进程加入 application.ex, 可以理解：让 Clip 启动的时候带动 Clip.Repo 也就是间接带动 Ecto.Repo</p>
+<pre class="one-piece"><code>  children = [
+      # Starts a worker by calling: Clip.Worker.start_link(arg)
+      # {Clip.Worker, arg}
+      {Clip.Repo, []}
+    ]
+</code></pre>
+<p>创建数据迁移：</p>
+<pre class="one-piece"><code>➜  mix ecto.gen.migration create_items
+* creating apps/clip/priv/repo/migrations
+* creating apps/clip/priv/repo/migrations/20220612105430_create_items.exs
+</code></pre>
+<p>打开创建的文件，可以看到</p>
+<pre class="one-piece"><code>defmodule Clip.Repo.Migrations.CreateItems do
+  use Ecto.Migration
+
+  def change do
+
+  end
+end
+</code></pre>
+<p>帮我们写了一些代码，仅此而已，我们需要自己写逻辑：</p>
+<pre class="one-piece"><code>  def change do
+    create table("bookmarks") do
+      add :url, :string
+      add :comment, :string
+      timestamps()
+    end
+  end
+</code></pre>
+<p>写完之后通过 <code>mix ecto.migrations</code> 查看先有的迁移</p>
+<p>通过 <code>mix ecto.migrate</code> 执行迁移</p>
+<pre class="one-piece"><code>➜  mix ecto.migrate
+
+00:33:34.015 [info]  == Running 20220612105430 Clip.Repo.Migrations.CreateBookmarks.change/0 forward
+
+00:33:34.018 [info]  create table bookmarks
+
+00:33:34.036 [info]  == Migrated 20220612105430 in 0.0s
+</code></pre>
+<p>测试 <code>iex -S mix</code>：</p>
+<pre class="one-piece"><code>iex(5)&gt; Clip.list_bookmarks()
+01:38:10.675 [debug] QUERY OK source="bookmarks" db=4.5ms idle=67.7ms
+SELECT b0."id", b0."url", b0."comment", b0."inserted_at", b0."updated_at" FROM "bookmarks" AS b0 []
+[]
+</code></pre>
+<p>这一步说明数据库准备就绪</p>
+<h2 id="第一批接口-知道如何渲染-html-或者-json" tabindex="-1">第一批接口: 知道如何渲染 HTML 或者 JSON</h2>
+<p>首先要用客户端来测试，不写单元测试，是因为没什么好测的，这一阶段。</p>
+<p>第一个接口是 <code>/bookmarks</code> 展示所有的书签：</p>
+<pre class="one-piece"><code>    get "/bookmarks", BookmarkController, only: [
+      :index
+    ]
+</code></pre>
+<p>创建 BookmarkController: apps/clip_web/lib/clip_web/controllers/bookmark_controller.ex</p>
+<pre class="one-piece"><code>defmodule ClipWeb.BookmarkController do
+  use ClipWeb, :controller
+
+  def index(conn, _params) do
+    bookmarks = Clip.list_bookmarks()
+    render(conn, "index.html", bookmarks: bookmarks)
+  end
+end
+</code></pre>
+<p>创建 apps/clip_web/lib/clip_web/views/bookmark_view.ex</p>
+<pre class="one-piece"><code>defmodule ClipWeb.BookmarkView do
+  use ClipWeb, :view
+end
+</code></pre>
+<p>创建模板：apps/clip_web/lib/clip_web/templates/bookmark/index.html.eex</p>
+<pre class="one-piece"><code>&lt;ul&gt;
+  &lt;%= for bookmark &lt;- @bookmarks do %&gt;
+    &lt;li&gt;
+      &lt;%= link(bookmark.url, to: bookmark.url) %&gt; :
+      &lt;%= bookmark.comment %&gt;
+    &lt;/li&gt;
+  &lt;% end %&gt;
+&lt;/ul&gt;
+
+</code></pre>
+<p>在 apps/clip_web/mix.exs 的 deps 加上</p>
+<pre class="one-piece"><code>{:clip, in_umbrella: true},
+</code></pre>
+<p>表示 clip_web 引用 clip</p>
+<p>现在打开 <a href="http://localhost:4000/bookmarks">http://localhost:4000/bookmarks</a> 可以确定无异常，但需要加点内容</p>
+<p>Phoenix 文档没找到如何设计 RESTful 指南，Phoenix in Action 有：</p>
+<p><img src="images/0xfeff_b6732b7417564f90b843b9b518f83b36.png" alt=""></p>
+<p>事实上，留意 Phoenix 的报错信息，也可以看到这种规定，但是找不到相关文档。</p>
+<p>这里我需要增加 create 和 show 接口, 分别增加 browser 和 api 接口</p>
+<p>在路由上加上 "/api": apps/clip_web/lib/clip_web/router.ex</p>
+<pre class="one-piece"><code>  scope "/api", ClipWeb.Api do
+    pipe_through :api
+
+    resources "/bookmarks", BookmarkController, only: [
+      :create,
+      :show
+    ]
+  end
+</code></pre>
+<p>添加 controller: apps/clip_web/lib/clip_web/controllers/api/bookmark_controller.ex</p>
+<pre class="one-piece"><code>defmodule ClipWeb.Api.BookmarkController do
+  use ClipWeb, :controller
+
+  # action_fallback ClipWeb.Api.FallbackController
+
+  def show(conn, %{"id" =&gt; id}) do
+    bookmark = Clip.get_bookmark(id)
+    render(conn, "bookmark.json", bookmark: bookmark)
+  end
+
+  def create(conn, %{"bookmark" =&gt; bookmark_params}) do
+    case Clip.insert_bookmark(bookmark_params) do
+      {:ok, bookmark} -&gt; render(conn, "bookmark.json", bookmark: bookmark)
+    end
+  end
+end
+
+</code></pre>
+<p>render 来自 view 模块，需要手动添加：apps/clip_web/lib/clip_web/views/api/bookmark_view.ex</p>
+<pre class="one-piece"><code>defmodule ClipWeb.Api.BookmarkView do
+  use ClipWeb, :view
+
+  def render("bookmark.json", %{bookmark: bookmark}) do
+    %{
+      type: "bookmark",
+      url: bookmark.url,
+      comment: bookmark.comment
+    }
+  end
+end
+</code></pre>
+<p>clip 增加两个接口 apps/clip/lib/clip.ex</p>
+<pre class="one-piece"><code>  def insert_bookmark(attrs) do
+    %Bookmark{}
+    |&gt; Bookmark.changeset(attrs)
+    |&gt; @repo.insert()
+  end
+
+  def get_bookmark(id) do
+    @repo.get!(Bookmark, id)
+  end
+</code></pre>
+<p>测试：</p>
+<pre class="one-piece"><code>➜  ~ curl -H "Content-Type: application/json" -X POST -d '{"bookmark": {"url": "https://elixir-lang.org/", "comment": "Elixir is a dynamic, functional language for building scalable and maintainable applications."} }' http://localhost:4000/api/bookmarks
+{"comment":"Elixir is a dynamic, functional language for building scalable and maintainable applications.","type":"bookmark","url":"https://elixir-lang.org/"}%  
+➜  ~ curl -H "Content-Type: application/json" -X GET http://localhost:4000/api/bookmarks/2
+{"comment":"Elixir is a dynamic, functional language for building scalable and maintainable applications.","type":"bookmark","url":"https://elixir-lang.org/"}%     
+</code></pre>
+<p>打开 <a href="http://localhost:4000/bookmarks">http://localhost:4000/bookmarks</a> 可以看到：</p>
+<p><img src="images/0xfeff_673211300baa44f6a9535376d8f8c20a.png" alt=""></p>
+<p>基本功能完成，到此我们知道怎么写网页和 json。接下来就是业务问题。</p>
+<h2 id="将数据库换成-sqlite" tabindex="-1">将数据库换成 SQLite</h2>
+<p>出于业务考虑，我打算将 Postgres 换成 SQLite，因为我的 VPS 只有 1G 内存了，而且也没几个用户，有用户再另外考虑。</p>
+<p>可以在 <a href="https://github.com/elixir-ecto/ecto">https://github.com/elixir-ecto/ecto</a> 找到如何使用 SQLite3</p>
+<blockquote>
+<p><a href="https://github.com/elixir-ecto/ecto_sql">ecto_sql</a> (requires Ecto v3.5+) + <a href="https://github.com/elixir-sqlite/ecto_sqlite3">ecto_sqlite3</a></p>
+</blockquote>
+<p>把 apps/clip/mix.exs 改成</p>
+<pre class="one-piece"><code>  defp deps do
+    [
+      {:ecto_sql, "~&gt; 3.8.3"},
+      {:ecto_sqlite3, "~&gt; 0.7.5"},
+      {:ecto_fields, "~&gt;1.3.0"}
+    ]
+  end
+</code></pre>
+<p>apps/clip/lib/clip/repo.ex 改成</p>
+<pre class="one-piece"><code>defmodule Clip.Repo do
+  use Ecto.Repo,
+    otp_app: :clip,
+    adapter: Ecto.Adapters.SQLite3
+end
+</code></pre>
+<p>config/config.exs 改成: 不打算放在 <code>/opt</code>, <code>/etc</code> 这种地方，有权限问题</p>
+<pre class="one-piece"><code>config :clip, Clip.Repo,
+  database: "db/clip.db"
+</code></pre>
+<p>这些是很基本的改动，看看文档即可：<a href="https://github.com/elixir-sqlite/ecto_sqlite3">https://github.com/elixir-sqlite/ecto_sqlite3</a></p>
+<p>创建数据库：</p>
+<pre class="one-piece"><code>➜  clip_umbrella git:(dev) ✗ mix ecto.gen.migration create_items
+➜  clip_umbrella git:(dev) ✗ mix ecto.migrations
+
+Repo: Clip.Repo
+
+  Status    Migration ID    Migration Name
+--------------------------------------------------
+  down      20220612105430  create_bookmarks
+
+➜  clip_umbrella git:(dev) ✗ mix ecto.migrate   
+
+01:09:45.018 [info]  == Running 20220612105430 Clip.Repo.Migrations.CreateBookmarks.change/0 forward
+
+01:09:45.023 [info]  create table bookmarks
+
+01:09:45.024 [info]  == Migrated 20220612105430 in 0.0s
+</code></pre>
+<p>以上只是改数据库，并没有数据迁移，如果真的要把数据从 Postgres 迁移到 SQLite, 那唯一能行得通的就是写代码从 Postgres 中 query 然后插入 SQLite，目前我用不着这么做。</p>
+<h2 id="设计数据库" tabindex="-1">设计数据库</h2>
+<p>数据库是最难的一环，需要看一遍 <a href="https://hexdocs.pm/ecto/getting-started.html">Ecto 文档</a>，真的。</p>
+<h2 id="单元测试" tabindex="-1">单元测试</h2>
+<p>用沙盒来测试数据库，不然不同的测试会搅和在一起而且会可能扰乱生产数据库，参考 <a href="https://hexdocs.pm/ecto/testing-with-ecto.html">https://hexdocs.pm/ecto/testing-with-ecto.html</a></p>
+<pre class="one-piece"><code>  describe "bookmark" do
+    setup do
+      {:ok, user1} = Clip.insert(%Clip.User{}, %{name: "bach", pubkey: "publickey"})
+      {:ok, user2} = Clip.insert(%Clip.User{}, %{name: "darko", pubkey: "publickey"})
+
+      %{user1: user1, user2: user2}
+    end
+
+    test "should be able to create and delete bookmark", %{user1: user1, user2: user2} do
+      {:ok, _} =
+        Clip.add_bookmark(%{
+          "url" =&gt; "https://hexdocs.pm/ecto/Ecto.Repo.html#c:delete/2",
+          "comment" =&gt; "delete( struct_or_changeset, opts )",
+          "user" =&gt; user1.name
+        })
+
+      # ... 太长不看
+
+      Clip.delete(user1)
+      Clip.delete(user2)
+    end
+  end
+</code></pre>
+<p>需要注意的是单元测试是多进程跑的，所以不同的测试用例应该用不同的数据，不然会发生冲突。</p>
+<p>如果只想运行一个测试，加上 tag:</p>
+<pre class="one-piece"><code>  @tag :comment
+  test "should detect duplicated combination of comment and url" do
+</code></pre>
+<p>运行的时候：</p>
+<pre class="one-piece"><code>mix test apps/clip/test --only comment
+</code></pre>
+<p>需要确保 clip_web 目录下 mix.exs 的依赖有</p>
+<pre class="one-piece"><code>{:clip, in_umbrella: true}
+</code></pre>
+<p>很关键，否则在 umbrella 目录运行 <code>mix test</code> 会出错，真是莫名其妙 -- 但奇怪的，我在 clip_web 中找到了 db 目录，可见 clip_web 处于主导地位</p>
+<p>几个概念：</p>
+<ol>
+<li>fixture：非钩子函数，程序员自行调用，相当于辅助函数，但因为命名所以有特殊的身份</li>
+<li>setup: 钩子函数，每一个 test 运行的时候都会加载这一函数</li>
+<li>on_exit: 钩子函数，ConnCase 没有，EXUnit 有</li>
+</ol>
+<h2 id="changset" tabindex="-1">Changset</h2>
+<p>值得一提的是我犯了个低级错误：</p>
+<pre class="one-piece"><code>  schema "Comments" do
+    field(:comment, :string)
+    field(:mac, :string)
+    belongs_to(:url, Clip.Url)
+    belongs_to(:user, Clip.User)
+    timestamps()
+  end
+
+
+  def changeset(comment, params \\ %{}) do
+
+    comment
+    |&gt; cast(params, [:comment, :mac, :url_id, :user_id])
+    |&gt; validate_required([:comment, :url_id, :user_id])
+    |&gt; validate_length(:comment, min: 10, max: 140)
+    |&gt; make_mac()
+    |&gt; validate_required([:mac])
+    |&gt; assoc_constraint(:url)
+    |&gt; assoc_constraint(:user)
+    |&gt; unique_constraint(:mac)
+  end
+</code></pre>
+<p>错误发生在 <code>unique_constraint</code> 生成了</p>
+<pre class="one-piece"><code>[%{constraint: "Comments_mac_index", error_message: "has already been taken", error_type: :unique, field: :mac, match: :exact, type: :unique}, %{constraint: "Comments_user_id_fkey", error_message: "does not exist", error_type: :assoc, field: :user, match: :exact, type: :foreign_key}, %{constraint: "Comments_url_id_fkey", error_message: "does not exist", error_type: :assoc, field: :url, match: :exact, type: :foreign_key}], 
+</code></pre>
+<p>但迁移文件是</p>
+<pre class="one-piece"><code>    create table("comments") do
+
+    end
+</code></pre>
+<p>对应的 key 应该是 <code>comment_mac_index</code>，和 changeset 生成的 <code>Comment_mac_index</code> 不一致，是大小写问题</p>
+<h2 id="通过工具生成-view-controller-template-schema" tabindex="-1">通过工具生成 view, controller, template, schema</h2>
+<p>在 <a href="https://dashbit.co/blog/working-with-ecto-associations-and-embeds">https://dashbit.co/blog/working-with-ecto-associations-and-embeds</a> 看到 <code>phx.gen.html</code> 的使用，直奔文档 <a href="https://hexdocs.pm/phoenix/Mix.Tasks.Phx.Gen.Html.html">https://hexdocs.pm/phoenix/Mix.Tasks.Phx.Gen.Html.html</a></p>
+<p>假设你刚刚完成 Umbrella 项目创建和数据库初始化，现在需要写后端接口，-- 比如我创建一个 Todo 项目</p>
+<p>假设结构是：</p>
+<pre class="one-piece"><code>➜  apps git:(master) ✗ tree -L 2  
+.
+├── todo
+│   ├── lib
+│   ├── mix.exs
+│   ├── priv
+│   ├── README.md
+│   └── test
+└── todo_web
+    ├── assets
+    ├── lib
+    ├── mix.exs
+    ├── priv
+    ├── README.md
+    └── test
+</code></pre>
+<p>同时要在 config/config.exs 加上配置：</p>
+<pre class="one-piece"><code>config :todo_web,
+  generators: [context_app: :todo]
+</code></pre>
+<p>在 apps/todo_web/mix.exs 上加上依赖：</p>
+<pre class="one-piece"><code> {:todo, in_umbrella: true}
+</code></pre>
+<p>意思是 todo_web 的 context_app 是 todo，todo 提供了逻辑操作。这种命名是很有意思的： <a href="https://hexdocs.pm/phoenix/Mix.Tasks.Phx.Gen.Html.html#module-the-context-app"><strong>context app</strong></a></p>
+<p>然后在 app/todo_web 执行</p>
+<pre class="one-piece"><code>➜  todo_web git:(master) mix phx.gen.html Tasks TodoList todo_lists title
+</code></pre>
+<p>生成了：</p>
+<ul>
+<li>模块<code>Todo.Tasks</code></li>
+<li>模块<code>Todo.Tasks.TodoList</code>,</li>
+<li>一堆 html 模板</li>
+</ul>
+<p>也就是说帮你写了框架，你只需要往里面填充逻辑。</p>
+<p>同理，生成数据库的 SQL</p>
+<pre class="one-piece"><code>mix phx.gen.schema Tasks.TodoItem todo_items todo_items body:text todo_list_id:references:todo_lists
+</code></pre>
+<p>生成：</p>
+<ul>
+<li><code>Todo.Task.TodoItem</code> 模块，里面有 schema</li>
+<li>生成数据库迁移文件</li>
+</ul>
+<h2 id="部署" tabindex="-1">部署</h2>
+<p>部署相当麻烦，我能想到的两种常用部署方式，一是二进制 + 资源，二是解释器 + 代码 + 资源，而 Elixir 是 .beam 代码 + 资源，然后在虚拟机运行。先明确我不用 docker，因为服务器配置不够。</p>
+<p>在根目录打开 <code>mix.exs</code>, 修改 <code>project</code> 函数，发布 <code>longlink_beta</code>：</p>
+<pre class="one-piece"><code>  def project do
+    [
+      apps_path: "apps",
+      version: "0.1.0",
+      start_permanent: Mix.env() == :prod,
+      deps: deps(),
+      elixir: "~&gt; 1.13.0",
+      releases: [
+        longlink_beta: [
+          applications: [
+            longlink: :permanent,
+            longlink_web: :permanent
+          ]
+        ]
+      ]
+
+    ]
+  end
+</code></pre>
+<p>在 <code>config</code> 目录打开 <code>runtime.exs</code>，把 <code>config</code> 一行的注释去掉</p>
+<pre class="one-piece"><code>  # If you are doing OTP releases, you need to instruct Phoenix
+  # to start each relevant endpoint:
+  #
+  config :longlink_web, LonglinkWeb.Endpoint, server: true
+</code></pre>
+<p>注释到之后运行</p>
+<pre class="one-piece"><code>$ mix deps.get --only prod
+$ MIX_ENV=prod mix compile
+$ MIX_ENV=prod mix assets.deploy
+$ MIX_ENV=prod mix release
+...
+To list all commands:
+
+    _build/prod/rel/myapp_beta/bin/myapp_beta
+</code></pre>
+<p>测试是否能用</p>
+<pre class="one-piece"><code>$ _build/prod/rel/longlink_beta/bin/longlink_beta start
+ERROR! Config provider Config.Reader failed with:
+** (RuntimeError) environment variable SECRET_KEY_BASE is missing.
+You can generate one by calling: mix phx.gen.secret
+</code></pre>
+<p>需要设置一个环境变量</p>
+<pre class="one-piece"><code>$ mix phx.gen.secret                                   
+sdfsdfsdfsdfsdfsdfsdfsdf
+$ export SECRET_KEY_BASE=sdfsdfsdfsdfsdfsdfsdfsdf
+</code></pre>
+<p>重新运行：</p>
+<pre class="one-piece"><code>_build/prod/rel/longlink_beta/bin/longlink_beta start                                  
+07:36:48.287 [info] Running LonglinkWeb.Endpoint with cowboy 2.9.0 at :::4000 (http)
+07:36:48.287 [info] Access LonglinkWeb.Endpoint at http://localhost:4000
+</code></pre>
+<p>说明一切正常，这时我们应该考虑如何将 <code>_build</code> 拷贝到服务器，以及如何初始化运行环境，包括数据库迁移</p>
+<p>可以切换到 <code>_build/prod/rel/longlink_beta</code> 目录了解情况</p>
+<pre class="one-piece"><code>$ cd bin
+$ ./longlink_beta start
+07:53:01.230 [info] Running LonglinkWeb.Endpoint with cowboy 2.9.0 at :::4000 (http)
+07:53:01.230 [info] Access LonglinkWeb.Endpoint at http://localhost:4000
+^C
+BREAK: (a)bort (A)bort with dump (c)ontinue (p)roc info (i)nfo
+       (l)oaded (v)ersion (k)ill (D)b-tables (d)istribution
+^C%                                                                                                                                                                                       
+$ ls
+db  longlink_beta  longlink_beta.bat
+$ cd db 
+$ ls
+longlink.db  longlink.db-shm  longlink.db-wal
+$ sqlite3 longlink.db
+SQLite version 3.37.2 2022-01-06 13:25:41
+Enter ".help" for usage hints.
+sqlite&gt; .table
+# nothing
+</code></pre>
+<p>这说明还是需要一个初始化脚本，但 <code>longlink_beta</code> 是一个二进制，不支持 <code>mix ecto.migrate</code>，解决方法是创建一个 release 模块，参考 <a href="https://hexdocs.pm/phoenix/releases.html#ecto-migrations-and-custom-commands">https://hexdocs.pm/phoenix/releases.html#ecto-migrations-and-custom-commands</a>, 用 <code># mix phx.gen.release</code> 生成然后移动到 umbrella 根目录</p>
+<pre class="one-piece"><code>defmodule Longlink.Release do
+  @app :longlink
+
+  def migrate() do
+    for repo &lt;- repos() do
+      {:ok, _, _} = Ecto.Migrator.with_repo(repo, &amp;Ecto.Migrator.run(&amp;1, :up, all: true))
+    end
+  end
+
+  def rollback(repo, version) do
+    {:ok, _, _} = Ecto.Migrator.with_repo(repo, &amp;Ecto.Migrator.run(&amp;1, :down, to: version))
+  end
+
+  defp repos() do
+    Application.load(@app)
+    Application.fetch_env!(@app, :ecto_repos)
+  end
+end
+</code></pre>
+<p>然后执行 <code>eval</code>:</p>
+<pre class="one-piece"><code>$ ./longlink_beta eval "Longlink.Release.migrate"
+08:19:08.949 [info] == Running 1 Longlink.Repo.Migrations.CreateLinks.change/0 forward
+08:19:08.956 [info] create table links
+08:19:08.963 [info] == Migrated 1 in 0.0s
+08:19:09.014 [info] == Running 2 Longlink.Repo.Migrations.CreateUsers.change/0 forward
+08:19:09.015 [info] create table users
+08:19:09.015 [info] == Migrated 2 in 0.0s
+</code></pre>
+<p>接着部署到 systemd 去，步骤就不写了。</p>
+<p>打包，体积不小</p>
+<pre class="one-piece"><code>$ tar -czvf longlink.tar.gz longlink
+$ du --max-depth=1 -h
+21M     ./longlink
+</code></pre>
+<p>体验极差，只能搬到服务器编译(docker 也可以)，这绝对是我花费时间上最多的一次部署经历</p>
+<pre class="one-piece"><code>root@vultr:/tmp/longlink# ./bin/longlink start
+=SUPERVISOR REPORT==== 24-Jul-2022::01:09:32.951394 ===
+    supervisor: {local,kernel_sup}
+    errorContext: start_error
+    reason: {on_load_function_failed,'Elixir.Exqlite.Sqlite3NIF',
+                {error,
+                    {load_failed,
+                        "Failed to load NIF library: '/lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by /tmp/longlink/lib/exqlite-0.11.2/priv/sqlite3_nif.so)'"}}}
+</code></pre>
+<p>在 web 目录用 <code>mix phx.gen.release --docker</code><sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup> 生成 Dockerfile</p>
+<p>更多细节参考 <a href="https://hexdocs.pm/mix/1.13/Mix.Tasks.Release.html">Mix Release</a></p>
+<h2 id="参考" tabindex="-1">参考</h2>
+<ul>
+<li><a href="https://www.manning.com/books/phoenix-in-action"><em>Phonix in Action</em></a></li>
+<li><a href="https://www.poeticoding.com/another-guide-to-build-a-json-api-with-phoenix-1-5/">https://www.poeticoding.com/another-guide-to-build-a-json-api-with-phoenix-1-5/</a></li>
+<li><a href="https://gist.github.com/stevedomin/0ea9d9af96b565cbd0b7">https://gist.github.com/stevedomin/0ea9d9af96b565cbd0b7</a></li>
+<li><a href="https://www.techonthenet.com/sqlite/primary_keys.php#:~:text=Drop%20Primary%20Key,data%20into%20this%20new%20table">https://www.techonthenet.com/sqlite/primary_keys.php#:~:text=Drop Primary Key,data into this new table</a></li>
+<li><a href="https://stackoverflow.com/a/16901926">https://stackoverflow.com/a/16901926</a></li>
+<li><a href="https://pawelurbanek.com/elixir-phoenix-uuid">https://pawelurbanek.com/elixir-phoenix-uuid</a></li>
+<li><a href="https://medium.com/@diamondgfx/testing-validations-in-elixir-and-ecto-677bd8a071a1">https://medium.com/@diamondgfx/testing-validations-in-elixir-and-ecto-677bd8a071a1</a></li>
+<li><a href="https://blog.lelonek.me/exunit-best-practices-2b3a8a194f1d">https://blog.lelonek.me/exunit-best-practices-2b3a8a194f1d</a></li>
+<li><a href="https://hexdocs.pm/ecto/2.2.11/associations.html">https://hexdocs.pm/ecto/2.2.11/associations.html</a> a must-read</li>
+<li><a href="https://hexdocs.pm/ecto/aggregates-and-subqueries.html">https://hexdocs.pm/ecto/aggregates-and-subqueries.html</a></li>
+<li><a href="https://dashbit.co/blog/working-with-ecto-associations-and-embeds">https://dashbit.co/blog/working-with-ecto-associations-and-embeds</a></li>
+<li><a href="https://hexdocs.pm/mix/1.13/Mix.Tasks.Release.html#module-umbrellas">https://hexdocs.pm/mix/1.13/Mix.Tasks.Release.html#module-umbrellas</a></li>
+</ul>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p><a href="https://hexdocs.pm/phoenix/Mix.Tasks.Phx.Gen.Release.html">https://hexdocs.pm/phoenix/Mix.Tasks.Phx.Gen.Release.html</a> <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

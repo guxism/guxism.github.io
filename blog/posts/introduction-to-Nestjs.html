@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Nestjs 简介</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Nestjs 简介</h1>
+        <p>用了一段时间 Nestjs， 说说心得。在简单的需求方面 Nestjs 和其他框架别无二致，本文先简单介绍 Nestjs 的用法，然后从一个业务需求入手，讲到 Nestjs 的高级特性。</p>
+<h2 id="简单用法" tabindex="-1">简单用法</h2>
+<p>项目的最初阶段我是直接套用它的模板：</p>
+<pre class="one-piece"><code>nest new project-name
+</code></pre>
+<p>然后在 <code>src</code> 目录加一个子目录，用来放业务逻辑，当然这只是基本的代码管理，代码放哪都可以，VSCode 已经很智能，知道你要引用哪些定义，直接就帮你把 <code>import</code> 补上。</p>
+<h2 id="进阶" tabindex="-1">进阶</h2>
+<p>我认为稍微进阶的标志是使用他们的命令行工具，这一点有些好处，就是知道你使用这个框架的什么组件。当然前提是你认可这一框架，只有认可了你才会把时间投入到这上面。对我来说这些命令不是某个框架特有的，很多框架都有相似的命令，我们了解一个之后，可以举一反三。</p>
+<p>生成一个 Module:</p>
+<pre class="one-piece"><code>nest g module cats
+</code></pre>
+<p>生成一个目录 cats, 里面只有一个文件：</p>
+<pre class="one-piece"><code>import { Module } from '@nestjs/common';
+
+@Module({})
+export class CatsModule {}
+</code></pre>
+<p>生成这个 Module 并不说明什么，它处于闲置状态，使用它的方式是 import 它，但要 import，首先就要标注它的 exports</p>
+<p>但由于这个 Module 什么都没有，所以没什么好 export 的。因此此时我们要创建 controller 和 provider.</p>
+<p>controller 的意义是提供针对某一个具体路径的请求的处理方法，而 provider 的意义是提供这些处理方法</p>
+<pre class="one-piece"><code>nest g controller cats
+nest g service cats
+</code></pre>
+<p>这两行指令把 cat.module.ts 改成了：</p>
+<pre class="one-piece"><code>import { Module } from '@nestjs/common';
+import { CatsController } from './cats.controller';
+import { CatsService } from './cats.service';
+
+@Module({
+  controllers: [CatsController],
+  providers: [CatsService],
+})
+export class CatsModule {}
+
+</code></pre>
+<p>注意我并没有手动添加代码。接着就要让其他模块引用 CatsModule</p>
+<pre class="one-piece"><code>@Module({
+  imports: [CatsModule],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+</code></pre>
+<p>但其实它已经被 import 了</p>
+<p>这时我们要到 CatsController 去验证 CatsModule 的可用性</p>
+<pre class="one-piece"><code>@Controller('cats')
+export class CatsController {
+  @Get()
+  saySomething() {
+    return 'hail nestjs!\n';
+  }
+}
+</code></pre>
+<pre class="one-piece"><code>$ curl localhost:3002/cats
+hail nestjs!
+</code></pre>
+<p>把 <code>saySomething</code> 挪到 provider 去：</p>
+<pre class="one-piece"><code>// cats.service.ts
+@Injectable()
+export class CatsService {
+  hail() {
+    return 'hail nestjs!\n';
+  }
+}
+// cats.module.ts
+@Controller('cats')
+export class CatsController {
+  constructor(private catsService: CatsService) {}
+  @Get()
+  saySomething() {
+    return this.catsService.hail();
+  }
+}
+</code></pre>
+<p>这也是 proxy pattern 的体现</p>
+<p>关于 <code>CatsService</code> 有几个关键的概念：</p>
+<ol>
+<li><code>@Injectable()</code> 标注了 <code>CatsService</code> 是一个 provider</li>
+<li>依赖注入，注意这一个概念其实并不是委托那么简单，它指的是仅在使用的时候才初始化真实的 object, 这一点反而比委托更为重要，这也就是为什么 Nestjs 官网说 dependency injection is an inverse of control(IOC) technique, wherein you delegate instantiation of dependencies to the IOC container</li>
+</ol>
+<p>Standard providers: 实际上 <code>providers: [CatsService]</code> 是以下语法的简化版(short hand)</p>
+<pre class="one-piece"><code>providers: [
+	{
+		provide: CatsService
+		useClass: CatService
+	}
+]
+</code></pre>
+<p>接着到 Custom Provider, 后者就是为了使用以上复杂的语法</p>
+<pre class="one-piece"><code>providers: [
+	{
+		provide: CatsService
+		useClass: mockCatsService
+	}
+]
+</code></pre>
+<p>不难理解，<code>CatsService</code> 映射 <code>mockCatsService</code>, 注意到 <code>useClass</code> 这种标识符，不难想象，<code>mockCatsService</code> 必然是 class</p>
+<p>存在这种情况: 使用的不是 class(例如 <code>mockCatsService</code> ), 而是实例/值，这样的话，就需要用到 <code>useValue</code>, 看了一波文档，发现没说清楚，但是看例子一目了然</p>
+<p>首先在 app.module.ts 指定 providers:</p>
+<pre class="one-piece"><code>@Module({
+  imports: [CatsModule],
+  controllers: [AppController],
+  providers: [
+    AppService,
+    {
+      provide: 'PORT',
+      useValue: 3003,
+    },
+  ],
+})
+export class AppModule {}
+</code></pre>
+<p>某种程度上，你要认为 providers 最终会变成一张表，还要注意到这里用到了修饰器，跟宏一样，如果你能看到 <code>AppService</code> 字样，那么就会有一个 <code>'AppService'</code>, 理由是如果按照 class 的思路来的话，<code>'PORT'</code> 实际应该对应一个 <code>PORT</code>。当然我这么论证是不对的，因为我没仔细去研究 <code>@Module()</code> 的机制，我只是找一个容易接受的切入点。</p>
+<p>接着看如何使用：</p>
+<pre class="one-piece"><code>async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  const port = app.get('PORT');
+  await app.listen(port);
+}
+bootstrap();
+</code></pre>
+<p><code>app.get()</code> 意味着 app 要么是一个字典，要么就是字典的代理，总而言之必然有一张表，不是表，是列表也无所谓，但是哈希表查询的效率更高。获取的值是 3003。</p>
+<p>接着看一些更高级的用法，由于我看文档看得不是很明白，所以看了这篇 <a href="https://dev.to/nestjs/advanced-nestjs-dynamic-providers-1ee">https://dev.to/nestjs/advanced-nestjs-dynamic-providers-1ee</a></p>
+<p>最好的学习方式是照做：</p>
+<pre class="one-piece"><code> src   master  nest g module Logger
+CREATE logger/logger.module.ts (83 bytes)
+UPDATE app.module.ts (444 bytes)
+ src   master ±  nest g service Logger
+CREATE logger/logger.service.spec.ts (460 bytes)
+CREATE logger/logger.service.ts (90 bytes)
+UPDATE logger/logger.module.ts (163 bytes)
+</code></pre>
+<p>写入：</p>
+<pre class="one-piece"><code>// src/logger/logger.service.ts
+
+@Injectable({
+  scope: Scope.TRANSIENT,
+})
+export class LoggerService {
+  private prefix?: string;
+
+  log(message: string) {
+    let formattedMessage = message;
+
+    if (this.prefix) {
+      formattedMessage = `[${this.prefix}] ${message}`;
+    }
+
+    console.log(formattedMessage);
+  }
+
+  setPrefix(prefix: string) {
+    this.prefix = prefix;
+  }
+}
+</code></pre>
+<p><code>Scope.TRANSIENT</code> 意味着每一个注入到其他类去的 LoggerService 实例都是独一无二的，而不是 singleton。默认是 singleton</p>
+<p>要使用这一个 Service(也就是 provider)，就要在相关的 logger.module.ts 中把它导出：</p>
+<pre class="one-piece"><code>@Module({
+  providers: [LoggerService],
+  exports: [LoggerService],
+})
+export class LoggerModule {}
+</code></pre>
+<p>然后将 LoggerModule 用在 app.service.ts 上</p>
+<pre class="one-piece"><code>import { Injectable } from '@nestjs/common';
+import { LoggerService } from './logger/logger.service';
+
+@Injectable()
+export class AppService {
+  constructor(private readonly logger: LoggerService) {
+    this.logger.setPrefix('AppService');
+  }
+  getHello(): string {
+    this.logger.log('Hello World');
+    return 'Hello World!';
+  }
+}
+</code></pre>
+<p>Service 这一个词有些误导人，但可以把它理解为可复用代码</p>
+<p>再执行 curl:</p>
+<pre class="one-piece"><code>curl localhost:3003
+</code></pre>
+<p>下一步就是将 <code>this.logger.setPrefix</code> 用修饰器替代掉</p>
+<p>创建 src/logger/logger.decorator.ts</p>
+<pre class="one-piece"><code>export const prefixesForLoggers: string[] = new Array&lt;string&gt;();
+
+export function Logger(prefix = '') {
+  if (!prefixesForLoggers.includes(prefix)) {
+    prefixesForLoggers.push(prefix);
+  }
+  return Inject(`LoggerService${prefix}`);
+}
+</code></pre>
+<p>这是一个装饰器，被 evaluate 之后返回一个 <code>Inject()</code></p>
+<p>创建 src/logger/logger.providers.ts</p>
+<pre class="one-piece"><code>function loggerFactory(logger: LoggerService, prefix: string) {
+  if (prefix) {
+    logger.setPrefix(prefix);
+  }
+  return logger;
+}
+
+function createLoggerProvider(prefix: string): Provider&lt;LoggerService&gt; {
+  return {
+    provide: `LoggerService${prefix}`,
+    useFactory: (logger) =&gt; loggerFactory(logger, prefix),
+    inject: [LoggerService],
+  };
+}
+
+export function createLoggerProviders(): Array&lt;Provider&lt;LoggerService&gt;&gt; {
+  return prefixesForLoggers.map((prefix) =&gt; createLoggerProvider(prefix));
+}
+</code></pre>
+<p>这里有些不好理解的地方，可以看出，关键函数是 <code>createLoggerProviders</code>, 这个函数返回一组 provider, 每个 provider 的结构如下：</p>
+<pre class="one-piece"><code>{
+    provide: `LoggerService${prefix}`,
+    useFactory: (logger) =&gt; loggerFactory(logger, prefix),
+    inject: [LoggerService],
+};
+</code></pre>
+<p>我们知道 <code>provide</code> 就是一个索引，但 <code>useFactory</code> 和 <code>inject</code> 是很陌生的概念。</p>
+<p>接下来看如何使用关键函数 <code>createLoggerProviders</code>:</p>
+<pre class="one-piece"><code>const loggerProviders = createLoggerProviders();
+
+@Module({
+  providers: [LoggerService, ...loggerProviders],
+  exports: [LoggerService, ...loggerProviders],
+})
+export class LoggerModule {}
+</code></pre>
+<p>首先创建一组 providers, 然后放在 <code>@Module()</code> 修饰器的参数列表中</p>
+<p>把 AppService 改成：</p>
+<pre class="one-piece"><code>@Injectable()
+export class AppService {
+  constructor(@Logger('AppService') private logger: LoggerService) {}
+  getHello(): string {
+    this.logger.log('Hello World');
+    return 'Hello World!';
+  }
+}
+</code></pre>
+<p>这么做省了哪些步骤？</p>
+<pre class="one-piece"><code>-  constructor(private readonly logger: LoggerService) {
+-    this.logger.setPrefix('AppService');
+-  }
++  constructor(@Logger('AppService') private logger: LoggerService) 
+</code></pre>
+<p>确实，代码得到了更好的封装</p>
+<p>但其实还能做得更好，将 src/logger/logger.providers.ts 改成：</p>
+<pre class="one-piece"><code>-@Module({
+-  providers: [LoggerService, ...loggerProviders],
+-  exports: [LoggerService, ...loggerProviders],
+-})
+-export class LoggerModule {}
++export class LoggerModule {
++  static forRoot(): DynamicModule {
++    const prefixedLoggerProviders = createLoggerProviders();
++    return {
++      module: LoggerModule,
++      providers: [LoggerService, ...prefixedLoggerProviders],
++      exports: [LoggerService, ...prefixedLoggerProviders],
++    };
++  }
++}
+</code></pre>
+<p>也就是将 <code>@Module()</code> 去掉，换成一个 <code>forRoot()</code> 函数，返回一个 DynamicModule, 如此对比 <code>@Module()</code> 就是 static module</p>
+<p>注意 <code>forRoot()</code> 只是一个惯用名，可以用其他名字：</p>
+<blockquote>
+<p>can have any arbitrary name, but by convention we should call it either <code>forRoot()</code> or <code>register()</code></p>
+</blockquote>
+<p>更新 app.module.ts:</p>
+<pre class="one-piece"><code> @Module({
+-  imports: [CatsModule, LoggerModule],
++  imports: [CatsModule, LoggerModule.forRoot()],
+   controllers: [AppController],
+   providers: [
+</code></pre>
+<p>以上我们能获取哪些信息？</p>
+<ol>
+<li>import 是用来 import module 的，<code>imports</code> 这一键(field) 既可以写死的，也可以是动态生成的，而这种动态生成看似和写死没什么区别，实际上一旦允许列表元素在编译的时候执行，就意味着可以和外界交互，这实际上是打开了一扇门，多了许多可能性。</li>
+</ol>
+<h2 id="另外一个例子：configmodule" tabindex="-1">另外一个例子：ConfigModule</h2>
+<p>看官方文档的例子：<a href="https://github.com/nestjs/nest/blob/master/sample/25-dynamic-modules/src/main.ts">https://github.com/nestjs/nest/blob/master/sample/25-dynamic-modules/src/main.ts</a></p>
+<p>src/app.module.ts</p>
+<pre class="one-piece"><code>@Module({
+  imports: [ConfigModule.register({ folder: './config' })],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+</code></pre>
+<p>此处引用了 <code>ConfigModule.register()</code> 的产物，意味着在整个 AppModule(包括了 app.controller.ts, app.service.ts) 都可以使用 ConfigModule</p>
+<p>比如 app.service.ts:</p>
+<pre class="one-piece"><code>@Injectable()
+export class AppService {
+  private helloMessage: string;
+
+  constructor(configService: ConfigService) {
+    this.helloMessage = configService.get('HELLO_MESSAGE');
+  }
+
+  getHello(): string {
+    return this.helloMessage;
+  }
+}
+</code></pre>
+<p>这时候我们要追踪到 ConfigModule, 看它如何实现 <code>register()</code></p>
+<p>首先看 src/config/config.module.ts</p>
+<pre class="one-piece"><code>export interface ConfigModuleOptions {
+  folder: string;
+}
+
+@Module({})
+export class ConfigModule {
+  static register(options: ConfigModuleOptions): DynamicModule {
+    return {
+      module: ConfigModule,
+      providers: [
+        {
+          provide: CONFIG_OPTIONS,
+          useValue: options,
+        },
+        ConfigService,
+      ],
+      exports: [ConfigService],
+    };
+  }
+}
+</code></pre>
+<p>看返回值：</p>
+<pre class="one-piece"><code>{
+	module: ConfigModule,
+    providers: [
+	    {
+          provide: CONFIG_OPTIONS,
+          useValue: options,
+        },
+        ConfigService,
+      ],
+      exports: [ConfigService],
+};
+</code></pre>
+<p>可以看到有两个 provider:</p>
+<ul>
+<li><code>CONFIG_OPTIONS</code></li>
+<li><code>ConfigService</code></li>
+</ul>
+<p>我们已经看到第二个的使用场景：</p>
+<pre class="one-piece"><code>@Injectable()
+export class AppService {
+  private helloMessage: string;
+
+  constructor(configService: ConfigService) {
+    this.helloMessage = configService.get('HELLO_MESSAGE');
+  }
+
+  getHello(): string {
+    return this.helloMessage;
+  }
+}
+</code></pre>
+<p>第一个比较不好理解：</p>
+<pre class="one-piece"><code>constructor(@Inject(CONFIG_OPTIONS) options: ConfigOptions) {
+    const filePath = `${process.env.NODE_ENV || 'development'}.env`;
+    const envFile = path.resolve(__dirname, '../../', options.folder, filePath);
+    this.envConfig = dotenv.parse(fs.readFileSync(envFile));
+  }
+</code></pre>
+<p>怎么说呢，<code>@Inject(CONFIG_OPTIONS)</code> 指定了 options 就是以下配置的 options:</p>
+<pre class="one-piece"><code>{
+    provide: CONFIG_OPTIONS,
+    useValue: options,
+},
+</code></pre>
+<p>这个 <code>options</code> 是 <code>ConfigModule.register({ folder: './config' })</code> 中的</p>
+<pre class="one-piece"><code>{
+	folder: './config'
+}
+</code></pre>
+<p>我们也可以看到这一行：</p>
+<pre class="one-piece"><code>const envFile = path.resolve(__dirname, '../../', options.folder, filePath);
+</code></pre>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

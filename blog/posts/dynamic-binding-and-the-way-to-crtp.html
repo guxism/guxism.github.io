@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>从动态绑定到奇异递归模板模式</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>从动态绑定到奇异递归模板模式</h1>
+        <p>From Dynamic Binding To Curious Recurring Template Pattern.</p>
+<h2 id="dynamic-binding" tabindex="-1">Dynamic Binding</h2>
+<h3 id="形式-1" tabindex="-1">形式 1</h3>
+<ul>
+<li>声明一个函数指针</li>
+<li>在运行的时候将函数作为右手边的值 (rhs) 赋予该函数指针</li>
+</ul>
+<h3 id="形式-2" tabindex="-1">形式 2</h3>
+<p>C++ virtual function.</p>
+<pre class="one-piece"><code>struct B {
+    virtual void func1() {}
+    virtual void func2() {}
+};
+
+struct D1 : B {
+    void func2() {}
+};
+
+struct D2 : B {};
+
+int main() {
+    B* p1 = new D1;
+    B* p2 = new D2;
+    p1-&gt;func2();
+    p2-&gt;func1();
+}
+</code></pre>
+<p>其中 <code>p1-&gt;func()</code> 的汇编是：</p>
+<pre class="one-piece"><code>movq    -24(%rbp), %rax   ; load p1 to rax
+movq    (%rax), %rax      ; dereference p1 to *p1, which is a table
+addq    $8, %rax          ; calculate the address of the 2nd entry
+movq    (%rax), %rdx      ; get the content of the 2nd entry
+movq    -24(%rbp), %rax   ; load p1 to rax
+movq    %rax, %rdi        ; let p1 be the first argument
+call    *%rdx             ; jump to that said 2nd entry
+</code></pre>
+<p>从汇编可以看出，执行虚函数的时候，首先加载一张表，找到对应的函数地址，再跳过去，这也叫动态绑定，因为不确定程序在跟外界交互的时候，外界做出什么选择，程序要创建哪个派生类，所以所有派生类的方法调用，都需要先查找虚表。</p>
+<h2 id="static-binding" tabindex="-1">Static Binding</h2>
+<p>目的：消除虚表的花销</p>
+<h2 id="curious-recurring-template-pattern" tabindex="-1">Curious Recurring Template Pattern</h2>
+<p>来自 <a href="https://en.cppreference.com/w/cpp/language/crtp">https://en.cppreference.com/w/cpp/language/crtp</a> 的例子：</p>
+<pre class="one-piece"><code>template &lt;class Derived&gt;
+struct Base { void name() { (static_cast&lt;Derived*&gt;(this))-&gt;impl(); } };
+ 
+struct D1 : public Base&lt;D1&gt; { void impl() { std::cout &lt;&lt; "D1::impl()\n"; } };
+struct D2 : public Base&lt;D2&gt; { void impl() { std::cout &lt;&lt; "D2::impl()\n"; } };
+ 
+int main()
+{
+    Base&lt;D1&gt; b1; b1.name();
+    Base&lt;D2&gt; b2; b2.name();
+ 
+    D1 d1; d1.name();
+    D2 d2; d2.name();
+}
+</code></pre>
+<p>根据 <a href="https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Curiously_Recurring_Template_Pattern">https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Curiously_Recurring_Template_Pattern</a> ，这种模式也叫做：</p>
+<ul>
+<li>CRTP</li>
+<li>Mixin-from-above</li>
+<li>Static polymorphism</li>
+<li>Simulated dynamic binding</li>
+<li>Upside-down Inheritance</li>
+</ul>
+<p>这些词让人望而生畏，一一解释如下：</p>
+<ol>
+<li>了解 dynamic binding 之后就知道 Simulated dynamic binding, 因为 <code>Base* p</code> 和 <code>Base&lt;D&gt; b</code> 存在一种形式上的相似</li>
+<li>Static polymorphism, 因为它涉及到继承，继承(所以)多态(必要不充分条件)，另外 <code>Base&lt;D&gt; b</code> 看起来就像 <code>Base* p</code></li>
+<li>Mixin-from-above，从<a href="/e/public/posts/cpp-traits.html#c%2B%2B-mixin">这篇文章</a>来看：<code>Base&lt;Derived&gt;</code> 是 mixin class，<code>Derived</code> 从 <code>Base&lt;Derived&gt;</code> 中试图获取方法，但发现方法的实现其实依赖 <code>Derived</code> 自己本身，我不理解为什么叫做 above, 难道正常的 mixin 是 from below? Base, 基础，地基，所以是 below? 在我们眼中基类是 root。如果强调派生类建立在基类的基础上，那么，派生类确实是 above。</li>
+<li>Upside-down Inheritance: <code>Derived: Base&lt;Derived&gt;</code> 是 upside down, 这是因为先有 <code>Derived</code>，后有 <code>Base</code>。如果没有 <code>Derived</code>，编译器是不会去展开模板 <code>template&lt;typename D&gt; Base</code> 的，<code>Base</code> 能存在完全是拜 Upside， 即 <code>Derived</code> 所赐。</li>
+</ol>
+<p><img src="images/0xfeff_703cc7f74816428cab063f006dec3905.png" alt=""></p>
+<p>图：你透过<code>&lt;&gt;</code> 去摸索实现，没想到摸到自己</p>
+<p>以上可能存在曲解。</p>
+<p>为什么关心这个模式？因为以前在 ClickHouse 源码看到许多这种代码，这种代码在其他地方并不常见，所以我的问题是，这么做有什么好处？<code>Base&lt;D1&gt; b1</code> 可以和 <code>Base* p</code> 可以互相拿来类比吗？</p>
+<p>好处之一当然是避免虚函数。坏处是，你不能用一个数组管理派生类对象：<code>vector&lt;Base*&gt;</code>, 但这个很重要吗？</p>
+<p>不重要，Bash 没有多态，也照样能写代码。</p>
+<p>多态主要用来写这种接口：</p>
+<pre class="one-piece"><code>void func(Base *);
+</code></pre>
+<p>这种接口可以用模板模拟：</p>
+<pre class="one-piece"><code>template&lt;typename T&gt;
+void func(T &amp;);
+</code></pre>
+<p>如果用 CRTP, 那就是：</p>
+<pre class="one-piece"><code>template&lt;typename T&gt;
+void func(Base&lt;T&gt; &amp;);
+</code></pre>
+<p><code>Base&lt;T&gt;</code> 加了一层约束，使用这个模板的类型要么就是 <code>Base&lt;T&gt;</code>, 要么就是 <code>Base&lt;T&gt;</code> 的派生类，前者只是普通的泛型接口, 后者使用了 static polymorphism</p>
+<p>也就是说在 <code>Base&lt;T&gt;</code> 实现大量功能，充当 mixin class，但这不足以推导出 <code>T: Base&lt;T&gt;</code></p>
+<p>后者也许是在<a href="https://3aec1b23-a-eadc3f87-s-sites.googlegroups.com/a/gertrudandcope.com/info/Publications/InheritedTemplate.pdf?attachauth=ANoY7cp-2WpHUdTLk-zUr7ToLQ4xhWWPokjDO0G8ZChc2iOy2s5r7pTYh2EZqM9PXnQzp2z7qOR7pSrivBfdL_DAvFI160hBSuRdu5vWINuW90CjMLkN10LyJVynBV-LrUNhfqzfhJ-mtg47rIgjh7W64PPJTmzdl1DBR9L_CdY7zBeIwgDEK6NmU8x1lEGTMoKByMqkSzHaCz0SPrdVslGk1zxjYvFJ3HM8pCuEnrJJ7ZbhD3UHI0s%3D&amp;attredirects=0">电光石火的灵感</a>中产生的，这篇论文是 1995 年写的，作者考究了 CRTP 的起源和应用，发现 CRTP 不限于 C++，在其他语言也能找到应用，作者的结论是：Pattern, idiom, or coincidence? time will tell.</p>
+<p><a href="https://en.cppreference.com/w/cpp/memory/enable_shared_from_this"><code>enable_shared_from_this</code></a>用了这种模式，因为它是现代 C++，而且距离我们最近(<code>shared_ptr</code> 很常用吧？)，所以学习它的例子很有必要。</p>
+<p>为了不重复抄代码，我想到一个应用场景：</p>
+<pre class="one-piece"><code>template &lt;typename Behavior&gt; struct must_die_of_something
+{
+    void cause_of_death() { impl()-&gt;tell(); }
+    Behavior *impl() { return static_cast&lt;Behavior *&gt;(this); }
+};
+
+struct Smoking : must_die_of_something&lt;Smoking&gt;
+{
+    void tell() { lzlog("Lung cancer", s); }
+};
+
+struct Running : must_die_of_something&lt;Running&gt;
+{
+    void tell() { lzlog("Knee Injury", s); }
+};
+
+struct Promiscuity : must_die_of_something&lt;Promiscuity&gt;
+{
+    void tell() { lzlog("HIV", s); }
+};
+
+int main() {
+    must_die_of_something&lt;Smoking&gt; smoker;
+    must_die_of_something&lt;Running&gt; runner;
+    must_die_of_something&lt;Promiscuity&gt; probably_you;
+    smoker.cause_of_death();
+    runner.cause_of_death();
+    probably_you.cause_of_death();
+}
+</code></pre>
+<p>Ok, so what?</p>
+<h2 id="clickhouse-中的应用" tabindex="-1">ClickHouse 中的应用</h2>
+<p>声明一个 <code>Column</code>, mixin 了大量 <code>COW</code> 的特征</p>
+<pre class="one-piece"><code>    class Column : public COW&lt;Column&gt;
+    {
+    private:
+        friend class COW&lt;Column&gt;;
+        Column();
+        virtual Column * clone() const;
+    public:
+        virtual ~Column() {}
+    };
+	
+</code></pre>
+<p>其中 <code>COW</code> 的实现为：</p>
+<pre class="one-piece"><code>template &lt;typename Derived&gt;
+class COW : public boost::intrusive_ref_counter&lt;Derived&gt;;
+</code></pre>
+<p>创建一个 Helper 类：</p>
+<pre class="one-piece"><code>class IColumn : public COW&lt;IColumn&gt;
+{
+	friend class COW&lt;IColumn&gt;;
+	virtual MutablePtr clone() const = 0;
+	virtual ~IColumn() {}
+};
+class ConcreteColumn : public COWHelper&lt;IColumn, ConcreteColumn&gt;
+{
+	friend class COWHelper&lt;IColumn, ConcreteColumn&gt;;
+};
+
+template &lt;typename Base, typename Derived&gt;
+class COWHelper : public Base
+{
+private:
+    Derived * derived() { return static_cast&lt;Derived *&gt;(this); }
+    const Derived * derived() const { return static_cast&lt;const Derived *&gt;(this); }
+}
+</code></pre>
+<p>结构：<br>
+<img src="images/0xfeff_e9b733c9666348d2a3a105788a51066a.png" alt=""></p>
+<p>也就是说 <code>ConcretColumn</code> mixin 了 <code>COWHelper</code>，但 <code>ConcretColumn</code> 有自己的一些方法，接着，<code>CowHelper</code> 依赖 <code>IColumn</code> 的代码，<code>IColumn</code> 需要 <code>COW</code>， copy-on-write 特征，后者需要 boost 的引用记数。</p>
+<p>这就是 ClickHouse 的代码让人难以忘怀的原因。</p>
+<h2 id="结论" tabindex="-1">结论</h2>
+<p>如果我要用这种模式，首先我需要整合重复代码到一个 Base 类，Base 类先写需要哪些 Derived 接口，其他 Derived 类按照需求实现。不直接使用 Derived，而是将 Derived 类型传入 Based 类，以 <code>Base&lt;Derived&gt;</code> 的形式使用，模拟动态绑定，由于 <code>Base&lt;Derived&gt;</code> 恰好就是 <code>Derived</code> 的基类/父类，因此这种方法叫做 static polymorphism。</p>
+<h2 id="参考" tabindex="-1">参考</h2>
+<ul>
+<li><a href="https://www.fluentcpp.com/2017/05/12/curiously-recurring-template-pattern/">https://www.fluentcpp.com/2017/05/12/curiously-recurring-template-pattern/</a></li>
+<li><a href="https://www.fluentcpp.com/2017/12/12/mixin-classes-yang-crtp/">https://www.fluentcpp.com/2017/12/12/mixin-classes-yang-crtp/</a></li>
+<li><a href="https://eli.thegreenplace.net/2013/12/05/the-cost-of-dynamic-virtual-calls-vs-static-crtp-dispatch-in-c">https://eli.thegreenplace.net/2013/12/05/the-cost-of-dynamic-virtual-calls-vs-static-crtp-dispatch-in-c</a></li>
+<li><a href="https://eli.thegreenplace.net/2011/05/17/the-curiously-recurring-template-pattern-in-c/">https://eli.thegreenplace.net/2011/05/17/the-curiously-recurring-template-pattern-in-c/</a></li>
+<li><a href="https://3aec1b23-a-eadc3f87-s-sites.googlegroups.com/a/gertrudandcope.com/info/Publications/InheritedTemplate.pdf?attachauth=ANoY7cp-2WpHUdTLk-zUr7ToLQ4xhWWPokjDO0G8ZChc2iOy2s5r7pTYh2EZqM9PXnQzp2z7qOR7pSrivBfdL_DAvFI160hBSuRdu5vWINuW90CjMLkN10LyJVynBV-LrUNhfqzfhJ-mtg47rIgjh7W64PPJTmzdl1DBR9L_CdY7zBeIwgDEK6NmU8x1lEGTMoKByMqkSzHaCz0SPrdVslGk1zxjYvFJ3HM8pCuEnrJJ7ZbhD3UHI0s%3D&amp;attredirects=0">一篇 1995 年的论文</a></li>
+</ul>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

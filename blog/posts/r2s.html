@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>A Network System</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>A Network System</h1>
+        <h2 id="2020" tabindex="-1">2020</h2>
+<p>Year 2020, a friend of mine carried out an network experiemnt on his routers. I don't know the detail and motive of his endervor because I am a pretty dumb person. To me the experiement is just a show of putting a bunch of software together and make them cooperate, but it is marvelous, who would have thought one can replicate the complication of distributed system on a tiny router. Almostly simutaneously, have it occured to you that the driving force is also the gift of all human? After the experiement I asked my friend some questions and wrote the post, you may say this is an interview report.</p>
+<p><img src="images/0xfeff_04e9998d0c0f4a0ba0454559ac79a402.png" alt=""></p>
+<p>The handwriting is almost unrecognizable, but it is an evident of the interview. I hope this helps for those who want to study distributed system and networking but can't afford expensive hardware except a cheap little embedded device.</p>
+<h2 id="disable-systemd-resolved" tabindex="-1">Disable systemd-resolved</h2>
+<p>Disable systemd-resolved，then set <code>dnsmasq</code> to be the default DNS process。</p>
+<pre class="one-piece"><code>sudo systemctl disable systemd-resolved
+sudo systemctl stop systemd-resolved
+</code></pre>
+<p>remove resolv.conf</p>
+<pre class="one-piece"><code># ls -lh /etc/resolv.conf 
+lrwxrwxrwx 1 root root 39 Jan 15  2020 /etc/resolv.conf -&gt; ../run/systemd/resolve/stub-resolv.conf
+# rm /etc/resolv.conf
+</code></pre>
+<h2 id="dnsmasq" tabindex="-1">dnsmasq</h2>
+<p>Build DNS Cache Services with dnsmasq, whose upstreams includes 2 DNS:</p>
+<ul>
+<li><a href="https://github.com/shadowsocks/ChinaDNS/blob/9e4261c78e911851f76a9b9113d48fcdc44ce32e/src/chinadns.c#L79">ChinaDNS</a></li>
+<li>FOREIGN DNS, accessed via ss-tunnel</li>
+</ul>
+<pre class="one-piece"><code>apt install dnsmasq
+</code></pre>
+<p>Edit <code>/etc/dnsmasq.conf</code></p>
+<pre class="one-piece"><code>no-resolv
+server=127.0.0.1#5353
+</code></pre>
+<p><code>5353</code> is ChinaDNS's listening port</p>
+<p>start ChinaDNS, and then dnsmasq</p>
+<pre class="one-piece"><code>systemctl start dnsmasq
+</code></pre>
+<h2 id="chinadns" tabindex="-1">ChinaDNS</h2>
+<pre class="one-piece"><code>wget https://github.com/shadowsocks/ChinaDNS/releases/download/1.3.2/chinadns-1.3.2.tar.gz
+tar zxvf chinadns-1.3.2.tar.gz
+./configure &amp;&amp; make
+cp ./src/chinadns /usr/local/bin/
+mkdir -p /etc/antigfw
+cp chnroute.txt /etc/antigfw
+</code></pre>
+<p>then launch it</p>
+<pre class="one-piece"><code>chinadns -c /etc/antigfw/chnroute.txt -m -p 5353 -s 114.114.114.114,127.0.0.1:5300
+</code></pre>
+<p>where:</p>
+<ol>
+<li>114.114.114.114 is a domestic DNS</li>
+<li>127.0.0.1:5300 the way to foreign DNS</li>
+</ol>
+<p>wrap it to a systemd service</p>
+<pre class="one-piece"><code>[Install]
+WantedBy=multi-user.target
+[Unit]
+Description="CHINADNS"
+Wants=network.target network-online.target
+After=network.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/chinadns -c /etc/antigfw/chnroute.txt -m -p 5353 -s 114.114.114.114,127.0.0.1:5300
+
+</code></pre>
+<pre class="one-piece"><code>systemctl enable chinadns.service
+systemctl start chinadns.service
+</code></pre>
+<h2 id="ss-tunnel" tabindex="-1">ss-tunnel</h2>
+<p>ss-tunnel is used for port forwarding</p>
+<p>create a config file: <code>vim /etc/antigfw/ss-tunnel.json</code></p>
+<p>see <a href="https://man.archlinux.org/man/community/shadowsocks-libev/shadowsocks-libev.8.en">archlinux manpage</a> for more information</p>
+<pre class="one-piece"><code>{
+    "server": "?",
+    "server_port": ?,
+    "local_address": "0.0.0.0",
+    "local_port": 5300,
+    "password": "?",
+    "timeout": 300,
+    "method": "?",
+    "tunnel_address": "8.8.8.8:53"
+    "no_delay": true,
+    "reuse_port": true,
+    "mode": "tcp_and_udp"
+
+}
+</code></pre>
+<pre class="one-piece"><code>ss-tunnel -c /etc/antigfw/ss-tunnel.json
+</code></pre>
+<p>test:</p>
+<pre class="one-piece"><code>root@NanoPi-R2S:~# dig google.com @127.0.0.1 -p 5300
+
+; &lt;&lt;&gt;&gt; DiG 9.11.3-1ubuntu1.14-Ubuntu &lt;&lt;&gt;&gt; google.com @127.0.0.1 -p 5300
+;; global options: +cmd
+;; Got answer:
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 26030
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+;; QUESTION SECTION:
+;google.com.			IN	A
+
+;; ANSWER SECTION:
+google.com.		167	IN	A	172.217.174.110
+
+;; Query time: 63 msec
+;; SERVER: 127.0.0.1#5300(127.0.0.1)
+;; WHEN: Mon Mar 01 09:43:47 UTC 2021
+;; MSG SIZE  rcvd: 55
+
+</code></pre>
+<p>systemd service</p>
+<pre class="one-piece"><code>[Install]
+WantedBy=multi-user.target
+[Unit]
+Description="ss-tunnel"
+Wants=network.target network-online.target
+After=network.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ss-tunnel -c /etc/antigfw/ss-tunnel.json
+
+</code></pre>
+<h2 id="enable-ip-forwarding" tabindex="-1">Enable IP Forwarding</h2>
+<p>Edit /etc/sysctl.conf</p>
+<pre class="one-piece"><code>net.ipv4.ip_forward=1
+</code></pre>
+<p>restart:</p>
+<pre class="one-piece"><code>sysctl -p
+</code></pre>
+<h2 id="ss-redir" tabindex="-1">ss-redir</h2>
+<pre class="one-piece"><code># cat /etc/antigfw/ss-redir.json 
+{
+    "server": "?",
+    "server_port": ?,
+    "local_address": "0.0.0.0",
+    "local_port": 60080,
+    "password": "?",
+    "timeout": 300,
+    "method": "?",
+    "fast_open": true,
+    "mode": "tcp_and_udp"
+}
+
+</code></pre>
+<p>systemd service</p>
+<pre class="one-piece"><code>[Install]
+WantedBy=multi-user.target
+[Unit]
+Description="ss-redir"
+Wants=network.target network-online.target
+After=network.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ss-redir -c /etc/antigfw/ss-redir.json
+</code></pre>
+<h2 id="ipset-iptables-ip-route" tabindex="-1">ipset, iptables, ip route</h2>
+<p>Update the list of domestic IPs</p>
+<pre class="one-piece"><code>curl https://raw.githubusercontent.com/misakaio/chnroutes2/master/chnroutes.txt | egrep -v '^\s*$|^\s*#' &gt; chnip.txt
+ipset -N chnip hash:net
+cat chnip.txt | xargs -n1 echo add chnip &gt; chnip.ipset
+ipset -R &lt; chnip.ipset
+
+# let it be permanent
+ipset -S chnip &gt; /etc/ipset.chnip
+</code></pre>
+<p>create file <code>vim /etc/antigfw/tp.sh</code></p>
+<pre class="one-piece"><code>set -euxo
+
+
+##################### Configuration #####################
+SS_SERVER_IP=
+SS_SERVER_PORT=
+SQUID_PORT=3128
+PRIVOXY_PORT=8118
+SS_LOCAL_PORT=1080
+TROJAN_LOCAL_PORT=1090
+SS_TUNNEL_PORT=5300
+SS_REDIR_PORT=60080
+
+#################### CLEAN UP #####################
+# iptables
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -t mangle -F OUTPUT
+iptables -t mangle -F PREROUTING
+iptables -t mangle -F SSREDIR || true
+iptables -t mangle -X SSREDIR || true
+# ipset
+ipset flush chnip || true
+ipset x chnip || true
+# policy routing
+ip rule del fwmark 0x2333/0x2333 lookup 100
+ip route flush table 100
+ip route flush cache
+
+#################### ipset ####################
+/sbin/ipset -N chnip hash:net
+/sbin/ipset -R &lt; /etc/antigfw/chnip.ipset
+
+##################### SSREDIR #####################
+iptables -t mangle -N SSREDIR
+
+############################# PREROUTING ###########################################
+# any traffic that is not meant to the system itself is then forwarded to SSREDIR
+iptables -t mangle -A PREROUTING -p tcp -m addrtype ! --src-type LOCAL ! --dst-type LOCAL -j SSREDIR
+iptables -t mangle -A PREROUTING -p udp -m addrtype ! --src-type LOCAL ! --dst-type LOCAL -j SSREDIR
+
+# connection-mark -&gt; packet-mark
+# any traffic that is marked to be forwarded will not be examinated once more
+iptables -t mangle -A SSREDIR -j CONNMARK --restore-mark
+iptables -t mangle -A SSREDIR -m mark --mark 0x2333 -j RETURN
+
+# ignore traffic sent to ss-server
+iptables -t mangle -A SSREDIR -p tcp -d ${SS_SERVER_IP} -j RETURN
+iptables -t mangle -A SSREDIR -p udp -d ${SS_SERVER_IP} -j RETURN
+
+# let go of domestic traffic(in other words, packets whose destination is within "chnip")
+iptables -t mangle -A SSREDIR -m set --match-set chnip dst -j RETURN
+
+# ignore traffic sent to reserved addresses
+iptables -t mangle -A SSREDIR -d 0.0.0.0/8 -j RETURN
+iptables -t mangle -A SSREDIR -d 10.0.0.0/8 -j RETURN
+iptables -t mangle -A SSREDIR -d 100.64.0.0/10 -j RETURN
+iptables -t mangle -A SSREDIR -d 127.0.0.0/8 -j RETURN
+iptables -t mangle -A SSREDIR -d 169.254.0.0/16 -j RETURN
+iptables -t mangle -A SSREDIR -d 172.16.0.0/12 -j RETURN
+iptables -t mangle -A SSREDIR -d 192.0.0.0/24 -j RETURN
+iptables -t mangle -A SSREDIR -d 192.0.2.0/24 -j RETURN
+iptables -t mangle -A SSREDIR -d 192.88.99.0/24 -j RETURN
+iptables -t mangle -A SSREDIR -d 192.168.0.0/16 -j RETURN
+iptables -t mangle -A SSREDIR -d 198.18.0.0/15 -j RETURN
+iptables -t mangle -A SSREDIR -d 198.51.100.0/24 -j RETURN
+iptables -t mangle -A SSREDIR -d 203.0.113.0/24 -j RETURN
+iptables -t mangle -A SSREDIR -d 224.0.0.0/4 -j RETURN
+iptables -t mangle -A SSREDIR -d 240.0.0.0/4 -j RETURN
+iptables -t mangle -A SSREDIR -d 255.255.255.255/32 -j RETURN
+
+# mark the first packet of the connection
+iptables -t mangle -A SSREDIR -p tcp --syn -j MARK --set-mark 0x2333
+iptables -t mangle -A SSREDIR -p udp -m conntrack --ctstate NEW -j MARK --set-mark 0x2333
+
+# packet-mark -&gt; connection-mark
+iptables -t mangle -A SSREDIR -j CONNMARK --save-mark
+
+# hand over the marked package to TPROXY for processing
+# only usable from PREROUTING
+iptables -t mangle -A PREROUTING -p tcp -m mark --mark 0x2333 -j TPROXY --on-port ${SS_REDIR_PORT}
+iptables -t mangle -A PREROUTING -p udp -m mark --mark 0x2333 -j TPROXY --on-port ${SS_REDIR_PORT}
+
+
+##################### OUTPUT #####################
+# proxy the outgoing traffic from this machine;
+# the outgoing traffic(whose src addr is local but dest addr is not)
+# is forwarded to SSREDIR
+iptables -t mangle -A OUTPUT -p tcp -m addrtype --src-type LOCAL ! --dst-type LOCAL -j SSREDIR
+iptables -t mangle -A OUTPUT -p udp -m addrtype --src-type LOCAL ! --dst-type LOCAL -j SSREDIR
+
+# Policy Routing
+ip rule add fwmark 0x2333/0x2333 lookup 100
+ip route add local 0.0.0.0/0 dev lo table 100
+ip route flush cache
+
+</code></pre>
+<p>This is a oneshot systemd service</p>
+<pre class="one-piece"><code>[Unit]
+Description=Transparent Proxy Selector
+#After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /etc/antigfw/tp.sh
+RemainAfterExit=true
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
+
+</code></pre>
+<h2 id="explicit-proxy" tabindex="-1">Explicit Proxy</h2>
+<p>For some reason, my friend decided to support devices where only http proxy is available.</p>
+<h3 id="ss-local" tabindex="-1">ss-local</h3>
+<pre class="one-piece"><code>╰─➤ apt install shadowsocks-libev  
+╰─➤ cat /etc/shadowsocks/1080.json   
+{  
+ "server": "?",  
+ "server_port": ?,  
+ "local_address": "0.0.0.0",  
+ "local_port": 1080,  
+ "password": "?",  
+ "timeout": 300,  
+ "method": "?",  
+ "fast_open": true,  
+ "workers": 1  
+}  
+╰─➤ cat /etc/systemd/system/sslocal-1080.service   
+[Install]  
+WantedBy=multi-user.target  
+[Unit]  
+Description="SS"  
+Wants=network.target network-online.target  
+After=network.target network-online.target  
+
+[Service]  
+Type=simple  
+ExecStart=/usr/bin/ss-local -c /etc/shadowsocks/1080.json  
+
+╰─➤ systemctl enable sslocal-1080.service  
+╰─➤ systemctl start sslocal-1080.service
+</code></pre>
+<h3 id="privoxy" tabindex="-1">PRIVOXY</h3>
+<pre class="one-piece"><code>╰─➤ apt install privoxy
+</code></pre>
+<p>create file <code>vim /etc/privoxy/config</code></p>
+<pre class="one-piece"><code>listen-address  0.0.0.0:8118  
+forward-socks5  /   127.0.0.1:1080  .
+</code></pre>
+<p>test:</p>
+<pre class="one-piece"><code>╰─➤ http_proxy=${r2s-ip}:8118 wget google.com
+</code></pre>
+<h3 id="squid" tabindex="-1">SQUID</h3>
+<p>download this script: <a href="https://github.com/cokebar/gfwlist2dnsmasq">gfwlist2dnsmasq</a> to run it to generate a list of domains blocked by GFW.</p>
+<pre class="one-piece"><code>./gfwlist2dnsmasq.sh -l -o gfw_domains.lst
+</code></pre>
+<p>Write a script to generate squid dstdomain:</p>
+<pre class="one-piece"><code>import tldextract
+import sys
+
+gfw_domains = sys.argv[1]
+output = sys.argv[2]
+
+with open(gfw_domains) as f, open(output, "w") as w:
+    for d in f:
+        (subdomain, domain, suffix) = tldextract.extract(d)
+        if subdomain == '':
+            w.write(".{}.{}\n".format(domain, suffix))
+
+</code></pre>
+<p>It is cumbersome and boring to get it done.</p>
+<pre class="one-piece"><code>#
+# Recommended minimum configuration:
+#
+
+# Example rule allowing access from your local networks.
+# Adapt to list your (internal) IP networks from where browsing
+# should be allowed
+acl local_clients src 0.0.0.1-0.255.255.255	# RFC 1122 "this" network (LAN)
+acl local_clients src 10.0.0.0/8		# RFC 1918 local private network (LAN)
+acl local_clients src 100.64.0.0/10		# RFC 6598 shared address space (CGN)
+acl local_clients src 169.254.0.0/16 	# RFC 3927 link-local (directly plugged) machines
+acl local_clients src 172.16.0.0/12		# RFC 1918 local private network (LAN)
+acl local_clients src 192.168.0.0/16		# RFC 1918 local private network (LAN)
+acl local_clients src fc00::/7       	# RFC 4193 local private network range
+acl local_clients src fe80::/10      	# RFC 4291 link-local (directly plugged) machines
+
+acl SSL_ports port 443
+acl Safe_ports port 80		# http
+acl Safe_ports port 21		# ftp
+acl Safe_ports port 443		# https
+acl Safe_ports port 70		# gopher
+acl Safe_ports port 210		# wais
+acl Safe_ports port 1025-65535	# unregistered ports
+acl Safe_ports port 280		# http-mgmt
+acl Safe_ports port 488		# gss-http
+acl Safe_ports port 591		# filemaker
+acl Safe_ports port 777		# multiling http
+acl CONNECT method CONNECT
+
+acl local_servers dst 0.0.0.1-0.255.255.255	# RFC 1122 "this" network (LAN)
+acl local_servers dst 10.0.0.0/8		# RFC 1918 local private network (LAN)
+acl local_servers dst 100.64.0.0/10		# RFC 6598 shared address space (CGN)
+acl local_servers dst 169.254.0.0/16 	# RFC 3927 link-local (directly plugged) machines
+acl local_servers dst 172.16.0.0/12		# RFC 1918 local private network (LAN)
+acl local_servers dst 192.168.0.0/16		# RFC 1918 local private network (LAN)
+acl local_servers dst fc00::/7       	# RFC 4193 local private network range
+acl local_servers dst fe80::/10      	# RFC 4291 link-local (directly plugged) machines
+
+# never cache local servers
+cache deny local_servers
+cache allow all
+
+
+# privoxy
+acl illegal_domains dstdomain "/etc/antigfw/gfw_domains.lst"
+#acl illegal_domains dstdomain .www.google.com
+cache_peer 127.0.0.1 parent 8118 0 no-query no-digest default name=privoxy
+cache_peer_access privoxy allow
+always_direct allow local_servers
+always_direct allow !illegal_domains
+never_direct allow all
+
+#
+# Recommended minimum Access Permission configuration:
+#
+# Deny requests to certain unsafe ports
+http_access deny !Safe_ports
+
+# Deny CONNECT to other than secure SSL ports
+http_access deny CONNECT !SSL_ports
+
+# Only allow cachemgr access from localhost
+http_access allow localhost manager
+http_access deny manager
+
+# We strongly recommend the following be uncommented to protect innocent
+# web applications running on the proxy server who think the only
+# one who can access services on "localhost" is a local user
+#http_access deny to_localhost
+
+#
+# INSERT YOUR OWN RULE(S) HERE TO ALLOW ACCESS FROM YOUR CLIENTS
+#
+
+# Example rule allowing access from your local networks.
+# Adapt localnet in the ACL section to list your (internal) IP networks
+# from where browsing should be allowed
+http_access allow local_clients
+http_access allow localhost
+
+# And finally deny all other access to this proxy
+http_access deny all
+
+# Squid normally listens to port 3128
+http_port 3128
+
+# Uncomment and adjust the following to add a disk cache directory.
+#cache_dir ufs /usr/local/squid/var/cache/squid 100 16 256
+
+# Leave coredumps in the first cache dir
+cache_effective_user proxy
+coredump_dir /var/cache/squid
+access_log  /var/log/squid/access.log
+#
+# Add any of your own refresh_pattern entries above these.
+#
+refresh_pattern ^ftp:		1440	20%	10080
+refresh_pattern ^gopher:	1440	0%	1440
+refresh_pattern -i (/cgi-bin/|\?) 0	0%	0
+refresh_pattern .		0	20%	4320
+
+</code></pre>
+<h1 id="2022-02-10" tabindex="-1">2022-02-10</h1>
+<p>People are filled with loathing of the distributed system which requires a lot of work to maintain. But they are also too lazy to change it. I am one of them. I always want to try overture but I don't have time.</p>
+<p>Some thing I learn about port forwarding to resist the attack based on ports.</p>
+<pre class="one-piece"><code>sudo iptables -t nat -A PREROUTING -p tcp --dport 12000:12010 -j REDIRECT --to-port 8388
+sudo iptables -t nat -A PREROUTING -p udp --dport 12000:12010 -j REDIRECT --to-port 8388
+</code></pre>
+<h1 id="2022-02-12" tabindex="-1">2022-02-12</h1>
+<p>Well actually someone managed to use overture. Not me. I have broken my router by accidentally spilling water on it.</p>
+<h3 id="overture" tabindex="-1">Overture</h3>
+<pre class="one-piece"><code>wget https://github.com/shawn1m/overture/releases/download/v1.8/overture-linux-arm64.zip
+mkdir overture
+unzip overture-linux-arm64.zip -d overture
+</code></pre>
+<p>create file `/etc/systemd/system/overture.service</p>
+<pre class="one-piece"><code>[Unit]
+Description=A customized DNS relay server
+ConditionFileIsExecutable=/root/overture/overture-linux-arm64
+
+[Service]
+StartLimitInterval=5
+StartLimitBurst=10
+WorkingDirectory=/root/overture/
+ExecStart=/root/overture/overture-linux-arm64 "-c" "/root/overture/config.yaml" "-l" "/root/overture/overture.log"
+
+Restart=always
+
+RestartSec=120
+EnvironmentFile=-/etc/sysconfig/overture
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>Start service:</p>
+<pre class="one-piece"><code>systemctl enable overture
+systemctl start overture
+</code></pre>
+<p>Write a script(/root/overture/update.sh) to automatically update ip lists</p>
+<pre class="one-piece"><code>#! /bin/bash
+cd /root/overture
+rm china_list.txt gfw_list.txt china_ip_list.txt
+curl -s https://raw.githubusercontent.com/17mon/china_ip_list/master/china_ip_list.txt &gt; china_ip_list.txt
+curl -s https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf  | sed 's/server=\///g;s/\/114.114.114.114//g' &gt; china_list1.txt
+curl -s https://raw.githubusercontent.com/hq450/fancyss/master/rules/WhiteList_new.txt  | sed 's/Server=\///g;s/\///g' &gt; china_list2.txt
+cat china_list1.txt china_list2.txt | sort -u &gt; china_list.txt
+rm china_list1.txt china_list2.txt
+curl -s https://raw.githubusercontent.com/Loukky/gfwlist-by-loukky/master/gfwlist.txt | base64 -d | sort -u | sed '/^$\|@@/d'| sed 's#!.\+##; s#|##g; s#@##g; s#http:\/\/##; s#https:\/\/##;' | sed '/\*/d; /apple\.com/d; /sina\.cn/d; /sina\.com\.cn/d; /baidu\.com/d; /qq\.com/d' | sed '/^[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+$/d' | grep '^[0-9a-zA-Z\.-]\+$' | grep '\.' | sed 's#^\.\+##' | sort -u &gt; gfwlist.txt
+curl -s https://raw.githubusercontent.com/hq450/fancyss/master/rules/gfwlist.conf | sed 's/ipset=\/\.//g; s/\/gfwlist//g; /^server/d' &gt; yagfwlist.txt
+cat gfwlist.txt yagfwlist.txt | sort -u &gt; gfw_list.txt
+rm gfwlist.txt  yagfwlist.txt
+systemctl restart overture
+</code></pre>
+<p>Add a crontab task:</p>
+<pre class="one-piece"><code>0 3 * * 1 /root/overture/update.sh
+</code></pre>
+<p>Edit /root/overture/config.yaml</p>
+<pre class="one-piece"><code>bindAddress: :53
+debugHTTPAddress: 127.0.0.1:5555
+dohEnabled: false
+primaryDNS:
+  - name: DNSPod
+    address: 119.29.29.29:53
+    protocol: udp
+    socks5Address:
+    timeout: 6
+    ednsClientSubnet:
+      policy: disable
+      externalIP:
+      noCookie: true
+  - name: 114DNS
+    address: 114.114.114.114:53
+    protocol: udp
+    socks5Address:
+    timeout: 6
+    ednsClientSubnet:
+      policy: disable
+      externalIP:
+      noCookie: true
+alternativeDNS:
+  - name: google
+    address: 8.8.8.8:53
+    protocol: tcp
+    socks5Address: 127.0.0.1:1090
+    timeout: 6
+    ednsClientSubnet:
+      policy: disable
+      externalIP:
+      noCookie: true
+  - name: cloudflare
+    address: 1.1.1.1:53
+    protocol: tcp
+    socks5Address: 127.0.0.1:1090
+    timeout: 6
+    ednsClientSubnet:
+      policy: disable
+      externalIP:
+      noCookie: true
+onlyPrimaryDNS: false
+ipv6UseAlternativeDNS: false
+alternativeDNSConcurrent: false
+whenPrimaryDNSAnswerNoneUse: primaryDNS
+ipNetworkFile:
+  primary: /root/overture/china_ip_list.txt
+  alternative: /root/overture/china_ip_list.txt
+domainFile:
+  primary: /root/overture/china_list.txt
+  alternative: /root/overture/gfw_list.txt
+  matcher: suffix-tree
+hostsFile:
+  hostsFile:
+  finder: full-map
+minimumTTL: 2048
+domainTTLFile: ./domain_ttl_sample
+cacheSize: 1024
+cacheRedisUrl: redis://localhost:6379/0
+cacheRedisConnectionPoolSize: 10 
+rejectQType:
+  - 255
+</code></pre>
+<p>Then restart:</p>
+<pre class="one-piece"><code>systemctl restart overture
+</code></pre>
+<blockquote>
+<p>For the IP network dispatch, overture will send queries to primary DNS first. Then, If that answer is empty or not matched, the alternative DNS servers will be used instead.</p>
+</blockquote>
+<h1 id="2022-05-28" tabindex="-1">2022-05-28</h1>
+<p>The world has changed a lot since the last time I updated this post. In the end I remove anything that involvs SS, because the protocol is not safe anymore.</p>
+<p>let me see: in that bunch of iptables commands there are two lines about TPROXY, meaning that the traffic is forwarded to SS_REDIR_PORT and is marked with 0x2333.</p>
+<pre class="one-piece"><code>iptables -t mangle -A PREROUTING -p tcp -m mark --mark 0x2333 -j TPROXY --on-port ${SS_REDIR_PORT}
+iptables -t mangle -A PREROUTING -p udp -m mark --mark 0x2333 -j TPROXY --on-port ${SS_REDIR_PORT}
+</code></pre>
+<blockquote>
+<p><strong>--on-port</strong> <em>port</em><br>
+This specifies a destination port to use. It is a required option, 0 means the new destination port is the same as the original. This is only valid if the rule also specifies <strong>-p tcp</strong> or <strong>-p udp</strong>.</p>
+</blockquote>
+<p>Now I shut down the ss family:</p>
+<pre class="one-piece"><code>systemctl disable ss-redir
+systemctl disable ss-tunnel
+systemctl stop ss-redir
+systemctl stop ss-tunnel
+</code></pre>
+<p>and use trojan-go instead:</p>
+<pre class="one-piece"><code>[Install]
+WantedBy=multi-user.target
+[Unit]
+Description="Trojan"
+Wants=network.target network-online.target
+After=network.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/trojan-go -config /etc/trojan/nat.json
+</code></pre>
+<p>Create a nat.json with the following content, set "run_type" to "nat"</p>
+<pre class="one-piece"><code>{
+    "run_type": "nat",
+    "local_addr": "127.0.0.1",
+    "local_port": ${SS_REDIR_PORT},
+    "remote_addr": "?",
+    "remote_port": 443,
+    "password": [
+        "?"
+    ],
+    "ssl": {
+        "sni": "?"
+    }
+}
+</code></pre>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

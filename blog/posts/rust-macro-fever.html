@@ -1,0 +1,2689 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Rust Macros</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <style id="MJX-SVG-styles">
+mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+  min-height: 1px;
+  min-width: 1px;
+}
+
+mjx-container[jax="SVG"] > svg a {
+  fill: blue;
+  stroke: blue;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line], svg[data-table] > g > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame], svg[data-table] > g > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed, svg[data-table] > g > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted, svg[data-table] > g > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > g > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
+  stroke-width: 3;
+}
+</style></head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Rust Macros</h1>
+        <nav class="table-of-contents"><ol><li><a href="#宏的调用">宏的调用</a></li><li><a href="#宏的定义">宏的定义</a></li><li><a href="#例-1-cargo-expand">例 1: Cargo expand</a></li><li><a href="#textual-scope-path-based-scope">Textual Scope, Path-Based Scope</a><ol><li><a href="#textual-scope">Textual scope</a></li><li><a href="#macro_use">macro_use</a></li><li><a href="#path-based-scope">Path-Based Scope</a></li></ol></li><li><a href="#hygience">Hygience</a></li><li><a href="#diving-deep">Diving Deep</a></li><li><a href="#follow-set-ambiguity-restrictions">Follow-set Ambiguity Restrictions</a></li><li><a href="#过时的写法">过时的写法</a></li><li><a href="#例-2-定义函数">例 2： 定义函数</a></li><li><a href="#例-3-重载运算符">例 3： 重载运算符</a></li><li><a href="#例-4-递归">例 4： 递归</a></li><li><a href="#例-5-concat-stringify">例 5: concat, stringify</a></li><li><a href="#bad-news">Bad News</a></li><li><a href="#procedural-macros">Procedural Macros</a><ol><li><a href="#function-like-macros">Function-like Macros</a></li><li><a href="#syn">syn</a></li><li><a href="#derive-macros">Derive Macros</a><ol><li><a href="#builder-step-1-parse">Builder Step 1 Parse</a></li><li><a href="#builder-step-2-create-builder">Builder Step 2 Create Builder</a></li><li><a href="#builder-step-3-call-setters">Builder Step 3 Call Setters</a></li><li><a href="#builder-step-4-call-build">Builder Step 4 Call Build</a></li><li><a href="#builder-step-5-method-chaining">Builder Step 5 Method Chaining</a></li><li><a href="#builder-step-6-optional-fields">Builder Step 6 Optional Fields</a></li><li><a href="#builder-step-7-repeated-field">Builder Step 7 Repeated Field</a></li><li><a href="#builder-step-8-unrecognized-attribute">Builder Step 8 Unrecognized Attribute</a></li><li><a href="#builder-step-9-redifined-prelude-type">Builder Step 9 Redifined Prelude Type</a></li><li><a href="#完成">完成</a></li></ol></li><li><a href="#attribute-like-macros">Attribute-like Macros</a><ol><li><a href="#sorted-01-parse-enum">Sorted 01  Parse Enum</a></li><li><a href="#sorted-02-not-enum">Sorted 02 Not Enum</a></li><li><a href="#sorted-03-out-of-order">Sorted 03  Out Of Order</a></li><li><a href="#sorted-04-variants-with-data">Sorted 04 Variants With Data</a></li><li><a href="#sorted-05-match-expr">Sorted 05 Match Expr</a></li><li><a href="#sorted-06-pattern-path">Sorted 06 Pattern Path</a></li><li><a href="#sorted-07-unrecognized-pattern">Sorted 07 Unrecognized Pattern</a></li><li><a href="#sorted-08-underscore">Sorted 08 Underscore</a></li></ol></li></ol></li><li><a href="#结论">结论</a></li><li><a href="#参考">参考</a></li></ol></nav><h2 id="宏的调用" tabindex="-1">宏的调用</h2>
+<pre class="one-piece"><code>MacroInvocation :
+   SimplePath ! DelimTokenTree
+
+DelimTokenTree :
+      ( TokenTree* )
+   | [ TokenTree* ]
+   | { TokenTree* }
+
+TokenTree :
+   Token except delimiters | DelimTokenTree
+
+MacroInvocationSemi :
+      SimplePath ! ( TokenTree* ) ;
+   | SimplePath ! [ TokenTree* ] ;
+   | SimplePath ! { TokenTree* }
+</code></pre>
+<p>语法解读：</p>
+<ul>
+<li><code>MacroInvocation</code> 是指宏调用，调用的方法是 <code>SimplePath!DelimTokenTree</code>, 比如 <code>println!("Hello World")</code>, 其中，<code>println</code> 是 <code>SimplePath</code> ，<code>("Hello world")</code> 是 <code>DelimTokenTree</code>
+<ul>
+<li>Delim = delimiter，看第二条规则，<code>TokenTree*</code> 被包围在 <code>()</code>, <code>[]</code> 和 <code>{}</code> 括号中，同时也可以看出 <code>"Hello World"</code> 是 <code>TokenTree</code></li>
+<li><code>vec![1, 2, 3]</code> 中 <code>1, 2, 3</code> 是 <code>TokenTree</code>
+<ul>
+<li><code>TokenTree</code> 包括 Keywords, Identifiers, Literals, Lifetimes, Punctuation(标点符号，如 <code>+-*/;=&gt;</code>)<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>, 同时也可推导出 <code>DelimToken</code> ，形成递归</li>
+<li><code>TokenTree 1, 2, 3</code>  中 <code>,</code> 也是树的一部分</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>MacroInvocationSemi</code> 是指需要 <code>semicolon</code>（分号) 的 <code>MacroInvocation</code></li>
+</ul>
+<h2 id="宏的定义" tabindex="-1">宏的定义<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup></h2>
+<pre class="one-piece"><code>MacroRulesDefinition :
+   macro_rules ! IDENTIFIER MacroRulesDef
+
+MacroRulesDef :
+      ( MacroRules ) ;
+   | [ MacroRules ] ;
+   | { MacroRules }
+
+MacroRules :
+   MacroRule ( ; MacroRule )* ;?
+
+MacroRule :
+   MacroMatcher =&gt; MacroTranscriber
+
+MacroMatcher :
+      ( MacroMatch* )
+   | [ MacroMatch* ]
+   | { MacroMatch* }
+
+MacroMatch :
+      Token except $ and delimiters
+   | MacroMatcher
+   | $ IDENTIFIER : MacroFragSpec
+   | $ ( MacroMatch+ ) MacroRepSep? MacroRepOp
+
+MacroFragSpec :
+      block | expr | ident | item | lifetime | literal
+   | meta | pat | pat_param | path | stmt | tt | ty | vis
+
+MacroRepSep :
+   Tokenexcept delimiters and repetition operators
+
+MacroRepOp :
+   * | + | ?
+
+MacroTranscriber :
+   DelimTokenTree
+</code></pre>
+<p>对以下宏定义来说：</p>
+<pre class="one-piece"><code>macro_rules! ambiguity {
+    ($($i:ident)* $j:ident) =&gt; { };
+}
+</code></pre>
+<ul>
+<li><code>ambiguity</code>  是 <code>IDENTIFIER</code></li>
+<li><code>{}</code> 是 <code>MacroRulesDef</code></li>
+<li><code>($($i:ident)* $j:ident) =&gt; { };</code> 是 <code>MacroRules</code></li>
+<li>其中 <code>MacroRules</code> 是一个 <code>MacroRule</code> 的 positive closure</li>
+<li>每一个 <code>MacroRule</code> 由 <code>MacroMatcher</code> 和 <code>MacroTranscriber</code> 组成，前者顾名思义是匹配，Transcriber 意思是 put (thoughts, speech, or data) into written or printed form.)，可见<code>MacroTranscriber</code> 是生成的代码模板</li>
+<li><code>MacroMatcher</code> 由 <code>MacroMatch</code> 组成，<code>match expression</code>, <code>match arm</code></li>
+<li><code>MacroMatch</code> 有几种可能：
+<ul>
+<li>由除 <code>$</code> 和分隔符之外的 <code>Token</code> 组成，在上文我们也已经了解了 <code>Token</code><sup class="footnote-ref"><a href="#fn1" id="fnref1:1">[1:1]</a></sup> 。</li>
+<li><code>MacroMatcher</code>, 递归</li>
+<li><code>$ IDENTIFIER: MacroFragSpec</code>
+<ul>
+<li><code>$IDENTIFIER</code> 表示变量，<code>MacroFragSpec</code> = Macro Fragment Specifier，表示变量的类型：
+<ul>
+<li><code>block, expr, ident, item, lifetime, ...</code>
+<ul>
+<li><code>ident</code> 最容易理解：identifier</li>
+<li>其他类型也是常见语言语法中的术语：block, expression, 以 Lua 语法为例：<a href="https://www.lua.org/manual/5.1/manual.html#8">https://www.lua.org/manual/5.1/manual.html#8</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><mjx-container class="MathJax" jax="SVG" display="true" style="position: relative;"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="46.292ex" height="2.628ex" role="img" focusable="false" viewBox="0 -911.5 20460.9 1161.5" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="TeXAtom" data-mjx-texclass="ORD"><g data-mml-node="mo"><use data-c="24" xlink:href="#MJX-TEX-N-24"></use></g></g><g data-mml-node="mo" transform="translate(500,0)"><use data-c="28" xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(889,0)"><use data-c="1D440" xlink:href="#MJX-TEX-I-1D440"></use></g><g data-mml-node="mi" transform="translate(1940,0)"><use data-c="1D44E" xlink:href="#MJX-TEX-I-1D44E"></use></g><g data-mml-node="mi" transform="translate(2469,0)"><use data-c="1D450" xlink:href="#MJX-TEX-I-1D450"></use></g><g data-mml-node="mi" transform="translate(2902,0)"><use data-c="1D45F" xlink:href="#MJX-TEX-I-1D45F"></use></g><g data-mml-node="mi" transform="translate(3353,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(3838,0)"><use data-c="1D440" xlink:href="#MJX-TEX-I-1D440"></use></g><g data-mml-node="mi" transform="translate(4889,0)"><use data-c="1D44E" xlink:href="#MJX-TEX-I-1D44E"></use></g><g data-mml-node="mi" transform="translate(5418,0)"><use data-c="1D461" xlink:href="#MJX-TEX-I-1D461"></use></g><g data-mml-node="mi" transform="translate(5779,0)"><use data-c="1D450" xlink:href="#MJX-TEX-I-1D450"></use></g><g data-mml-node="msup" transform="translate(6212,0)"><g data-mml-node="mi"><use data-c="210E" xlink:href="#MJX-TEX-I-210E"></use></g><g data-mml-node="mo" transform="translate(609,413) scale(0.707)"><use data-c="2B" xlink:href="#MJX-TEX-N-2B"></use></g></g><g data-mml-node="mo" transform="translate(7421.1,0)"><use data-c="29" xlink:href="#MJX-TEX-N-29"></use></g><g data-mml-node="mi" transform="translate(7810.1,0)"><use data-c="1D440" xlink:href="#MJX-TEX-I-1D440"></use></g><g data-mml-node="mi" transform="translate(8861.1,0)"><use data-c="1D44E" xlink:href="#MJX-TEX-I-1D44E"></use></g><g data-mml-node="mi" transform="translate(9390.1,0)"><use data-c="1D450" xlink:href="#MJX-TEX-I-1D450"></use></g><g data-mml-node="mi" transform="translate(9823.1,0)"><use data-c="1D45F" xlink:href="#MJX-TEX-I-1D45F"></use></g><g data-mml-node="mi" transform="translate(10274.1,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(10759.1,0)"><use data-c="1D445" xlink:href="#MJX-TEX-I-1D445"></use></g><g data-mml-node="mi" transform="translate(11518.1,0)"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g><g data-mml-node="mi" transform="translate(11984.1,0)"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mi" transform="translate(12487.1,0)"><use data-c="1D446" xlink:href="#MJX-TEX-I-1D446"></use></g><g data-mml-node="mi" transform="translate(13132.1,0)"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g><g data-mml-node="msup" transform="translate(13598.1,0)"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mo" transform="translate(536,413) scale(0.707)"><use data-c="3F" xlink:href="#MJX-TEX-N-3F"></use></g></g><g data-mml-node="mi" transform="translate(14517.9,0)"><use data-c="1D440" xlink:href="#MJX-TEX-I-1D440"></use></g><g data-mml-node="mi" transform="translate(15568.9,0)"><use data-c="1D44E" xlink:href="#MJX-TEX-I-1D44E"></use></g><g data-mml-node="mi" transform="translate(16097.9,0)"><use data-c="1D450" xlink:href="#MJX-TEX-I-1D450"></use></g><g data-mml-node="mi" transform="translate(16530.9,0)"><use data-c="1D45F" xlink:href="#MJX-TEX-I-1D45F"></use></g><g data-mml-node="mi" transform="translate(16981.9,0)"><use data-c="1D45C" xlink:href="#MJX-TEX-I-1D45C"></use></g><g data-mml-node="mi" transform="translate(17466.9,0)"><use data-c="1D445" xlink:href="#MJX-TEX-I-1D445"></use></g><g data-mml-node="mi" transform="translate(18225.9,0)"><use data-c="1D452" xlink:href="#MJX-TEX-I-1D452"></use></g><g data-mml-node="mi" transform="translate(18691.9,0)"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g><g data-mml-node="mi" transform="translate(19194.9,0)"><use data-c="1D442" xlink:href="#MJX-TEX-I-1D442"></use></g><g data-mml-node="mi" transform="translate(19957.9,0)"><use data-c="1D45D" xlink:href="#MJX-TEX-I-1D45D"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow data-mjx-texclass="ORD"><mo>$</mo></mrow><mo stretchy="false">(</mo><mi>M</mi><mi>a</mi><mi>c</mi><mi>r</mi><mi>o</mi><mi>M</mi><mi>a</mi><mi>t</mi><mi>c</mi><msup><mi>h</mi><mo>+</mo></msup><mo stretchy="false">)</mo><mi>M</mi><mi>a</mi><mi>c</mi><mi>r</mi><mi>o</mi><mi>R</mi><mi>e</mi><mi>p</mi><mi>S</mi><mi>e</mi><msup><mi>p</mi><mo>?</mo></msup><mi>M</mi><mi>a</mi><mi>c</mi><mi>r</mi><mi>o</mi><mi>R</mi><mi>e</mi><mi>p</mi><mi>O</mi><mi>p</mi></math></mjx-assistive-mml></mjx-container>
+<ul>
+<li><code>MacroMatch</code> 可以以递归形式存在</li>
+<li><code>MacroRepSep</code> = Macro Repetition separator, 可以是任何分隔符，这就跟 sed 一样，可以用 <code>#</code> 和 <code>/</code> 来分割匹配和替换部分，以 <code>s/pattern/substitution</code> 为例，第二个就是分隔符。
+<ul>
+<li><code>$($i:ident),*</code> 中，逗号 comma 是 <code>MacroRepSep</code>，分割了多个标识符
+<ul>
+<li><code>*</code> 是 <code>MacroRepOp</code>(Macro Repetition Operator, 包括 <code>*</code>, <code>+</code>, <code>?</code>)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>meta-variable，又一个术语，是指 <code>$($i:ident),*</code> 里的 <code>i</code></li>
+</ul>
+<h2 id="例-1-cargo-expand" tabindex="-1">例 1: Cargo expand</h2>
+<p>先下载 <a href="https://github.com/dtolnay/cargo-expand%EF%BC%8C">https://github.com/dtolnay/cargo-expand，</a> 和 gcc 的 <code>-E</code> 选项一样，输出宏展开之后的代码</p>
+<pre class="one-piece"><code>macro_rules! m {
+    {$($i:tt )^*; $($j:tt)|*} =&gt; {( $( ($i, $j) ),* )}
+}
+
+fn main() {
+    m!{1^2^3;4|5|6};
+    m!(1^2^3;4|5|6);
+}
+
+</code></pre>
+<p>输出：</p>
+<pre class="one-piece"><code>➜  macros git:(master) ✗ cargo expand
+
+#![feature(prelude_import)]
+#[prelude_import]
+use std::prelude::rust_2018::*;
+#[macro_use]
+extern crate std;
+fn main() {
+    ((1, 4), (2, 5), (3, 6));
+    ((1, 4), (2, 5), (3, 6));
+}
+</code></pre>
+<ul>
+<li>我在两行 <code>m!</code> 调用中用了不同的括号，一个是 <code>{}</code> 一个是 <code>()</code>，二者没有本质区别</li>
+<li>我用 <code>^</code> 作为第一个参数序列的分隔符，<code>|</code> 属于第二个序列</li>
+<li><code>tt</code> 表示 token, 不用 <code>ident</code> 是因为没有用到参数或者变量</li>
+<li>Transcriber 中，第一个花括号表示输出结果，第二个<code>()</code>括号对应最外层 tuple 的括号，第三个括号是语法要求的括号，只能是 <code>()</code>, 理由看上面的语法，第四个括号原封不动输出, 如果改成 <code>[]</code>, 结果则是：</li>
+</ul>
+<pre class="one-piece"><code>#![feature(prelude_import)]
+#[prelude_import]
+use std::prelude::rust_2018::*;
+#[macro_use]
+extern crate std;
+fn main() {
+    ([1, 4], [2, 5], [3, 6]);
+    ([1, 4], [2, 5], [3, 6]);
+}
+</code></pre>
+<h2 id="textual-scope-path-based-scope" tabindex="-1">Textual Scope, Path-Based Scope</h2>
+<p><a href="https://doc.rust-lang.org/reference/macros-by-example.html">Rust 文档</a>有很多术语:</p>
+<h3 id="textual-scope" tabindex="-1">Textual scope</h3>
+<p>文本作用域，效果和文本的位置有关，比如，你可以多次定义一个宏，但在调用的时候，调的是离调用位置(<strong>invocation site</strong>)最近的定义。</p>
+<p>编译器的实现方面也不难理解，编译的时候，遇到一个符号，将它放入哈希表，在调用符号的时候，查哈希表，取出符号编译，遇到重复的符号，直接将原来的覆盖(<strong>shadowing</strong>)</p>
+<p>the scope of local variables declared with <code>let</code>, 不是 textual scope，那是什么呢？ local scope? Rust 文档是空的：<a href="https://doc.rust-lang.org/reference/names/scopes.html%EF%BC%8C%E7%9B%AE%E5%89%8D%E6%9C%80%E6%8E%A5%E8%BF%91%E7%9A%84%E8%AF%B4%E6%B3%95%E6%98%AF%EF%BC%9A">https://doc.rust-lang.org/reference/names/scopes.html，目前最接近的说法是：</a> <a href="https://doc.rust-lang.org/reference/destructors.html?highlight=scope#scopes-of-local-variables">Scopes of local variables</a>，</p>
+<p>用 <code>macro_rules!</code> 定义的宏的作用域从定义之后开始，到 <strong>surrounding scope</strong> 结束。</p>
+<p><strong>Surrounding scope</strong> 通常是指一个 <strong>module</strong></p>
+<p>这也意味着宏的作用域包括 <strong>child module</strong>, 甚至跨越多个文件，只要那些文件有一样的模块</p>
+<h3 id="macro_use" tabindex="-1">macro_use</h3>
+<p><code>macro_use</code> 是一种属性，属性以 <code>#[]</code> 的形式存在</p>
+<pre class="one-piece"><code>#[macro_use]
+mod inner {
+    macro_rules! m {
+        () =&gt; {};
+    }
+}
+m!();
+</code></pre>
+<p>这一属性的作用是可以扩展宏的作用域，比如上述代码， <code>m!</code> 应该在 inner 之后失效，但是由于 <code>#[macro_use]</code> 被扩展了作用域。</p>
+<h3 id="path-based-scope" tabindex="-1">Path-Based Scope</h3>
+<p>Path 是指 <code>super</code>, <code>crate</code>，如此之类的路径。这和 C++ 命名空间，常规的 module 引用差不多。当你指定宏的具体位置的时候， 你需要在对应的宏定义上标注 <code>#[macro_export]</code>, <strong>这会让宏的作用域提升到 crate 程度，超越了它所在 module</strong></p>
+<pre class="one-piece"><code>mod a {
+	#[macro_export]
+	macro_rules! m {
+	   () =&gt; {}
+	}
+}
+self::m!();
+</code></pre>
+<p>虽然 <code>m!</code> 在 <code>a</code> module 定义，但却被当作 crate 的定义，这就和 <code>static</code> 有点像了。我的理解是，这是一种打破规律的规律。</p>
+<h2 id="hygience" tabindex="-1">Hygience</h2>
+<p>Hygience 是卫生的意思，你要确保宏的定义不污染周边的变量，函数，等，要确保宏使用的变量是准确无误的，那么，宏使用的一切函数，变量，都应该做到 path-based, 除了宏，从上一节可以看出，只要 <code>#[macro_export]</code> 一用，宏就超越了它所在模块，不管是在哪一层。</p>
+<blockquote>
+<p>$crate refers to the current crate, it must be used with a fully qualified module path when referring to non-macro items</p>
+</blockquote>
+<h2 id="diving-deep" tabindex="-1">Diving Deep</h2>
+<p>接下来应该看完 <a href="https://doc.rust-lang.org/reference/macro-ambiguity.html">https://doc.rust-lang.org/reference/macro-ambiguity.html</a></p>
+<h2 id="follow-set-ambiguity-restrictions" tabindex="-1">Follow-set Ambiguity Restrictions</h2>
+<p>Follow set 是一个非 Rust 独有的名词：</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/LL_parser#FIRST/FOLLOW_conflict%EF%BC%8C">https://en.wikipedia.org/wiki/LL_parser#FIRST/FOLLOW_conflict，</a></li>
+<li><a href="https://cs.adelaide.edu.au/~charles/lt/Lectures/05-DetParser.pdf%EF%BC%8C">https://cs.adelaide.edu.au/~charles/lt/Lectures/05-DetParser.pdf，</a></li>
+<li><a href="https://www.jambe.co.nz/UNI/FirstAndFollowSets.html">https://www.jambe.co.nz/UNI/FirstAndFollowSets.html</a></li>
+</ul>
+<blockquote>
+<p>Given a non-terminal symbol, the next symbol on input should uniquely determine which alternative of the production to choose. These input symbols are called director symbols</p>
+</blockquote>
+<p>比如, 解析 if 和 while 的时候，第一个字母 <code>i</code> 就足够马上否定 <code>while</code> 出现的可能，因此 <code>i</code> 和 <code>w</code> 都是 director symbols</p>
+<blockquote>
+<p>A production alternative can generate a number of terminal strings. The first symbols of those strings are director symbols for that alternative. To this end, we wish to calculate the set of terminal symbols which form the set of first symbols for each non-terminal in the language. – This set of symbols is called the first set.</p>
+</blockquote>
+<p>First Set 是指所有 production alternative 的第一个字母的集合，比如 <code>A ::= B | C</code>, 则 first set 是 <code>B</code> 和 <code>C</code> 的第一个字母</p>
+<blockquote>
+<p>FOLLOW set<br>
+For a nonterminal α, FOLLOW (α) contains the<br>
+set of words that can occur immediately after α<br>
+in a sentence. -- Engineering A Compiler</p>
+</blockquote>
+<p>对于 nonterminal a, <code>Follow(a)</code> 包含了所有 a 之后紧跟着 a 出现的 words。比如</p>
+<pre class="one-piece"><code>S -&gt; AB
+A -&gt; 1
+B -&gt; 2
+</code></pre>
+<p>那么 <code>Follow(A)</code> 为 <code>{2}</code></p>
+<p>仔细阅读这篇难度极高的文档： <a href="https://doc.rust-lang.org/reference/macro-ambiguity.html#first-and-follow-informally">https://doc.rust-lang.org/reference/macro-ambiguity.html#first-and-follow-informally</a></p>
+<p>这里以 FIRST SET 为例，假设 Match (记为 M )的结果为</p>
+<p><img src="images/0xfeff_f3d145f643804c538dbfe41ad6e2689c.png" alt=""></p>
+<p><code>$(tt...)</code> 有两种可能:</p>
+<ul>
+<li>一种是只有一个 simple NT(Rust 术语, simple non-terminal)，按规定无论如何必须不能为空，因此 <code>First(M) = First(tt...)</code></li>
+<li>一种是 complex NT, 按照定义是可能是 <code>*</code>, <code>+</code>, <code>?</code> closure，那也就可能为空，如果不为空，First set 保持为 <code>First(tt...)</code>， 如果为空，那么结果就不在 <code>$(tt...)</code>中寻找，跳到了 <code>SEP</code>, 如果 <code>SEP</code> 不为空，那 First set 必然包含 <code>SEP</code></li>
+<li>如果恰好 <code>SEP</code> 为空，就轮到 a，如果 OP 是 <code>*/?</code>, 说明前面可能什么都没有，那么 First set 必须包含 First(a), 如果 OP 是 <code>+</code>, 说明前面肯定有东西（如果不看 <a href="https://doc.rust-lang.org/reference/macro-ambiguity.html#the-matcher-invariants">https://doc.rust-lang.org/reference/macro-ambiguity.html#the-matcher-invariants</a> 的第三条规则就无法解释，这规则说的是，当 SEP 为空的时候，如果 OP = <code>*</code>  或者 <code>+</code>, 那么，<code>FOLLOW(tt ...)</code>) 必须包含 <code>FIRST(tt...)</code>, 意思是 <code>tt...</code> 的头部必须可以将两个 <code>tt...</code> 区分开来</li>
+</ul>
+<p><img src="images/0xfeff_282ccd999ca94129b59c273b8db92e30.png" alt=""></p>
+<p>第一个图描述的是 first invariant, 第二个图 third invariant</p>
+<p>Last set 也是如此类推. 现在来看 FOLLOW set：<a href="https://doc.rust-lang.org/reference/macro-ambiguity.html#followm">https://doc.rust-lang.org/reference/macro-ambiguity.html#followm</a></p>
+<p>可以看到 FOLLOW(expr) = FOLLOW(stmt) = {<code>=&gt;</code>, <code>,</code> , <code>;</code>}, 这没什么好纠结的，规定就是规定。</p>
+<p>现在看 <code>($ty:ty &lt; foo ,)</code> 是否合法：</p>
+<ul>
+<li>FOLLOW(ty) = FOLLOW(path) = {<code>{</code>, <code>[</code>, <code>,</code>, <code>=&gt;</code>, <code>:</code>, <code>=</code>, <code>&gt;</code>, <code>&gt;&gt;</code>, <code>;</code>, <code>|</code>, <code>as</code>, <code>where</code>, block nonterminals}，不包含 <code>&lt;</code>， 因此不合法</li>
+</ul>
+<p>回到 Rust，文档举了一个例子，一个 macro match,  <code>$i: expr[,]</code>，Rust<br>
+担心 <code>[</code> 会触发 trailing expression</p>
+<blockquote>
+<p><strong>trailing expression</strong>: <code>return &lt;expr&gt;</code> 可以写出 <code>&lt;expr&gt;</code>, 后者就叫做 trailing expression</p>
+</blockquote>
+<p>为什么会触发？文档没写，但它说 <code>$i:expr,</code> 和 <code>$i:expr</code> 都行，这是因为 <code>,</code> 和 <code>;</code> 是表达式的分隔符，没错。<code>[</code> 怎么就不行了？ 因为 <code>f()[&lt;expr&gt;;&lt;expr&gt;;expr]</code>？<br>
+其中， <code>f()</code> 返回一个 <code>&amp;[]</code> 或 <code>&amp;Vec&lt;T&gt;</code>。就算是这样，怎么就不允许 <code>[,]</code>？</p>
+<p>考虑：</p>
+<pre class="one-piece"><code>f()[1;2;3] = 2; f2();
+</code></pre>
+<p>对于 <code>$i: expr</code>, 匹配到 <code>f()</code> 的时候， parser 还需要继续往下看一眼(look ahead)，是否该终止，分隔符是 <code>[,]</code> 但<code>,</code> 不是合法的 expression。 Rust 文档到这给出的理由就很牵强，<code>[,]</code> 理论上没问题，但是可能在未来会有问题，所以干脆就禁止使用。</p>
+<h2 id="过时的写法" tabindex="-1">过时的写法</h2>
+<p>在 <a href="https://danielkeep.github.io/tlborm/book/pat-internal-rules.html">The Little Book of Rust Macros &gt;&gt; Internal rules</a> 可以看到这种写法</p>
+<pre class="one-piece"><code>#[macro_export]
+macro_rules! foo {
+    (@as_expr $e:expr) =&gt; {$e};
+
+    ($($tts:tt)*) =&gt; {
+        foo!(@as_expr $($tts)*)
+    };
+}
+</code></pre>
+<p>但在 <a href="https://doc.rust-lang.org/reference/macros-by-example.html">https://doc.rust-lang.org/reference/macros-by-example.html</a> 的语法定义中没有体现出来，因此不做了解，SO 有个<a href="https://stackoverflow.com/a/54406657">答案</a>说这不是现代 Rust。现代 Rust 鼓励创建另一个 macro 而不是在宏内部定义一个 internal rules.</p>
+<h2 id="例-2：-定义函数" tabindex="-1">例 2： 定义函数</h2>
+<p>在进入下一个主题之前，看 declarative macro 能不能定义函数：</p>
+<pre class="one-piece"><code>macro_rules! def {
+    () =&gt; {
+        fn f() {
+            println!("Hello World!");
+        }
+    }
+}
+def!();
+
+fn main() {
+    f();
+}
+</code></pre>
+<p>结果表明这代码可以运行</p>
+<h2 id="例-3：-重载运算符" tabindex="-1">例 3： 重载运算符</h2>
+<pre class="one-piece"><code>macro_rules! defop {
+    ($s: ident, $t: ident, $f: ident) =&gt; {
+        impl ops::$t&lt;$s&gt; for $s {
+            type Output = $s;
+            fn $f(self, _rhs: $s) -&gt; $s {
+                $s {
+                    val: std::ops::$t::$f(self.val, _rhs.val),
+                }
+            }
+        }
+    };
+}
+
+defop!(Foo, Add, add);
+defop!(Foo, Sub, sub);
+defop!(Foo, Mul, mul);
+defop!(Foo, Div, div);
+</code></pre>
+<h2 id="例-4：-递归" tabindex="-1">例 4： 递归</h2>
+<pre class="one-piece"><code>#[macro_export]
+macro_rules! debug {
+    (@print $a:expr)=&gt;{
+        {
+            eprintln!("{}::{}::{}: {:#?}", file!(), line!(), stringify!($a), $a);
+        }
+    };
+    [$a:expr]=&gt;{
+        {
+            $crate::debug!(@print $a);
+        }
+    };
+    [$a:expr,$b:expr]=&gt; {
+        {
+            $crate::debug!(@print $a);
+            $crate::debug!(@print $b);
+        }
+    };
+    [$a:expr,$($b:tt)*]=&gt;{
+        {
+            $crate::debug!($a);
+            $crate::debug!($($b)*);
+        }
+    };
+}
+
+fn main(){
+    let a = 1;
+    let b = "tiempo";
+    let c = 1.23;
+    debug![a, b, c];
+    debug!(45, 6.78);
+}
+</code></pre>
+<p>这么写是为了模仿 <a href="https://danielkeep.github.io/tlborm/book/pat-incremental-tt-munchers.html">TT Muncher</a>,  递归写法</p>
+<h2 id="例-5-concat-stringify" tabindex="-1">例 5: concat, stringify</h2>
+<pre class="one-piece"><code>macro_rules! make_color {
+    ($color: literal) =&gt; {
+        concat!("\x1b[", $color, "m{}\x1b[0m");
+    };
+}
+</code></pre>
+<h2 id="bad-news" tabindex="-1">Bad News</h2>
+<blockquote>
+<p><a href="https://doc.rust-lang.org/book/ch19-06-macros.html#declarative-macros-with-macro_rules-for-general-metaprogramming">Declarative Macros with <code>macro_rules!</code> for General Metaprogramming</a> :</p>
+<p>There are some strange edge cases with <code>macro_rules!</code>. In the future, Rust will have a second kind of declarative macro that will work in a similar fashion but fix some of these edge cases. After that update, <code>macro_rules!</code> will be effectively deprecated.</p>
+</blockquote>
+<p>但如果新的声明式宏只是定义关键字不一样，思想差不多的话，那也不用担心现在关于声明式宏的知识会失效，也就 <code>yet_another_macro_rules!</code> 和 <code>macro_rules!</code> 的区别。</p>
+<h2 id="procedural-macros" tabindex="-1">Procedural Macros</h2>
+<p>先看 <a href="https://doc.rust-lang.org/reference/procedural-macros.html">https://doc.rust-lang.org/reference/procedural-macros.html</a></p>
+<p>过程宏应该是 the king of Rust Macros, 也是我们的重点, 因为只需要加一个 <code>#[derive(XXX)]</code> 就能替代例 3 的 4 个  <code>defop!</code>.</p>
+<blockquote>
+<p>You can sort of think of procedural macros as functions from an AST to another AST.</p>
+</blockquote>
+<p>即将 AST 转化成另一个 AST。</p>
+<p>在已有的二进制项目中创建一个新的库项目：</p>
+<pre class="one-piece"><code>cargo init proc --lib
+</code></pre>
+<p>在二进制的 Cargo.toml 加上</p>
+<pre class="one-piece"><code>[lib]
+proc-macro = true
+</code></pre>
+<p>意思是编译的时候链接 <code>proc-macro</code> crate</p>
+<p>在当前二进制项目 Cargo.toml 加上两行引用指令，如下所示：</p>
+<pre class="one-piece"><code>[lib]
+proc-macro = true
+name = "proc"
+path = "proc/src/lib.rs"
+</code></pre>
+<p>确保能编译。</p>
+<p>我们已经知道 Token 如何被 parse 成 AST，AST 再被编译器翻译成汇编或者机器码，<code>proc-macro</code> 接口提供了 <code>TokenStream</code> , 让你在 Rust 的 parser 之前先动手，某种程度上可以理解为 Rust 给我们设置了 parse 的钩子。</p>
+<h3 id="function-like-macros" tabindex="-1">Function-like Macros</h3>
+<blockquote>
+<p><a href="https://doc.rust-lang.org/book/ch19-06-macros.html#function-like-macros">https://doc.rust-lang.org/book/ch19-06-macros.html#function-like-macros</a><br>
+Similarly to <code>macro_rules!</code> macros, they’re more flexible than functions; for example, they can take an unknown number of arguments.</p>
+</blockquote>
+<p>可以接受无数参数，这是函数宏相比函数的优点。和 <code>macro_rules!</code> 的区别就是后者只能用 match-like syntax。有道理，当你定义 <code>macro_rules!</code> 的时候，每一个 match 的类型都需要考虑，不像 C 的宏，宏参数是纯字符串。Rust 声明式宏根本不识别单独的 <code>+</code>，</p>
+<p>接下来我要做的事情，是将 <code>struct Foo { val: i32 }</code> 实现运算符重载，和例 3 一样。这个例子并不是那么恰当，官方文档给出的例子 <code>let sql = sql!(SELECT * FROM posts WHERE id=1);</code> 才是最像样的用法。我提到的应用场景应该用 attribute macro，但说实话，这些无所谓，知道怎么解析才是最重要的。</p>
+<pre class="one-piece"><code>make_ops!(struct Foo { val: i32 });
+</code></pre>
+<p>在定义中加上一行 <code>dbg!(_item);</code> 就能打印出 token stream：</p>
+<pre class="one-piece"><code>#[proc_macro]
+pub fn make_ops(_item: TokenStream) -&gt; TokenStream {
+    dbg!(_item);
+    "fn ops() -&gt; u32 { 42 }".parse().unwrap()
+}
+</code></pre>
+<p>打印：</p>
+<pre class="one-piece"><code>[proc/src/lib.rs:7] _item = TokenStream [
+    Ident {
+        ident: "struct",
+        span: #0 bytes(16..22),
+    },
+    Ident {
+        ident: "Foo",
+        span: #0 bytes(23..26),
+    },
+    Group {
+        delimiter: Brace,
+        stream: TokenStream [
+            Ident {
+                ident: "val",
+                span: #0 bytes(29..32),
+            },
+            Punct {
+                ch: ':',
+                spacing: Alone,
+                span: #0 bytes(32..33),
+            },
+            Ident {
+                ident: "i32",
+                span: #0 bytes(34..37),
+            },
+        ],
+        span: #0 bytes(27..38),
+    },
+]
+</code></pre>
+<p>这时候我们非常需要一个像 nom 一样的库来救场，但这也是一个很好的练习，应该先自己尝试实现。</p>
+<p>相关文档：</p>
+<ul>
+<li><a href="https://doc.rust-lang.org/proc_macro/struct.TokenStream.html">https://doc.rust-lang.org/proc_macro/struct.TokenStream.html</a></li>
+</ul>
+<p>最终：proc/src/lib.rs</p>
+<pre class="one-piece"><code>extern crate proc_macro;
+use anyhow::{bail, Result};
+
+use proc_macro::{token_stream::IntoIter, Group, Ident, Punct, TokenStream, TokenTree};
+
+macro_rules! make_parser {
+    ($T: ty, $V: ident, $f:ident) =&gt; {
+        fn $f(mut token: IntoIter) -&gt; Result&lt;($T, IntoIter)&gt; {
+            let x = token.next().unwrap();
+            match x {
+                TokenTree::$V(y) =&gt; Ok((y, token)),
+                _ =&gt; bail!("Expect TokenTree::$T"),
+            }
+        }
+    };
+}
+
+make_parser!(Ident, Ident, ident);
+make_parser!(Group, Group, group);
+make_parser!(Punct, Punct, punct);
+
+fn tag&lt;'a, T, P&gt;(
+    mut parser: P,
+    target: &amp;'a str,
+) -&gt; impl FnMut(IntoIter) -&gt; Result&lt;(T, IntoIter)&gt; + 'a
+where
+    P: FnMut(IntoIter) -&gt; Result&lt;(T, IntoIter)&gt; + 'a,
+    T: ToString,
+{
+    move |token: IntoIter| -&gt; Result&lt;(T, IntoIter)&gt; {
+        let (m, token) = parser(token)?;
+        if m.to_string() == target {
+            Ok((m, token))
+        } else {
+            bail!("tag mismatch")
+        }
+    }
+}
+</code></pre>
+<p>最后一段代码不知道为什么竟然造成 markdown 渲染失败，只能贴图</p>
+<p><img src="images/0xfeff_864e008a85fb45edb4c09e52e9cafc68.png" alt=""></p>
+<p>测试：src/main.rs</p>
+<pre class="one-piece"><code>proc::make_ops!(
+    struct Foo {
+        val: i32,
+    }
+);
+
+fn main() {
+    let a = Foo { val: 1 };
+    let b = Foo { val: 2 };
+    assert_eq!(a + b, Foo { val: 3 })
+}
+</code></pre>
+<p>可以看出 <code>proc::make_ops!()</code> 成功给 <code>Foo</code>  加上了一个 <code>+</code> 操作函数，可能看起来没什么，但实现起来非常难，我推荐各位自己动手写一个。这个例子证明我们完全可以徒手操作 <code>TokenStream</code>。</p>
+<p>附：为什么要用 <code>unwrap()</code> ？ 因为不能用 <code>?</code>，也可以用 <code>expect()</code>。在 <em>the book</em> 找到了一个理论支持：</p>
+<blockquote>
+<p>You might have noticed that we’re calling <code>unwrap</code> to cause the <code>hello_macro_derive</code> function to panic if the call to the <code>syn::parse</code> function fails here. It’s necessary for our procedural macro to panic on errors because <code>proc_macro_derive</code> functions must return <code>TokenStream</code> rather than <code>Result</code> to conform to the procedural macro API (<a href="https://doc.rust-lang.org/book/ch19-06-macros.html#how-to-write-a-custom-derive-macro">https://doc.rust-lang.org/book/ch19-06-macros.html#how-to-write-a-custom-derive-macro</a>)</p>
+</blockquote>
+<h3 id="syn" tabindex="-1">syn</h3>
+<p>The book &gt;&gt; <a href="https://doc.rust-lang.org/book/ch19-06-macros.html#how-to-write-a-custom-derive-macro">How to Write a Custom <code>derive</code> Macro</a> 提到一个库 : <a href="https://crates.io/crates/syn">syn</a></p>
+<blockquote>
+<p>We’ll also need functionality from the syn and quote crates, as you’ll see in a moment, so we need to add them as dependencies</p>
+</blockquote>
+<p>在上一节可以看到如何自己实现 parsing，现在使用 syn 和 quote，第三方库。和自己手写不一样，自己手写用 <code>proc_macro</code>，syn 用 <a href="https://docs.rs/proc-macro2/1.0.36/proc_macro2/#">proc_macro2</a>, 从文档来看，可以看出 proc_macro2 mixin 了 proc_macro，前者是后者的适配器。</p>
+<p>Syn 是一群 parser 的集合，将字符串转化成 AST, quote 将 AST 转化成 Rust 代码。</p>
+<h3 id="derive-macros" tabindex="-1">Derive Macros</h3>
+<p>其实还是把 <a href="https://github.com/dtolnay/proc-macro-workshop">https://github.com/dtolnay/proc-macro-workshop</a> 的习题全做了比较妥当。以下篇幅记录每一步过程。</p>
+<p>已知，宏只能在 library 中定义，在 library 的 Cargo.toml 中，首先标记这个库用到 <code>proc_macro</code></p>
+<pre class="one-piece"><code>[lib]
+proc-macro = true
+</code></pre>
+<p>创建测试，执行 <code>cargo test</code> 的时候用到</p>
+<pre class="one-piece"><code>[[test]]
+name = "tests"
+path = "tests/progress.rs"
+</code></pre>
+<p>创建目录 tests, 创建 <a href="http://progress.rs">progress.rs</a></p>
+<pre class="one-piece"><code>#[test]
+fn tests() {
+    let t = trybuild::TestCases::new();
+    t.pass("tests/01-parse.rs");
+}
+</code></pre>
+<p>这里面用了 trybuild crate，只需知道它是用来测试编译的，用法照葫芦画瓢就好</p>
+<h4 id="builder-step-1-parse" tabindex="-1">Builder Step 1 Parse</h4>
+<p>第一个测试，可以看出 Derive macro 是个什么形式： <code>#[derive(X)]</code></p>
+<pre class="one-piece"><code>use derive_builder::*;
+
+#[derive(Builder)]
+pub struct Command {
+    executable: String,
+    args: Vec&lt;String&gt;,
+    env: Vec&lt;String&gt;,
+    current_dir: String,
+}
+
+fn main() {}
+</code></pre>
+<p>要实现 <code>#[derive(Builder)]</code>, 最起码让它编译通过，最基本的要素如下：</p>
+<pre class="one-piece"><code>use proc_macro::TokenStream;
+use quote::quote;
+use syn::{parse_macro_input, DeriveInput};
+
+#[proc_macro_derive(Builder)]
+pub fn derive(input: TokenStream) -&gt; TokenStream {
+    let _ = parse_macro_input!(input as DeriveInput);
+    let expanded = quote! {};
+
+    TokenStream::from(expanded)
+}
+</code></pre>
+<p>展开：</p>
+<p><img src="images/0xfeff_9392f739becf4d49a44fc71e52f03e6c.png" alt=""></p>
+<p>如果是这样则编译失败</p>
+<pre class="one-piece"><code>#[proc_macro_derive(Builder)]
+pub fn derive(input: TokenStream) -&gt; TokenStream {
+	input
+}
+</code></pre>
+<p>展开之后可以看出 <code>Command</code> 定义了两次，为什么会这样呢？很容易理解，加了 <code>#[derive(X)]</code> 之后，产生的代码是追加，而不是覆盖。证据：<a href="https://github.com/dtolnay/proc-macro-workshop/blob/0e90cf2551e42f85620aca092b4255fa1bd10660/sorted/tests/01-parse-enum.rs#L5">https://github.com/dtolnay/proc-macro-workshop/blob/0e90cf2551e42f85620aca092b4255fa1bd10660/sorted/tests/01-parse-enum.rs#L5</a></p>
+<p><img src="images/0xfeff_b5ba4b421c544c5f9271a2be60e9607d.png" alt=""></p>
+<p>展开的步骤有些麻烦，首先在 Cargo.toml 修改 <code>[[test]]</code> 如下</p>
+<pre class="one-piece"><code>[[test]]
+name = "tests"
+path = "tests/01-parse.rs"
+[[test]]
+name = "progress"
+path = "tests/progress.rs"
+</code></pre>
+<p>执行：</p>
+<pre class="one-piece"><code>cargo expand --test tests
+</code></pre>
+<p>测试 1 通过, 用这条指令测试全部测试</p>
+<pre class="one-piece"><code>cargo test --test progress
+</code></pre>
+<h4 id="builder-step-2-create-builder" tabindex="-1">Builder Step 2 Create Builder</h4>
+<p>第二步让我们用宏生成出以下代码：</p>
+<pre class="one-piece"><code>impl Command {
+    pub fn builder() -&gt; CommandBuilder {
+        CommandBuilder {
+            executable: None,
+            args: None,
+            env: None,
+            current_dir: None,
+        }
+    }
+}
+</code></pre>
+<p>加一个 <code>dbg!()</code> 可以打印出 <code>DeriveInput</code> 结果，根据这个结构，像爬虫那样抓取各元素</p>
+<pre class="one-piece"><code>#[proc_macro_derive(Builder)]
+pub fn derive(input: TokenStream) -&gt; TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    dbg!(input);
+    ...
+}
+</code></pre>
+<p>可以看到 <code>DeriveInput</code> 的结构 <a href="https://docs.rs/syn/latest/syn/struct.DeriveInput.html%EF%BC%9A">https://docs.rs/syn/latest/syn/struct.DeriveInput.html：</a></p>
+<pre class="one-piece"><code>pub struct DeriveInput {
+    pub attrs: Vec&lt;Attribute&gt;,
+    pub vis: Visibility,
+    pub ident: Ident,
+    pub generics: Generics,
+    pub data: Data,
+}
+</code></pre>
+<p>其中，<code>attrs</code> 为空，因为没有属性，<code>vis</code> 为 <code>pub</code>, <code>ident</code> 为 <code>Command</code>， <code>generics</code> 为空，因为没有泛型，<code>Data</code> 是一个枚举 <a href="https://docs.rs/syn/latest/syn/enum.Data.html">https://docs.rs/syn/latest/syn/enum.Data.html</a> :</p>
+<p>废话少说：先实现空的 builder 函数：</p>
+<pre class="one-piece"><code>#[proc_macro_derive(Builder)]
+pub fn derive(input: TokenStream) -&gt; TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    let vis = input.vis;
+    let head = input.ident;
+
+    let builder = quote! {
+        impl #head {
+            #vis fn builder() {
+
+            }
+        }
+    };
+
+    TokenStream::from(builder)
+}
+</code></pre>
+<p><code>#variable</code> 可能是一种泛型操作符，不管是 <code>Ident</code> 还是 <code>Public</code>.</p>
+<p>编译通过，现在要填充实现，初始化每一个 field (不用 member 称呼，就很有意思，原因有待考究 #todo)</p>
+<p>加一个 type alias 区分 proc_macro 和 proc_macro2</p>
+<pre class="one-piece"><code>type TokenStream1 = proc_macro::TokenStream;
+type TokenStream2 = proc_macro2::TokenStream;
+</code></pre>
+<p>代码改成：</p>
+<pre class="one-piece"><code>
+#[proc_macro_derive(Builder)]
+pub fn derive(input: TokenStream1) -&gt; TokenStream1 {
+    let input = parse_macro_input!(input as DeriveInput);
+    let vis = input.vis;
+    let head = input.ident;
+    let _generics = input.generics;
+    let data = input.data;
+    let builder_name = Ident::new(
+        &amp;(String::from(&amp;head.to_string()) + "Builder"),
+        Span::call_site(),
+    );
+    let data = data_struct(data).unwrap();
+    let (fields_declarer, fields_initializer) = fields(data).unwrap();
+
+    let builder = quote! {
+        pub struct #builder_name {
+            #fields_declarer
+        }
+        impl #head {
+            #vis fn builder() -&gt; #builder_name
+            {
+                #builder_name {
+                    #fields_initializer
+                }
+            }
+        }
+    };
+
+    TokenStream1::from(builder)
+}
+</code></pre>
+<p>其中两个 parser 的定义为：</p>
+<pre class="one-piece"><code>fn data_struct(data: Data) -&gt; Result&lt;DataStruct&gt; {
+    match data {
+        Data::Struct(d) =&gt; Ok(d),
+        _ =&gt; bail!("Expect Data::Struct"),
+    }
+}
+
+fn fields(data: DataStruct) -&gt; Result&lt;(TokenStream2, TokenStream2)&gt; {
+    let mut fields_declarer = quote! {};
+    let mut fields_initializer = quote! {};
+    for field in data.fields {
+        let ident = field.ident;
+        let ty = field.ty;
+        fields_declarer = quote! {
+            #fields_declarer
+            #ident: Option&lt;#ty&gt;,
+        };
+        fields_initializer = quote! {
+            #fields_initializer
+            #ident: None,
+        };
+    }
+    Ok((fields_declarer, fields_initializer))
+}
+</code></pre>
+<p>可以看出，这只是简单的 <code>quote!{}</code> 拼装。</p>
+<h4 id="builder-step-3-call-setters" tabindex="-1">Builder Step 3 Call Setters</h4>
+<p>这一步要求创建 setters，很简单：</p>
+<pre class="one-piece"><code>fn fields(data: DataStruct) -&gt; Result&lt;(TokenStream2, TokenStream2, TokenStream2)&gt; {
+    let mut fields_declarer = quote! {};
+    let mut fields_initializer = quote! {};
+    let mut fields_setter = quote! {};
+    for field in data.fields {
+        let ident = field.ident;
+        let ty = field.ty;
+        fields_declarer = quote! {
+            #fields_declarer
+            #ident: Option&lt;#ty&gt;,
+        };
+        fields_initializer = quote! {
+            #fields_initializer
+            #ident: None,
+        };
+        fields_setter = quote! {
+            #fields_setter
+            fn #ident(&amp;mut self, #ident: #ty) -&gt; &amp;mut Self {
+                self.#ident = Some(#ident);
+                self
+            }
+        };
+    }
+    Ok((fields_declarer, fields_initializer, fields_setter))
+}
+</code></pre>
+<h4 id="builder-step-4-call-build" tabindex="-1">Builder Step 4 Call Build</h4>
+<p>给 <code>CommandBuilder</code> 增加一个生成接口：</p>
+<pre class="one-piece"><code>impl CommandBuilder {
+	pub fn build(&amp;mut self) -&gt; Result&lt;Command, Box&lt;dyn Error&gt;&gt; {
+		...
+	}
+}
+</code></pre>
+<p>到这就得取消函数封装，不然就要 OOP：</p>
+<pre class="insert-before"><code>#[proc_macro_derive(Builder)]
+pub fn derive(input: TokenStream1) -&gt; TokenStream1 {
+    let input = parse_macro_input!(input as DeriveInput);
+    let vis = input.vis;
+    let head = input.ident;
+    let _generics = input.generics;
+    let data = input.data;
+    let builder = Ident::new(
+        &amp;(String::from(&amp;head.to_string()) + "Builder"),
+        Span::call_site(),
+    );
+    let data = data_struct(data).unwrap();
+
+    let mut fields_declarer = quote! {};
+    let mut fields_initializer = quote! {};
+    let mut fields_setter = quote! {};
+    let mut fields_copy = quote! {};
+    for field in data.fields {
+        let ident = field.ident;
+        let ty = field.ty;
+        fields_declarer = quote! {
+            #fields_declarer
+            #ident: Option&lt;#ty&gt;,
+        };
+        fields_initializer = quote! {
+            #fields_initializer
+            #ident: None,
+        };
+        fields_setter = quote! {
+            #fields_setter
+            fn #ident(&amp;mut self, #ident: #ty) -&gt; &amp;mut Self {
+                self.#ident = Some(#ident);
+                self
+            }
+        };
+</code></pre><pre class="insert"><code>        fields_copy = quote! {
+            #fields_copy
+            #ident: self.#ident.clone().expect("Field is None"),
+        };
+</code></pre><pre class="insert-after"><code>    }
+    let build_func = quote! {
+        pub fn build(&amp;mut self) -&gt; Result&lt;#head, Box&lt;dyn std::error::Error&gt;&gt; {
+            Ok(#head {
+                #fields_copy
+            })
+        }
+    };
+
+    TokenStream1::from(quote! {
+        pub struct #builder {
+            #fields_declarer
+        }
+        impl #head {
+            #vis fn builder() -&gt; #builder
+            {
+                #builder {
+                    #fields_initializer
+                }
+            }
+        }
+        impl #builder {
+            #fields_setter
+            #build_func
+        }
+    })
+}
+
+</code></pre>
+<h4 id="builder-step-5-method-chaining" tabindex="-1">Builder Step 5 Method Chaining</h4>
+<pre class="one-piece"><code>let command = Command::builder()
+        .executable("cargo".to_owned())
+        .args(vec!["build".to_owned(), "--release".to_owned()])
+        .env(vec![])
+        .current_dir("..".to_owned())
+        .build()
+        .unwrap();
+</code></pre>
+<p>要实现这样的效果，但第 4 步已经把它实现了</p>
+<h4 id="builder-step-6-optional-fields" tabindex="-1">Builder Step 6 Optional Fields</h4>
+<p>这一步需要识别 <code>Option&lt;T&gt;</code> 的域</p>
+<pre class="insert-before"><code>#[derive(Builder)]
+pub struct Command {
+    executable: String,
+    args: Vec&lt;String&gt;,
+    env: Vec&lt;String&gt;,
+</code></pre><pre class="insert"><code>    current_dir: Option&lt;String&gt;,
+</code></pre><pre class="insert-after"><code>}
+</code></pre>
+<p>这里有个问题，就是你无法分辨 <code>Option&lt;T&gt;</code> and <code>std::option::Option&lt;T&gt;</code> and <code>&lt;Vec&lt;Option&lt;T&gt;&gt; as IntoIterator&gt;::Item</code></p>
+<blockquote>
+<p>As a consequence, it isn't possible in general for a macro to compare two token representations and tell whether they refer to the same type.</p>
+</blockquote>
+<p>这个练习只要求我们识别 <code>Option&lt;T&gt;</code> , 不用考虑其等效形式。</p>
+<p>解法并不复杂：</p>
+<pre class="insert-before"><code>for field in data.fields {
+        let ident = field.ident;
+        let ty = field.ty;
+        let (is_option, wrapped_id) = is_option(&amp;ty);
+
+</code></pre><pre class="insert"><code>        let mut alt_decl = quote! { Option&lt;#ty&gt; };
+        let mut alt_sett = quote! { #ty };
+        let mut alt_copy = quote! { .expect("Field is None") };
+
+        if is_option {
+            alt_decl = quote! { #ty };
+            alt_sett = quote! { #wrapped_id };
+            alt_copy = quote! {};
+        }
+</code></pre><pre class="insert-after"><code>
+        fields_declarer = quote! {
+            #fields_declarer
+            #ident: #alt_decl,
+        };
+
+        fields_setter = quote! {
+            #fields_setter
+            fn #ident(&amp;mut self, #ident: #alt_sett) -&gt; &amp;mut Self {
+                self.#ident = Some(#ident);
+                self
+            }
+        };
+
+        fields_copy = quote! {
+            #fields_copy
+            #ident: self.#ident.clone()#alt_copy,
+        };
+
+        fields_initializer = quote! {
+            #fields_initializer
+            #ident: None,
+        };
+    }
+</code></pre>
+<p>定义两个 parser:</p>
+<pre class="one-piece"><code>fn path_segment_from_type(ty: &amp;Type) -&gt; Result&lt;&amp;PathSegment, Box&lt;dyn Error&gt;&gt; {
+    if let Type::Path(tp) = ty {
+        let segs = &amp;tp.path.segments;
+        if segs.len() == 1 {
+            return Ok(segs.first().unwrap());
+        }
+    }
+    Err(Box::new(StupidError {
+        str: "Expect Data::Struct".to_owned(),
+    }))
+}
+
+fn is_option(ty: &amp;Type) -&gt; (bool, Option&lt;&amp;Ident&gt;) {
+    if let Ok(sg) = path_segment_from_type(ty) {
+        dbg!(&amp;sg.ident);
+        if sg.ident == "Option" {
+            if let PathArguments::AngleBracketed(args) = &amp;sg.arguments {
+                let args = &amp;args.args;
+                if args.len() == 1 {
+                    if let Some(GenericArgument::Type(ty)) = args.first() {
+                        if let Ok(sg) = path_segment_from_type(ty) {
+                            return (true, Some(&amp;sg.ident));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    (false, None)
+}
+</code></pre>
+<h4 id="builder-step-7-repeated-field" tabindex="-1">Builder Step 7 Repeated Field</h4>
+<p>意思是，对于 <code>args: Vec&lt;String&gt;</code> 这样的域，提供一个 <code>fn arg(String)</code> 接口</p>
+<pre class="one-piece"><code>#[derive(Builder)]
+pub struct Command {
+    executable: String,
+    #[builder(each = "arg")]
+    args: Vec&lt;String&gt;,
+    #[builder(each = "env")]
+    env: Vec&lt;String&gt;,
+    current_dir: Option&lt;String&gt;,
+}
+</code></pre>
+<p>为了让编译知道 <code>#[builder(each = "arg")]</code> 和 <code>Builder</code> 宏有关，必须采用这样的标注：</p>
+<pre class="one-piece"><code>#[proc_macro_derive(Builder, attributes(builder))]
+</code></pre>
+<p>这里的 <code>builder</code> 又被称作 inert attributes(lacking the ability or strength to move.)</p>
+<p>入手点: <a href="https://docs.rs/syn/1.0.89/syn/struct.Attribute.html#parsing-from-tokens-to-attribute">https://docs.rs/syn/1.0.89/syn/struct.Attribute.html#parsing-from-tokens-to-attribute</a></p>
+<p>然后通过 <code>dbg!()</code> 查看结构：可以看到</p>
+<pre class="insert-before"><code>attrs: [
+    Attribute {
+        pound_token: Pound,
+        style: Outer,
+        bracket_token: Bracket,
+        path: Path {
+</code></pre><pre class="insert"><code>            leading_colon: None,
+            segments: [
+                PathSegment {
+                    ident: Ident {
+                        ident: "builder",
+                        span: #0 bytes(1462..1469),
+                    },
+                    arguments: None,
+                },
+            ],
+        },
+        tokens: TokenStream [
+            Group {
+                delimiter: Parenthesis,
+                stream: TokenStream [
+                    Ident {
+                        ident: "each",
+                        span: #0 bytes(1470..1474),
+                    },
+                    Punct {
+                        ch: '=',
+                        spacing: Alone,
+                        span: #0 bytes(1475..1476),
+                    },
+                    Literal {
+                        kind: Str,
+                        symbol: "arg",
+                        suffix: None,
+                        span: #0 bytes(1477..1482),
+                    },
+</code></pre><pre class="insert-after"><code>                ],
+                span: #0 bytes(1469..1483),
+            },
+        ],
+    },
+],
+</code></pre>
+<p>可以写个函数把关键的 Literal 抽取出来, 可以看到，这种写法非常恶心，不知道有没有更好的方式</p>
+<pre class="one-piece"><code>fn builder_attribute(field: &amp;Field) -&gt; (bool, Option&lt;Literal&gt;) {
+    let attrs = &amp;field.attrs;
+    if attrs.len() == 1 {
+        let attr = attrs.first().unwrap();
+        let segs = &amp;attr.path.segments;
+        if segs.len() == 1 &amp;&amp; segs[0].ident == "builder" {
+            let mut tokens = attr.tokens.clone().into_iter();
+            let token = tokens.next().unwrap();
+            if let TokenTree::Group(grp) = token {
+                let mut tokens = grp.stream().into_iter();
+                let ident = tokens.next().unwrap();
+                let punct = tokens.next().unwrap();
+                if ident.to_string() == "builder" &amp;&amp; punct.to_string() == "=" {
+                    let literal = tokens.next().unwrap();
+                    if let TokenTree::Literal(literal) = literal {
+                        return (true, Some(literal));
+                    }
+                }
+            }
+        }
+    }
+    (false, None)
+}
+</code></pre>
+<p>这里需要注意的是 <code>Literal</code> 类型的字符串提取出来居然带双引号</p>
+<pre class="one-piece"><code>[builder/src/lib.rs:141] e.to_owned() = Literal {
+    kind: Str,
+    symbol: "env",
+    suffix: None,
+    span: #0 bytes(1529..1534),
+}
+</code></pre>
+<p>关键部分：</p>
+<pre class="insert-before"><code>if is_repeated {
+</code></pre><pre class="insert"><code>            let (_, inner) = wrapped_type(ty, "Vec");
+            let e = each.unwrap();
+            let each = Ident::new(
+                &amp;e.to_string()[1..e.to_string().len() - 1],
+                Span::call_site(),
+            );
+            let inner = inner.unwrap();
+            fields_setter = quote! {
+                #fields_setter
+                fn #each(&amp;mut self, #each: #inner) -&gt; &amp;mut Self {
+                    if self.#ident.is_none() {
+                        self.#ident = Some(Vec::new());
+                    } else {
+                        self.#ident.as_mut().unwrap().push(#each);
+                    }
+                    self
+                }
+            };
+</code></pre><pre class="insert-after"><code>        } else {
+            fields_setter = quote! {
+                #fields_setter
+                fn #ident(&amp;mut self, #ident: #alt_sett) -&gt; &amp;mut Self {
+                    self.#ident = Some(#ident);
+                    self
+                }
+            };
+        }
+</code></pre>
+<h4 id="builder-step-8-unrecognized-attribute" tabindex="-1">Builder Step 8 Unrecognized Attribute</h4>
+<pre class="insert-before"><code>#[derive(Builder)]
+pub struct Command {
+    executable: String,
+</code></pre><pre class="insert"><code>    #[builder(eac = "arg")]
+</code></pre><pre class="insert-after"><code>    args: Vec&lt;String&gt;,
+    env: Vec&lt;String&gt;,
+    current_dir: Option&lt;String&gt;,
+}
+</code></pre>
+<p>这一节的目的是让编译出现错误的时候，发出 <code>compile_error</code>。这么一来需要将 <code>std::result::Result</code> 换成 <code>syn::Result</code>，这一节就要对代码大换血</p>
+<p>篇幅有限，只能展示如何使用  <code>syn::Error</code></p>
+<pre class="insert-before"><code>fn builder_attribute(field: &amp;Field) -&gt; Result&lt;(bool, Option&lt;Literal&gt;)&gt; {
+    let attrs = &amp;field.attrs;
+    if attrs.len() == 1 {
+        let attr = attrs.first().unwrap();
+        let segs = &amp;attr.path.segments;
+        if segs.len() == 1 &amp;&amp; segs[0].ident == "builder" {
+            let mut tokens = attr.tokens.clone().into_iter();
+            let token = tokens.next().unwrap();
+            if let TokenTree::Group(grp) = token {
+                let mut tokens = grp.stream().into_iter();
+                let ident = tokens.next().unwrap();
+                let punct = tokens.next().unwrap();
+                if ident.to_string() == "each" {
+                    if punct.to_string() == "=" {
+                        let literal = tokens.next().unwrap();
+                        if let TokenTree::Literal(literal) = literal {
+                            return Ok((true, Some(literal)));
+                        }
+                    }
+                } else {
+</code></pre><pre class="insert"><code>                    return Err(Error::new(
+                        grp.span(),
+                        "expected `builder(each = \"...\")`".to_string(),
+                    ));
+</code></pre><pre class="insert-after"><code>                }
+            }
+        }
+    }
+    Ok((false, None))
+}
+</code></pre>
+<p>另外主函数被拆分为：</p>
+<pre class="one-piece"><code>#[proc_macro_derive(Builder, attributes(builder))]
+pub fn derive(input: TokenStream1) -&gt; TokenStream1 {
+    let input = parse_macro_input!(input as DeriveInput);
+    builder_deriver(input)
+        .unwrap_or_else(syn::Error::into_compile_error)
+        .into()
+}
+</code></pre>
+<h4 id="builder-step-9-redifined-prelude-type" tabindex="-1">Builder Step 9 Redifined Prelude Type</h4>
+<p>这一节主要考究卫生(Hygience)的问题</p>
+<pre class="one-piece"><code>type Option = ();
+type Some = ();
+type None = ();
+type Result = ();
+type Box = ();
+</code></pre>
+<p>这就需要在宏定义上标注好绝对路径, 比如：</p>
+<pre class="one-piece"><code>self.#ident = ::std::option::Option::Some(::std::vec::Vec::new());
+</code></pre>
+<h4 id="完成" tabindex="-1">完成</h4>
+<pre class="one-piece"><code>test 01-parse.rs [should pass] ... ok
+test 02-create-builder.rs [should pass] ... ok
+test 03-call-setters.rs [should pass] ... ok
+test 04-call-build.rs [should pass] ... ok
+test 05-method-chaining.rs [should pass] ... ok
+test 06-optional-field.rs [should pass] ... ok
+test 07-repeated-field.rs [should pass] ... ok
+test 08-unrecognized-attribute.rs [should fail to compile] ... ok
+test 09-redefined-prelude-types.rs [should pass] ... ok
+</code></pre>
+<h3 id="attribute-like-macros" tabindex="-1">Attribute-like Macros</h3>
+<p>最后一种宏，依然是通过练习的方式熟悉，根据作者推荐选 <a href="https://github.com/dtolnay/proc-macro-workshop#attribute-macro-sorted">https://github.com/dtolnay/proc-macro-workshop#attribute-macro-sorted</a></p>
+<p>准备好 Cargo.toml</p>
+<pre class="one-piece"><code>[[test]]
+name = "progress"
+path = "tests/progress.rs"
+
+[[test]]
+name = "test"
+path = "tests/01-parse-enum.rs"
+#path = "tests/02-not-enum.rs"
+#path = "tests/02-not-enum.stderr"
+#path = "tests/03-out-of-order.rs"
+#path = "tests/03-out-of-order.stderr"
+#path = "tests/04-variants-with-data.rs"
+#path = "tests/04-variants-with-data.stderr"
+#path = "tests/05-match-expr.rs"
+#path = "tests/05-match-expr.stderr"
+#path = "tests/06-pattern-path.rs"
+#path = "tests/06-pattern-path.stderr"
+#path = "tests/07-unrecognized-pattern.rs"
+#path = "tests/07-unrecognized-pattern.stderr"
+#path = "tests/08-underscore.rs"
+#path = "tests/progress.rs"
+</code></pre>
+<h4 id="sorted-01--parse-enum" tabindex="-1">Sorted 01  Parse Enum</h4>
+<p>把 Builder 项目的一些 boilerplate 搬过来：</p>
+<pre class="one-piece"><code>-use proc_macro::TokenStream;
++use proc_macro2::{Ident, Literal, Span, TokenTree};
++use quote::quote;
++use syn::spanned::Spanned;
++use syn::{
++    parse_macro_input, Data, DataStruct, DeriveInput, Field, GenericArgument, PathArguments,
++    PathSegment, Type,
++};
++use syn::{Error, Result};
++
++type TokenStream1 = proc_macro::TokenStream;
++type TokenStream2 = proc_macro2::TokenStream;
+ 
+ #[proc_macro_attribute]
+-pub fn sorted(args: TokenStream, input: TokenStream) -&gt; TokenStream {
+-    let _ = args;
+-    let _ = input;
++pub fn sorted(args: TokenStream1, input: TokenStream1) -&gt; TokenStream1 {
++    let input = parse_macro_input!(input as DeriveInput);
++    sorted_deriver(input)
++        .unwrap_or_else(syn::Error::into_compile_error)
++        .into()
++}
+ 
+-    unimplemented!()
++fn sorted_deriver(input: DeriveInput) -&gt; Result&lt;TokenStream2&gt; {
++    let _ = input;
++    Ok(quote! {
++      
++    })
+
+</code></pre>
+<p>改成这样就能通过测试，<code>cargo expand --test test</code> 一看发现标注的结构体消失了，这是因为 attribute macros 可以修改或者删除 attribute 下的 input：<a href="https://github.com/dtolnay/proc-macro-workshop/blob/0e90cf2551e42f85620aca092b4255fa1bd10660/sorted/tests/01-parse-enum.rs#L5">https://github.com/dtolnay/proc-macro-workshop/blob/0e90cf2551e42f85620aca092b4255fa1bd10660/sorted/tests/01-parse-enum.rs#L5</a></p>
+<p>作者推荐我们将 input 解析成 <code>syn::Item</code>，so be it:</p>
+<pre class="one-piece"><code>#[proc_macro_attribute]
+pub fn sorted(args: TokenStream1, input: TokenStream1) -&gt; TokenStream1 {
+    dbg!(args);
+    let input = parse_macro_input!(input as Item);
+    sorted_deriver(input)
+        .unwrap_or_else(syn::Error::into_compile_error)
+        .into()
+}
+
+fn sorted_deriver(input: Item) -&gt; Result&lt;TokenStream2&gt; {
+    Ok(quote! {
+        #input
+    })
+}
+</code></pre>
+<p>其中 args 是 <code>#[sorted(a)]</code> 中的 <code>a</code>, 打印出来是：</p>
+<pre class="one-piece"><code>[sorted/src/lib.rs:15] args = TokenStream [
+    Ident {
+        ident: "a",
+        span: #0 bytes(1547..1548),
+    },
+]
+</code></pre>
+<h4 id="sorted-02-not-enum" tabindex="-1">Sorted 02 Not Enum</h4>
+<p>如果 <code>sorted</code> 不是加在 <code>Enum</code> 上，则报错。</p>
+<pre class="insert-before"><code>#[proc_macro_attribute]
+pub fn sorted(_args: TokenStream1, input: TokenStream1) -&gt; TokenStream1 {
+    let input = parse_macro_input!(input as Item);
+    sorted_deriver(input)
+        .unwrap_or_else(syn::Error::into_compile_error)
+        .into()
+}
+
+fn sorted_deriver(input: Item) -&gt; Result&lt;TokenStream2&gt; {
+    match input {
+        Item::Enum(e) =&gt; sorted_enum_deriver_impl(e),
+</code></pre><pre class="insert"><code>        _ =&gt; {
+            Err(Error::new(
+            Span::call_site(),
+            "expected enum or match expression",
+        ))
+</code></pre><pre class="insert-after"><code>    },
+    }
+}
+
+fn sorted_enum_deriver_impl(input: ItemEnum) -&gt; Result&lt;TokenStream2&gt; {
+    Ok(quote! {
+        #input
+    })
+}
+</code></pre>
+<p>这里最操蛋的是居然用了 <code>Span::call_site()</code>, 我用 <code>input.span()</code> 结果指向了 <code>pub</code>，没想到 <code>call_site()</code> 是这个意思：在哪调用这个 attribute macro, <code>call_site()</code> 就指向哪</p>
+<pre class="one-piece"><code>#[sorted]
+pub struct Error {
+    kind: ErrorKind,
+    message: String,
+}
+</code></pre>
+<p>这里， call site 是 <code>#[sorted]</code></p>
+<blockquote>
+<p>The span of the invocation of the current procedural macro.</p>
+</blockquote>
+<blockquote>
+<p>Identifiers created with this span will be resolved as if they were written directly at the macro call location (call-site hygiene) and other code at the macro call site will be able to refer to them as well.</p>
+</blockquote>
+<p>文档在说什么？(#todo)</p>
+<p>最后孤投一掷：</p>
+<pre class="one-piece"><code>error: expected enum or match expression
+  --&gt; tests/02-not-enum.rs:31:1
+   |
+31 | #[sorted]
+   | ^^^^^^^^^
+   |
+   = note: this error originates in the attribute macro `sorted` (in Nightly builds, run with -Z macro-backtrace for more info)
+</code></pre>
+<h4 id="sorted-03--out-of-order" tabindex="-1">Sorted 03  Out Of Order</h4>
+<p>检查不符合 lexicographical 顺序的 variants，这个很简单:</p>
+<pre class="one-piece"><code>fn sorted_enum_deriver_impl(input: ItemEnum) -&gt; Result&lt;TokenStream2&gt; {
+    if input.variants.is_empty() {
+        return Ok(quote! {
+            #input
+        });
+    }
+
+    let mut prev = input.variants.first().unwrap();
+    let mut mistack = false;
+    for var in &amp;input.variants {
+        if prev.ident &gt; var.ident {
+            mistack = true;
+            prev = var;
+            break;
+        }
+        prev = var;
+    }
+    let target = prev;
+    if mistack {
+        for var in &amp;input.variants {
+            if target.ident &gt;= var.ident {
+                continue;
+            } else {
+                return Err(Error::new(
+                    target.span(),
+                    format!("{} should sort before {}", target.ident, var.ident),
+                ));
+            }
+        }
+    }
+
+    Ok(quote! {
+        #input
+    })
+}
+</code></pre>
+<p>最多遍历两遍，想不到更快的方法，有更好的方法吗？</p>
+<h4 id="sorted-04-variants-with-data" tabindex="-1">Sorted 04 Variants With Data</h4>
+<p>这里出现一些无法解决的问题，<code>unused_import</code>，产生若干 warnings<br>
+<img src="images/0xfeff_807990309efa42aeaf31750518de26d6.png" alt=""></p>
+<p><img src="images/0xfeff_e7745441a3c6466aa85348a0ea07afeb.png" alt=""></p>
+<p>无法解决这个问题，只好把 warnings 也复制到 04-variants-with-data.stderr</p>
+<h4 id="sorted-05-match-expr" tabindex="-1">Sorted 05 Match Expr</h4>
+<p>这一节很难，<code>#[sorted]</code> 被放在 <code>match</code> 语句中检查 arm.</p>
+<pre class="one-piece"><code>#[sorted]
+pub enum Error {
+    Fmt(fmt::Error),
+    Io(io::Error),
+}
+
+impl Display for Error {
+    #[sorted::check]
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        use self::Error::*;
+
+        #[sorted]
+        match self {
+            Io(e) =&gt; write!(f, "{}", e),
+            Fmt(e) =&gt; write!(f, "{}", e),
+        }
+    }
+}
+</code></pre>
+<p>这里迷惑的是 <code>#[sorted::check]</code> 后来发现其中的 <code>sorted</code> 原来是 mod，所以只需要增加一个函数：</p>
+<pre class="one-piece"><code>#[proc_macro_attribute]
+pub fn check(_args: TokenStream1, input: TokenStream1) -&gt; TokenStream1 {
+    let input = parse_macro_input!(input as Item);
+    check_deriver(input)
+        .unwrap_or_else(syn::Error::into_compile_error)
+        .into()
+}
+</code></pre>
+<p>接下来通过访问者模式(visitor pattern)访问并修改树的内容：<a href="https://docs.rs/syn/1.0.89/syn/visit_mut/trait.VisitMut.html#method.visit_expr_match_mut">https://docs.rs/syn/1.0.89/syn/visit_mut/trait.VisitMut.html#method.visit_expr_match_mut</a></p>
+<p>注明 syn 的 feature <code>"visit-mut"</code></p>
+<pre class="one-piece"><code>[dependencies]
+syn = {version="1.0.89",features=["full","fold","parsing", "derive", "extra-traits", "visit-mut"]}
+</code></pre>
+<p><a href="https://docs.rs/syn/1.0.89/syn/visit_mut/index.html#example">https://docs.rs/syn/1.0.89/syn/visit_mut/index.html#example</a> 这里有使用示例</p>
+<p>再次出现多一个错误的情况：<br>
+<img src="images/0xfeff_3dff7d6859d44826ae92d02778efa31a.png" alt=""><br>
+我就当我过了：如果抛出异常，那就是没生成 <code>Fmt(e)</code> 分支的代码，那么第二个错误是必然的</p>
+<p>怎么使用访问者模式？ 访问者是有状态的：</p>
+<pre class="one-piece"><code>struct SortedProbe {
+    arms: Vec&lt;Ident&gt;,
+    mistake: Option&lt;(Ident, Ident)&gt;,
+}
+</code></pre>
+<p>我对这段代码最不满意的地方是它没有使用引用类型的 <code>Ident</code>, 也就是说这里涉及了多个 <code>Ident</code> 的拷贝</p>
+<pre class="one-piece"><code>fn check_fn_attribute_impl(mut input: ItemFn) -&gt; Result&lt;TokenStream2&gt; {
+    let mut probe = SortedProbe {
+        arms: Vec::new(),
+        mistake: None,
+    };
+    probe.visit_item_fn_mut(&amp;mut input);
+
+    match probe.mistake {
+        Some((first, second)) =&gt; throw(&amp;first, &amp;second),
+        _ =&gt; Ok(quote! {
+            #input
+        }),
+    }
+}
+</code></pre>
+<p>然后针对 <code>ItemFn</code>, 调用 <code>visit_item_fn_mut()</code>，中间调用的函数有缺省的实现，我们要做的是覆盖其中两个：</p>
+<pre class="one-piece"><code>impl syn::visit_mut::VisitMut for SortedProbe {
+    fn visit_expr_match_mut(&amp;mut self, i: &amp;mut ExprMatch) {
+        if i.attrs.len() == 1 {
+            let attribute = i.attrs.first().unwrap();
+            let segs = &amp;attribute.path.segments;
+            if segs.len() == 1 {
+                let seg = segs.first().unwrap();
+                if seg.ident == "sorted" {
+                    for arm in i.arms.iter_mut() {
+                        self.visit_arm_mut(arm);
+
+                        let a: Vec&lt;&amp;Ident&gt; = self.arms.iter().collect();
+                        if let Some((_1, _2)) = unsorted_item(&amp;a) {
+                            self.mistake = Some((_1.clone(), _2.clone()));
+                        } else {
+                            i.attrs.clear();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    fn visit_arm_mut(&amp;mut self, i: &amp;mut Arm) {
+        if let Pat::TupleStruct(pt) = &amp;i.pat {
+            if !pt.path.segments.is_empty() {
+                self.arms
+                    .push(pt.path.segments.first().unwrap().ident.clone());
+            }
+        }
+    }
+}
+</code></pre>
+<p>这种设计的特点是，库本身提供一个缺省的访问者实现，但给你机会去覆盖其中的方法。</p>
+<h4 id="sorted-06-pattern-path" tabindex="-1">Sorted 06 Pattern Path</h4>
+<pre class="insert-before"><code>impl Display for Error {
+    #[sorted::check]
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        #[sorted]
+        match self {
+</code></pre><pre class="insert"><code>            Error::Io(e) =&gt; write!(f, "{}", e),
+            Error::Fmt(e) =&gt; write!(f, "{}", e),
+</code></pre><pre class="insert-after"><code>        }
+    }
+}
+</code></pre>
+<p>增加了一个要求： 识别带前缀的 arms: 否则上面代码中，两个 <code>Error</code> 符合顺序，而后面的 <code>Io</code> 和 <code>Fmt</code> 不符合，却没被识别出来。</p>
+<p>直接取 <code>PatTupleStruct</code> 中 <code>Path</code> 的最后一个 <code>ident</code></p>
+<p>最后依然遇到问题：我没法选择 <code>Error::Fmt</code> 只能 <code>Fmt</code>, 因为 <code>::</code> 根本没有 <code>span()</code><br>
+, 试了 <code>arm</code> 的 span, 结果和 <code>Error</code> 一样，即第一个 token<br>
+<img src="images/0xfeff_6e93b45674634b9bab96cdf06251982f.png" alt=""><br>
+心态崩了，但逻辑对就行.</p>
+<p>如果这样写：</p>
+<pre class="one-piece"><code>        let tk = self.0.to_token_stream();
+        
+        /* ForgedIdent {
+            name: list.join("::"),
+            span: self.cmp_point().span(),
+        } */
+        ForgedIdent {
+            name: tk.to_string(),
+            span: tk.span(),
+        }
+</code></pre>
+<p>结果导致三个 token 之间有空格<br>
+<img src="images/0xfeff_e056703606204a668b2259e69e4e1c70.png" alt=""></p>
+<h4 id="sorted-07-unrecognized-pattern" tabindex="-1">Sorted 07 Unrecognized Pattern</h4>
+<p>要求识别出 <code>Slice</code>, 然后报错：</p>
+<pre class="one-piece"><code>error: unsupported by #[sorted]
+  --&gt; tests/07-unrecognized-pattern.rs:12:9
+   |
+12 |         [] =&gt; Some(0),
+   |         ^^
+</code></pre>
+<p>也不难：</p>
+<pre class="one-piece"><code>fn check_fn_attribute_impl(mut input: ItemFn) -&gt; Result&lt;TokenStream2&gt; {
+     let mut probe = SortedProbe {
+         arms: Vec::new(),
+         mistake: None,
++        unsupported: None,
+     };
+     probe.visit_item_fn_mut(&amp;mut input);
+ 
+-    match probe.mistake {
+-        Some((first, second)) =&gt; throw(first, second),
+-        _ =&gt; Ok(quote! {
+-            #input
+-        }),
++    match probe.unsupported {
++        Some(e) =&gt; Err(Error::new(e.span, format!("unsupported by #[sorted]"))),
++        _ =&gt; match probe.mistake {
++            Some((first, second)) =&gt; throw(first, second),
++            _ =&gt; Ok(quote! {
++                #input
++            }),
++        },
+     }
+ }
+ struct SortedPath(Path);
+@@ -210,11 +215,11 @@ struct SortedProbe {
+     // had a bad feeling about not using references
+     arms: Vec&lt;SortedPath&gt;,
+     mistake: Option&lt;(ForgedIdent, ForgedIdent)&gt;,
++    unsupported: Option&lt;ForgedIdent&gt;,
+ }
+ 
+ impl syn::visit_mut::VisitMut for SortedProbe {
+     fn visit_expr_match_mut(&amp;mut self, i: &amp;mut ExprMatch) {
+         if i.attrs.len() == 1 {
+             let attribute = i.attrs.first().unwrap();
+             let segs = &amp;attribute.path.segments;
+@@ -223,6 +228,9 @@ impl syn::visit_mut::VisitMut for SortedProbe {
+                 if seg.ident == "sorted" {
+                     for arm in i.arms.iter_mut() {
+                         self.visit_arm_mut(arm);
++                        if self.unsupported.is_some() {
++                            return;
++                        }
+                         if let Some((_1, _2)) =
+                             unsorted_item2(&amp;self.arms.iter().collect::&lt;Vec&lt;&amp;SortedPath&gt;&gt;())
+                         {
+@@ -236,9 +244,17 @@ impl syn::visit_mut::VisitMut for SortedProbe {
+         }
+     }
+     fn visit_arm_mut(&amp;mut self, i: &amp;mut Arm) {
+-        if let Pat::TupleStruct(pt) = &amp;i.pat {
+-            if !pt.path.segments.is_empty() {
+-                self.arms.push(SortedPath(pt.path.clone()));
++        match &amp;i.pat {
++            Pat::TupleStruct(pt) =&gt; {
++                if !pt.path.segments.is_empty() {
++                    self.arms.push(SortedPath(pt.path.clone()));
++                }
++            }
++            _ =&gt; {
++                self.unsupported = Some(ForgedIdent {
++                    name: "".to_string(),
++                    span: i.pat.span(),
++                });
+             }
+         }
+     }
+
+</code></pre>
+<h4 id="sorted-08-underscore" tabindex="-1">Sorted 08 Underscore</h4>
+<p>这一节要求识别 <code>_</code> , 并确定它位于最后一个 arm</p>
+<pre class="one-piece"><code>            Pat::Wild(_) =&gt; {
+                if self.arms.len() != self.expected_arms_cnt - 1 {
+                    self.unordered_wildcard = Some(ForgedIdent {
+                        name: "_".to_string(),
+                        span: i.pat.span(),
+                    });
+                }
+            }
+</code></pre>
+<h2 id="结论" tabindex="-1">结论</h2>
+<p>Rust 的诀窍是通过 <code>dbg!()</code> 观察 TokenStream 的结构，并想办法获取它的信息，跟写爬虫一样。 练习<a href="https://github.com/dtolnay/proc-macro-workshop">procedural macro workshop</a>很有必要。大部分操作都是 <code>if let</code>, 最后一个练习 <strong>sorted</strong> 用了访问者模式。</p>
+<h2 id="参考" tabindex="-1">参考</h2>
+<ul>
+<li><a href="https://blog.x5ff.xyz/blog/easy-programming-with-rust-macros/">https://blog.x5ff.xyz/blog/easy-programming-with-rust-macros/</a></li>
+<li><a href="https://blog.logrocket.com/macros-in-rust-a-tutorial-with-examples/">https://blog.logrocket.com/macros-in-rust-a-tutorial-with-examples/</a></li>
+<li><a href="https://doc.rust-lang.org/book/ch19-06-macros.html">https://doc.rust-lang.org/book/ch19-06-macros.html</a></li>
+<li><a href="https://veykril.github.io/tlborm/">The Little Book of Rust Macros”</a></li>
+<li>[This is a continuation of <a href="https://github.com/DanielKeep/tlborm">Daniel Keep's Book</a> which has not been updated since the early summer of 2016, adapted to make use of <a href="https://github.com/rust-lang/mdBook">mdBook</a>.](<a href="https://veykril.github.io/tlborm/introduction.html">https://veykril.github.io/tlborm/introduction.html</a>)</li>
+<li>[The Rust compiler has a fairly complete <a href="https://github.com/rust-lang/rust/tree/master/src/test">test suite</a>. When looking for examples of newly-introduced features, I frequently start there](<a href="https://stackoverflow.com/a/52593373">https://stackoverflow.com/a/52593373</a>)</li>
+</ul>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p><a href="https://doc.rust-lang.org/reference/tokens.html">https://doc.rust-lang.org/reference/tokens.html</a><br>
+这只是调用宏的语法，和定义宏无关。 <a href="#fnref1" class="footnote-backref">↩︎</a> <a href="#fnref1:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p><a href="https://doc.rust-lang.org/reference/macros-by-example.html">https://doc.rust-lang.org/reference/macros-by-example.html</a> <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  <svg style="display: none;" id="MJX-SVG-global-cache"><defs><path id="MJX-TEX-N-24" d="M162 187Q162 164 146 149T109 133H103V130Q108 115 115 105Q122 92 131 82T150 64T170 52T190 44T206 40T220 37L227 36V313Q190 320 162 335Q116 358 86 404T55 508Q55 567 85 614T165 685Q186 696 225 704H227V750H273V704L286 703Q369 690 413 631Q441 588 444 531Q444 514 443 509Q439 490 425 479T391 468Q368 468 353 483T337 522Q337 546 353 560T390 575L394 576V578Q386 599 372 614T342 637T314 649T288 656L273 658V408L288 405Q329 394 355 376Q396 348 420 300T444 199Q444 130 408 76T313 1Q286 -9 276 -9H273V-56H227V-10H221Q202 -6 193 -4T155 11T108 41T74 94T55 176V182Q55 227 95 238Q103 240 108 240Q129 240 145 226T162 187ZM225 657Q219 657 204 651T169 632T135 594T121 538Q121 512 131 491T156 457T187 435T213 423T227 420V539Q227 657 225 657ZM378 169Q378 230 339 265T274 301Q273 301 273 169V37Q324 50 351 87T378 169Z"></path><path id="MJX-TEX-N-28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path><path id="MJX-TEX-I-1D440" d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path><path id="MJX-TEX-I-1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path><path id="MJX-TEX-I-1D450" d="M34 159Q34 268 120 355T306 442Q362 442 394 418T427 355Q427 326 408 306T360 285Q341 285 330 295T319 325T330 359T352 380T366 386H367Q367 388 361 392T340 400T306 404Q276 404 249 390Q228 381 206 359Q162 315 142 235T121 119Q121 73 147 50Q169 26 205 26H209Q321 26 394 111Q403 121 406 121Q410 121 419 112T429 98T420 83T391 55T346 25T282 0T202 -11Q127 -11 81 37T34 159Z"></path><path id="MJX-TEX-I-1D45F" d="M21 287Q22 290 23 295T28 317T38 348T53 381T73 411T99 433T132 442Q161 442 183 430T214 408T225 388Q227 382 228 382T236 389Q284 441 347 441H350Q398 441 422 400Q430 381 430 363Q430 333 417 315T391 292T366 288Q346 288 334 299T322 328Q322 376 378 392Q356 405 342 405Q286 405 239 331Q229 315 224 298T190 165Q156 25 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 114 189T154 366Q154 405 128 405Q107 405 92 377T68 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path><path id="MJX-TEX-I-1D45C" d="M201 -11Q126 -11 80 38T34 156Q34 221 64 279T146 380Q222 441 301 441Q333 441 341 440Q354 437 367 433T402 417T438 387T464 338T476 268Q476 161 390 75T201 -11ZM121 120Q121 70 147 48T206 26Q250 26 289 58T351 142Q360 163 374 216T388 308Q388 352 370 375Q346 405 306 405Q243 405 195 347Q158 303 140 230T121 120Z"></path><path id="MJX-TEX-I-1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path><path id="MJX-TEX-I-210E" d="M137 683Q138 683 209 688T282 694Q294 694 294 685Q294 674 258 534Q220 386 220 383Q220 381 227 388Q288 442 357 442Q411 442 444 415T478 336Q478 285 440 178T402 50Q403 36 407 31T422 26Q450 26 474 56T513 138Q516 149 519 151T535 153Q555 153 555 145Q555 144 551 130Q535 71 500 33Q466 -10 419 -10H414Q367 -10 346 17T325 74Q325 90 361 192T398 345Q398 404 354 404H349Q266 404 205 306L198 293L164 158Q132 28 127 16Q114 -11 83 -11Q69 -11 59 -2T48 16Q48 30 121 320L195 616Q195 629 188 632T149 637H128Q122 643 122 645T124 664Q129 683 137 683Z"></path><path id="MJX-TEX-N-2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"></path><path id="MJX-TEX-N-29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path><path id="MJX-TEX-I-1D445" d="M230 637Q203 637 198 638T193 649Q193 676 204 682Q206 683 378 683Q550 682 564 680Q620 672 658 652T712 606T733 563T739 529Q739 484 710 445T643 385T576 351T538 338L545 333Q612 295 612 223Q612 212 607 162T602 80V71Q602 53 603 43T614 25T640 16Q668 16 686 38T712 85Q717 99 720 102T735 105Q755 105 755 93Q755 75 731 36Q693 -21 641 -21H632Q571 -21 531 4T487 82Q487 109 502 166T517 239Q517 290 474 313Q459 320 449 321T378 323H309L277 193Q244 61 244 59Q244 55 245 54T252 50T269 48T302 46H333Q339 38 339 37T336 19Q332 6 326 0H311Q275 2 180 2Q146 2 117 2T71 2T50 1Q33 1 33 10Q33 12 36 24Q41 43 46 45Q50 46 61 46H67Q94 46 127 49Q141 52 146 61Q149 65 218 339T287 628Q287 635 230 637ZM630 554Q630 586 609 608T523 636Q521 636 500 636T462 637H440Q393 637 386 627Q385 624 352 494T319 361Q319 360 388 360Q466 361 492 367Q556 377 592 426Q608 449 619 486T630 554Z"></path><path id="MJX-TEX-I-1D452" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"></path><path id="MJX-TEX-I-1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path><path id="MJX-TEX-I-1D446" d="M308 24Q367 24 416 76T466 197Q466 260 414 284Q308 311 278 321T236 341Q176 383 176 462Q176 523 208 573T273 648Q302 673 343 688T407 704H418H425Q521 704 564 640Q565 640 577 653T603 682T623 704Q624 704 627 704T632 705Q645 705 645 698T617 577T585 459T569 456Q549 456 549 465Q549 471 550 475Q550 478 551 494T553 520Q553 554 544 579T526 616T501 641Q465 662 419 662Q362 662 313 616T263 510Q263 480 278 458T319 427Q323 425 389 408T456 390Q490 379 522 342T554 242Q554 216 546 186Q541 164 528 137T492 78T426 18T332 -20Q320 -22 298 -22Q199 -22 144 33L134 44L106 13Q83 -14 78 -18T65 -22Q52 -22 52 -14Q52 -11 110 221Q112 227 130 227H143Q149 221 149 216Q149 214 148 207T144 186T142 153Q144 114 160 87T203 47T255 29T308 24Z"></path><path id="MJX-TEX-N-3F" d="M226 668Q190 668 162 656T124 632L114 621Q116 621 119 620T130 616T145 607T157 591T162 567Q162 544 147 529T109 514T71 528T55 566Q55 625 100 661T199 704Q201 704 210 704T224 705H228Q281 705 320 692T378 656T407 612T416 567Q416 503 361 462Q267 395 247 303Q242 279 242 241V224Q242 205 239 202T222 198T205 201T202 218V249Q204 320 220 371T255 445T292 491T315 537Q317 546 317 574V587Q317 604 315 615T304 640T277 661T226 668ZM162 61Q162 89 180 105T224 121Q247 119 264 104T281 61Q281 31 264 16T222 1Q197 1 180 16T162 61Z"></path><path id="MJX-TEX-I-1D442" d="M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z"></path></defs></svg></body>
+</html>

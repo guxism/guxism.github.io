@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Rust Lifetime</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Rust Lifetime</h1>
+        <p>这篇文章出自 <a href="/e/public/posts/the-common-sense-of-daily-rust.html">Rust 通识</a>, 篇幅太长了所以独立出来</p>
+<nav class="table-of-contents"><ol><li><a href="#基本概念">基本概念</a></li><li><a href="#什么是捕捉">什么是捕捉</a></li><li><a href="#函数的捕捉">函数的捕捉</a></li><li><a href="#搞错了函数没有捕捉">搞错了，函数没有捕捉</a></li><li><a href="#解读错误">解读错误</a></li><li><a href="#a-的语法">'a 的语法</a></li><li><a href="#结论">结论</a></li><li><a href="#resources">Resources</a></li><li><a href="#history">History</a></li></ol></nav><h2 id="基本概念" tabindex="-1">基本概念</h2>
+<ol>
+<li>Lifetime 只针对引用，即加了 <code>&amp;</code> 前缀的变量</li>
+<li>Ultimately, lifetime syntax is about connecting the lifetimes of various parameters and return values of functions.</li>
+<li><a href="https://doc.rust-lang.org/nomicon/lifetimes.html">Nomicom(Mysterious and often incomprehensible yet seemingly wise)</a>: Lifetimes are named regions of code that a reference must be valid for.</li>
+<li>除了 region, 还有另外一种表达: span. "The span of the code where the reference may be used".</li>
+<li>如果一个实体(函数，struct)，包含了引用，那么这个实体的生命周期必须至少跟那引用的生命周期一样长</li>
+<li>生命周期结束的可能性：
+<ol>
+<li>引用所在的 block，你可以这么考虑，x86 calling convention 中，函数入栈的时候，任何地方声明的本地变量其实都在栈帧指针附近，所以这个帧的任何东西都能引用本地变量，不管是否符合语法，因此，本地变量的生命周期就是帧的生命周期，也就是持续了整个 block</li>
+<li>NLL: non lexical lifetime, 变量的声明周期从声明开始，到最后一次使用结束，当前的编译器(rustc 1.55.0 (c8dfcfe04 2021-09-06)) 用的就是 NLL</li>
+</ol>
+</li>
+<li>我的理解是，所谓 lexical 是指编译的时候，编译器扫描一遍本地变量，把它们安排到帧的前面，这个就是 lexical(relating to the words or vocabulary of a language)，为什么要放在帧的前面呢？变量不放帧里面放哪？对于栈虚拟机，举个例子，很难实现第 10 行声明的变量不和它前面最后一个变量放在一块，因为运算结果也放回栈中，导致细节复杂，因此必须先扫描一遍函数的指令，将所有声明的变量都放在帧的前面。而对于 register-based 虚拟机，调用栈除了放变量和寄存器就不放其他东西，不存储运算结果。因此，不管是栈虚拟机，还是寄存器虚拟机，都将变量放在帧的前面，只不过一个是被迫这么做，一个是自然而然这么做。NLL 是指更精细地检查变量的生命周期，和上述“将变量放在帧前面”不一样。<a href="https://stackoverflow.com/a/50253558">https://stackoverflow.com/a/50253558</a> 说 NLL 应该改名叫 non-lexical borrows，和 lifetime 区分开来，这也就意味着，将变量放在帧的前面，是 lifetime, 或者 lexical lifetime.</li>
+<li><code>'static</code> 和任何语言的 static 一样，都是用来表示某个东西存活到程序退出</li>
+<li>Lifetime Elision：只要函数有引用，就涉及生命周期，最初版的 Rust 没考虑到生命周期的问题，因此保留了没有生命周期标注，将来 Rust 编译器会智能到消除一切生命周期标注，但现在还不行，还需要程序员手动标注。</li>
+</ol>
+<p>Rust 管理 Lifetime 的手段：</p>
+<ol>
+<li>borrow checker, 发生在编译期</li>
+</ol>
+<p>Unbounded Lifetimes：</p>
+<ul>
+<li>Given a function, any output lifetimes that don't derive from inputs are unbounded.</li>
+</ul>
+<h2 id="什么是捕捉" tabindex="-1">什么是捕捉</h2>
+<pre class="insert-before"><code>error[E0759]: `target` has lifetime `'a` but it needs to satisfy a `'static` lifetime requirement
+  --&gt; proc/src/lib.rs:28:5
+   |
+23 |   fn tag&lt;'a, T, P&gt;(mut parser: P, target: &amp;'a str) -&gt; impl FnMut(IntoIter) -&gt; Result&lt;T&gt;
+   |                                           ------- this data with lifetime `'a`...
+...
+28 | /     move |token: IntoIter| -&gt; Result&lt;T&gt; {
+29 | |         let t = parser(token)?;
+30 | |         if t.to_string() == target {
+31 | |             Ok(t)
+...  |
+34 | |         }
+35 | |     }
+</code></pre><pre class="insert"><code>   | |_____^ ...is captured here...
+</code></pre><pre class="insert-after"><code>   |
+note: ...and is required to live as long as `'static` here
+  --&gt; proc/src/lib.rs:23:53
+   |
+23 | fn tag&lt;'a, T, P&gt;(mut parser: P, target: &amp;'a str) -&gt; impl FnMut(IntoIter) -&gt; Result&lt;T&gt;
+   |                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: to declare that the `impl Trait` captures data from argument `target`, you can add an explicit `'a` lifetime bound
+   |
+23 | fn tag&lt;'a, T, P&gt;(mut parser: P, target: &amp;'a str) -&gt; impl FnMut(IntoIter) -&gt; Result&lt;T&gt; + 'a
+   |                                                                                       ^^^^
+
+For more information about this error, try `rustc --explain E0759`.
+error: could not compile `macros` due to previous error
+</code></pre>
+<p>可以看到，编译器认为 target: this data with lifetime <code>'a</code> is captured here</p>
+<p>这就很操蛋，Rust 没有文档讲什么叫做 capture，除了闭包。闭包有个参数列表 <code>|...|</code> , 编译器会决定到底是通过 <code>&amp;T</code>, <code>&amp;mut T</code>, 还是 <code>T</code> 来给闭包捕捉变量</p>
+<p>所谓捕捉是指，在闭包中使用但并未在闭包中定义的变量需要去闭包所在的环境中找对应的数据来源，比如</p>
+<pre class="one-piece"><code>let print = println!("color = {}", color);
+</code></pre>
+<p>编译器要去 <code>print</code> 所在的上下文中查找 color, 找到之后，把它捕捉到 <code>println</code> 参数中</p>
+<p><img src="images/0xfeff_c56c62684d974f14a432fe387594c34a.png" alt=""></p>
+<p>首先尝试 <code>&amp;T</code>, 如果变量在闭包中有改动，则 <code>&amp;mut T</code>, 如果闭包要用到值传递，则 <code>T</code><br>
+比如：</p>
+<pre class="one-piece"><code>fn main() {
+    let a = 2;
+    let mover = move |t| -&gt; i32 {
+        t
+    };
+    let do_sth = || {
+        mover(a);
+    };
+    do_sth();
+}
+</code></pre>
+<p><code>do_sth</code> 调用 <code>mover</code>， <code>mover</code> 移动 <code>a</code>， 为什么呢，因为前面的 <code>move</code> 标识让 closure "take ownership of captured variables"。</p>
+<h2 id="函数的捕捉" tabindex="-1">函数的捕捉</h2>
+<p>了解闭包的捕捉之后，我们不难想象对于函数而言，唯一的捕捉只能发生在调用 (invocation) 的时候，比如对于 <code>some_func(a);</code> ，编译器去找 <code>a</code>, 放到函数内部，by reference 还是 by mutable reference 或 value 都由函数定义说了算。</p>
+<h2 id="搞错了，函数没有捕捉" tabindex="-1">搞错了，函数没有捕捉</h2>
+<p>源代码如下：</p>
+<pre class="one-piece"><code>fn tag&lt;'a, T, P&gt;(mut parser: P, target: &amp;'a str) -&gt; impl FnMut(IntoIter) -&gt; Result&lt;T&gt;
+where
+    P: FnMut(IntoIter) -&gt; Result&lt;T&gt; + 'a,
+    T: ToString,
+{
+    move |token: IntoIter| -&gt; Result&lt;T&gt; {
+        let t = parser(token)?;
+        if t.to_string() == target {
+            Ok(t)
+        } else {
+            bail!("tag mismatch")
+        }
+    }
+}
+</code></pre>
+<p>仔细对比编译错误，发现箭头发生在函数定义中的闭包的最后一个括号。所以我们搞错了，函数没有捕捉，只有闭包才有捕捉，闭包捕捉了 target，by reference，因为 <code>==</code> 不需要拷贝(参考 <a href="https://doc.rust-lang.org/std/cmp/trait.PartialEq.html">https://doc.rust-lang.org/std/cmp/trait.PartialEq.html</a> ,<code>eq</code> 接口)。</p>
+<p>那也就是说，其实捕捉跟生命周期没什么关系，接下来看如何解读报错</p>
+<h2 id="解读错误" tabindex="-1">解读错误</h2>
+<p>首先， <code>target</code> has lifetime <code>a</code> but it needs to satisfy a <code>'static</code> lifetime requirement.</p>
+<p>看 <em>the book</em> 怎么说（<a href="https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html#the-static-lifetime%EF%BC%89">https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html#the-static-lifetime）</a></p>
+<blockquote>
+<p>But before specifying 'static as the lifetime for a reference, think about whether the reference you have actually lives the entire lifetime of your program or not. You might consider whether you want it to live that long ...</p>
+</blockquote>
+<p>意思是 <code>'static</code> 可以解决一切问题。关键是如果你开始不声明 <code>&amp;'static T</code>,  也没用，而且这么做浪费了 ELF 空间，变量被迫存在 .data, .rodata, .bss (是不是这样？标注了 <code>'static</code> 就要放在栈之外的地方？不是。<code>'static</code> 是 programmer 给编译器的保证，但 programmer 可能是错的，但编译器有时候选择相信 programmer, 特别是在引用这方面，或者说，让 programmer 去承担某个责任，因为编译器没有能力去判断引用的生命周期)</p>
+<p>回到现实，我调用这个函数的形式是：</p>
+<pre class="one-piece"><code>let token = item.into_iter();
+let _ = tag(ident, "struct")(token);
+</code></pre>
+<p><code>"struct"</code> 这个字符串的引用传到 <code>tag()</code>, 被里面的闭包捕捉，只要 <code>"struct"</code>  还在, 闭包都能使用，可以看出 <code>"struct"</code> 其实是 <code>'static</code></p>
+<blockquote>
+<p>All string literals have the <code>'static</code> lifetime -- <a href="https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html#the-static-lifetime">The Static Lifetime</a></p>
+</blockquote>
+<p><img src="images/0xfeff_3278732919484256b1270c1f8c5ea273.png" alt=""></p>
+<p><img src="images/0xfeff_0a12ee64b229493f80161721b47438a1.png" alt=""></p>
+<p>但是编译器太蠢所以它不知道 <code>target</code> 能活这么久，所以需要给返回值，即一个 closure, 手动标注上一个生命周期，至少和 <code>target</code> 的一样长。</p>
+<p>同时可以看到编译器给出了解释：</p>
+<blockquote>
+<p>help: to declare that the <code>impl Trait</code> captures data from argument <code>target</code>, you can add an explicit <code>'a</code> lifetime bound</p>
+</blockquote>
+<p>那么 <code>tag()</code> 的返回类型就是 <code>impl FnMut(IntoIter) -&gt; Result&lt;T&gt; + 'a</code>，这是什么语法？</p>
+<h2 id="a-的语法" tabindex="-1">'a 的语法</h2>
+<p><a href="https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html#validating-references-with-lifetimes">Validating References with Lifetimes</a> 没解释 <code>+ 'a</code>, 看到 <code>+</code> 会让人想到泛型的类型叠加：<a href="https://doc.rust-lang.org/book/ch10-02-traits.html#specifying-multiple-trait-bounds-with-the--syntax">Specifying Multiple Trait Bounds with the <code>+</code> Syntax</a></p>
+<p>假设 <code>impl FnMut(IntoIter) -&gt; Result&lt;T&gt;</code> 是 <code>impl traitA</code>, 那么 <code>impl FnMut(IntoIter) -&gt; Result&lt;T&gt; + 'a</code> 等于 <code>impl traitA + 'a</code>, 和我刚给出的连接的例子一样</p>
+<pre class="one-piece"><code>pub fn notify(item: &amp;(impl Summary + Display))
+</code></pre>
+<p>那么问题是 <code>'a</code> 是一个 trait bound 么？ 看 <a href="https://doc.rust-lang.org/reference/trait-bounds.html#trait-and-lifetime-bounds">Trait and lifetime bounds</a></p>
+<p>语法：</p>
+<pre class="one-piece"><code>TraitBound :
+      ?? ForLifetimes? TypePath
+   | ( ?? ForLifetimes? TypePath )
+</code></pre>
+<p>所以 <code>'a</code> 是一个 trait bound</p>
+<h2 id="结论" tabindex="-1">结论</h2>
+<p>到这，我们应该能够完全理解这段代码的每一个细节，了解生命周期在里面如何标注的，这个例子的输出携带了对变量 <code>target</code> 引用，那么就要确保引用的时候 <code>target</code> 没被回收。这很可能是编译器不够聪明导致，因为只要检测到 ”struct“ 是全局变量，返回的闭包是某种程度上也是 <code>'static</code>，但如果 <code>target</code> 只是一个本地局部变量的引用，就没用 <code>'static</code>，所以也许是为了保持一种形式统一，目前在所有场景之下都需要手动标注。</p>
+<pre class="one-piece"><code>fn tag&lt;'a, T, P&gt;(mut parser: P, target: &amp;'a str) -&gt; impl FnMut(IntoIter) -&gt; Result&lt;T&gt; + 'a
+where
+    P: FnMut(IntoIter) -&gt; Result&lt;T&gt; + 'a,
+    T: ToString,
+{
+    move |token: IntoIter| -&gt; Result&lt;T&gt; {
+        let t = parser(token)?;
+        if t.to_string() == target {
+            Ok(t)
+        } else {
+            bail!("tag mismatch")
+        }
+    }
+}
+</code></pre>
+<h2 id="resources" tabindex="-1">Resources</h2>
+<ul>
+<li><a href="https://github.com/rust-lang/rfcs/blob/master/text/2094-nll.md">https://github.com/rust-lang/rfcs/blob/master/text/2094-nll.md</a></li>
+<li>MIR, MIR CFG</li>
+</ul>
+<h2 id="history" tabindex="-1">History</h2>
+<ul>
+<li>20210329123415</li>
+</ul>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>

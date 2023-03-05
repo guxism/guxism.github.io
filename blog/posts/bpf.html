@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Linux 内核观测技术 BPF</title>
+    <style>
+      /*
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.static {
+  position: static;
+}
+.fixed {
+  position: fixed;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.contents {
+  display: contents;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+@font-face {
+  font-family: "allerlight";
+  src: url("/fonts/aller-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "imfell";
+  src: url("/fonts/IMFellEnglish-Regular.ttf");
+}
+@font-face {
+  font-family: "oswaldregular";
+  src: url("/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "opensansregular";
+  src: url("/fonts/Open_Sans/static/OpenSans/OpenSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "firacode";
+  src: url("/fonts/Fira_Code/woff2/FiraCode-Regular.woff2") format("woff2"), url("/fonts/Fira_Code/woff/FiraCode-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sysong";
+  src: url("/fonts/SourceHanSerifSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "syblack";
+  src: url("/fonts/SourceHanSansSC-VF.otf.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #252519;
+  position: relative;
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: opensansregular;
+}
+
+@media (min-width: 640px) {
+
+  body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  body {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+.container2 {
+  font-family: opensansregular;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+@media (min-width: 640px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1024px) {
+  .container2 {
+    width: 95%;
+  }
+}
+@media (min-width: 1280px) {
+  .container2 {
+    width: 60%;
+  }
+}
+@media (min-width: 1536px) {
+  .container2 {
+    width: 60%;
+  }
+}
+
+.site-head {
+  margin-bottom: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0px;
+}
+
+.site-navi {
+  padding-top: 0px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.site-navi .current-page {
+  font-weight: 700;
+}
+.site-navi ul {
+  margin: 0px;
+  margin-bottom: 0px;
+  gap: 5rem;
+  padding: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+.site-navi ul li {
+  margin-bottom: 0px;
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.site-navi ul li .regards {
+  display: none;
+}
+.site-navi .banner h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+@media (min-width: 768px) {
+
+  .site-navi .banner h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+
+  .site-navi .banner h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.post-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  gap: 0.5rem;
+  padding: 0px;
+}
+.post-tags ul li {
+  display: inline;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (min-width: 768px) {
+
+  .post-tags ul li {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.post-tags ul li .regards {
+  display: none;
+}
+
+.content2 {
+  display: block;
+  margin-bottom: 1.25rem;
+  margin-top: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+
+  .content2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .content2 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+.content2 table {
+  border-collapse: collapse;
+  border: 3px solid black;
+}
+.content2 th,
+.content2 td {
+  border: 1px solid black;
+}
+
+.content-tail {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 1024px) {
+
+  .content-tail {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ul {
+  padding-left: 2.5rem;
+  list-style-type: disc;
+}
+
+ol {
+  padding-left: 2.5rem;
+  list-style-type: decimal;
+}
+
+nav {
+  padding-left: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+nav ol {
+  list-style-type: decimal;
+}
+
+blockquote p {
+  margin: 1.25rem;
+  font-style: italic;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: opensansregular;
+  display: block;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+  margin-top: 1.25rem;
+}
+
+.post-head {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.post-content h1 {
+  margin-top: 1.25rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+li p {
+  padding-left: 0px !important;
+}
+
+ol,
+ul {
+  max-width: 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  width: 100%;
+}
+
+img {
+  max-width: 600px;
+  padding-left: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+a {
+  text-decoration-line: underline;
+}
+
+p code,
+li code {
+  background: #f8f8ff;
+  border: 1px solid #dedede;
+  padding: 0 0.2em;
+  font-weight: 300h;
+}
+
+pre > code {
+  clear: both;
+  display: inline-block;
+  margin-left: 0.75rem;
+  margin: 0px;
+  margin: auto;
+  font-family: firacode;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  clear: both;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 0.25rem;
+}
+
+pre.one-piece {
+  background: #eee;
+  border-top: #bbb 1px solid;
+  border-bottom: #bbb 1px solid;
+}
+
+pre.insert-before {
+  background: #eee;
+  border-top: #bbb 1px solid;
+}
+pre.insert-before code {
+  color: #7a7a77;
+}
+
+pre.insert {
+  background: #eee;
+}
+pre.insert code {
+  font-weight: bolder;
+}
+
+pre.insert-after {
+  background: #eee;
+  border-bottom: #bbb 1px solid;
+}
+pre.insert-after code {
+  color: #7a7a77;
+}
+
+.insert-before {
+  margin-top: 1.25rem;
+  margin-bottom: 0px;
+}
+
+.insert-after {
+  margin-top: 0px;
+  margin-bottom: 1.25rem;
+}
+
+.insert {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.envelope:before {
+  content: "\f003";
+}
+
+footer {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.device:before {
+  content: "unknown";
+}
+@media (min-width: 640px) {
+  .device:before {
+    content: "sm";
+  }
+}
+@media (min-width: 768px) {
+  .device:before {
+    content: "md";
+  }
+}
+@media (min-width: 1024px) {
+  .device:before {
+    content: "lg";
+  }
+}
+@media (min-width: 1280px) {
+  .device:before {
+    content: "xl";
+  }
+}
+@media (min-width: 1536px) {
+  .device:before {
+    content: "2xl";
+  }
+}
+
+.table-of-blogs {
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+.table-of-blogs td.title {
+  padding-left: 0.25rem;
+}
+.table-of-blogs .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.table-of-blogs .recently-updated {
+  cursor: help;
+}
+.table-of-blogs a {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+.table-of-blogs a:visited {
+  color: rgb(107 33 168 );
+}
+.table-of-blogs a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+.table-of-blogs td {
+  padding-left: 2rem;
+}
+    </style>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  </head>
+  <body>
+    
+    <div class="container2">
+      <div class="site-head post-head">
+      <div class="site-navi">
+                <ul>
+                 <li><a href="/">Home</a></li>
+                <li><a href="/reading.html">Reading</a></li>
+                 <li><a href="/users" class="regards">Log in</a></li>
+                 <li><a href="/archives" class="regards">Archives</a></li>
+                </ul>
+        </div>
+      </div>
+      <div class="content2 post-content">
+        <h1>Linux 内核观测技术 BPF</h1>
+        <nav class="table-of-contents"><ol><li><a href="#preparation">Preparation</a></li><li><a href="#chapter-2-hello-world">Chapter 2: Hello World</a><ol><li><a href="#加载自己编写的函数">加载自己编写的函数</a></li><li><a href="#理论">理论</a></li></ol></li><li><a href="#chapter-3-bpf-maps">Chapter 3. BPF Maps</a></li><li><a href="#chapter-4-tracing-with-bpf">Chapter 4. Tracing with BPF</a><ol><li><a href="#kernel-probes">Kernel Probes</a><ol><li><a href="#kprobes">kprobes</a></li><li><a href="#kretprobes">kretprobes</a></li></ol></li><li><a href="#tracepoints">Tracepoints</a></li><li><a href="#user-space-probes-uprobes-and-uretprobes">User-Space Probes, uprobes and uretprobes</a></li><li><a href="#user-statically-defined-tracepoints">User Statically Defined Tracepoints</a></li></ol></li></ol></nav><p>从 <em>Linux 内核观测技术 BPF</em> 一书开始<br>
+Host: Ubuntu 20.04.3 LTS x86_64<br>
+Kernel: 5.11.0-41-generic</p>
+<h2 id="preparation" tabindex="-1">Preparation</h2>
+<p>下载内核源码</p>
+<pre class="one-piece"><code>cd /tmp
+git clone --depth 1 git://kernel.ubuntu.com/ubuntu/ubuntu-focal.git
+</code></pre>
+<p>拷贝至 /kernel-src</p>
+<pre class="one-piece"><code>mv ubuntu-focal /kernel-src
+cd /kernel-src/tools/lib/bpf
+make
+</code></pre>
+<p>Install</p>
+<pre class="one-piece"><code>╰─➤  make install prefix=/usr/local
+Warning: Kernel ABI header at 'tools/include/uapi/linux/netlink.h' differs from latest version at 'include/uapi/linux/netlink.h'
+Warning: Kernel ABI header at 'tools/include/uapi/linux/if_link.h' differs from latest version at 'include/uapi/linux/if_link.h'
+  INSTALL  libbpf.a
+  INSTALL  libbpf.so.0.0.5
+  INSTALL  libbpf.pc
+</code></pre>
+<p>把编译好的 libbpf.* 移动到系统的库目录</p>
+<pre class="one-piece"><code>╰─➤  mv /usr/local/lib64/libbpf.* /lib/x86_64-linux-gnu 
+</code></pre>
+<p>克隆随书一份代码</p>
+<pre class="one-piece"><code>➜  git clone https://github.com/bpftools/linux-observability-with-bpf.git linux-observability-with-bpf
+</code></pre>
+<h2 id="chapter-2-hello-world" tabindex="-1">Chapter 2: Hello World</h2>
+<pre class="one-piece"><code>➜  chapter-2 git:(master) cd hello_world 
+➜  hello_world git:(master) ls
+bpf_program.c  loader.c  Makefile  README.md
+➜  hello_world git:(master) 
+➜  hello_world git:(master) 
+➜  hello_world git:(master) make bpfload
+clang -O2 -target bpf -c bpf_program.c -I/kernel-src/tools/testing/selftests/bpf -o bpf_program.o
+clang -DHAVE_ATTR_TEST=0 -o monitor-exec -lelf -I/kernel-src/samples/bpf -I/kernel-src/tools/lib -I/kernel-src/tools/perf -I/kernel-src/tools/include -L/usr/local/lib64 -lbpf \
+        /kernel-src/samples/bpf/bpf_load.c loader.c
+➜  hello_world git:(master) ./monitor-exec 
+bpf_load_program() err=1
+The kernel didn't load the BPF program
+➜  hello_world git:(master) ls
+bpf_program.c  bpf_program.o  loader.c  Makefile  monitor-exec  README.md
+➜  hello_world git:(master) ./monitor-exec 
+bpf_load_program() err=1
+The kernel didn't load the BPF program
+➜  hello_world git:(master) sudo !!
+➜  hello_world git:(master) sudo ./monitor-exec
+[sudo] password for root_: 
+
+           &lt;...&gt;-2397412 [000] d... 795698.061482: bpf_trace_printk: Hello, BPF World!
+
+^C
+</code></pre>
+<h3 id="加载自己编写的函数" tabindex="-1">加载自己编写的函数</h3>
+<p>LLVM 是一个 general-purpose compiler 可以生成不同类型的 bytecode. 在这 LLVM 可以生成 BPF assembly code, 可以加载到内核中去.</p>
+<p>内核提供 <code>bpf</code> 系统调用来加载程序到 BPF 虚拟机中.</p>
+<p>bpf_program.c</p>
+<pre class="one-piece"><code>#include &lt;linux/bpf.h&gt;
+#define SEC(NAME) __attribute__((section(NAME), used))
+static int (*bpf_trace_printk)(const char *fmt, int fmt_size,
+                               ...) = (void *)BPF_FUNC_trace_printk;
+// 通知 BPF VM. 当 `execve` 被调用的时候, `bpf_prog` 就会被调用
+SEC("tracepoint/syscalls/sys_enter_execve")
+int bpf_prog(void *ctx) {
+  char msg[] = "Hello, BPF World!";
+  bpf_trace_printk(msg, sizeof(msg));
+  return 0;
+}
+
+char _license[] SEC("license") = "GPL";
+</code></pre>
+<p>运行 <code>monitor-exec</code> 之后, 在另外一个窗口执行 <code>ls</code>, <code>pwd</code> 这样的命令, <code>monitor-exec</code> 都会打出 "Hello, BPF World!"</p>
+<p>还需要注明 license 是 "GPL", 否则内核拒绝加载程序.</p>
+<p>这段代码实现了一个函数, 但还需要一个 loader</p>
+<pre class="one-piece"><code>#include "bpf_load.h"
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv) {
+  if (load_bpf_file("bpf_program.o") != 0) {
+    printf("The kernel didn't load the BPF program\n");
+    return -1;
+  }
+
+  read_trace_pipe();
+
+  return 0;
+}
+</code></pre>
+<p>注意到 <code>load_bpf_file</code> 函数加载中间文件 "bpf_program.o"</p>
+<h3 id="理论" tabindex="-1">理论</h3>
+<ul>
+<li>BPF 有两种类型(category), 第一种是 tracing, 第二种是 networking.</li>
+<li>BPF Verifier: 用于验证, 是一个 program running on the system
+<ul>
+<li>first check: a static analysis of the code that the VM is going to load
+<ul>
+<li>to ensure that the program has an expected end</li>
+<li>creates a DAG(!) , and performs a DFS to ensure that the program finishes and the code doesn't include dangerous paths, and guarantee that there are no recursive cycles</li>
+</ul>
+</li>
+<li>second check: a dry run of the BPF program
+<ul>
+<li>确保没有无效指令</li>
+<li>检查指针, 确保能正确 access and dereference</li>
+<li>检查 control flows, 确保每条 control path 都有 BPF_EXIT 指令</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>A dry run (or a practice run[1]) is a testing process where the effects of a possible failure are intentionally mitigated.[1] For example, an aerospace company may conduct a "dry run" test of a jet's new pilot ejection seat while the jet is parked on the ground, rather than while it is in flight.</p>
+</blockquote>
+<blockquote>
+<p>The term dry run appears to have originated from fire departments in the US.[1] In order to practise, they would carry out dispatches of the fire brigade — known as runs — where water was not pumped — and which were therefore literally dry.[1] A run with real fire and water was referred to as a wet run.[1] The more general usage of the term seems to have arisen from widespread use by the US Armed Forces during World War II.[1]</p>
+</blockquote>
+<ul>
+<li><code>bpf</code> 接口, 参数包括一个 <code>bpf_attr</code>, 后者包含证书, log_level 等信息</li>
+</ul>
+<h2 id="chapter-3-bpf-maps" tabindex="-1">Chapter 3. BPF Maps</h2>
+<blockquote>
+<p>Message passing to invoke behavior in a program is a widely used technique in software engineering</p>
+</blockquote>
+<blockquote>
+<p>One of the most fascinating aspects about BPF, is that the code running on the kernel and the program that loaded said code</p>
+</blockquote>
+<p>BPF 程序可以和 User-space 程序交互, 这是每一个 BPF 程序的基础.</p>
+<ul>
+<li>通过 channels</li>
+<li>channels 的数据持久化</li>
+</ul>
+<p>BPF maps 是内核空间的键值对(map), user-space 的程序也可以通过 file descriptors 来访问它们.</p>
+<p>map_pinning_save.c:</p>
+<ol>
+<li>创建一个 MAP: <code>BPF_MAP_TYPE_ARRAY</code>, 返回文件描述符, 通过 <code>bpf(2)</code> 可以看到, <code>BPF_MAP_TYPE_ARRAY</code> 的好处是:
+<ol>
+<li>optimized for fastest possible lookup</li>
+<li>all array elements pre-allocated and zero initialized at init time</li>
+<li>...</li>
+</ol>
+</li>
+<li>需要 <code>bpf_obj_pin</code> 将 map 持久化到文件系统</li>
+</ol>
+<pre class="one-piece"><code>#include &lt;errno.h&gt;
+#include &lt;linux/bpf.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include "bpf.h"
+
+static const char *file_path = "/sys/fs/bpf/my_array";
+
+int main(int argc, char **argv) {
+  int key, value, fd, added, pinned;
+
+  fd = bpf_create_map(BPF_MAP_TYPE_ARRAY, sizeof(int), sizeof(int), 100, 0);
+  if (fd &lt; 0) {
+    printf("Failed to create map: %d (%s)\n", fd, strerror(errno));
+    return -1;
+  }
+
+  key = 1, value = 1234;
+  added = bpf_map_update_elem(fd, &amp;key, &amp;value, BPF_ANY);
+  if (added &lt; 0) {
+    printf("Failed to update map: %d (%s)\n", added, strerror(errno));
+    return -1;
+  }
+
+  pinned = bpf_obj_pin(fd, file_path);
+  if (pinned &lt; 0) {
+    printf("Failed to pin map to the file system: %d (%s)\n", pinned,
+           strerror(errno));
+    return -1;
+  }
+
+  return 0;
+}
+</code></pre>
+<p>map_pinning_fetch.c:</p>
+<ol>
+<li>获取 fd</li>
+<li>从 fd 中查找 key, 得出 value</li>
+</ol>
+<pre class="one-piece"><code>#include &lt;errno.h&gt;
+#include &lt;linux/bpf.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include "bpf.h"
+
+static const char *file_path = "/sys/fs/bpf/my_array";
+
+int main(int argc, char **argv) {
+  int fd, key, value, result;
+
+  fd = bpf_obj_get(file_path);
+  if (fd &lt; 0) {
+    printf("Failed to fetch the map: %d (%s)\n", fd, strerror(errno));
+    return -1;
+  }
+
+  key = 1;
+  result = bpf_map_lookup_elem(fd, &amp;key, &amp;value);
+  if (result &lt; 0) {
+    printf("Failed to read value from the map: %d (%s)\n", result,
+           strerror(errno));
+    return -1;
+  }
+
+  printf("Value read from the map: '%d'\n", value);
+  return 0;
+}
+</code></pre>
+<p>整一章都在讲细节. 但作为 BPF 程序与 user-space(通过 fd 读写) 交互的手段, 也许值得大书特书.</p>
+<p>BPF Maps 的类型:</p>
+<ol>
+<li>Hash-Table Maps, 更新是原子操作, 用于快速查找,</li>
+<li>Array Maps, 缺点是不能删除元素, 更新不是原子操作</li>
+</ol>
+<h2 id="chapter-4-tracing-with-bpf" tabindex="-1">Chapter 4. Tracing with BPF</h2>
+<p><strong>Tracing is a method to collect data for profiling and debugging</strong></p>
+<p>Traditionally, using probes in Linux involved writing programs that were compiled into kernel modules, which could cause catastrophic problems in production systems</p>
+<p>Over the years, they evolved to be safer to execute but still cumbersome to write and test. Tools like SystemTap established new protocols to write probes and paved the way to get much richer information from the Linux kernel and all programs running on user-space.</p>
+<p>The most well-known flame graphs represent the most frequent code consuming CPU in your system; these are called on-CPU graphs. Another interesting flame graph visualization is off-CPU graphs; they represent the time that a CPU spends on other tasks that are not related to your application. By combining on-CPU and off-CPU graphs, you can get a complete view of what your system is spending CPU cycles on.</p>
+<p>火焰图</p>
+<p>探针, Probe, 疑问是, 探针是一个函数指针链表的指针, 用来追加回调函数吧?</p>
+<h3 id="kernel-probes" tabindex="-1">Kernel Probes</h3>
+<h4 id="kprobes" tabindex="-1">kprobes</h4>
+<p>比如: 将 BPF 程序与 <code>execve</code> system call 关联</p>
+<h4 id="kretprobes" tabindex="-1">kretprobes</h4>
+<p>当内核指令(system call)返回的时候执行 BPF 程序. 通常将 kprobes 和 kretprobes 结合在一起使用.</p>
+<h3 id="tracepoints" tabindex="-1">Tracepoints</h3>
+<p>Static markers, in the kernel's code</p>
+<p>在 /sys/kernel/debug/tracing/events/bpf 可以看到所有 tracepoints, 看到许多目录, 这些目录分别对应不同的 tracepoint, 可以附加 BPF 程序</p>
+<p>Ubuntu 20.04 没有这个文件, 有类似的:</p>
+<pre class="one-piece"><code>╭─root@Logicgate /sys/kernel/debug/tracing/events/bpf_trace  
+╰─➤  tree .
+.
+├── bpf_trace_printk
+│   ├── enable
+│   ├── filter
+│   ├── format
+│   ├── hist
+│   ├── id
+│   ├── inject
+│   └── trigger
+├── enable
+└── filter
+</code></pre>
+<p>第一个文件, enable, 开启或者关闭 tracepoint</p>
+<p>第二个文件, filter, 允许你写入 expressions, kernel 用来过滤事件</p>
+<h3 id="user-space-probes-uprobes-and-uretprobes" tabindex="-1">User-Space Probes, uprobes and uretprobes</h3>
+<p>让 BPF 程序监听用户程序某个符号的调用:</p>
+<pre class="one-piece"><code>bpf.attach_uprobe(name = "./hello-bpf", sym = "main.main", fn_name = "trace_go_main")
+</code></pre>
+<p>监听当前目录, 符号是 <code>main.main</code>, 当符号调用的时候, 调用 <code>trace_go_main</code> 函数</p>
+<h3 id="user-statically-defined-tracepoints" tabindex="-1">User Statically Defined Tracepoints</h3>
+<p>USDTs, 形式:</p>
+<pre class="one-piece"><code>#include &lt;sys/sdt.h&gt;
+int main() {
+    DTRACE_PROBE('hello-usdt', 'probe-main');
+}
+</code></pre>
+<p>编译之后, 可以用 <code>readelf -n</code> 查看 note</p>
+<p>也可以用 tplist-bpfcc 工具: 安装: <a href="https://github.com/iovisor/bcc/blob/master/INSTALL.md#ubuntu---binary">https://github.com/iovisor/bcc/blob/master/INSTALL.md#ubuntu---binary</a></p>
+<p>存储在 /sbin, 后缀是 <code>-bpfcc</code></p>
+<blockquote>
+<p>Many applications that you might have installed in your system use this type of probe to give you access to runtime tracing data in a predictable way. The popular database MySQL, for example, exposes all kinds of information using statically defined tracepoints. You can gather information from queries executed in the server as well as from many other user operations. Node.js, the JavaScript runtime built on top of Chrome’s V8 engine, also provides tracepoints that you can use to extract runtime information.</p>
+</blockquote>
+<p>没什么用, 有机会再续</p>
+
+      </div>
+      <hr>
+      <div class="content-tail">
+        
+        <p>
+          For comments, please send me
+          <a href="mailto:z6bxeq7qnskquw7msrvat328e6@protonmail.com"> an email</a>.
+        </p>
+
+        
+      </div>
+      <footer><hr>
+<p>©2022</p>
+
+</footer>
+    </div>
+
+  </body>
+</html>
